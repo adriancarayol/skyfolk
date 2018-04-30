@@ -1,23 +1,213 @@
-2018-03-15 22:30:11,455 ERROR exception 24375 Internal Server Error: /profile/adrian/
+2018-04-17 14:39:44,825 ERROR exception 4525 Internal Server Error: /
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 349, in profile_view
-    return render(request, template, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 103, in render_compressed
+    cache_key, cache_content = self.render_cached(compressor, kind, mode)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 82, in render_cached
+    cache_key = get_templatetag_cachekey(compressor, mode, kind)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/cache.py", line 97, in get_templatetag_cachekey
+    "templatetag.%s.%s.%s" % (compressor.cachekey, mode, kind))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/functional.py", line 35, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/base.py", line 177, in cachekey
+    [self.content] + self.mtimes).encode(self.charset), 12)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/functional.py", line 35, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/base.py", line 171, in mtimes
+    for kind, value, basename, elem in self.split_contents()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/css.py", line 20, in split_contents
+    basename = self.get_basename(elem_attribs['href'])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/base.py", line 85, in get_basename
+    "compressed" % (url, base_url))
+compressor.exceptions.UncompressableFileError: 'https://d32rim3h420riw.cloudfront.net/css/style.css' isn't accessible via COMPRESS_URL ('https://d32rim3h420riw.cloudfront.net/static/') and can't be compressed
+2018-04-17 14:41:25,200 ERROR exception 5357 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f6c1034b94ce307a18a56de729d04613a2ba069f1c13f159be960a59fb458b4f" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+        <link rel="stylesheet" type="text/css" href="https://d32rim3h420riw.cloudfront.net/css/style.css">
+        <link rel="stylesheet" type="text/css" href="https://d32rim3h420riw.cloudfront.net/css/login-signup.css">
+        <link type="text/css" rel="stylesheet" href="https://d32rim3h420riw.cloudfront.net/css/materialize.min.css" media="screen,projection">
+        <style>
+            .progress {
+                margin: 0 !important;
+            }
+        </style>
+    
+2018-04-17 14:44:28,300 ERROR exception 7003 Internal Server Error: /following/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "be1b6e4f72b3f7069378da5643355f2a64b064379ec5c2f3882037ceea68c3a8" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+    <script src="/static/js/reconnecting-websocket.min.js"></script>
+    <script src="/static/js/socket_notifications.js" type="text/javascript"></script>
+
+2018-04-18 15:40:57,350 ERROR exception 19773 Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/facebook/provider.py", line 141, in media_js
+    app = self.get_app(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/base.py", line 52, in get_app
+    return SocialApp.objects.get_current(self.id, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/models.py", line 34, in get_current
+    provider=provider)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 380, in get
+    self.model._meta.object_name
+allauth.socialaccount.models.DoesNotExist: SocialApp matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
     return self.template.render(context)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
@@ -48,31 +238,9 @@ Traceback (most recent call last):
     bit = node.render_annotated(context)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
     return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
-    output = self.filter_expression.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
-    obj = self.var.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
-    value = self._resolve_lookup(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
-    current = current()
-  File "/home/adrian/skyfolk/dash/base.py", line 568, in render_for_edit
-    return render_to_string(self.get_edit_template_name(), context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
     return self._render(context)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
     return self.nodelist.render(context)
@@ -80,26 +248,14 @@ Traceback (most recent call last):
     bit = node.render_annotated(context)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
     return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 527, in render
-    six.iteritems(self.extra_context)}
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 526, in <dictcomp>
-    values = {key: val.resolve(context) for key, val in
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
-    obj = self.var.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
-    value = self._resolve_lookup(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
-    current = current()
-  File "/home/adrian/skyfolk/dash/base.py", line 1154, in render
-    render = widget.render(request=request)
-  File "/home/adrian/skyfolk/dash/contrib/plugins/statistics/dash_widgets.py", line 25, in render
-    total_publications = user.publications.count()
-AttributeError: 'User' object has no attribute 'publications'
-2018-03-16 19:29:13,359 ERROR exception 15602 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/templatetags/socialaccount.py", line 58, in render
+    for p in providers.registry.get_list(request)])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/templatetags/socialaccount.py", line 58, in <listcomp>
+    for p in providers.registry.get_list(request)])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/facebook/provider.py", line 143, in media_js
+    raise ImproperlyConfigured("No Facebook app configured: please"
+django.core.exceptions.ImproperlyConfigured: No Facebook app configured: please add a SocialApp using the Django admin
+2018-04-18 15:41:25,651 ERROR exception 24489 Internal Server Error: /accounts/google/login/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -107,34 +263,24 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/oauth2/views.py", line 73, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/oauth2/views.py", line 96, in dispatch
+    app = provider.get_app(self.request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/providers/base.py", line 52, in get_app
+    return SocialApp.objects.get_current(self.id, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/socialaccount/models.py", line 34, in get_current
+    provider=provider)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
     return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:29:14,704 ERROR exception 15602 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 380, in get
+    self.model._meta.object_name
+allauth.socialaccount.models.DoesNotExist: SocialApp matching query does not exist.
+2018-04-19 20:43:12,616 ERROR exception 26378 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -142,34 +288,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:30:06,651 ERROR exception 15808 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 19:43:18,484 ERROR exception 9916 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -177,34 +325,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:30:07,841 ERROR exception 15808 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:06:54,100 ERROR exception 16880 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -212,34 +362,84 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:35:07,910 ERROR exception 17456 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 94, in get
+    request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 266, in get
+    return self.render(self.get_form())
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 586, in render
+    return self.render_to_response(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 130, in render_to_response
+    template=self.get_template_names(),
+  File "/home/adrian/skyfolk/user_profile/views.py", line 1625, in get_template_names
+    return [TEMPLATES[self.steps.current]]
+KeyError: '0'
+2018-04-30 20:09:06,608 ERROR exception 17651 Internal Server Error: /accounts/signup/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 507, in parse
+    compile_func = self.tags[command]
+KeyError: 'trans'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 82, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 64, in resolve_template
+    return select_template(template, using=self.using)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 48, in select_template
+    return engine.get_template(template_name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 39, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 162, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 136, in find_template
+    name, template_dirs=dirs, skip=skip,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loaders/base.py", line 44, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 191, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 230, in compile_nodelist
+    return parser.parse()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 509, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 571, in invalid_block_tag
+    "or load this tag?" % (token.lineno, command)
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 13: 'trans'. Did you forget to register or load this tag?
+2018-04-30 20:09:38,424 ERROR exception 17651 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -247,34 +447,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:35:09,216 ERROR exception 17456 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:12:38,023 ERROR exception 18648 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -282,34 +484,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:39:37,773 ERROR exception 18778 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:13:31,231 ERROR exception 18921 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -317,34 +521,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:39:38,947 ERROR exception 18778 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:14:35,256 ERROR exception 19244 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -352,34 +558,36 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:40:15,786 ERROR exception 18912 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:17:07,560 ERROR exception 19865 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -387,34 +595,38 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:40:16,924 ERROR exception 18912 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 1624, in dispatch
+    return super(CustomSignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:19:03,270 ERROR exception 20542 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -422,34 +634,38 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:40:56,392 ERROR exception 19129 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 1624, in dispatch
+    return super(CustomSignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:22:36,661 ERROR exception 21883 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -457,34 +673,38 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:40:57,529 ERROR exception 19129 Internal Server Error: /remove_relationship/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 1623, in dispatch
+    return super(CustomSignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:25:45,513 ERROR exception 22219 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -492,240 +712,41 @@ Traceback (most recent call last):
     response = self._get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:47:37,184 ERROR exception 20908 Internal Server Error: /request_friend/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 214, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 80, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 192, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 101, in post
+    form = self.get_form(form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 113, in get_form
+    form_class)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 416, in get_form
+    form_class = self.form_list[step]
+KeyError: <class 'allauth.account.forms.SignupForm'>
+2018-04-30 20:27:19,233 ERROR exception 23315 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:47:38,296 ERROR exception 20908 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:50:21,101 ERROR exception 21459 Internal Server Error: /like_profile/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 634, in like_profile
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: 'fooX€'
-2018-03-16 19:50:22,320 ERROR exception 21459 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:50:23,381 ERROR exception 21459 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-03-16 19:50:55,892 ERROR exception 21659 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    "returned None instead." % (callback.__module__, view_name)
+ValueError: The view user_profile.views.CustomSignupView didn't return an HttpResponse object. It returned None instead.

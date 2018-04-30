@@ -1,16 +1,28 @@
+.logged-in {
+  background: gainsboro url("/static/img/index_bg.png") no-repeat center 80px; }
+
+.logged-out {
+  background: gainsboro url("/static/img/index_bg.png") no-repeat center 30px;
+  background-size: 90%; }
+
+.pull-right {
+  float: right; }
+
+/*# sourceMappingURL=style.css.map */
+
 @charset "UTF-8";
 @font-face {
   font-family: "Open Sans";
   font-weight: 400;
   font-style: normal;
-  src: url("../fonts/Open-Sans-regular/Open-Sans-regular.eot");
-  src: url("../fonts/Open-Sans-regular/Open-Sans-regular.eot?#iefix") format("embedded-opentype"), local("Open Sans"), local("Open-Sans-regular"), url("../fonts/Open-Sans-regular/Open-Sans-regular.woff2") format("woff2"), url("../fonts/Open-Sans-regular/Open-Sans-regular.woff") format("woff"), url("../fonts/Open-Sans-regular/Open-Sans-regular.ttf") format("truetype"), url("../fonts/Open-Sans-regular/Open-Sans-regular.svg#OpenSans") format("svg"); }
+  src: url("/static/fonts/Open-Sans-regular/Open-Sans-regular.eot?4a2f86eea724");
+  src: url("/static/fonts/Open-Sans-regular/Open-Sans-regular.eot?&4a2f86eea724#iefix") format("embedded-opentype"), local("Open Sans"), local("Open-Sans-regular"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.woff2?4a2f86eea724") format("woff2"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.woff?4a2f86eea724") format("woff"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.ttf?4a2f86eea724") format("truetype"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.svg?4a2f86eea724#OpenSans") format("svg"); }
 @font-face {
   font-family: "Pacifico";
   font-weight: 400;
   font-style: normal;
-  src: url("../fonts/Pacifico-regular/Pacifico-regular.eot");
-  src: url("../fonts/Pacifico-regular/Pacifico-regular.eot?#iefix") format("embedded-opentype"), local("Pacifico Regular"), local("Pacifico-regular"), url("../fonts/Pacifico-regular/Pacifico-regular.woff2") format("woff2"), url("../fonts/Pacifico-regular/Pacifico-regular.woff") format("woff"), url("../fonts/Pacifico-regular/Pacifico-regular.ttf") format("truetype"), url("../fonts/Pacifico-regular/Pacifico-regular.svg#Pacifico") format("svg"); }
+  src: url("/static/fonts/Pacifico-regular/Pacifico-regular.eot?4a2f86eea724");
+  src: url("/static/fonts/Pacifico-regular/Pacifico-regular.eot?&4a2f86eea724#iefix") format("embedded-opentype"), local("Pacifico Regular"), local("Pacifico-regular"), url("/static/fonts/Pacifico-regular/Pacifico-regular.woff2?4a2f86eea724") format("woff2"), url("/static/fonts/Pacifico-regular/Pacifico-regular.woff?4a2f86eea724") format("woff"), url("/static/fonts/Pacifico-regular/Pacifico-regular.ttf?4a2f86eea724") format("truetype"), url("/static/fonts/Pacifico-regular/Pacifico-regular.svg?4a2f86eea724#Pacifico") format("svg"); }
 body {
   display: flex;
   min-height: 100vh;
@@ -65,9 +77,10 @@ main {
 /* LOGO */
 .namesn {
   position: relative;
-  left: -50px;
   display: block;
-  margin: auto auto 5%; }
+  width: 200px;
+  height: 120px;
+  margin: auto auto 10px; }
   .namesn i {
     color: #1e88e5;
     text-shadow: 1px 1px 1px #ccc; }
@@ -133,8 +146,6 @@ div#login h5 {
   position: relative; }
 
 .block-formregister {
-  background-color: #fff;
-  position: relative;
   margin: auto;
   font-family: "Open Sans", sans-serif;
   border-radius: 7px;

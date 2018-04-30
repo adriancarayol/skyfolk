@@ -1,18 +1,19 @@
 # encoding:utf-8
 import logging
-
+from django.core import validators
 from PIL import Image
 from allauth.account.forms import LoginForm
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from ipware.ip import get_real_ip, get_ip
-
+from django.contrib.auth.forms import UserCreationForm
 from user_profile.models import AuthDevices, NotificationSettings
 from user_profile.node_models import NodeProfile
 from .validators import validate_file_extension
@@ -133,6 +134,36 @@ class SignupForm(forms.Form):
         user.save()  # Guardamos el usuario
 
 
+class UsernameForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2',)
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if len(username) < 3:
+            raise ValidationError('Se necesitan al menos 3 caracteres para el nombre de usuario.')
+        return username
+
+    def clean_password2(self):
+        password = self.cleaned_data.get('password2')
+        if len(password) < 8:
+            raise ValidationError('Se necesitan al menos 8 caracteres para la contraseña.')
+        return super(UsernameForm, self).clean_password2()
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(
+        attrs={'type': 'email',
+               'placeholder': _('E-mail address')}))
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        if User.objects.filter(email=data).exists():
+            error = _("A user is already registered with this e-mail address.")
+            raise forms.ValidationError(error)
+
+
 class UserForm(forms.ModelForm):
     """
     Formulario usado en la configuración del usuario,
@@ -141,9 +172,9 @@ class UserForm(forms.ModelForm):
     alphanumeric = RegexValidator(r'^(\s*[^\W\d_]+(([\'\-\+\s]\s*[^\W\d_])?[^\W\d_]*)\s*)+$',
                                   message='Tu nombre/apellido sólo puede contener letras.')
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}),
-                                 validators=[alphanumeric])
+                                 validators=[alphanumeric], required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}),
-                                validators=[alphanumeric])
+                                validators=[alphanumeric], required=False)
 
     class Meta:
         model = User

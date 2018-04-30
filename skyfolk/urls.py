@@ -5,8 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
 from django_js_reverse.views import urls_js
 from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
-
-from dash_services.views import TriggerListView
+from user_profile.views import signup
 from dash_services.views_fbv import logout_view
 from dash_services.views_fbv import service_related_triggers_switch_to
 
@@ -26,6 +25,7 @@ urlpatterns = [
     url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
     url(r'^admin/', include(admin.site.urls)),
+    url(r"^accounts/signup/$", signup, name="account_signup"),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls support
     url(r'^', include('support.urls', namespace="support"), name="support"),

@@ -1,14 +1,19 @@
 import json
 import logging
 import numpy as np
-from allauth.account.views import PasswordChangeView, EmailView
+from allauth.account import app_settings
+from allauth.account.views import PasswordChangeView, EmailView, RedirectAuthenticatedUserMixin, CloseableSignupMixin, \
+    sensitive_post_parameters_m
+from allauth.account.utils import get_next_redirect_url, complete_signup
+from allauth.exceptions import ImmediateHttpResponse
+from formtools.wizard.views import SessionWizardView
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
 from itertools import chain, zip_longest
 from dash.base import get_layout
-
-from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url, \
+from allauth.account.forms import SignupForm
+from dash.utils import get_user_plugins, get_workspaces, get_public_dashboard_url, \
     get_dashboard_settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -41,7 +46,7 @@ from publications.forms import PublicationForm, PublicationEdit, SharedPublicati
 from publications.models import Publication
 from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
-from user_profile.forms import AdvancedSearchForm
+from user_profile.forms import AdvancedSearchForm, EmailForm, UsernameForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import Request, Profile, \
@@ -1564,6 +1569,7 @@ class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
         instance.user = self.request.user
         return super(NotificationSettingsView, self).form_valid(form)
 
+
 class UserLikeContent(TemplateView):
     """
     Like user content show here
@@ -1585,8 +1591,8 @@ class UserLikeContent(TemplateView):
 
         user = self.request.user
         publications = Publication.objects.filter(user_give_me_like__id__exact=user.id) \
-                                            .select_related('author') \
-                                            .prefetch_related('images')[offset:limit]
+                           .select_related('author') \
+                           .prefetch_related('images')[offset:limit]
         users = LikeProfile.objects.filter(from_profile__user=user).select_related('to_profile__user')[offset:limit]
         groups = LikeGroup.objects.filter(from_like=user).select_related('to_like')[offset:limit]
 
@@ -1610,3 +1616,63 @@ class UserLikeContent(TemplateView):
         context['mixed'] = self.get_like_content()
         context['pagination'] = self.pagination
         return context
+
+
+FORMS = [
+    ("user", UsernameForm),
+    ("email", EmailForm)
+]
+
+TEMPLATES = {
+    "user": "account/username_form.html",
+    "email": "account/email_signup.html"
+}
+
+
+class CustomSignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin, SessionWizardView):
+    form_list = FORMS
+    template_name = "account/signup.html"
+    redirect_field_name = "next"
+    success_url = None
+
+    @sensitive_post_parameters_m
+    def dispatch(self, request, *args, **kwargs):
+        return super(CustomSignupView, self).dispatch(request, *args, **kwargs)
+
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+
+    def get_success_url(self):
+        # Explicitly passed ?next= URL takes precedence
+        ret = (
+            get_next_redirect_url(
+                self.request,
+                self.redirect_field_name) or self.success_url)
+        return ret
+
+    def done(self, form_list, **kwargs):
+        i = 0
+
+        user_fields = {}
+        for form in form_list:
+            data = form.cleaned_data
+            if i == 0:
+                user_fields['username'] = data['username']
+                user_fields['password'] = data['password1']
+            elif i == 1:
+                user_fields['email'] = data['email']
+
+            i += 1
+
+        user = User.objects.create_user(username=user_fields['username'], email=user_fields['email'],
+                                        password=user_fields['password'])
+        try:
+            return complete_signup(
+                self.request, user,
+                app_settings.EMAIL_VERIFICATION,
+                self.get_success_url())
+        except ImmediateHttpResponse as e:
+            return e.response
+
+
+signup = CustomSignupView.as_view()
