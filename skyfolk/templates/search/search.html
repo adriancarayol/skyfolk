@@ -6,6 +6,7 @@ Template para las busquedas
 {% load avatar_tags %}
 {% load humanize %}
 {% load highlight %}
+{% load embed_video_tags %}
 {% load static %}
 {% block title %} <title>Skyfolk / Busqueda {{ q }}</title> {% endblock %}
 {% block include_files %}
@@ -155,12 +156,203 @@ Template para las busquedas
                                     <div class="row" style="word-wrap: break-word;">
                                         <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                                         <br>
+                                        {% if node.shared_publication %}
+                                            {% if node.shared_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar node.shared_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ node.shared_publication.content|safe }}</p>
+                                                        {% with node.shared_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with node.shared_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if node.shared_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  node.shared_publication.extra_content.video %}
+                                                                {% video node.shared_publication.extra_content.video as my_video %}
+                                                                {% video my_video "medium" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ node.shared_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a href="{{ node.shared_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="blue-text text-darken-2"
+                                                           href="/publication/{{ node.shared_publication.pk }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if item.object.shared_group_publication %}
+                                            {% if item.object.shared_group_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar item.object.shared_group_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' item.object.shared_group_publication.author %}">@{{ item.object.shared_group_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ item.object.shared_group_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ item.object.shared_group_publication.content|safe }}</p>
+                                                        {% with item.object.shared_group_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with item.object.shared_group_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if item.object.shared_group_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  item.object.shared_group_publication.extra_content.video %}
+                                                                {% video item.object.shared_group_publication.extra_content.video as my_video %}
+                                                                {% video my_video "medium" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ item.object.shared_group_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a href="{{ item.object.shared_group_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="blue-text text-darken-2"
+                                                           href="{% url "publications_groups:detail_group_publication" pk=item.object.shared_group_publication.pk %}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                         {% for i in item.object.images.all %}
                                             <div class="col s12">
                                                 <img class="materialboxed" src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
                                                      height="100%"/>
                                             </div>
                                         {% endfor %}
+                                         {% with item.object.videos.all as videos %}
+                                            {% if videos %}
+                                                <div class="row videos">
+                                                    {% for video in videos %}
+                                                        <div class="col s12 z-depth-2 center">
+                                                            <video class="responsive-video" controls loop>
+                                                                <source src="{{ video.video.url }}" type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% if item.object.extra_content %}
+                                            {% if item.object.extra_content.video %}
+                                                {% video item.object.extra_content.video as my_video %}
+                                                    {% video my_video "medium" %}
+                                                {% endvideo %}
+                                            {% else %}
+                                                {% comment %} Para publicaciones con URL {% endcomment %}
+                                                <div class="card small">
+                                                    <div class="card-image">
+                                                        <img class="lazyload" data-src="
+                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <p>{{ item.object.extra_content.description }}</p>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a href="{{ item.object.extra_content.url }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -312,12 +504,203 @@ Template para las busquedas
                                 <div class="row" style="word-wrap: break-word;">
                                     <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                                     <br>
+                                    {% if node.shared_publication %}
+                                            {% if node.shared_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar node.shared_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ node.shared_publication.content|safe }}</p>
+                                                        {% with node.shared_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with node.shared_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if node.shared_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  node.shared_publication.extra_content.video %}
+                                                                {% video node.shared_publication.extra_content.video as my_video %}
+                                                                {% video my_video "medium" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ node.shared_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a href="{{ node.shared_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="blue-text text-darken-2"
+                                                           href="/publication/{{ node.shared_publication.pk }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if item.object.shared_group_publication %}
+                                            {% if item.object.shared_group_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar item.object.shared_group_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' item.object.shared_group_publication.author %}">@{{ item.object.shared_group_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ item.object.shared_group_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ item.object.shared_group_publication.content|safe }}</p>
+                                                        {% with item.object.shared_group_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with item.object.shared_group_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if item.object.shared_group_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  item.object.shared_group_publication.extra_content.video %}
+                                                                {% video item.object.shared_group_publication.extra_content.video as my_video %}
+                                                                {% video my_video "medium" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ item.object.shared_group_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a href="{{ item.object.shared_group_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="blue-text text-darken-2"
+                                                           href="{% url "publications_groups:detail_group_publication" pk=item.object.shared_group_publication.pk %}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     {% for i in item.object.images.all %}
                                         <div class="col s12">
                                             <img class="materialboxed" src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
                                                  height="100%"/>
                                         </div>
                                     {% endfor %}
+                                    {% with item.object.videos.all as videos %}
+                                            {% if videos %}
+                                                <div class="row videos">
+                                                    {% for video in videos %}
+                                                        <div class="col s12 z-depth-2 center">
+                                                            <video class="responsive-video" controls loop>
+                                                                <source src="{{ video.video.url }}" type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% if item.object.extra_content %}
+                                            {% if item.object.extra_content.video %}
+                                                {% video item.object.extra_content.video as my_video %}
+                                                    {% video my_video "medium" %}
+                                                {% endvideo %}
+                                            {% else %}
+                                                {% comment %} Para publicaciones con URL {% endcomment %}
+                                                <div class="card small">
+                                                    <div class="card-image">
+                                                        <img class="lazyload" data-src="
+                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <p>{{ item.object.extra_content.description }}</p>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a href="{{ item.object.extra_content.url }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                 </div>
                             </div>
                         </div>

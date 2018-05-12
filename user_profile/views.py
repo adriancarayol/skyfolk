@@ -1406,7 +1406,17 @@ class SearchUsuarioView(SearchView):
                                                                                board_owner__profile__in=following) | SQ(
                                                                                board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
-                .select_related('author').prefetch_related('images').filter(deleted=False)
+                .select_related('author',
+                        'board_owner', 'shared_publication',
+                        'parent', 'shared_group_publication').prefetch_related('extra_content', 'images',
+                                             'videos', 'shared_publication__images',
+                                             'tags',
+                                             'shared_publication__author',
+                                             'shared_group_publication__images',
+                                             'shared_group_publication__author',
+                                             'shared_group_publication__videos',
+                                             'shared_group_publication__group_extra_content',
+                                             'shared_publication__videos', 'shared_publication__extra_content').filter(deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
