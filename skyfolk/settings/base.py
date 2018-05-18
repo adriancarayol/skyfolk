@@ -100,6 +100,7 @@ THIRD_PARTY_APPS = (
     'django_celery_beat',
     'invitations',
     'webpack_loader',
+    'user_guide',
 )
 
 FIRST_PARTY_APPS = (

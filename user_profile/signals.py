@@ -13,6 +13,8 @@ from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
     LikeProfile
 from user_profile.node_models import NodeProfile
 from notifications.signals import notify
+from user_guide.models import Guide, GuideInfo
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -97,12 +99,14 @@ def create_user_profile(sender, instance, created, **kwargs):
                     NotificationSettings.objects.create(user=instance)
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
                                                                  is_public=True)
+                    guide = Guide.objects.get(guide_name='First guide')
+                    GuideInfo.objects.create(guide=guide, user=instance)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception as e:
             logger.info(
-                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
+                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile/Notifications/GuideInfo para el user : %s - ERROR: %s" % (instance, e))
 
 
 

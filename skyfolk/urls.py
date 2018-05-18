@@ -159,6 +159,8 @@ urlpatterns = [
     # url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
     # API_REST
     url(r'^api/', include('api.urls')),
+    # user guide
+    url(r'^user-guide/', include('user_guide.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
