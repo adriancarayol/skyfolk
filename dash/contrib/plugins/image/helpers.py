@@ -31,6 +31,7 @@ logger = logging.getLogger(__file__)
 
 IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_ROOT,
                                                IMAGES_UPLOAD_DIR)
+
 if not os.path.exists(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH):
     os.makedirs(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH)
 
