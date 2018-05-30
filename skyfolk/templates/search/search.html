@@ -799,7 +799,7 @@ Template para las busquedas
     </div>
     <script src="{% static "js/search.js" %}"></script>
     <script src="{% static "js/photo_gallery.js" %}" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/imagesloaded.pkgd.min.js"></script>
+    <script src="{% static "js/imagesloaded.pkgd.min.js" %}"></script>
     <script>
         var infinite = new Waypoint.Infinite({
             element: $('.grid'),

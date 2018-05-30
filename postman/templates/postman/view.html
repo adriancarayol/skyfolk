@@ -1,9 +1,9 @@
 {% extends "postman/base.html" %}
-{% load i18n %}{% load postman_tags %}{% load avatar_tags %}
+{% load i18n %}{% load postman_tags %}{% load avatar_tags static %}
 {% block title %}<title>Skyfolk / {% if pm_messages|length > 1 %}{% trans "Conversation" %}{% else %}
     {% trans "Message" %}{% endif %}</title>{% endblock %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/mensajes_privados.css" %}"/>
 {% endblock %}
 {% block content %}
     <div class="container">

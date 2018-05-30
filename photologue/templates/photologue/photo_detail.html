@@ -3,16 +3,17 @@
 {% load photologue_tags i18n %}
 {% load i18n %}
 {% load humanize %}
+{% load static %}
 
 {% load compress %}
 {% block title %} <title>Skyfolk / {{ object.title }} por: {{ object.owner }}</title> {% endblock %}
 
 {% block include_files %}
     {% compress css %}
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+        <link rel="stylesheet" href="{% static "css/gallery.css" %}">
+        <link rel="stylesheet" href="{% static "css/photo_detail.css" %}">
+        <link rel="stylesheet" href="{% static "css/comentarios.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
     {% endcompress %}
 {% endblock %}
 
@@ -165,10 +166,10 @@
         </div>
     </div>
     {% compress js %}
-        <script src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
-        <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
-        <script src="{{ STATIC_URL }}js/socket_photo.js"></script>
-        <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+        <script src="{% static "js/photo_gallery.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/photo_detail.js" %}" type="text/javascript"></script>
+        <script src="{% static "js/socket_photo.js" %}"></script>
+        <script src="{% static "js/reconnecting-websocket.min.js" %}"></script>
     {% endcompress %}
     <script>
         UTILS.init([{{ user.pk }}]);

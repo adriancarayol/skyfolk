@@ -8,7 +8,7 @@
     {{ form.media }}{# for ajax_selects (v1.3.6 at least) #}
 {% endblock %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/mensajes_privados.css" %}"/>
 {% endblock %}
 {% block content %}
     <div class="container">

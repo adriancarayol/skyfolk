@@ -2,11 +2,9 @@ import os
 import subprocess
 import uuid
 import magic
-import mimetypes
 import bleach
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from avatar.models import Avatar
 from user_profile.models import Profile
@@ -52,6 +50,7 @@ def generate_path_video(username, ext='mp4'):
     donde se almacenaran las imagenes
     de una publicacion
     """
+
     full_path = os.path.join('skyfolk/media/publications/videos', username)
     rel_path = os.path.join('publications/videos', username)
 
