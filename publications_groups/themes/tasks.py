@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-
+from django.conf import settings
 from notifications.models import Notification
 
 from publications.utils import convert_video_to_mp4
@@ -28,8 +28,10 @@ def generate_path_video(username, ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    full_path = os.path.join('skyfolk/media/theme_publications/videos', username)
+    path = os.path.join(settings., 'theme_publications/videos')
+    full_path = os.path.join(path, username)
     rel_path = os.path.join('theme_publications/videos', username)
+
     return [os.path.join(full_path, filename),
             os.path.join(rel_path, filename)]
 

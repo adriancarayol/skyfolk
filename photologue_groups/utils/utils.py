@@ -3,7 +3,7 @@ import uuid
 
 import requests
 from io import BytesIO
-
+from django.conf import settings
 from urllib.parse import urlparse
 from django.core.files.base import ContentFile
 
@@ -31,6 +31,7 @@ def retrieve_image(url):
     response = requests.get(url)
     return BytesIO(response.content)
 
+
 def generate_path_video(ext='mp4'):
     """
     Funcion para calcular la ruta
@@ -38,10 +39,13 @@ def generate_path_video(ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/photologue/videos', filename),
+    path = os.path.join(settings.MEDIA_ROOT, 'photologue/videos')
+    return [os.path.join(path, filename),
             os.path.join('photologue/videos', filename)]
+
 
 def generate_thumbnail_path_video(ext='jpg'):
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/photologue/videos/thumbnails', filename),
+    path = os.path.join(settings.MEDIA_ROOT, 'photologue/videos/thumbnails')
+    return [os.path.join(path, filename),
             os.path.join('photologue/videos/thumbnails', filename)]

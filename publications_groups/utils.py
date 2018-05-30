@@ -78,7 +78,8 @@ def generate_path_video(username, ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    full_path = os.path.join('skyfolk/media/group_publications/videos', username)
+    path = os.path.join(settings.MEDIA_ROOT, 'group_publications/videos')
+    full_path = os.path.join(path, username)
     rel_path = os.path.join('group_publications/videos', username)
 
     return [os.path.join(full_path, filename),
