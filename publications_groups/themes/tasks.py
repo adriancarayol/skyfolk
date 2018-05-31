@@ -28,7 +28,7 @@ def generate_path_video(username, ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    path = os.path.join(settings., 'theme_publications/videos')
+    path = os.path.join(settings.MEDIA_ROOT, 'theme_publications/videos')
     full_path = os.path.join(path, username)
     rel_path = os.path.join('theme_publications/videos', username)
 
@@ -62,7 +62,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     try:
         notification = Notification.objects.create(actor=user, recipient=user,
-                                                       verb=u'Â¡Ya esta tu video %s!' % filename,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
@@ -118,7 +118,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     try:
         notification = Notification.objects.create(actor=user, recipient=user,
-                                                       verb=u'Â¡Ya esta tu video %s!' % filename,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
