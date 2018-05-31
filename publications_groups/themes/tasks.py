@@ -62,7 +62,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     try:
         notification = Notification.objects.create(actor=user, recipient=user,
-                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       verb=u'Ya esta tu video %s' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
@@ -118,7 +118,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     try:
         notification = Notification.objects.create(actor=user, recipient=user,
-                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       verb='Ya esta tu video {0}'.format(filename),
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
