@@ -50,7 +50,7 @@ def generate_path_video(username, ext='mp4'):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    path = os.path.join(settings.MEDIA_ROOT, 'publications/videos')
+    path = os.path.join(settings.MEDIA_URL, 'publications/videos')
     full_path = os.path.join(path, username)
     rel_path = os.path.join('publications/videos', username)
 

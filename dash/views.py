@@ -252,7 +252,7 @@ class AddDashboardEntry(SessionWizardView):
     Class for add dashboard service entry.
     Like Twitter, Reddit...
     """
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_URL, 'photos'))
 
     def check_if_service(self):
         if self.workspace:
@@ -719,7 +719,7 @@ def add_dashboard_entry(request,
 
 
 class EditDashboardEntry(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos_edit'))
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_URL, 'photos_edit'))
 
     def check_if_service(self):
         plugin = self.obj.get_plugin(fetch_related_data=True)

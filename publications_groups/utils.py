@@ -78,7 +78,7 @@ def generate_path_video(username, ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    path = os.path.join(settings.MEDIA_ROOT, 'group_publications/videos')
+    path = os.path.join(settings.MEDIA_URL, 'group_publications/videos')
     full_path = os.path.join(path, username)
     rel_path = os.path.join('group_publications/videos', username)
 
