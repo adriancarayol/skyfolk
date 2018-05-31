@@ -29,7 +29,7 @@ __all__ = (
 
 logger = logging.getLogger(__file__)
 
-IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_ROOT,
+IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_URL,
                                                IMAGES_UPLOAD_DIR)
 
 if not os.path.exists(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH):
@@ -87,7 +87,7 @@ def delete_file(image_file):
     """Delete file from disc."""
     try:
         # Delete the main file.
-        file_path = os.path.join(settings.MEDIA_ROOT, image_file)
+        file_path = os.path.join(settings.MEDIA_URL, image_file)
         os.remove(file_path)
 
         # Delete the sized version of it.
@@ -113,7 +113,7 @@ def clone_file(source_filename, relative_path=True):
     :return string: Filename of the cloned file.
     """
     if source_filename.startswith(IMAGES_UPLOAD_DIR):
-        source_filename = os.path.join(settings.MEDIA_ROOT, source_filename)
+        source_filename = os.path.join(settings.MEDIA_URL, source_filename)
 
     destination_filename = ensure_unique_filename(source_filename)
     try:

@@ -41,7 +41,7 @@ else:
     JS_ROOT = getattr(
         settings,
         'TINYMCE_JS_ROOT',
-        os.path.join(settings.MEDIA_ROOT, 'js/tiny_mce')
+        os.path.join(settings.MEDIA_URL, 'js/tiny_mce')
     )
 
 JS_BASE_URL = JS_URL[:JS_URL.rfind('/')]
