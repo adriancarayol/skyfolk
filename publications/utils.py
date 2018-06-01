@@ -50,17 +50,16 @@ def generate_path_video(username, ext='mp4'):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    path = os.path.join(settings.MEDIA_URL, 'publications/videos')
+    path = os.path.join(settings.MEDIA_ROOT, 'publications/videos')
     full_path = os.path.join(path, username)
-    rel_path = os.path.join('publications/videos', username)
 
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join(full_path, filename), os.path.join(rel_path, filename)]
+    return os.path.join(full_path, filename)
 
 
 def convert_video_to_mp4(avi_file_path, output_name):
     process = subprocess.run(
-        "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(
+        "ffmpeg -y -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(
             input=avi_file_path, output=output_name), shell=True).returncode
 
 

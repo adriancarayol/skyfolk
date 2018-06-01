@@ -86,8 +86,10 @@
                                                                         <div class="col s4">
                                                                             <video class="responsive-video" controls
                                                                                    loop>
+                                                                                {% if video.video %}
                                                                                 <source src="{{ video.video.url }}"
                                                                                         type="video/mp4">
+                                                                                {% endif %}
                                                                             </video>
                                                                         </div>
                                                                     {% endfor %}
@@ -164,8 +166,10 @@
                                                                         <div class="col s4">
                                                                             <video class="responsive-video" controls
                                                                                    loop>
+                                                                                {% if video.video %}
                                                                                 <source src="{{ video.video.url }}"
                                                                                         type="video/mp4">
+                                                                                {% endif %}
                                                                             </video>
                                                                         </div>
                                                                     {% endfor %}
@@ -222,7 +226,9 @@
                                                     {% for video in videos %}
                                                         <div class="col s4 z-depth-2 center">
                                                             <video class="responsive-video" controls loop>
+                                                                {% if video.video %}
                                                                 <source src="{{ video.video.url }}" type="video/mp4">
+                                                                {% endif %}
                                                             </video>
                                                         </div>
                                                     {% endfor %}

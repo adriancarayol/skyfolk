@@ -29,7 +29,7 @@ AWS_SECRET_ACCESS_KEY = 'Q+uuhDnMSKH2NyH6P6bH0k9VssSB82Z3fhkYH60K'
 AWS_STORAGE_BUCKET_NAME = 'skyfolk'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_HEADERS = {
-    'Expires': 'Thu, 15 Apr 2018 20:00:00 GMT',
+    'Expires': 'Thu, 30 Apr 2018 20:00:00 GMT',
     'Cache-Control': 'max-age=86400',
 }
 AWS_QUERYSTRING_EXPIRE = '157784630'
@@ -41,7 +41,8 @@ STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
+# MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
+MEDIA_ROOT = MEDIA_URL
 
 DATABASES = {
     'default': {

@@ -40,12 +40,10 @@ def generate_path_video(ext='mp4'):
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
     path = os.path.join(settings.MEDIA_URL, 'photologue/videos')
-    return [os.path.join(path, filename),
-            os.path.join('photologue/videos', filename)]
+    return os.path.join(path, filename)
 
 
 def generate_thumbnail_path_video(ext='jpg'):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     path = os.path.join(settings.MEDIA_URL, 'videos/thumbnails')
-    return [os.path.join(path, filename),
-            os.path.join('photologue/videos/thumbnails', filename)]
+    return os.path.join(path, filename)

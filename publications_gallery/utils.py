@@ -86,9 +86,8 @@ def generate_path_video(username, ext='mp4'):
     path = os.path.join(settings.MEDIA_URL, 'photo_publications/videos')
     full_path = os.path.join(path, username)
 
-    rel_path = os.path.join('photo_publications/videos', username)
-    return [os.path.join(full_path, filename),
-            os.path.join(rel_path, filename)]
+
+    return os.path.join(full_path, filename)
 
 
 def get_photo_channel(photo_id):

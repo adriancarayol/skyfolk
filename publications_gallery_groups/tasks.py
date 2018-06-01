@@ -34,12 +34,12 @@ def process_video_publication(file, publication_id, filename, user_id=None):
     except ObjectDoesNotExist:
         return
 
-    video_file, media_path = publications_gallery_groups.utils.generate_path_video(user.username)
+    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     convert_video_to_mp4(file, video_file)
 
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
     logger.info('VIDEO CONVERTED')
 
@@ -59,7 +59,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     data = {
         'type': "video",
-        'video': media_path,
+        'video': video_file,
         'id': publication_id
     }
 
@@ -89,12 +89,12 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         return
 
     clip = mp.VideoFileClip(file)
-    video_file, media_path = publications_gallery_groups.utils.generate_path_video(user.username)
+    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
 
     clip.write_videofile(video_file, threads=2)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
     logger.info('GIF CONVERTED')
 
@@ -114,7 +114,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     data = {
         'type': "video",
-        'video': media_path,
+        'video': video_file,
         'id': publication_id
     }
 
@@ -144,11 +144,11 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
     except ObjectDoesNotExist:
         return
 
-        video_file, media_path = publications_gallery_groups.utils.generate_path_video(user.username)
+        video_file = publications_gallery_groups.utils.generate_path_video(user.username)
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     convert_video_to_mp4(file, video_file)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationVideoVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
     logger.info('VIDEO CONVERTED')
 
@@ -168,7 +168,7 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
 
     data = {
         'type': "video",
-        'video': media_path,
+        'video': video_file,
         'id': publication_id
     }
 
@@ -197,11 +197,11 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
     except ObjectDoesNotExist:
         return
     clip = mp.VideoFileClip(file)
-    video_file, media_path = publications_gallery_groups.utils.generate_path_video(user.username)
+    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     clip.write_videofile(video_file, threads=2)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationVideoVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
     logger.info('GIF CONVERTED')
 
@@ -221,7 +221,7 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
 
     data = {
         'type': "video",
-        'video': media_path,
+        'video': video_file,
         'id': publication_id
     }
 

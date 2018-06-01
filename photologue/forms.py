@@ -255,7 +255,7 @@ class UploadFormVideo(forms.ModelForm):
             for block in video.chunks():
                 tmp.write(block)
 
-            absolut_path, media_path = generate_path_video()
+            absolut_path = generate_path_video()
             if not os.path.exists(os.path.dirname(absolut_path)):
                 os.makedirs(os.path.dirname(absolut_path))
 
@@ -266,7 +266,7 @@ class UploadFormVideo(forms.ModelForm):
 
             os.remove(tmp.name)
 
-            return media_path
+            return absolut_path
 
         return video
 

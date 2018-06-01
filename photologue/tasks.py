@@ -87,7 +87,7 @@ def generate_video_thumbnail(instance):
 
     if exist_video and video.video:
 
-        absolut_path, media_path = generate_thumbnail_path_video()
+        absolut_path = generate_thumbnail_path_video()
 
         if not os.path.exists(os.path.dirname(absolut_path)):
             os.makedirs(os.path.dirname(absolut_path))
@@ -97,6 +97,6 @@ def generate_video_thumbnail(instance):
         create_thumbnail_video(os.path.join(os.path.join(settings.BASE_DIR, 'skyfolk'), video_path),
                                os.path.join(settings.BASE_DIR, absolut_path))
 
-        video.thumbnail = media_path
+        video.thumbnail = absolut_path
 
         video.save(update_fields=["thumbnail"])

@@ -30,10 +30,8 @@ def generate_path_video(username, ext='mp4'):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     path = os.path.join(settings.MEDIA_URL, 'theme_publications/videos')
     full_path = os.path.join(path, username)
-    rel_path = os.path.join('theme_publications/videos', username)
 
-    return [os.path.join(full_path, filename),
-            os.path.join(rel_path, filename)]
+    return os.path.join(full_path, filename)
 
 
 @app.task(name='tasks.process_theme_pub_video')
@@ -49,13 +47,13 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         logger.info('Publication does not exist')
         return
 
-    video_file, media_path = generate_path_video(user.username)
+    video_file = generate_path_video(user.username)
 
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
 
     convert_video_to_mp4(file, video_file)
-    PublicationThemeVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationThemeVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
 
     logger.info('VIDEO CONVERTED')
@@ -76,7 +74,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     data = {
             'type': "video",
-            'video': media_path,
+            'video': video_file,
             'id': publication_id
         }
 
@@ -103,13 +101,13 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         return
 
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video(user.username)
+    video_file = generate_path_video(user.username)
 
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
 
     clip.write_videofile(video_file, threads=2)
-    PublicationThemeVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationThemeVideo.objects.create(publication_id=publication_id, video=video_file)
     os.remove(file)
 
     logger.info('GIF CONVERTED')
@@ -132,7 +130,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     data = {
             'type': "video",
-            'video': media_path,
+            'video': video_file,
             'id': publication_id
         }
 
