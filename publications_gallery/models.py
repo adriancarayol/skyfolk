@@ -46,7 +46,7 @@ def upload_image_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    final_path = os.path.join('photo_publications/images', instance.publication.author.username)
+    final_path = os.path.join('photo_publications/images', instance.publication.p_author.username)
     return os.path.join(final_path, filename)
 
 

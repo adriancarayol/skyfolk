@@ -4,6 +4,7 @@ import warnings
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -204,12 +205,20 @@ def upload_video(request):
 
     if request.method == 'POST':
         form = UploadFormVideo(request.POST, request.FILES or None)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user
-            obj.is_public = not form.cleaned_data['is_public']
 
+            obj.is_public = not form.cleaned_data['is_public']
             obj.save()
+
+            file = form.cleaned_data['video']
+
+            if isinstance(file, str):
+                with open(form.cleaned_data['video'], 'rb') as f:
+                    obj.video.save("video.mp4", File(f), True)
+
             form.save_m2m()  # Para guardar los tags de la foto
 
             data = {

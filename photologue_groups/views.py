@@ -3,6 +3,7 @@ import json
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -208,6 +209,12 @@ def upload_video(request):
             obj = form.save(commit=False)
             obj.owner = user
             obj.group_id = pk
+
+            file = form.cleaned_data['video']
+
+            if isinstance(file, str):
+                with open(form.cleaned_data['video'], 'rb') as f:
+                    obj.video.save("video.mp4", File(f), True)
 
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto

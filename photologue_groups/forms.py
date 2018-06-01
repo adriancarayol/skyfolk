@@ -255,18 +255,16 @@ class UploadFormVideo(forms.ModelForm):
             for block in video.chunks():
                 tmp.write(block)
 
-            absolut_path = generate_path_video()
-            if not os.path.exists(os.path.dirname(absolut_path)):
-                os.makedirs(os.path.dirname(absolut_path))
+            mp4_path = '{0}{1}'.format(tmp.name, '.mp4')
 
-            return_code = convert_video_to_mp4(tmp.name, absolut_path)
+            return_code = convert_video_to_mp4(tmp.name, mp4_path)
 
             if return_code:
                 raise forms.ValidationError('Hubo un error al procesar tu vídeo, intentalo de nuevo.')
 
             os.remove(tmp.name)
 
-            return absolut_path
+            return mp4_path
 
         return video
 

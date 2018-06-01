@@ -1,11 +1,11 @@
 import json
 import os
-import uuid
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 import publications_gallery_groups
@@ -34,46 +34,53 @@ def process_video_publication(file, publication_id, filename, user_id=None):
     except ObjectDoesNotExist:
         return
 
-    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    convert_video_to_mp4(file, video_file)
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    convert_video_to_mp4(file, mp4_path)
 
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-    logger.info('VIDEO CONVERTED')
+    pub = PublicationPhotoVideo.objects.create(publication_id=publication_id)
 
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
-                                                   verb=u'¡Ya esta tu video %s!' % filename,
-                                                   description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                       'publications_gallery_groups:publication_photo_detail',
-                                                       args=[publication_id])))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
 
-    content = render_to_string(template_name='channels/new_notification.html',
-                               context={'notification': notification})
+        logger.info('VIDEO CONVERTED')
 
-    data = {
-        'type': "video",
-        'video': video_file,
-        'id': publication_id
-    }
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       description='<a href="{0}">Ver</a>'.format(reverse_lazy(
+                                                           'publications_gallery_groups:publication_photo_detail',
+                                                           args=[publication_id])))
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    Channel_group(notification_channel(user.id)).send({
-        "text": json.dumps({'content': content})
-    }, immediately=True)
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
-    [Channel_group(publications_gallery_groups.utils.get_channel_name(x)).send({
-        "text": json.dumps(data)
-    }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        data = {
+            'type': "video",
+            'video': pub.video.url,
+            'id': publication_id
+        }
 
-    Channel_group(photo.group_name).send({
-        "text": json.dumps(data)
-    }, immediately=True)
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
+
+        [Channel_group(publications_gallery_groups.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
+        Channel_group(photo.group_name).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 @app.task(ignore_result=True, name='tasks.process_group_photo_pub_gif')
@@ -89,46 +96,52 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         return
 
     clip = mp.VideoFileClip(file)
-    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    clip.write_videofile(mp4_path, threads=2)
 
-    clip.write_videofile(video_file, threads=2)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-    logger.info('GIF CONVERTED')
+    pub = PublicationPhotoVideo.objects.create(publication_id=publication_id)
 
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
-                                                   verb=u'¡Ya esta tu video %s!' % filename,
-                                                   description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                       'publications_gallery_groups:publication_photo_detail',
-                                                       args=[publication_id])))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+        logger.info('GIF CONVERTED')
 
-    content = render_to_string(template_name='channels/new_notification.html',
-                               context={'notification': notification})
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       description='<a href="{0}">Ver</a>'.format(reverse_lazy(
+                                                           'publications_gallery_groups:publication_photo_detail',
+                                                           args=[publication_id])))
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    data = {
-        'type': "video",
-        'video': video_file,
-        'id': publication_id
-    }
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
-    Channel_group(notification_channel(user.id)).send({
-        "text": json.dumps({'content': content})
-    }, immediately=True)
+        data = {
+            'type': "video",
+            'video': pub.video.url,
+            'id': publication_id
+        }
 
-    [Channel_group(publications_gallery_groups.utils.get_channel_name(x)).send({
-        "text": json.dumps(data)
-    }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
 
-    Channel_group(photo.group_name).send({
-        "text": json.dumps(data)
-    }, immediately=True)
+        [Channel_group(publications_gallery_groups.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
+        Channel_group(photo.group_name).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 # Video tasks
@@ -144,45 +157,52 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
     except ObjectDoesNotExist:
         return
 
-        video_file = publications_gallery_groups.utils.generate_path_video(user.username)
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    convert_video_to_mp4(file, video_file)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-    logger.info('VIDEO CONVERTED')
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    convert_video_to_mp4(file, mp4_path)
 
+    pub = PublicationVideoVideo.objects.create(publication_id=publication_id)
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
-                                                   verb=u'¡Ya esta tu video %s!' % filename,
-                                                   description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                       'publications_gallery_groups:publication_video_detail',
-                                                       args=[publication_id])))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
 
-    content = render_to_string(template_name='channels/new_notification.html',
-                               context={'notification': notification})
+        logger.info('VIDEO CONVERTED')
 
-    data = {
-        'type': "video",
-        'video': video_file,
-        'id': publication_id
-    }
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       description='<a href="{0}">Ver</a>'.format(reverse_lazy(
+                                                           'publications_gallery_groups:publication_video_detail',
+                                                           args=[publication_id])))
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    Channel_group(notification_channel(user.id)).send({
-        "text": json.dumps({'content': content})
-    }, immediately=True)
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
-    [Channel_group(get_channel_video_name(x)).send({
-        "text": json.dumps(data)
-    }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        data = {
+            'type': "video",
+            'video': pub.video.url,
+            'id': publication_id
+        }
 
-    Channel_group(video.group_name).send({
-        "text": json.dumps(data)
-    }, immediately=True)
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
+
+        [Channel_group(get_channel_video_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
+        Channel_group(video.group_name).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 @app.task(ignore_result=True, name='tasks.process_group_video_pub_gif')
@@ -197,42 +217,50 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
     except ObjectDoesNotExist:
         return
     clip = mp.VideoFileClip(file)
-    video_file = publications_gallery_groups.utils.generate_path_video(user.username)
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    clip.write_videofile(video_file, threads=2)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-    logger.info('GIF CONVERTED')
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    clip.write_videofile(mp4_path, threads=2)
+
+    pub = PublicationVideoVideo.objects.create(publication_id=publication_id)
 
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
-                                                   verb=u'¡Ya esta tu video %s!' % filename,
-                                                   description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                       'publications_gallery_groups:publication_video_detail',
-                                                       args=[publication_id])))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
 
-    content = render_to_string(template_name='channels/new_notification.html',
-                               context={'notification': notification})
+        logger.info('GIF CONVERTED')
 
-    data = {
-        'type': "video",
-        'video': video_file,
-        'id': publication_id
-    }
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       description='<a href="{0}">Ver</a>'.format(reverse_lazy(
+                                                           'publications_gallery_groups:publication_video_detail',
+                                                           args=[publication_id])))
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    Channel_group(notification_channel(user.id)).send({
-        "text": json.dumps({'content': content})
-    }, immediately=True)
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
-    [Channel_group(get_channel_video_name(x)).send({
-        "text": json.dumps(data)
-    }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        data = {
+            'type': "video",
+            'video': pub.video.url,
+            'id': publication_id
+        }
 
-    Channel_group(video.group_name).send({
-        "text": json.dumps(data)
-    }, immediately=True)
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
+
+        [Channel_group(get_channel_video_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
+        Channel_group(video.group_name).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)

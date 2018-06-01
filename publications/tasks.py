@@ -102,7 +102,7 @@ def process_video_publication(file, publication_id, filename, user_id=None,
 
     logger.info('ENTERING PROCESS VIDEO')
 
-    mp4_path = "{0}.{1}".format(file, '.mp4')
+    mp4_path = "{0}{1}".format(file, '.mp4')
     convert_video_to_mp4(file, mp4_path)
 
     pub = PublicationVideo.objects.create(publication_id=publication_id)
@@ -151,9 +151,9 @@ def process_video_publication(file, publication_id, filename, user_id=None,
             Channel_group(group_name(board_owner_id)).send({
                 "text": json.dumps(data)
             }, immediately=True)
-    except Exception:
+    except Exception as e:
         pub.delete()
-        logger.info('ERROR')
+        logger.info('ERROR {}'.format(e))
     finally:
         os.remove(file)
 
@@ -169,7 +169,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
     logger.info('ENTERING PROCESS GIF')
     clip = mp.VideoFileClip(file)
 
-    mp4_path = "{0}.{1}".format(file, '.mp4')
+    mp4_path = "{0}{1}".format(file, '.mp4')
 
     clip.write_videofile(mp4_path, threads=2)
 
@@ -220,7 +220,8 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
                 "text": json.dumps(data)
             }, immediately=True)
 
-    except Exception:
-        logger.info('ERROR')
+    except Exception as e:
+        pub.delete()
+        logger.info('ERROR {}'.format(e))
     finally:
         os.remove(file)
