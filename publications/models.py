@@ -37,8 +37,7 @@ def upload_image_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    final_path = os.path.join('publications/images', instance.publication.author.username)
-    return os.path.join(final_path, filename)
+    return "{0}/{1}/{2}".format('publications/images', instance.publication.author.username, filename)
 
 
 def upload_video_publication(instance, filename):
@@ -49,8 +48,7 @@ def upload_video_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    final_path = os.path.join('publications/videos', instance.publication.author.username)
-    return os.path.join(final_path, filename)
+    return "{0}/{1}/{2}".format('publications/videos', instance.publication.author.username, filename)
 
 
 class PublicationBase(MPTTModel):
@@ -92,7 +90,7 @@ class PublicationBase(MPTTModel):
 
     def add_hashtag(self):
         """
-        AÃ±adimos los hashtags encontramos a la
+        Añadimos los hashtags encontramos a la
         lista de tags => atributo "tags"
         """
         hashtags = set([tag.strip() for tag in self.content.split() if tag.startswith("#")])
@@ -190,7 +188,7 @@ class Publication(PublicationBase):
 
     def send_notification(self, request, is_edited=False):
         """
-         Enviamos a travÃ©s del socket a todos aquellos usuarios
+         Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
         data = {
@@ -227,7 +225,7 @@ class Publication(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
                         description="Te avisamos de que @{0} ha publicado en tu skyline.".format(self.author.username),
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablÃ³n.' %
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' %
                              (self.author.username, self.author.username), level='notification_board_owner')
 
 
