@@ -89,10 +89,6 @@ class PublicationBase(MPTTModel):
         return self.get_descendants().filter(deleted=False).count()
 
     def add_hashtag(self):
-        """
-        Añadimos los hashtags encontramos a la
-        lista de tags => atributo "tags"
-        """
         hashtags = set([tag.strip() for tag in self.content.split() if tag.startswith("#")])
 
         for tag in hashtags:
@@ -187,10 +183,6 @@ class Publication(PublicationBase):
         return hasattr(self, 'extra_content')
 
     def send_notification(self, request, is_edited=False):
-        """
-         Enviamos a través del socket a todos aquellos usuarios
-         que esten visitando el perfil donde se publica el comentario.
-        """
         data = {
             'type': 'pub',
             'id': self.id,
@@ -225,7 +217,7 @@ class Publication(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
                         description="Te avisamos de que @{0} ha publicado en tu skyline.".format(self.author.username),
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' %
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu skyline.' %
                              (self.author.username, self.author.username), level='notification_board_owner')
 
 
