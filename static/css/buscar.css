@@ -30,14 +30,14 @@
     transition: all .3s ease-in;
     -webkit-transition: all .3s ease-in;
     -moz-transition: all .3s ease-in;
-    background: #f0f0f0 url('/static/img/search-icon.png') no-repeat 95%;
+    background: #f0f0f0 url('http://d32rim3h420riw.cloudfront.net/img/search-icon.png') no-repeat 95%;
     background-size: 13px;
     padding: 0 20px;
     color: black !important;
 }
 
 .field > form input[type=text]:focus {
-    background: #fefefe url(/static/img/search-icon.png) no-repeat 1%;
+    background: #fefefe url('http://d32rim3h420riw.cloudfront.net/img/search-icon.png') no-repeat 1%;
     background-size: 13px;
     border-bottom: 0;
 }
@@ -267,12 +267,12 @@
     -webkit-transition: all 0.3s linear;
     -moz-transition: all 0.3s linear;
     transition: all 0.3s linear;
-    background: #eeeeee url("/static/img/search-icon.png") no-repeat 95%;
+    background: #eeeeee url("http://d32rim3h420riw.cloudfront.net/img/search-icon.png") no-repeat 95%;
     background-size: 13px;
 }
 
 #tab-amigos .search:focus {
-    background: #fefefe url("/static/img/search-icon.png") no-repeat 1%;
+    background: #fefefe url("http://d32rim3h420riw.cloudfront.net/img/search-icon.png") no-repeat 1%;
     background-size: 13px;
 }
 

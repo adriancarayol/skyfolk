@@ -54,12 +54,14 @@
                                             {% if images %}
                                                 <div class="row images">
                                                     {% for image in images %}
+                                                        {% if image.image %}
                                                         <div class="col l4 s12 z-depth-2 center">
                                                             <img class="lazyload responsive-img"
                                                                  data-src="{{ image.image.url }}"
                                                                  alt="Imagen de: {{ node.author }}"
                                                                  title="Imagen de: {{ node.author }}">
                                                         </div>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% endif %}
@@ -68,11 +70,13 @@
                                             {% if videos %}
                                                 <div class="row videos">
                                                     {% for video in videos %}
+                                                         {% if video.video %}
                                                         <div class="col l4 s12 z-depth-2 center">
                                                             <video class="responsive-video" controls loop>
                                                                 <source src="{{ video.video.url }}" type="video/mp4">
                                                             </video>
                                                         </div>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </div>
                                             {% endif %}

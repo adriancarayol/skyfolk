@@ -53,6 +53,7 @@ $(document).ready(function () {
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
         var content = $(this).serialize();
+        content += "&csrfmiddlewaretoken=" + csrftoken;
         var pub_id = wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_video_to_timeline_gallery(pub_id, tag, content);
@@ -135,6 +136,7 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += "&csrfmiddlewaretoken=" + csrftoken;
         AJAX_edit_publication_video_gallery(edit);
     });
 
@@ -456,7 +458,8 @@ function AJAX_remove_timeline_video_gallery(pub_id, tag) {
         type: 'POST',
         dataType: 'json',
         data: {
-            'pk': pub_id
+            'pk': pub_id,
+            'csrfmiddlewaretoken': csrftoken
         },
         success: function (data) {
             var response = data.response;

@@ -4,7 +4,6 @@ Template para el perfil de cada usuario
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
-{% load compress %}
 {% load static %}
 {% load dash_tags %}
 {% load user_guide_tags %}
@@ -14,7 +13,7 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block extra-css %}
-    {% compress css %}
+
         <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
         <link rel="stylesheet" type="text/css" href="{% static "css/profile.css" %}">
         <link href="{% static 'colorbox/colorbox.css' %}" rel="stylesheet" type="text/css">
@@ -25,7 +24,7 @@ Template para el perfil de cada usuario
                 box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
             }
         </style>
-    {% endcompress %}
+
     {% if liked == True %}
         <style type="text/css">
             #ilike_profile {
@@ -36,7 +35,7 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block content %}
-    {% compress js %}
+
         <script src="{% static "js/profile.js" %}" type="text/javascript"></script>
         <script src="{% static "js/jquery.easytabs.js" %}" type="text/javascript"></script>
         <script src="{% static "js/jquery.hashchange.min.js" %}" type="text/javascript"></script>
@@ -45,7 +44,7 @@ Template para el perfil de cada usuario
         {% for script in js %}
             <script src="{% static script %}" type="text/javascript"></script>
         {% endfor %}
-    {% endcompress %}
+
     <div class="container">
         {% if user_profile.is_active %}
         {% user_guide %}
@@ -157,7 +156,7 @@ Template para el perfil de cada usuario
                 </div>
             </div>
             </div>
-            {% compress js inline %}
+
                 <script type="text/javascript">
                     $('#tab-container').easytabs({
                         defaultTab: "#li-tab-comentarios",
@@ -217,7 +216,6 @@ Add follow to profile tab
                         }
                     </script>
                 {% endif %}
-            {% endcompress %}
         {% else %}
             <h1 class="account-disabled">Cuenta desactivada.</h1>
         {% endif %}

@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load static %}
+{% load pipeline %}
+
 <!DOCTYPE html>
 <html>
 <!-- codigo del modulo allauth -->
@@ -7,12 +9,9 @@
     <title>Skyfolk // {% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/setup.css" %}">
-
-    <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection"/>
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <script type="text/javascript" src="{% static "js/jquery-3.1.0.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/materialize.min.js" %}"></script>
+    {% stylesheet 'stylesheets' %}
+    {% javascript 'scripts' %}
     <link rel="icon" type="image/ico" href="{% static "img/favicon.ico" %}"/>
 </head>
 <body>

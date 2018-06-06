@@ -10,19 +10,19 @@ if (retrievedEmojis === null) {
 var emojis = JSON.parse(retrievedEmojis);
 
 $('textarea').textcomplete([
-        { // emoji strategy
-            match: /\B:([\-+\w]*)$/,
-            search: function (term, callback) {
-                callback($.map(emojis, function (key, emoji) {
-                    return emoji.indexOf(term) === 0 ? emoji : null;
-                }));
-            },
-            template: function (value) {
-                return '<img src="/emoji/img/' + value + '.png"></img>' + value;
-            },
-            replace: function (value) {
-                return ':' + value + ': ';
-            },
-            index: 1
-        }
+    { // emoji strategy
+        match: /\B:([\-+\w]*)$/,
+        search: function (term, callback) {
+            callback($.map(emojis, function (key, emoji) {
+                return emoji.indexOf(term) === 0 ? emoji : null;
+            }));
+        },
+        template: function (value) {
+            return '<img src="/emoji/img/' + value + '.png"></img>' + value;
+        },
+        replace: function (value) {
+            return ':' + value + ': ';
+        },
+        index: 1
+    }
 ], {})

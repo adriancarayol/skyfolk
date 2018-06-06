@@ -4,6 +4,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
 from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -52,6 +53,7 @@ THIRD_PARTY_APPS = (
     'sortedm2m',
     'taggit',  # para etiquetas
     'el_pagination',  # Para paginacion
+    'pipeline',
     'notifications',  # notificaciones
     'django_celery_results',
     'formtools',
@@ -89,7 +91,6 @@ THIRD_PARTY_APPS = (
     'postman',
     'django_neomodel',
     'easy_thumbnails',
-    'compressor',
     'storages',
     'corsheaders',
     'guardian',
@@ -353,15 +354,60 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "skyfolk/static"),
 )
 
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = False
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    'compressor.finders.CompressorFinder',
+    'pipeline.finders.PipelineFinder',
 )
+
+PIPELINE = {
+    'STYLESHEETS': {
+        'interface': {
+            'source_filenames': (
+                'css/core.css',
+                'css/materialize.min.css',
+                'css/buscar.css',
+                'fonts/iconfont/material-icons.css',
+                'tellme/feedback.min.css',
+            ),
+            'output_filename': 'css/interface.css',
+            'extra_context': {
+                'media': 'screen,projection',
+            },
+        },
+    },
+    'JAVASCRIPT': {
+        'scripts': {
+            'source_filenames': (
+                'js/jquery-3.1.0.min.js',
+                'js/materialize.min.js',
+            ),
+            'output_filename': 'js/output.js',
+        },
+        'header': {
+            'source_filenames': (
+                'js/core.js',
+                'js/materialize.min.js',
+                'js/jquery.textcomplete.min.js',
+                'dist/sweetalert.min.js',
+            ),
+            'output_filename': 'js/header.js',
+        },
+        'interface': {
+            'source_filenames': (
+                'js/jquery-3.1.0.min.js',
+                'js/jquery-migrate-1.4.1.min.js',
+                'js/jquery-ui.js',
+                'js/lazysizes.min.js',
+                'js/jquery.waypoints.min.js',
+                'js/infinite.min.js',
+                'js/masonry.pkgd.min.js',
+                'js/imagesloaded.pkgd.min.js',
+            ),
+            'output_filename': 'js/interface.js',
+        }
+    }
+}
 
 # Media (uploads, ...)
 # MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')

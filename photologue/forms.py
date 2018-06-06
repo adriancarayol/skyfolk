@@ -252,6 +252,7 @@ class UploadFormVideo(forms.ModelForm):
 
         if type != 'video/mp4':
             tmp = tempfile.NamedTemporaryFile(delete=False)
+
             for block in video.chunks():
                 tmp.write(block)
 
@@ -260,8 +261,6 @@ class UploadFormVideo(forms.ModelForm):
 
             if return_code:
                 raise forms.ValidationError('Hubo un error al procesar tu vídeo, intentalo de nuevo.')
-
-            os.remove(tmp.name)
 
             return mp4_path
 

@@ -18,11 +18,12 @@ var UTILS = UTILS || (function () {
             socket.onmessage = function (message) {
                 // Decode the JSON
                 var data = JSON.parse(message.data);
+
                 // Create the inner content of the post div
                 if (data.type === "pub") {
                     var existing = $('#pub-' + data.id);
                     var no_comments = $('#without-comments');
-
+                    no_comments.remove();
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
                     if (existing.length) {
                         existing.closest('.row').replaceWith(data.content);
@@ -38,7 +39,9 @@ var UTILS = UTILS || (function () {
                             } else {
                                 $parent.closest('.row').after(data.content);
                             }
-                        } else $("#messages-wrapper").prepend(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#messages-wrapper").prepend(data.content);
+                        }
                     }
 
                 }   else if (data.type === "video") {
@@ -47,13 +50,13 @@ var UTILS = UTILS || (function () {
                         var card_content = $(existing_pub).find('.publication-content');
                         var videos = $(existing_pub).find('.videos');
                         if (videos.length) {
-                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
+                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div>');
                         } else {
                             var images = $(existing_pub).find('.images');
                             if (images.length) {
-                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                             }
-                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                         }
                     }
                 } else {
