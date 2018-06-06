@@ -292,7 +292,7 @@
                                             </div>
                                             {% endif %}
                                             <img class="lazyload" data-src="
-                                            {% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
+                                            {% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                                             alt="{{ item.title }}" title="{{ item.title }}"
                                             onclick="location.href='/photo/{{ item.slug }}'">
                                         </div>

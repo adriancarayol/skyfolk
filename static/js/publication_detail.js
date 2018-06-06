@@ -3,10 +3,10 @@ var max_height_comment = 60;
 $(document).ready(function () {
 
     var thread = $(this);
-    var wrapper_shared_pub = $('#share-publication-wrapper');
+    var $wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Abrir respuesta a comentario */
-    $(thread).on('click', '.options_comentarios .reply-comment', function () {
+    $(thread).on('click', '.reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -21,49 +21,50 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(this).on('click', '.options_comentarios .add-timeline', function () {
-        var tag = this;
-        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
-        $(wrapper_shared_pub).show();
+    $(this).on('click', '.add-timeline', function () {
+        var tag = $(this);
+        $wrapper_shared_pub.find('#id_pk').val($(tag).data('id'));
+        $wrapper_shared_pub.show();
     });
 
     /* Compartir a skyline */
-    $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
+    $wrapper_shared_pub.find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
-        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
-        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var content = $(this).serialize();
+        var pub_id = $wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         AJAX_add_timeline_detail(pub_id, tag, content);
     });
 
     /* Cerrar div de compartir publicacion */
     $('#close_share_publication').click(function () {
-        $(wrapper_shared_pub).hide();
+        $wrapper_shared_pub.hide();
+        $wrapper_shared_pub.find('#id_pk').val('');
     });
 
     /* Eliminar skyline */
-    $(this).on('click', '.options_comentarios .remove-timeline', function () {
-        var caja_publicacion = $(this).closest('.row-pub');
-        var tag = this;
-        AJAX_add_timeline_detail($(caja_publicacion).attr('id').split('-')[1], tag, null);
+    $(this).on('click', '.remove-timeline', function () {
+        var tag = $(this);
+        AJAX_remove_timeline_detail(tag.data('id'), tag);
     });
 
     /* Añadir me gusta a comentario */
-    $(thread).on('click', '.options_comentarios .like-comment', function () {
+    $(thread).on('click', '.like-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_like_detail(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(thread).on('click', '.options_comentarios .hate-comment', function () {
+    $(thread).on('click', '.hate-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_hate_detail(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
-    $(thread).on('click', '.options_comentarios .fa-trash', function () {
+    $(thread).on('click', '.trash-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         swal({
             title: "Are you sure?",
@@ -82,7 +83,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     /* Editar comentario */
     $(thread).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
@@ -91,9 +92,9 @@ $(document).ready(function () {
 
     $(thread).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_publication_detail(id, content);
+        var edit = $(this).closest('form').serialize();
+        edit += "&csrfmiddlewaretoken=" + csrftoken;
+        AJAX_edit_publication_detail(edit);
     });
 }); // END DOCUMENT
 
@@ -104,7 +105,7 @@ function AJAX_delete_publication_detail(caja_publicacion) {
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
-        'csrfmiddlewaretoken': csrftoken
+        "csrfmiddlewaretoken": csrftoken
     };
 
     $.ajax({
@@ -114,8 +115,9 @@ function AJAX_delete_publication_detail(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data.response == true) {
-                $(caja_publicacion).fadeToggle("fast");
+            if (data.response === true) {
+                $(caja_publicacion).remove();
+                $(".infinite-container").find(`[data-parent='${id_pub}']`).remove();
             } else {
                 swal({
                     title: "Fail",
@@ -133,6 +135,7 @@ function AJAX_delete_publication_detail(caja_publicacion) {
 
 /*****************************************************/
 /********** AJAX para añadir me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_like_detail(caja_publicacion, heart, type) {
@@ -212,10 +215,11 @@ function AJAX_add_like_detail(caja_publicacion, heart, type) {
 
 /*****************************************************/
 /******* AJAX para añadir no me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_hate_detail(caja_publicacion, heart, type) {
-   var id_pub;
+    var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
@@ -293,13 +297,6 @@ function AJAX_add_hate_detail(caja_publicacion, heart, type) {
 }
 
 function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
-
-    var data = {
-        'publication_id': pub_id,
-        'content': data_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-
     var shared_tag = $(tag).find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
@@ -308,35 +305,21 @@ function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
         url: '/publication/share/publication/',
         type: 'POST',
         dataType: 'json',
-        data: data,
+        data: data_pub,
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var status = data.status;
-                if (status == 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
+            if (data === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared++;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
                     }
-                    $(tag).attr("class", "remove-timeline");
-                    $(tag).css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status == 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    $(tag).attr("class", "add-timeline");
-                    $(tag).css('color', '#555');
                 }
+                $(tag).attr("class", "remove-timeline");
+                $(tag).css('color', '#bbdefb');
+                $('#share-publication-wrapper').hide();
+
             } else {
                 swal({
                     title: "Fail",
@@ -352,13 +335,50 @@ function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
     });
 }
 
+function AJAX_remove_timeline_detail(pub_id, tag) {
+    var shared_tag = $(tag).find('.share-values');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g, '');
+
+    $.ajax({
+        url: '/publication/delete/share/publication/',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            'pk': pub_id,
+            'csrfmiddlewaretoken' : csrftoken
+        },
+        success: function (data) {
+            var response = data.response;
+            if (response === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared--;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
+                    }
+                }
+                $(tag).attr("class", "add-timeline");
+                $(tag).css('color', '#555');
+                $('#pub-' + data.id_to_delete).remove();
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to add to timeline.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(jqXHR.status);
+        }
+    });
+}
+
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_detail(pub, content) {
-    var data = {
-        'id': pub,
-        'content': content,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_edit_publication_detail(data) {
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',
@@ -368,9 +388,7 @@ function AJAX_edit_publication_detail(pub, content) {
         success: function (data) {
             var response = data.data;
             // borrar caja publicacion
-            if (response == true) {
-                $('#author-controls-' + pub).fadeToggle("fast");
-            } else {
+            if (response === false) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',

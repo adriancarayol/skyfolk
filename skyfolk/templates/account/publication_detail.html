@@ -5,14 +5,13 @@
 {% load humanize %}
 {% load mptt_tags %}
 {% load embed_video_tags %}
-{% load compress %}
 {% load group_utils %}
 {% load static %}
 {% block extra-css %}
-    {% compress css%}
+
         <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
         <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
-    {% endcompress %}
+
 {% endblock %}
 {% block title %} <title> Skyfolk - Publicacion #{{ publication_id }}</title> {% endblock %}
 {% block content %}

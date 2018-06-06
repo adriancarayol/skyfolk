@@ -18,24 +18,19 @@ DATABASES = {
 # NEO4j config
 NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 
-
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'skyfolk/media')
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 DEVELOP_APPS = (
     'django_extensions',
-    'debug_toolbar'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + DEVELOP_APPS
 
-DEV_MIDDLEWARE_CLASSES = (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-
-MIDDLEWARE_CLASSES = DEV_MIDDLEWARE_CLASSES + MIDDLEWARE_CLASSES
+MIDDLEWARE_CLASSES =  MIDDLEWARE_CLASSES
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ALLOWED_HOSTS = ALLOWED_HOSTS + ['127.0.0.1','localhost', '0.0.0.0']
 
@@ -49,3 +44,5 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
     },
 }
+
+PIPELINE['PIPELINE_ENABLED'] = False

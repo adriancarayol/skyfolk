@@ -28,22 +28,24 @@ var UTILS = UTILS || (function () {
                         var parent = $('#pub-' + data.parent_id);
                         if (parent.length) {
                             parent.closest('.row-pub').after(data.content);
-                        } else $("#publication-thread").append(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#publication-thread").append(data.content);
+                        }
                     }
                     /* Comprobamos la longitud del nuevo comentario */
                 } else if (data.type === "video") {
                     var existing_pub = $('#pub-' + data.id);
                     if (existing_pub.length) {
-                        var card_content = $(existing_pub).find('.publication-content');
+                        var card_content = $(existing_pub).find('.comment').next();
                         var videos = $(existing_pub).find('.videos');
                         if (videos.length) {
-                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
+                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div>');
                         } else {
                             var images = $(existing_pub).find('.images');
                             if (images.length) {
-                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                             }
-                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                         }
                     }
                 }
