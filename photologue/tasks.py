@@ -1,4 +1,5 @@
 import os
+from tempfile import NamedTemporaryFile
 from io import BytesIO
 
 from PIL import Image
@@ -10,6 +11,7 @@ from photologue.utils.utils import generate_thumbnail_path_video
 from skyfolk.celery import app
 from utils.media import create_thumbnail_video
 from celery import shared_task
+
 
 def flat(*nums):
     'Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points.'
@@ -57,6 +59,7 @@ def cropped_thumbnail(img, size):
 
     return img.resize(target.size, Image.ANTIALIAS)
 
+
 @app.task(name="tasks.generate_photo_thumbnail")
 def generate_thumbnails(instance):
     exist_photo = True
@@ -86,17 +89,11 @@ def generate_video_thumbnail(instance):
         video = None
 
     if exist_video and video.video:
-
-        absolut_path = generate_thumbnail_path_video()
-
-        if not os.path.exists(os.path.dirname(absolut_path)):
-            os.makedirs(os.path.dirname(absolut_path))
+        thumb_tmp = NamedTemporaryFile()
 
         video_path = video.video.url[1:] if video.video.url.startswith('/') else video.video.url
 
         create_thumbnail_video(os.path.join(os.path.join(settings.BASE_DIR, 'skyfolk'), video_path),
-                               os.path.join(settings.BASE_DIR, absolut_path))
+                               os.path.join(settings.BASE_DIR, thumb_tmp.name))
 
-        video.thumbnail = absolut_path
-
-        video.save(update_fields=["thumbnail"])
+        video.thumbnail.save('thumbnail.jpg', thumb_tmp, True)

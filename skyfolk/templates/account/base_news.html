@@ -107,9 +107,11 @@
                                     {% if images %}<br>
                                     <div class="row">
                                         {% for image in images %}
+                                            {% if image.image %}
                                         <div class="col s12">
                                             <img class="lazyload materialboxed responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ item.author }}" title="Imagen de: {{ item.author }}">
                                         </div>
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                     {% endif %}
@@ -118,12 +120,15 @@
                                     {% if videos %}<br>
                                     <div class="row">
                                         {% for video in videos %}
+                                            {% if video.video %}
                                         <div class="col s12">
                                             <video class="responsive-video" controls loop>
                                                 <source src="{{ video.video.url }}" type="video/mp4">
                                                 </video>
                                             </div>
+                                              {% endif %}
                                             {% endfor %}
+
                                         </div>
                                         {% endif %}
                                         {% endwith %}
@@ -178,9 +183,11 @@
                                             {% if images %}<br>
                                             <div class="row">
                                                 {% for image in images %}
+                                                    {% if image.image %}
                                                 <div class="col s4">
                                                     <img class="lazyload materialboxed responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ item.author }}" title="Imagen de: {{ item.author }}">
                                                 </div>
+                                                    {% endif %}
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
@@ -189,11 +196,13 @@
                                             {% if videos %}<br>
                                             <div class="row">
                                                 {% for video in videos %}
+                                                    {% if video.video %}
                                                 <div class="col s4">
                                                     <video class="responsive-video" controls loop>
                                                         <source src="{{ video.video.url }}" type="video/mp4">
                                                         </video>
                                                     </div>
+                                                     {% endif %}
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -232,9 +241,11 @@
                                         <br>
                                         <div class="row images">
                                             {% for image in images %}
+                                                {% if image.image %}
                                             <div class="col s12 center">
                                                 <img class="lazyload responsive-img" data-src="{{image.image.url}}" alt="Imagen de: {{ item.author }}" title="Imagen de: {{ item.author }}">
                                             </div>
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                         {% endif %}
@@ -244,11 +255,13 @@
                                         <br>
                                         <div class="row videos">
                                             {% for video in videos %}
+                                                {% if video.video %}
                                             <div class="col s12 center">
                                                 <video class="responsive-video" controls loop>
                                                     <source src="{{ video.video.url }}" type="video/mp4">
                                                     </video>
                                                 </div>
+                                                {% endif %}
                                                 {% endfor %}
                                             </div>
                                             {% endif %}

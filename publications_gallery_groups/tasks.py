@@ -216,6 +216,7 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
         video = publication.board_video
     except ObjectDoesNotExist:
         return
+
     clip = mp.VideoFileClip(file)
     mp4_path = "{0}{1}".format(file, '.mp4')
     clip.write_videofile(mp4_path, threads=2)

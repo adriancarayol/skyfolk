@@ -74,22 +74,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        {{ form.caption.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">closed_caption</i>
-                            {{ form.caption }}
-                            <label for="id_caption">{{ form.caption.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form.tags.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">label</i>
-                            {{ form.tags }}
-                            <label for="id_tags">{{ form.tags.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
                         <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
                             <i class="material-icons right">file_upload</i>
                         </button>
@@ -123,22 +107,6 @@
                             <label for="id_title_collection">{{ form_zip.title_collection.help_text }}</label>
                         </div>
                     </div>
-                    <div class="row">
-                        {{ form_zip.caption_collection.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">closed_caption</i>
-                            {{ form_zip.caption_collection }}
-                            <label for="id_caption_collection">{{ form_zip.caption_collection.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form_zip.tags_collection.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">label</i>
-                            {{ form_zip.tags_collection }}
-                            <label for="id_tags_collection">{{ form_zip.tags_collection.help_text }}</label>
-                        </div>
-                    </div>
                     <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
                         <i class="material-icons right">file_upload</i>
                     </button>
@@ -170,21 +138,6 @@
                             <i class="material-icons prefix">title</i>
                             {{ form_video.name }}
                             <label for="id_name_video">{{ form_video.name.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">closed_caption</i>
-                            {{ form_video.caption }}
-                            <label for="id_caption_video">{{ form_video.caption.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form_video.tags.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">label</i>
-                            {{ form_video.tags }}
-                            <label for="id_tags_video">{{ form_video.tags.help_text }}</label>
                         </div>
                     </div>
                     <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir

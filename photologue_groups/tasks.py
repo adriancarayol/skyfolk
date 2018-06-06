@@ -3,6 +3,7 @@ from io import BytesIO
 
 from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 import photologue_groups
@@ -88,16 +89,11 @@ def generate_video_thumbnail(instance):
 
     if exist_video and video.video:
 
-        absolut_path = generate_thumbnail_path_video()
-
-        if not os.path.exists(os.path.dirname(absolut_path)):
-            os.makedirs(os.path.dirname(absolut_path))
+        thumb_tmp = NamedTemporaryFile()
 
         video_path = video.video.url[1:] if video.video.url.startswith('/') else video.video.url
 
         create_thumbnail_video(os.path.join(os.path.join(settings.BASE_DIR, 'skyfolk'), video_path),
-                               os.path.join(settings.BASE_DIR, absolut_path))
+                               os.path.join(settings.BASE_DIR, thumb_tmp.name))
 
-        video.thumbnail = absolut_path
-
-        video.save(update_fields=["thumbnail"])
+        video.thumbnail.save('thumbnail.jpg', thumb_tmp, True)

@@ -7,6 +7,7 @@ from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
 from django.db import IntegrityError
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -47,44 +48,48 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         logger.info('Publication does not exist')
         return
 
-    video_file = generate_path_video(user.username)
-
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-
-    convert_video_to_mp4(file, video_file)
-    PublicationThemeVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-
-    logger.info('VIDEO CONVERTED')
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    convert_video_to_mp4(file, mp4_path)
+    pub = PublicationThemeVideo.objects.create(publication_id=publication_id)
 
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        logger.info('VIDEO CONVERTED')
+
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'Ya esta tu video %s' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    content = render_to_string(template_name='channels/new_notification.html',
+        content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': notification})
 
-    data = {
+        data = {
             'type': "video",
-            'video': video_file,
+            'video': pub.video.url,
             'id': publication_id
         }
 
-    Channel_group(notification_channel(user.id)).send({
+        Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
 
-    Channel_group(theme.theme_channel).send({
+        Channel_group(theme.theme_channel).send({
             "text": json.dumps(data)
         }, immediately=True)
+    except Exception as e:
+        pub.delete()
+        logger.info('ERROR: {}'.format(e))
+    finally:
+        os.remove(file)
 
 
 @app.task(name='tasks.process_theme_pub_gif')
@@ -101,43 +106,46 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         return
 
     clip = mp.VideoFileClip(file)
-    video_file = generate_path_video(user.username)
+    mp4_path = "{0}{1}".format(file, '.mp4')
 
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
+    clip.write_videofile(mp4_path, threads=2)
 
-    clip.write_videofile(video_file, threads=2)
-    PublicationThemeVideo.objects.create(publication_id=publication_id, video=video_file)
-    os.remove(file)
-
-    logger.info('GIF CONVERTED')
-
-
+    pub = PublicationThemeVideo.objects.create(publication_id=publication_id)
 
     try:
-        notification = Notification.objects.create(actor=user, recipient=user,
+        logger.info('GIF CONVERTED')
+
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb='Ya esta tu video {0}'.format(filename),
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
-    except IntegrityError as e:
-        logger.info(e)
-        # TODO: Enviar mensaje al user con el error
-        return
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
 
-    content = render_to_string(template_name='channels/new_notification.html',
+        content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': notification})
 
-    data = {
+        data = {
             'type': "video",
-            'video': video_file,
+            'video': pub.video.url,
             'id': publication_id
         }
 
-    Channel_group(notification_channel(user.id)).send({
+        Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
 
-    Channel_group(theme.theme_channel).send({
+        Channel_group(theme.theme_channel).send({
             "text": json.dumps(data)
         }, immediately=True)
+    except Exception as e:
+        pass
+    finally:
+        os.remove(file)
