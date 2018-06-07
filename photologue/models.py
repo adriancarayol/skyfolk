@@ -494,7 +494,10 @@ class Photo(ImageModel):
         return "photos-%s" % self.pk
 
     def save(self, *args, **kwargs):
-        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        if self.is_public:
+            self.slug = orig = slugify(str(self.owner_id) + self.title)
+        else:
+            self.slug = orig = slugify(str(self.owner_id) + self.title + str(uuid.uuid4()))
 
         for x in itertools.count(1):
             if not Photo.objects.filter(slug=self.slug).exclude(id=self.id).exists():
@@ -679,7 +682,10 @@ class Video(models.Model):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = orig = slugify(str(self.owner_id) + self.name)
+            if self.is_public:
+                self.slug = orig = slugify(str(self.owner_id) + self.name)
+            else:
+                self.slug = orig = slugify(str(self.owner_id) + self.name + str(uuid.uuid4()))
             for x in itertools.count(1):
                 if not Video.objects.filter(slug=self.slug).exists():
                     try:
