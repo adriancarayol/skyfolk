@@ -43,10 +43,6 @@ Base para la interfaz en comun de todos los usuarios.
 <body>
     {% block barra_navegacion %}
     {% include "account/base-header.html" %}
-    {% comment %} Para el feedback {% endcomment %}
-    <button type="button" id="feedback-btn" class="btn right red lighten-3 black-text">
-        Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
-    </button>
     {% endblock %}
     {% block dashboard_content %}
     {% endblock %}
@@ -288,9 +284,6 @@ Base para la interfaz en comun de todos los usuarios.
         </form>
     </div>
 </div>
-{% endblock %}
-{% block feedback %}
-{% include 'tellme/js_inc.html' %}
 {% endblock %}
 {% endif %}
 {% comment "menu movil" %}

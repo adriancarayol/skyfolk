@@ -95,7 +95,8 @@ class PublicationBase(MPTTModel):
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.content = self.content.replace(tag,
-                                                '<a class="hashtag" href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
+                                                '<a class="hashtag" href="/user-search/?q={0}">{1}</a>'.format(tag[1:],
+                                                                                                               tag))
 
     def parse_mentions(self):
         """
@@ -216,7 +217,8 @@ class Publication(PublicationBase):
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
-                        description="Te avisamos de que @{0} ha publicado en tu skyline.".format(self.author.username),
+                        description="Te avisamos de que @{0} ha publicado en tu skyline. <a href='/publication/{1}/'>Ver</a>".format(
+                            self.author.username, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu skyline.' %
                              (self.author.username, self.author.username), level='notification_board_owner')
 

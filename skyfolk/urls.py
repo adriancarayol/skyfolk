@@ -73,8 +73,6 @@ urlpatterns = [
     # url(r'^dashboard/', include('dash.urls')),
     # url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
     # url(r'^contrib/', include('dash.contrib.apps.public_dashboard.urls')),
-    # feedback
-    url(r'^tellme/', include("tellme.urls")),
     # logros
     url(r'^badges/', include('badgify.urls')),
     url(r'^awards/', include('awards.urls')),

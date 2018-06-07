@@ -14,7 +14,8 @@ $(document).ready(function () {
     $('.materialboxed').materialbox();
     $('textarea#message2, textarea#message3').characterCounter();
 
-    var Autocomplete = function (options) {
+    var Autocomplete = function (options
+    ) {
         this.form_selector = options.form_selector;
         this.url = options.url || '/search/autocomplete/';
         this.delay = parseInt(options.delay || 300);

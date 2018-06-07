@@ -21,9 +21,9 @@
             </div>
         {% endif %}
         <div class="row">
-            <ul class="notifications list-notifications">
+            <ul class="collection">
                 {% for notice in notifications %}
-                    <li class="col s12 m12 l3" data-id="{{ notice.id }}">{% include 'notifications/notice.html' %}</li>
+                    <li class="collection-item" data-id="{{ notice.id }}">{% include 'notifications/notice.html' %}</li>
                 {% endfor %}
             </ul>
         </div>

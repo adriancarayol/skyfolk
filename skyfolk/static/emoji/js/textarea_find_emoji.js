@@ -18,7 +18,7 @@ $('textarea').textcomplete([
             }));
         },
         template: function (value) {
-            return '<img src="/emoji/img/' + value + '.png"></img>' + value;
+            return '<img src="https://d32rim3h420riw.cloudfront.net/emoji/img/' + value + '.png"></img>' + value;
         },
         replace: function (value) {
             return ':' + value + ': ';
