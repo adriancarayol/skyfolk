@@ -17,6 +17,12 @@
             <a><span class="white-text email">{{ request.user.first_name }}</span></a>
         </div>
     </li>
+    <li class="hide-on-large-only"><a href="/following/{{ request.user.username }}"><i
+                    class="material-icons">person</i>Seguidos</a></li>
+    <li class="hide-on-large-only"><a id="agregar-amigo2"><i class="material-icons">person_add</i>Seguir</a></li>
+    <li class="hide-on-large-only">
+        <div class="divider"></div>
+    </li>
     <li class="hide-on-large-only">
         <div class="field" id="searchform">
             <form class="autocomplete-me" method='get' action='{% url 'user_profile:general-search' %}'>
