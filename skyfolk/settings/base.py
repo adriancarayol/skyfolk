@@ -95,7 +95,6 @@ THIRD_PARTY_APPS = (
     'corsheaders',
     'guardian',
     'embed_video',
-    'tellme',
     'haystack',
     'badgify',
     'django_celery_beat',
