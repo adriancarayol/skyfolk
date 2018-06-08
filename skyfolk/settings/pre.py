@@ -27,9 +27,10 @@ AWS_SECRET_ACCESS_KEY = 'Q+uuhDnMSKH2NyH6P6bH0k9VssSB82Z3fhkYH60K'
 AWS_STORAGE_BUCKET_NAME = 'skyfolk'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_HEADERS = {
-    'Expires': 'Thu, 30 Apr 2018 20:00:00 GMT',
+    'Expires': 'Sat, 9 Jun 2018 20:00:00 GMT',
     'Cache-Control': 'max-age=86400',
 }
+AWS_S3_HOST = 's3.eu-west-3.amazonaws.com'
 AWS_QUERYSTRING_EXPIRE = '157784630'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
