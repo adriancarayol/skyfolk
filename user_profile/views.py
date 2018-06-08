@@ -1,5 +1,6 @@
 import json
 import logging
+from elasticsearch.exceptions import RequestError
 import numpy as np
 from allauth.account import app_settings
 from allauth.account.views import PasswordChangeView, EmailView, RedirectAuthenticatedUserMixin, CloseableSignupMixin, \
@@ -1341,12 +1342,19 @@ def autocomplete(request):
     """
     user = request.user
     q = request.GET.get('q', '')
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-    suggestions = [{'username': result.username, 'first_name': result.firstname,
-                    'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
-    the_data = json.dumps({
-        'results': suggestions
-    })
+    try:
+        sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
+        suggestions = [{'username': result.username, 'first_name': result.firstname,
+                        'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
+        the_data = json.dumps({
+            'results': suggestions
+        })
+    except RequestError as e:
+        the_data = json.dumps({
+            'results': []
+        })
+        logging.info('Error al buscar q: {} - ERROR: {}'.format(q, e))
+
     return HttpResponse(the_data, content_type='application/json')
 
 
@@ -1407,16 +1415,19 @@ class SearchUsuarioView(SearchView):
                                                                                board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
                 .select_related('author',
-                        'board_owner', 'shared_publication',
-                        'parent', 'shared_group_publication').prefetch_related('extra_content', 'images',
-                                             'videos', 'shared_publication__images',
-                                             'tags',
-                                             'shared_publication__author',
-                                             'shared_group_publication__images',
-                                             'shared_group_publication__author',
-                                             'shared_group_publication__videos',
-                                             'shared_group_publication__group_extra_content',
-                                             'shared_publication__videos', 'shared_publication__extra_content').filter(deleted=False)
+                                'board_owner', 'shared_publication',
+                                'parent', 'shared_group_publication').prefetch_related('extra_content', 'images',
+                                                                                       'videos',
+                                                                                       'shared_publication__images',
+                                                                                       'tags',
+                                                                                       'shared_publication__author',
+                                                                                       'shared_group_publication__images',
+                                                                                       'shared_group_publication__author',
+                                                                                       'shared_group_publication__videos',
+                                                                                       'shared_group_publication__group_extra_content',
+                                                                                       'shared_publication__videos',
+                                                                                       'shared_publication__extra_content').filter(
+                deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
