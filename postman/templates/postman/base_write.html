@@ -107,7 +107,14 @@
                     var n = input.value.split(",");
                     const murl = '/search/autocomplete/?q=' + n[n.length - 1];
                     fetch(murl).then(r => r.json()).then(d => {
-                        awesomplete.list = d.results.map(user => ({value: user.username, label: user.username}));
+                        awesomplete.list = d.results.map(user =>
+                            (
+                                {
+                                    value: user.username,
+                                    label: '@' + user.username,
+                                }
+                            )
+                        );
                     });
                 }
             });

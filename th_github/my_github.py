@@ -3,10 +3,12 @@
 from django.conf import settings
 from django.core.cache import caches
 from django.utils.translation import ugettext as _
-
+from django.contrib import messages
+from django.urls import reverse
 # django_th classes
 from dash_services.models import update_result
 from dash_services.services.services import ServicesMgr
+from github3.exceptions import AuthenticationFailed
 
 # github
 from github3 import GitHub
@@ -40,6 +42,7 @@ class ServiceGithub(ServicesMgr):
     """
         Service Github
     """
+
     def __init__(self, token=None, **kwargs):
         super(ServiceGithub, self).__init__(token, **kwargs)
         self.scope = ['public_repo']
@@ -152,15 +155,20 @@ class ServiceGithub(ServicesMgr):
             :return: callback url
             :rtype: string that contains the url to redirect after auth
         """
-        auth = self.gh.authorize(self.username,
-                                 self.password,
-                                 self.scope,
-                                 '',
-                                 '',
-                                 self.consumer_key,
-                                 self.consumer_secret)
-        request.session['oauth_token'] = auth.token
-        request.session['oauth_id'] = auth.id
+        try:
+            auth = self.gh.authorize(self.username,
+                                     self.password,
+                                     self.scope,
+                                     '',
+                                     '',
+                                     self.consumer_key,
+                                     self.consumer_secret)
+            request.session['oauth_token'] = auth.token
+            request.session['oauth_id'] = auth.id
+        except AuthenticationFailed as e:
+            messages.add_message(request, messages.ERROR, message="GITHUB RENEW FAILED : Raeson {}".format(e))
+            return reverse('user_services')
+
         return self.callback_url(request)
 
     def callback(self, request, **kwargs):

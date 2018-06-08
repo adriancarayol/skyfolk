@@ -159,7 +159,7 @@ EXTERNAL_SIGNUP_URL = None
 EXTERNAL_LOGOUT_URL = None
 
 # AVATAR CONFIGURATION
-AVATAR_GRAVATAR_DEFAULT = 'http://skyfolk.net/static/img/nuevo.png'
+AVATAR_GRAVATAR_DEFAULT = 'http://d32rim3h420riw.cloudfront.net/img/nuevo.png'
 
 # / DJANGO ALL AUTH CONFIG
 
