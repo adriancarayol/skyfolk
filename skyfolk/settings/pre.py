@@ -21,14 +21,14 @@ SECRET_KEY = get_env_variable('SECRET_KEY')
 SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 
 # S3 + CDN
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'custom_storages.custom_storages.S3PipelineManifestStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'custom_storages.custom_storages.S3PipelineManifestStorage'
 AWS_S3_CUSTOM_DOMAIN = 'd32rim3h420riw.cloudfront.net'
 AWS_ACCESS_KEY_ID = 'AKIAJYNH343VWWRAP2EA'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'skyfolk'
 AWS_S3_SIGNATURE_VERSION = 's3v4'
-S3_USE_SIGV4 = True
+# S3_USE_SIGV4 = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 
