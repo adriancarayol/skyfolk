@@ -22,7 +22,6 @@ SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 
 # S3 + CDN
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'custom_storages.custom_storages.S3PipelineManifestStorage'
 AWS_S3_CUSTOM_DOMAIN = 'd32rim3h420riw.cloudfront.net'
 AWS_ACCESS_KEY_ID = 'AKIAJYNH343VWWRAP2EA'
 AWS_SECRET_ACCESS_KEY = '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'

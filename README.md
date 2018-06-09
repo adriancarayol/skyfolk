@@ -14,6 +14,7 @@ postgresql:latest
 neo4j:latest
 tidy:latest
 pandoc:latest
+npm -g install yuglify
 ```
 Tras esto, podemos instalar los requerimentos de la siguiente forma:
 ```

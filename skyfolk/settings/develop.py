@@ -22,7 +22,6 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'skyfolk/media')
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 DEVELOP_APPS = (
     'django_extensions',
@@ -44,5 +43,3 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
     },
 }
-
-PIPELINE['PIPELINE_ENABLED'] = False
