@@ -31,6 +31,8 @@ class BaseRecipe(object):
     # Badge.description
     description = None
 
+    #Badge.points
+    points = 0
     # The database on which to perform read queries
     db_read = DEFAULT_DB_ALIAS
 
@@ -79,7 +81,7 @@ class BaseRecipe(object):
             logger.debug('✓ Badge %s: already created', badge.slug)
             if update:
                 to_update = {}
-                for field in ('name', 'slug', 'description', 'image'):
+                for field in ('name', 'slug', 'description', 'image', 'points'):
                     attr = getattr(self, field)
                     badge_attr = getattr(badge, field)
                     if attr != badge_attr:

@@ -1,4 +1,4 @@
-from badgify.models import Award
+from badgify.models import Award, Badge
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.http import HttpResponseForbidden
@@ -6,7 +6,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from user_profile.models import Profile
-
+from django.db.models import Sum
 
 class UserAwards(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -41,4 +41,5 @@ class UserAwards(APIView):
         except EmptyPage:
             awards = paginator.page(paginator.num_pages)
 
-        return Response({'awards': awards, 'user_id': user_id})
+        q = Badge.objects.filter(users=profile.user).aggregate(Sum('points'))
+        return Response({'awards': awards, 'user_id': user_id, 'total_points': q['points__sum']})

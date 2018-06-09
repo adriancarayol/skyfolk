@@ -1,4 +1,7 @@
 {% load humanize %}
+<div class="row center">
+	<p class="flow-text">¡{{ total_points }} puntos de experiencia!</p>
+</div>
 <div class="row">
 <ul>
     {% for award in awards %}
@@ -10,7 +13,7 @@
 	    					<img src="{{ award.badge.image }}">
 	    				</div>
 	    				<div class="col s10">
-	    					<b>{{ award.badge.name }}</b>
+	    					<b>{{ award.badge.name }} (+{{ award.badge.points }} puntos)</b>
 	    				</div>
 	    			</div>
 	    			<div class="row">

@@ -28,6 +28,7 @@ class Award(models.Model):
         verbose_name=_('awarded at'),
         auto_now_add=True)
 
+
     class Meta:
         abstract = True
         app_label = 'badgify'

@@ -37,6 +37,8 @@ class Badge(models.Model):
                               help_text=_('Please, upload an image for this badge'),
                               upload_to=settings.BADGE_IMAGE_UPLOAD_ROOT)
 
+    points = models.PositiveIntegerField(default=0)
+
     users = models.ManyToManyField(
         compat.AUTH_USER_MODEL,
         through='Award',
