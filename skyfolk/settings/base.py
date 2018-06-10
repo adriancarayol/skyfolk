@@ -56,6 +56,7 @@ THIRD_PARTY_APPS = (
     'notifications',  # notificaciones
     'django_celery_results',
     'formtools',
+    'collectfast',
     'django_js_reverse',
     'th_rss',
     'th_evernote',
@@ -229,6 +230,16 @@ CACHES = {
                 "MAX_ENTRIES": 5000,
             }
         },
+        'collectfast':
+        {
+            'TIMEOUT': 3600,
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://{redis_host}:6379/2".format(redis_host=REDIS_HOST),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "MAX_ENTRIES": 5000,
+            }
+        },
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -359,7 +370,9 @@ STATICFILES_FINDERS = (
 
 
 
-
+# collecfast == (collecstatic)
+COLLECTFAST_CACHE = 'collectfast'
+COLLECTFAST_THREADS = 4
 # Media (uploads, ...)
 # MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
 # MEDIA_URL = '/media/'

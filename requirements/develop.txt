@@ -31,6 +31,7 @@ django-sortedm2m==1.5.0
 django-taggit==0.22.1
 django-tinymce==2.6.0
 djangorestframework==3.7.3
+Collectfast
 easy-thumbnails==2.4.1
 ExifRead==2.1.2
 feedparser==5.2.1
