@@ -21,6 +21,7 @@
                 {% endif %}
                 {% if photo|classname == 'Photo' %}
                     <img class="lazyload" data-src="
+
                             {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
                          alt="{{ photo.title }}" title="{{ photo.title }}"
                          onclick="location.href='{{ photo.get_absolute_url }}'">
@@ -30,10 +31,12 @@
                              alt="{{ photo.name }}" title="{{ photo.name }}"
                              onclick="location.href='{% url "photologue:pl-video" slug=photo.slug %}'">
                     {% else %}
-                        <video controls style="width: 100%; height: 100%; outline: none;">
-                            <source src="{{ photo.video.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        {% if photo.video %}
+                            <video controls style="width: 100%; height: 100%; outline: none;">
+                                <source src="{{ photo.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>

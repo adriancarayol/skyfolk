@@ -431,4 +431,4 @@ def generate_video_thumb(instance, created, **kwargs):
 
 # post_save.connect(add_default_site, sender=PhotoGroup)
 post_save.connect(generate_thumb, sender=PhotoGroup)
-post_save.connect(generate_video_thumb, sender=VideoGroup)
+# post_save.connect(generate_video_thumb, sender=VideoGroup)

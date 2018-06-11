@@ -9,7 +9,7 @@
                     <div class="header">
                         {% if item.from_like__profile__back_image %}
                             <img class="back-profile-user"
-                                 src="{{ item.from_like__profile__back_image }}">
+                                 src="{{ item.from_like__profile__back_image.url }}">
                         {% else %}
                             <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
                         {% endif %}

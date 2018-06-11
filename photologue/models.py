@@ -1092,10 +1092,10 @@ def generate_video_thumb(instance, created, **kwargs):
     :param kwargs:
     :return:
     """
-    if created:
+    if instance.video:
         transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
 
 
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)
-post_save.connect(generate_video_thumb, sender=Video)
+# post_save.connect(generate_video_thumb, sender=Video)

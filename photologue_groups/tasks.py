@@ -1,4 +1,5 @@
 import os
+import uuid
 from io import BytesIO
 
 from PIL import Image
@@ -74,13 +75,14 @@ def generate_thumbnails(instance):
         thumb.save(tempfile_io, format='PNG')
         tempfile_io.seek(0, os.SEEK_END)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'thumb.png', 'image/png', tempfile_io.tell(), None)
-        photo_to_crop.thumbnail.save('thumb.png', image_file)
+        photo_to_crop.thumbnail.save(str(uuid.uuid4) + 'thumb.png', image_file)
         photo_to_crop.save()
 
 
 @app.task(name='tasks.generate_gallery_video_thumbnail')
 def generate_video_thumbnail(instance):
     exist_video = True
+
     try:
         video = photologue_groups.models.VideoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
@@ -89,11 +91,13 @@ def generate_video_thumbnail(instance):
 
     if exist_video and video.video:
 
-        thumb_tmp = NamedTemporaryFile()
+        thumb_tmp = NamedTemporaryFile(delete=False)
 
-        video_path = video.video.url[1:] if video.video.url.startswith('/') else video.video.url
+        try:
 
-        create_thumbnail_video(os.path.join(os.path.join(settings.BASE_DIR, 'skyfolk'), video_path),
-                               os.path.join(settings.BASE_DIR, thumb_tmp.name))
+            create_thumbnail_video(video.video.path,
+                                   os.path.join(settings.BASE_DIR, thumb_tmp.name))
 
-        video.thumbnail.save('thumbnail.jpg', thumb_tmp, True)
+            video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, True)
+        finally:
+            os.remove(thumb_tmp.name)

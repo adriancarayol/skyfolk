@@ -1,6 +1,7 @@
 import json
 import warnings
 
+import os
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -33,7 +34,7 @@ from user_profile.models import RelationShipProfile, BLOCK, Profile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import Photo, Video
-
+from .tasks import generate_video_thumbnail
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -215,9 +216,12 @@ def upload_video(request):
 
             file = form.cleaned_data['video']
 
-            if isinstance(file, str):
-                with open(form.cleaned_data['video'], 'rb') as f:
-                    obj.video.save("video.mp4", File(f), True)
+            try:
+                if isinstance(file, str):
+                    with open(form.cleaned_data['video'], 'rb') as f:
+                        obj.video.save("video.mp4", File(f), True)
+            finally:
+                generate_video_thumbnail.delay(instance=obj.pk)
 
             form.save_m2m()  # Para guardar los tags de la foto
 

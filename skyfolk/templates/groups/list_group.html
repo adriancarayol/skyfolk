@@ -21,7 +21,7 @@
                                 <div class="header">
                                     {% if group.back_image  %}
                                     <img class="back-profile-user"
-                                    src="{{ group.back_image }}">
+                                    src="{{ group.back_image.url }}">
                                     {% else %}
                                     <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
                                     {% endif %}
@@ -31,7 +31,7 @@
                                         <div onclick="location.href='/group/{{ group.slug }}'"
                                             class="profile-user-bg">
                                             {% if group.avatar %}
-                                            <img src="{{ group.avatar }}"
+                                            <img src="{{ group.avatar.url }}"
                                             alt="avatar_group">
                                             {% else %}
                                             <img src="{% static "img/nuevo.png" %}"

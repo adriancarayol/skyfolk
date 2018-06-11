@@ -34,7 +34,7 @@ from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import PhotoGroup, VideoGroup
 from user_groups.models import UserGroups
-
+from .tasks import generate_video_thumbnail
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -212,9 +212,12 @@ def upload_video(request):
 
             file = form.cleaned_data['video']
 
-            if isinstance(file, str):
-                with open(form.cleaned_data['video'], 'rb') as f:
-                    obj.video.save("video.mp4", File(f), True)
+            try:
+                if isinstance(file, str):
+                    with open(form.cleaned_data['video'], 'rb') as f:
+                        obj.video.save("video.mp4", File(f), True)
+            finally:
+                generate_video_thumbnail.delay(instance=obj.pk)
 
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
