@@ -4,6 +4,7 @@ from io import BytesIO
 
 from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
@@ -81,6 +82,7 @@ def generate_thumbnails(instance):
 
 @app.task(name='tasks.generate_gallery_video_thumbnail')
 def generate_video_thumbnail(instance):
+    import shutil
     exist_video = True
 
     try:
@@ -90,14 +92,11 @@ def generate_video_thumbnail(instance):
         video = None
 
     if exist_video and video.video:
+        thumb_tmp = NamedTemporaryFile()
+        local_video = default_storage.open(video.video, 'rb')
+        tmp_video = NamedTemporaryFile()
+        shutil.copyfileobj(local_video, tmp_video, 1024)
+        tmp_video.seek(0)
 
-        thumb_tmp = NamedTemporaryFile(delete=False)
-
-        try:
-
-            create_thumbnail_video(video.video.path,
-                                   os.path.join(settings.BASE_DIR, thumb_tmp.name))
-
-            video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, True)
-        finally:
-            os.remove(thumb_tmp.name)
+        create_thumbnail_video(tmp_video.name, thumb_tmp.name)
+        video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, True)
