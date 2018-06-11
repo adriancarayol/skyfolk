@@ -1,4 +1,5 @@
 import json
+import uuid
 import warnings
 
 import os
@@ -301,13 +302,13 @@ def crop_image(obj, request):
         tempfile_io = BytesIO()
         tempfile.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
     else:  # no la recorta, optimizamos la imagen
         im.thumbnail((1200, 630), Image.ANTIALIAS)
         tempfile_io = BytesIO()
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
 
     obj.image = image_file
 
