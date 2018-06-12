@@ -141,7 +141,7 @@ IMAGE_TRANSPOSE_CHOICES = (
     ('FLIP_TOP_BOTTOM', _('Flip top to bottom')),
     ('ROTATE_90', _('Rotate 90 degrees counter-clockwise')),
     ('ROTATE_270', _('Rotate 90 degrees clockwise')),
-    ('ROTATE_180', _('Rotate 180 degrees')),
+    ('ROTATE_180', _('i 180 degrees')),
 )
 
 WATERMARK_STYLE_CHOICES = (

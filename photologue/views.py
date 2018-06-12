@@ -196,6 +196,7 @@ def upload_photo(request):
             'state': 405,
             'message': 'Método no permitido',
         }
+
     return JsonResponse(data)
 
 
