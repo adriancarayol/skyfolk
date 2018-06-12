@@ -10,6 +10,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from embed_video.fields import EmbedVideoField
 
+from notifications.signals import notify
 from photologue_groups.models import PhotoGroup, VideoGroup
 from publications.models import Publication
 from publications.models import PublicationBase
@@ -139,6 +140,15 @@ class PublicationGroupMediaPhoto(PublicationBase):
             "text": json.dumps(data)
         }) for x in self.get_ancestors().only('id')]
 
+        # Enviamos al owner de la notificacion
+        if self.author_id != self.board_photo.owner_id:
+            notify.send(self.author, actor=self.author.username,
+                        recipient=self.board_photo.owner,
+                        description="Te avisamos de que @{0} ha publicado en una foto. <a href='/group/multimedia/publication/detail/{1}/'>Ver</a>".format(
+                            self.author.username, self.id),
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en una foto.' %
+                             (self.author.username, self.author.username), level='notification_board_owner')
+
 
 # Video publications
 
@@ -256,3 +266,12 @@ class PublicationGroupMediaVideo(PublicationBase):
         [channel_group(x.get_channel_name).send({
             "text": json.dumps(data)
         }) for x in self.get_ancestors().defer()]
+
+        # Enviamos al owner de la notificacion
+        if self.author_id != self.board_video.owner_id:
+            notify.send(self.author, actor=self.author.username,
+                        recipient=self.board_video.owner,
+                        description="Te avisamos de que @{0} ha publicado en un vídeo. <a href='/group/multimedia/video/publication/detail/{1}/'>Ver</a>".format(
+                            self.author.username, self.id),
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en un vídeo.' %
+                             (self.author.username, self.author.username), level='notification_board_owner')

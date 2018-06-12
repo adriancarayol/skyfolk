@@ -105,7 +105,7 @@
                                 <div class="bg-user">
                                     <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.to_like.slug %}'"
                                          class="profile-user-bg"><img src="
-                                            {% if item.to_like.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                            {% if item.to_like.avatar %}{{ item.to_like.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
                                                                       alt="Imagen de {{ item.to_like.name }}"
                                                                       title="Imagen de {{ item.to_like.name }}"/></div>
                                 </div>
