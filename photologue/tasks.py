@@ -5,6 +5,7 @@ from io import BytesIO
 
 from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 import photologue
@@ -95,7 +96,7 @@ def generate_video_thumbnail(instance):
 
     if exist_video and video.video:
         thumb_tmp = NamedTemporaryFile()
-        local_video = default_storage.open(video.video, 'rb')
+        local_video = default_storage.open(File(video.video).name, 'rb')
         tmp_video = NamedTemporaryFile()
         shutil.copyfileobj(local_video, tmp_video, 1024)
         tmp_video.seek(0)
