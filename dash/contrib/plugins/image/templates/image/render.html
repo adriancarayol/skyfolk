@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 {% if plugin.data.show_link %}
-                <a href="{{ MEDIA_URL }}{{ plugin.data.image }}" title="{{ plugin.data.title }}">
+                <a href="{{ plugin.data.image }}" title="{{ plugin.data.title }}">
                 {% endif %}
                     {% if plugin.data.image %}
                         {% if crop %}

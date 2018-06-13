@@ -2,6 +2,7 @@ import os
 import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.http import Http404, HttpResponse, HttpResponseForbidden
@@ -18,6 +19,10 @@ from dash_services.forms.wizard import ConsumerForm
 from dash_services.models import UserService, TriggerService
 from dash_services.tools import class_for_name, get_service
 from user_profile.models import Profile
+from django.contrib.auth.models import User
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .base import (
     get_layout,
     plugin_registry,
@@ -1857,3 +1862,45 @@ def public_dashboard(request,
         return render_to_response(
             template_name, context, context_instance=RequestContext(request)
         )
+
+class PublicWorkspacesAJAX(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "dash/public_workspaces_ajax.html"
+    pagination_class = 'rest_framework.pagination.CursorPagination'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PublicWorkspacesAJAX, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs.pop('user_id'))
+
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+            request_user = Profile.objects.get(user_id=request.user.id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        privacity = profile.is_visible(request_user)
+
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden()
+
+       
+
+        queryset = DashboardWorkspace._default_manager.filter(user=user, is_public=True)
+
+        paginator = Paginator(queryset, 12)
+
+        page = request.GET.get('page', 1)
+        
+        try:
+            workspaces = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            workspaces = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            workspaces = paginator.page(paginator.num_pages)
+
+        return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id })

@@ -51,13 +51,17 @@ $(document).ready(function () {
         });
     });
 
-    $('.info-groups').on('click', function () {
+    $('.info-workspaces').on('click', function () {
         var id = $(this).data('id');
-        $(".grupos").toggle(0, function () {
+        $(".workspaces").toggle(0, function () {
             if ($(this).is(":visible")) {
-                $('.wrapper-groups').load('/groups/profile/' + id + '/');
+                $('.wrapper-workspaces').load('/dashboard/public/workspaces/' + id + '/');
             }
         });
+    });
+
+    $('#close-workspaces').on('click', function () {
+        $(".workspaces").hide();
     });
 
     $('#close-trofeos').on('click', function () {
@@ -76,6 +80,11 @@ $(document).ready(function () {
     $('.grupos').on('click', '.wrapper-groups .pagination a', function (e) {
         e.preventDefault()
         $('.wrapper-groups').load($(this).attr('href'));
+    });
+
+    $('.workspaces').on('click', '.wrapper-workspaces .pagination a', function (e) {
+        e.preventDefault()
+        $('.wrapper-workspaces').load($(this).attr('href'));
     });
 
     $('#configurationOnProfile').on('click', function () {

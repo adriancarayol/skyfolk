@@ -604,6 +604,7 @@ class ProfileGroups(APIView):
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
 
         page = request.GET.get('page', 1)
+        
         try:
             groups = paginator.page(page)
         except PageNotAnInteger:

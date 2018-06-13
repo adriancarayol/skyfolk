@@ -1,0 +1,40 @@
+{% load humanize %}
+{% load app_filters %}
+{% load static %}
+
+<div class="row">
+    <ul>
+        {% for workspace in workspaces %}
+            <li>
+                <div class="col l3 m6 s12">
+                    <div class="user-award z-depth-2">
+                        <div class="row">
+                            <div class="col s10"><br>
+                                <b><a href="{% url 'dash.public_dashboard' username=username workspace=workspace.slug %}">{{ workspace.name }}</a></b>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12">
+                                <p>Disposición: {{ workspace.layout_uid }}</p>
+                                <p>{% if workspace.is_clonable %}Se puede copiar{% endif %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<ul class="pagination center">
+    {% if workspaces.has_previous %}
+        <li><a href="{% url 'dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.previous_page_number }}"><i
+                class="material-icons">chevron_left</i></a>
+        </li>
+    {% endif %}
+    <li class="active blue darken-1 white-text">{{ workspaces.number }}</li>
+    {% if workspaces.has_next %}
+        <li><a href="{% url 'dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.next_page_number }}">
+            <i class="material-icons">chevron_right</i>
+        </a></li>
+    {% endif %}
+</ul>

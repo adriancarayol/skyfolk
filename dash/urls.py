@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from .views import (
     AddDashboardEntry,
     EditDashboardEntry,
+    PublicWorkspacesAJAX,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -130,6 +131,7 @@ urlpatterns = [
     url(_(r'^workspaces/(?P<workspace>[\w_\-]+)/$'),
         view=dashboard_workspaces,
         name='dash.dashboard_workspaces'),
+
     url(_(r'^workspaces/$'),
         view=dashboard_workspaces,
         name='dash.dashboard_workspaces'),
@@ -177,4 +179,8 @@ urlpatterns = [
     url(r'^(?P<username>[\w-]+)/(?P<workspace>[\w_\-]+)/$',
         view=public_dashboard,
         name='dash.public_dashboard'),
+
+    url(r'^public/workspaces/(?P<user_id>\d+)/$',
+        view=PublicWorkspacesAJAX.as_view(),
+        name='dash.public_dashboard_workspaces'),
 ]
