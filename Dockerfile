@@ -38,16 +38,8 @@ RUN python -c "import imageio; imageio.plugins.ffmpeg.download()"
 #add soft link so that ffmpeg can executed (like usual) from command line
 RUN ln -s /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
 
-RUN adduser --disabled-password --gecos '' skyfolk
-
-# set ffmpeg owner to skyfolk group
-RUN chgrp skyfolk /usr/bin/ffmpeg
-# set root owner to skyfolk group
-RUN chgrp -R skyfolk /root/
-
 RUN mkdir -p /var/www/skyfolk.net/run/static/static
 RUN mkdir -p /var/www/skyfolk.net/run/static/media
-RUN chgrp -R skyfolk /var/www
 
 RUN chmod -R g+w /var/www
 RUN chmod -R 777 /var/www
@@ -55,7 +47,6 @@ RUN chmod -R 777 /var/www
 RUN chmod 770 /usr/bin/ffmpeg
 RUN chmod -R 770 /root/
 
-RUN usermod -a -G skyfolk root
 
 # modify ImageMagick policy file so that Textclips work correctly.
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml
