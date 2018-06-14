@@ -77,7 +77,7 @@ class ServiceTrello(ServicesMgr):
         trigger_id = kwargs.get('trigger_id')
         data = list()
         kwargs['model_name'] = 'Trello'
-        kwargs['app_label'] = 'th_services.th_trello'
+        kwargs['app_label'] = 'th_trello'
         super(ServiceTrello, self).read_data(**kwargs)
         cache.set('th_services.th_trello_' + str(trigger_id), data)
         return data

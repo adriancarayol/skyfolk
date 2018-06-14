@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = (
     'th_services.th_tumblr',
     'th_services.th_twitter',
     'th_services.th_wallabag',
+    'th_services.th_skyfolk',
     'dash',
     'dash.contrib.layouts.android',
     'dash.contrib.layouts.profile',

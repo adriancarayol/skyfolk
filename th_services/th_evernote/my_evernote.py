@@ -50,8 +50,6 @@ class ServiceEvernote(ServicesMgr):
 
     def __init__(self, token=None, **kwargs):
         super(ServiceEvernote, self).__init__(token, **kwargs)
-        import pprint
-        pprint.pprint(settings.TH_GITHUB_KEY)
         self.sandbox = settings.TH_EVERNOTE_KEY['sandbox']
         self.consumer_key = settings.TH_EVERNOTE_KEY['consumer_key']
         self.consumer_secret = settings.TH_EVERNOTE_KEY['consumer_secret']
@@ -84,7 +82,7 @@ class ServiceEvernote(ServicesMgr):
         trigger_id = kwargs.get('trigger_id')
 
         kwargs['model_name'] = 'Evernote'
-        kwargs['app_label'] = 'th_services.th_evernote'
+        kwargs['app_label'] = 'th_evernote'
 
         trigger = super(ServiceEvernote, self).read_data(**kwargs)
 
@@ -103,12 +101,11 @@ class ServiceEvernote(ServicesMgr):
             :param trigger:
             :return: filter
         """
-        new_date_triggered = arrow.get(str(date_triggered)[:-6],
-                                       'YYYY-MM-DD HH:mm:ss')
+        new_date_triggered = arrow.get(date_triggered)
 
         new_date_triggered = str(new_date_triggered).replace(
             ':', '').replace('-', '').replace(' ', '')
-        date_filter = "created:{} ".format(new_date_triggered[:-6])
+        date_filter = "created:{} ".format(new_date_triggered)
 
         notebook_filter = ''
         if trigger.notebook:
@@ -131,17 +128,15 @@ class ServiceEvernote(ServicesMgr):
 
         try:
             our_note_list = note_store.findNotesMetadata(self.token, evernote_filter, 0, 100,
-                                                     EvernoteMgr.set_evernote_spec())
+                                                         EvernoteMgr.set_evernote_spec())
+
+            for note in our_note_list.notes:
+                whole_note = note_store.getNote(self.token, note.guid, True, True, False, False)
+                content = self._cleaning_content(whole_note.content)
+                data.append({'title': note.title, 'my_date': arrow.get(note.created),
+                             'link': whole_note.attributes.sourceURL, 'content': content})
         except Exception as e:
             logger.warning(e)
-            our_note_list = []
-
-        for note in our_note_list.notes:
-            whole_note = note_store.getNote(self.token, note.guid, True, True, False, False)
-            content = self._cleaning_content(whole_note.content)
-            data.append({'title': note.title, 'my_date': arrow.get(note.created),
-                         'link': whole_note.attributes.sourceURL, 'content': content})
-
 
         return data
 

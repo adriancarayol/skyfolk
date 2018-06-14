@@ -17,7 +17,7 @@ def recycle():
         with version=2 in the main cache
     """
     # http://niwinz.github.io/django-redis/latest/#_scan_delete_keys_in_bulk
-    for service in cache.iter_keys('th_*'):
+    for service in cache.iter_keys('th_services.th_*'):
         try:
             # get the value from the cache version=2
             service_value = cache.get(service, version=2)

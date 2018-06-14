@@ -62,7 +62,7 @@ class ServiceTumblr(ServicesMgr):
         trigger_id = kwargs.get('trigger_id')
         data = list()
         kwargs['model_name'] = 'Tumblr'
-        kwargs['app_label'] = 'th_services.th_tumblr'
+        kwargs['app_label'] = 'th_tumblr'
         super(ServiceTumblr, self).read_data(**kwargs)
         cache.set('th_services.th_tumblr_' + str(trigger_id), data)
         return data
