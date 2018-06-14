@@ -12,7 +12,7 @@ from dash_services.views_fbv import can_modify_trigger, trigger_on_off, \
     service_related_triggers_switch_to, fire_trigger
 from dash_services.tests.test_main import MainTest
 
-from th_rss.models import Rss
+from th_services.th_rss.models import Rss
 
 import unittest
 import uuid

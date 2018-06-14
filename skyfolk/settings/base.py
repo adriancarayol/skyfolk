@@ -3,7 +3,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-from django.conf import settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -58,21 +57,22 @@ THIRD_PARTY_APPS = (
     'formtools',
     'collectfast',
     'django_js_reverse',
-    'th_rss',
-    'th_evernote',
-    'th_github',
-    'th_instapush',
-    'th_mastodon',
-    'th_pocket',
-    'th_pushbullet',
-    'th_reddit',
-    'th_slack',
-    'th_taiga',
-    'th_todoist',
-    'th_trello',
-    'th_tumblr',
-    'th_twitter',
-    'th_wallabag',
+    'th_services',
+    'th_services.th_rss',
+    'th_services.th_evernote',
+    'th_services.th_github',
+    'th_services.th_instapush',
+    'th_services.th_mastodon',
+    'th_services.th_pocket',
+    'th_services.th_pushbullet',
+    'th_services.th_reddit',
+    'th_services.th_slack',
+    'th_services.th_taiga',
+    'th_services.th_todoist',
+    'th_services.th_trello',
+    'th_services.th_tumblr',
+    'th_services.th_twitter',
+    'th_services.th_wallabag',
     'dash',
     'dash.contrib.layouts.android',
     'dash.contrib.layouts.profile',
@@ -194,8 +194,6 @@ REST_FRAMEWORK = {
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
 
-# NOTIFICATION
-NOTIFICATIONS_USE_JSONFIELD = True
 
 REDIS_PORT = 6379
 REDIS_DB = 0
@@ -230,7 +228,7 @@ CACHES = {
                 "MAX_ENTRIES": 5000,
             }
         },
-        'collectfast':
+    'collectfast':
         {
             'TIMEOUT': 3600,
             "BACKEND": "django_redis.cache.RedisCache",
@@ -368,11 +366,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-
-
 # collecfast == (collecstatic)
+
 COLLECTFAST_CACHE = 'collectfast'
 COLLECTFAST_THREADS = 4
+
 # Media (uploads, ...)
 # MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
 # MEDIA_URL = '/media/'

@@ -146,10 +146,10 @@ urlpatterns = [
     url(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback",),
     url(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback",),
     url(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback",),
-    # url(r'^th/myfeeds/', include('th_rss.urls')),
+    # url(r'^th/myfeeds/', include('th_services.th_rss.urls')),
 
-    url(r'^th/api/taiga/webhook/', include('th_taiga.urls')),
-    url(r'^th/api/slack/webhook/', include('th_slack.urls')),
+    url(r'^th/api/taiga/webhook/', include('th_services.th_taiga.urls')),
+    url(r'^th/api/slack/webhook/', include('th_services.th_slack.urls')),
     # dash
     url(r'^dashboard/', include('dash.urls')),
     url(r'^dash/contrib/plugins/rss-feed/',

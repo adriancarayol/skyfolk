@@ -51,6 +51,16 @@ $(document).ready(function () {
         });
     });
 
+    $('.info-groups').on('click', function () {
+        var id = $(this).data('id');
+        $(".grupos").toggle(0, function () {
+            if ($(this).is(":visible")) {
+                $('.wrapper-groups').load('/groups/profile/' + id + '/');
+            }
+        });
+    });
+
+
     $('.info-workspaces').on('click', function () {
         var id = $(this).data('id');
         $(".workspaces").toggle(0, function () {

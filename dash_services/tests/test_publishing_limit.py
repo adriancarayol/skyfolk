@@ -12,7 +12,7 @@ class PublishingLimitTestCase(TestCase):
 
     def test_get_data(self):
 
-        cache_stack = "th_rss"
+        cache_stack = "th_services.th_rss"
         cache_data = {}
         trigger_id = 1
 
@@ -20,22 +20,22 @@ class PublishingLimitTestCase(TestCase):
         self.assertTrue(len(services) == 0)
 
     def test_get_data2(self):
-        cache_stack = "th_rss"
-        cache_data = {'th_rss_1': 'foobar'}
+        cache_stack = "th_services.th_rss"
+        cache_data = {'th_services.th_rss_1': 'foobar'}
         trigger_id = 1
 
         services = PublishingLimit.get_data(cache_stack, cache_data, trigger_id)
         self.assertTrue(len(services) > 0)
 
     def test_get_data3(self):
-        cache_stack = "th_rss"
+        cache_stack = "th_services.th_rss"
         cache_data = []
-        cache_data.append({'th_rss_1': 'foobar'})
-        cache_data.append({'th_rss_2': 'foobar'})
-        cache_data.append({'th_rss_3': 'foobar'})
-        cache_data.append({'th_rss_4': 'foobar'})
-        cache_data.append({'th_rss_5': 'foobar'})
-        cache_data.append({'th_rss_6': 'foobar'})
+        cache_data.append({'th_services.th_rss_1': 'foobar'})
+        cache_data.append({'th_services.th_rss_2': 'foobar'})
+        cache_data.append({'th_services.th_rss_3': 'foobar'})
+        cache_data.append({'th_services.th_rss_4': 'foobar'})
+        cache_data.append({'th_services.th_rss_5': 'foobar'})
+        cache_data.append({'th_services.th_rss_6': 'foobar'})
         trigger_id = 1
 
         services = PublishingLimit.get_data(cache_stack, cache_data, trigger_id)

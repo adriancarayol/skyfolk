@@ -25,7 +25,7 @@ DJANGO_TH = {
     'publishing_limit': env.int('DJANGO_TH_PUBLISHING_LIMIT', 2),
     # number of process to spawn from multiprocessing.Pool
     'processes': env.int('DJANGO_TH_PROCESSES', 1),
-    'services_wo_cache': ['th_instapush', ],
+    'services_wo_cache': ['th_services.th_instapush', ],
     # number of tries before disabling a trigger
     # when management commands run each 15min
     # with 4 'tries' this permit to try on 1 hour
@@ -43,21 +43,21 @@ DJANGO_TH = {
 
 TH_SERVICES = (
     # uncomment the lines to enable the service you need
-    'th_evernote.my_evernote.ServiceEvernote',
-    'th_github.my_github.ServiceGithub',
-    'th_instapush.my_instapush.ServiceInstapush',
-    'th_mastodon.my_mastodon.ServiceMastodon',
-    'th_pocket.my_pocket.ServicePocket',
-    'th_pushbullet.my_pushbullet.ServicePushbullet',
-    'th_rss.my_rss.ServiceRss',
-    'th_reddit.my_reddit.ServiceReddit',
-    'th_slack.my_slack.ServiceSlack',
-    'th_taiga.my_taiga.ServiceTaiga',
-    'th_todoist.my_todoist.ServiceTodoist',
-    'th_trello.my_trello.ServiceTrello',
-    'th_tumblr.my_tumblr.ServiceTumblr',
-    'th_twitter.my_twitter.ServiceTwitter',
-    'th_wallabag.my_wallabag.ServiceWallabag',
+    'th_services.th_evernote.my_evernote.ServiceEvernote',
+    'th_services.th_github.my_github.ServiceGithub',
+    'th_services.th_instapush.my_instapush.ServiceInstapush',
+    'th_services.th_mastodon.my_mastodon.ServiceMastodon',
+    'th_services.th_pocket.my_pocket.ServicePocket',
+    'th_services.th_pushbullet.my_pushbullet.ServicePushbullet',
+    'th_services.th_rss.my_rss.ServiceRss',
+    'th_services.th_reddit.my_reddit.ServiceReddit',
+    'th_services.th_slack.my_slack.ServiceSlack',
+    'th_services.th_taiga.my_taiga.ServiceTaiga',
+    'th_services.th_todoist.my_todoist.ServiceTodoist',
+    'th_services.th_trello.my_trello.ServiceTrello',
+    'th_services.th_tumblr.my_tumblr.ServiceTumblr',
+    'th_services.th_twitter.my_twitter.ServiceTwitter',
+    'th_services.th_wallabag.my_wallabag.ServiceWallabag',
 )
 
 TH_EVERNOTE_KEY = {
