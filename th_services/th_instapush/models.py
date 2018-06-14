@@ -18,7 +18,7 @@ class Instapush(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_instapush'
+        app_label = 'th_instapush'
         db_table = 'skyfolk_instapush'
 
     def show(self):

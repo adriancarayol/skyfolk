@@ -16,7 +16,7 @@ class Pushbullet(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_pushbullet'
+        app_label = 'th_pushbullet'
         db_table = 'skyfolk_pushbullet'
 
     def show(self):

@@ -335,7 +335,7 @@ class AddDashboardEntry(SessionWizardView):
         if step == '1':
             prev_data = self.get_cleaned_data_for_step('0')
             service_name = str(prev_data.get('provider')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ProviderForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -346,7 +346,7 @@ class AddDashboardEntry(SessionWizardView):
         elif step == '3':
             prev_data = self.get_cleaned_data_for_step('2')
             service_name = str(prev_data.get('consumer')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ConsumerForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -763,7 +763,7 @@ class EditDashboardEntry(SessionWizardView):
         if step == '1':
             prev_data = self.get_cleaned_data_for_step('0')
             service_name = str(prev_data.get('provider')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ProviderForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -774,7 +774,7 @@ class EditDashboardEntry(SessionWizardView):
         elif step == '3':
             prev_data = self.get_cleaned_data_for_step('2')
             service_name = str(prev_data.get('consumer')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ConsumerForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -1886,14 +1886,14 @@ class PublicWorkspacesAJAX(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-       
+
 
         queryset = DashboardWorkspace._default_manager.filter(user=user, is_public=True)
 
         paginator = Paginator(queryset, 12)
 
         page = request.GET.get('page', 1)
-        
+
         try:
             workspaces = paginator.page(page)
         except PageNotAnInteger:

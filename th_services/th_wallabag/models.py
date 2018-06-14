@@ -17,7 +17,7 @@ class Wallabag(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_wallabag'
+        app_label = 'th_wallabag'
         db_table = 'skyfolk_wallabag'
 
     def show(self):

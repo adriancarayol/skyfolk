@@ -18,7 +18,7 @@ class Pocket(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_pocket'
+        app_label = 'th_pocket'
         db_table = 'skyfolk_pocket'
 
     def show(self):

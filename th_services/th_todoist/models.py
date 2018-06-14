@@ -12,7 +12,7 @@ class Todoist(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_todoist'
+        app_label = 'th_todoist'
         db_table = 'skyfolk_todoist'
 
     def show(self):

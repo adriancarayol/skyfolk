@@ -24,7 +24,7 @@ class Mastodon(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_mastodon'
+        app_label = 'th_mastodon'
         db_table = 'skyfolk_mastodon'
 
     def show(self):

@@ -30,7 +30,7 @@ class Twitter(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_twitter'
+        app_label = 'th_twitter'
         db_table = 'skyfolk_twitter'
 
     def show(self):

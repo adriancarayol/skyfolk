@@ -17,7 +17,7 @@ class Github(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_github'
+        app_label = 'th_github'
         db_table = 'skyfolk_github'
 
     def show(self):

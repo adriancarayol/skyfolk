@@ -17,7 +17,7 @@ class Reddit(Services):
     trigger = models.ForeignKey(TriggerService, on_delete=models.CASCADE)
 
     class Meta:
-        app_label = 'th_services.th_reddit'
+        app_label = 'th_reddit'
         db_table = 'skyfolk_reddit'
 
     def __str__(self):

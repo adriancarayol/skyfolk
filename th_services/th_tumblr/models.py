@@ -14,7 +14,7 @@ class Tumblr(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_tumblr'
+        app_label = 'th_tumblr'
         db_table = 'skyfolk_tumblr'
 
     def __str__(self):

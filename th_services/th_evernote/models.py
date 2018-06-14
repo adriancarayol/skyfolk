@@ -17,7 +17,7 @@ class Evernote(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_evernote'
+        app_label = 'th_evernote'
         db_table = 'skyfolk_evernote'
 
     def show(self):

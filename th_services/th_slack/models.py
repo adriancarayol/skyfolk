@@ -15,7 +15,7 @@ class Slack(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_slack'
+        app_label = 'th_slack'
         db_table = 'skyfolk_slack'
 
     def show(self):

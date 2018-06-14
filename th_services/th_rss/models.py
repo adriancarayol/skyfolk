@@ -14,7 +14,7 @@ class Rss(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_rss'
+        app_label = 'th_rss'
         db_table = 'skyfolk_rss'
 
     def show(self):

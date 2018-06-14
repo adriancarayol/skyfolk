@@ -39,7 +39,7 @@ class Taiga(Services):
     trigger = models.ForeignKey(TriggerService)
 
     class Meta:
-        app_label = 'th_services.th_taiga'
+        app_label = 'th_taiga'
         db_table = 'skyfolk_taiga'
 
     def show(self):
