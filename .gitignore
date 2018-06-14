@@ -7,7 +7,6 @@ avatars
 whoosh_index/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
-build/
 .settings/
 .idea
 Thumbs.db
