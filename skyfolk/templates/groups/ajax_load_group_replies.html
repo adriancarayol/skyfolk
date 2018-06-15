@@ -55,7 +55,7 @@
                                                     {% for image in images %}
                                                         {% if image.image %}
                                                         <div class="col s4 z-depth-2 center">
-                                                            <img class="lazyload responsive-img"
+                                                            <img class="materialboxed lazyload responsive-img"
                                                                  data-src="{{ image.image.url }}"
                                                                  alt="Imagen de: {{ node.author }}"
                                                                  title="Imagen de: {{ node.author }}">
@@ -83,7 +83,7 @@
                                         {% if node.group_extra_content %}
                                             {% if node.group_extra_content.video %}
                                                 {% video node.group_extra_content.video as my_video %}
-                                                {% video my_video "medium" %}
+                                                {% video my_video "100% x 100%" %}
                                                 {% endvideo %}
                                             {% else %}
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
@@ -159,7 +159,7 @@
                                                           placeholder="Escribe el contenido del nuevo mensaje"
                                                           id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                           name="content" rows="10" required="required"
-                                                          style="height: 11px;"></textarea>
+                                                          style="height: 11px;">{{ node.content }}</textarea>
                                                 <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                             </div>
                                             <div class="row">

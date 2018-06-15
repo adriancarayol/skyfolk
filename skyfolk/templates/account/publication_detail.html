@@ -115,7 +115,7 @@
                                                         {% for image in images %}
                                                             {% if image.image %}
                                                             <div class="col s4">
-                                                                <img class="responsive-img z-depth-2 lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                                <img class="materialboxed responsive-img z-depth-2 lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                             </div>
                                                             {% endif %}
                                                         {% endfor %}
@@ -141,7 +141,7 @@
                                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                                      {% if node.shared_publication.extra_content.video %}
                                                          {% video node.shared_publication.extra_content.video as my_video %}
-                                                           {% video my_video "medium" %}
+                                                           {% video my_video "100% x 100%" %}
 
                                                            {% endvideo %}
                                                      {% else %}
@@ -191,7 +191,7 @@
                                                         {% for image in images %}
                                                             {% if image.image %}
                                                             <div class="col s4">
-                                                                <img class="lazyload responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                                <img class="materialboxed lazyload responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                             </div>
                                                             {% endif %}
                                                         {% endfor %}
@@ -217,7 +217,7 @@
                                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                                         {% if  node.shared_group_publication.extra_content.video %}
                                                         {% video node.shared_group_publication.extra_content.video as my_video %}
-                                                           {% video my_video "medium" %}
+                                                           {% video my_video "100% x 100%" %}
                                                         {% endvideo %}
                                                         {% else %}
                                                         <div class="card small">
@@ -248,7 +248,7 @@
                                             {% for image in images %}
                                                 {% if image.image %}
                                                 <div class="col s4 z-depth-2">
-                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                    <img class="materialboxed responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                 </div>
                                                 {% endif %}
                                             {% endfor %}
@@ -274,7 +274,7 @@
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         {% if node.extra_content.video %}
                                             {% video node.extra_content.video as my_video %}
-                                               {% video my_video "medium" %}
+                                               {% video my_video "100% x 100%" %}
                                             {% endvideo %}
                                         {% else %}
                                         <div class="card small">
@@ -340,7 +340,7 @@
                                                               placeholder="Escribe el contenido del nuevo mensaje"
                                                               id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 11px;"></textarea>
+                                                              style="height: 11px;">{{ node.content }}</textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">

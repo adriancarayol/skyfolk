@@ -56,7 +56,7 @@
                             {% for image in images %}
                                 {% if image.image %}
                             <div class="col s4 z-depth-2 center">
-                                <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                <img class="materialboxed responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                             </div>
                                 {% endif %}
                             {% endfor %}
@@ -81,7 +81,7 @@
                         {% if node.publication_group_multimedia_photo_extra_content %}
                         {% if node.publication_group_multimedia_photo_extra_content.video %}
                         {% video node.publication_group_multimedia_photo_extra_content.video as my_video %}
-                        {% video my_video "medium" %}
+                        {% video my_video "100% x 100%" %}
                         {% endvideo %}
                         {% else %}
                         {% comment %} Para publicaciones con URL {% endcomment %}
@@ -142,7 +142,7 @@
                         placeholder="Escribe el contenido del nuevo mensaje"
                         id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                         name="content" rows="10" required="required"
-                        style="height: 10.9969px;"></textarea>
+                        style="height: 10.9969px;">{{ node.content }}</textarea>
                         <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                     </div>
                     <div class="row">

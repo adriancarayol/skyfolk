@@ -2,21 +2,22 @@
 {% load avatar_tags %}
 {% load static %}
 {% for item in like_list %}
+    
     <div class="col l3 m10 s12 offset-m1">
         <div class="personal-card">
             <div class="row">
                 <div class="col s12">
                     <div class="header">
-                        {% if item.from_like__profile__back_image %}
+                        {% if item.from_like.profile.back_image %}
                             <img class="back-profile-user"
-                                 src="{{ item.from_like__profile__back_image.url }}">
+                                 src="{{ item.from_like.profile.back_image.url }}">
                         {% else %}
                             <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
                         {% endif %}
                         <i class="material-icons like-him">favorite</i>
                         <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.from_like__username }}'"
-                                 class="profile-user-bg">{% avatar item.from_like__username %}</div>
+                            <div onclick="location.href='/profile/{{ item.from_like.username}}'"
+                                 class="profile-user-bg">{% avatar item.from_like.username %}</div>
                         </div>
                     </div>
                 </div>
@@ -24,8 +25,8 @@
             <div class="row">
                 <div class="col s12">
                     <div class="name-friend">
-                        <a href="/profile/{{ item.from_like__username }}">@{{ item.from_like__username }}</a><br><br>
-                        <p>{{ item.from_like__first_name }} {{ item.from_like__last_name }}</p>
+                        <a href="/profile/{{ item.from_like.username }}">@{{ item.from_like.username }}</a><br><br>
+                        <p>{{ item.from_like.first_name }} {{ item.from_like.last_name }}</p>
                     </div>
                 </div>
             </div>

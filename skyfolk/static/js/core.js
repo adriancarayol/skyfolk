@@ -92,13 +92,13 @@ $(document).ready(function () {
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
         menuWidth: 300,
-        draggable: true
+        draggable: false
     });
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
         menuWidth: 340,
-        dragable: true
+        dragable: false
     });
 
     /* Mensaje flotante (perfil ajeno) */

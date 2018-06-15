@@ -245,7 +245,7 @@ class PublicationGroupMediaVideo(PublicationBase):
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request,
-                                        template_name='channels/new_video_publication.html',
+                                        template_name='channels/new_video_group_publication.html',
                                         context={'node': self, 'object': self.board_video})
         }
 
@@ -254,7 +254,7 @@ class PublicationGroupMediaVideo(PublicationBase):
             "text": json.dumps(data)
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_video_publication_detail.html',
+        data['content'] = render_to_string(request=request, template_name='channels/new_video_group_publication_detail.html',
                                            context={'node': self, 'object': self.board_video})
 
         if is_edited:

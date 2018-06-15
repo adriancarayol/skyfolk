@@ -136,7 +136,7 @@
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         {% if  item.shared_publication.extra_content.video %}
                                         {% video item.shared_publication.extra_content.video as my_video %}
-                                        {% video my_video "300x100" %}
+                                        {% video my_video "100% x 100%" %}
                                         {% endvideo %}
                                         {% else %}
                                         <div class="card small">
@@ -211,7 +211,7 @@
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
                                                 {% if item.shared_group_publication.group_extra_content.video %}
                                                 {% video item.shared_group_publication.group_extra_content.video as my_video %}
-                                                {% video my_video "300x100" %}
+                                                {% video my_video "100% x 100%" %}
                                                 {% endvideo %}
                                                 {% else %}
                                                 <div class="card small">
@@ -269,7 +269,7 @@
                                             {% if item.extra_content %}
                                             {% if item.extra_content.video %}
                                             {% video item.extra_content.video as my_video %}
-                                            {% video my_video "300x100" %}
+                                            {% video my_video "100% x 100%" %}
                                             {% endvideo %}
                                             {% else %}
                                             {% comment %} Para publicaciones con URL {% endcomment %}

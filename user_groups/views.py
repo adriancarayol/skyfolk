@@ -463,11 +463,7 @@ class LikeListGroup(ListView):
 
     def get_queryset(self):
         self.group = UserGroups.objects.get(slug=self.kwargs.pop('groupname', None))
-        return LikeGroup.objects.filter(to_like_id=self.group.id).values('from_like__username',
-                                                                         'from_like__first_name',
-                                                                         'from_like__last_name',
-                                                                         'from_like__profile__back_image'
-                                                                         )
+        return LikeGroup.objects.filter(to_like_id=self.group.id)
 
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)

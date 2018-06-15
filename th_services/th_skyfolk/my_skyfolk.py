@@ -32,7 +32,7 @@ class ServiceSkyfolk(ServicesMgr):
         title, content = super(ServiceSkyfolk, self).save_data(trigger_id, **data)
         trigger = Skyfolk.objects.get(trigger_id=trigger_id)
 
-        content = '<b>' + title + '</b>\n' + content
+        content = '<b>' + title + '</b>: ' + content
         try:
             Publication.objects.create(content=content, author=trigger.trigger.user, board_owner=trigger.trigger.user)
             status = True
