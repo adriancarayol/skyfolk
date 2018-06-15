@@ -224,8 +224,8 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $(this).on('click', '.like-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+    $(document).on('click', '.like-comment', function () {
+        var caja_publicacion = $(this).closest('.infinite-item');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
@@ -379,11 +379,17 @@ function AJAX_load_publications(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
@@ -405,7 +411,6 @@ function AJAX_load_publications(pub, loader, page, btn) {
 
 /* EDIT PUBLICATION */
 function AJAX_edit_publication(data) {
-    console.log(data);
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',

@@ -614,16 +614,10 @@ def load_more_comments(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            publications = publication.get_descendants() \
-                .filter(~Q(author__profile__in=users_not_blocked_me)
-                        & Q(level__lte=1) & Q(deleted=False))
-
-        else:
-            publications = publication.get_descendants() \
-                .filter(
-                ~Q(author__profile__in=users_not_blocked_me)
-                & Q(deleted=False))
+        publications = publication.get_descendants() \
+            .filter(
+            ~Q(author__profile__in=users_not_blocked_me)
+            & Q(deleted=False)).order_by('created')
 
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(

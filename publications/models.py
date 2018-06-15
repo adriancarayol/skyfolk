@@ -83,7 +83,8 @@ class PublicationBase(MPTTModel):
         Util para contar cuantos nodos hijos inmediatos tiene la raiz (el comentario raiz)
         :return: El numero de nodos hijo
         """
-        return self.get_descendants().filter(level__lte=1, deleted=False).count()
+        # return self.get_descendants().filter(level__lte=1, deleted=False).count()
+        return self.get_descendants().filter(deleted=False).count()
 
     def get_descendants_not_deleted(self):
         return self.get_descendants().filter(deleted=False).count()
@@ -189,6 +190,7 @@ class Publication(PublicationBase):
             'id': self.id,
             'parent_id': self.parent_id,
             'level': self.level,
+            'is_edited': is_edited,
             'content': render_to_string(request=request, template_name='channels/new_publication.html',
                                         context={'node': self, 'user_profile': self.board_owner})
         }
