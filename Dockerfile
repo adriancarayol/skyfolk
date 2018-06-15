@@ -44,7 +44,6 @@ RUN mkdir -p /var/www/skyfolk.net/run/static/media
 RUN chmod -R g+w /var/www
 RUN chmod -R 777 /var/www
 
-RUN chmod 770 /usr/bin/ffmpeg
 RUN chmod -R 770 /root/
 
 
