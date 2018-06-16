@@ -245,7 +245,7 @@
 <div class="wrapper-reply">
     {% include "account/new_reply.html" %}
 </div>
-    {% if not node.is_leaf_node %}
+    {% if node.level == 0 %}
                         <ul class="children">
                             {{ children }}
                         </ul>

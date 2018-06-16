@@ -123,13 +123,12 @@ $(document).ready(function () {
         AJAX_load_descendants_gallery(pub_id, loader, page, this);
     });
 
-    $('#messages-wrapper').on('click', '#load-comments', function(e) {
+    $('#messages-wrapper').on('click', '#load-comments', function (e) {
         e.preventDefault();
         $.ajax({
             type: "GET",
             url: $(this).attr('href'),
-            success : function(data)
-            {
+            success: function (data) {
                 $('#load-comments').remove();
                 $('.loading_publications').before(data);
             }
@@ -224,6 +223,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
 
 /*****************************************************/
 /********** AJAX para añadir me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_like_gallery(caja_publicacion, heart, type) {
@@ -300,6 +300,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 
 /*****************************************************/
 /******* AJAX para añadir no me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
@@ -408,18 +409,23 @@ function AJAX_load_descendants_gallery(pub, loader, page, btn) {
         url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
         type: 'GET',
         dataType: 'html',
-        beforeSend: function() {
+        beforeSend: function () {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
 
             $children_list.append(data);
+
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
             if ($result_child_count > 0)

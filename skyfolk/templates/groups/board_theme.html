@@ -110,6 +110,9 @@
             },
             onAfterPageLoad: function () {
                 $('.loading_board_theme').hide();
+                $('div[id^="pub-"]').each(function (i) {
+                    var div = $('[id="' + this.id + '"]').slice(1).remove();
+                });
             }
         });
     </script>

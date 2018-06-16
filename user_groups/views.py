@@ -771,7 +771,7 @@ class GroupThemeView(DetailView):
                 When(user_give_me_hate__id=user.id, then=Value(1)),
                 output_field=IntegerField()
             ))).filter(board_theme=self.object,
-                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author')
+                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author').order_by('created')
 
         paginator = Paginator(publications, 25)
 

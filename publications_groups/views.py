@@ -438,7 +438,7 @@ class PublicationGroupDetail(ListView):
                               'videos', 'tags') \
             .select_related('author',
                             'board_group',
-                            'parent')
+                            'parent').order_by('created')
 
         paginator = Paginator(publications, 10)
 
@@ -493,16 +493,11 @@ class LoadRepliesForPublicationGroup(View):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants() \
-                .filter(~Q(author__profile__in=users_not_blocked_me)
-                        & Q(level__lte=1) & Q(deleted=False))
-
-        else:
-            pubs = publication.get_descendants() \
-                .filter(
-                ~Q(author__profile__in=users_not_blocked_me)
-                & Q(deleted=False))
+        
+        pubs = publication.get_descendants() \
+            .filter(
+            ~Q(author__profile__in=users_not_blocked_me)
+            & Q(deleted=False)).order_by('created')
 
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(

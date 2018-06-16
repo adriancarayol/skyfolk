@@ -1135,11 +1135,19 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
             loadDescendantsRunning = true;
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
+            
+            var parsed = $.parseHTML(data.content);
+
+            for(var i = 0; i < parsed.length; i++) {
+                var pub_id = $(parsed[i]).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
             }
+            
             $children_list.append(data.content);
             btn.attr('href', '/publication/group/load/replies/?page=' + data.page + '&pubid=' + pub);
             var $child_count = btn.find('.child_count');
@@ -1258,7 +1266,7 @@ function AJAX_submit_theme_publication(form) {
             var parent = form_data.get('parent');
             var board_theme = form_data.get('board_theme');
             if (parent === null) {
-                $('#caja-comentario-' + board_theme).toggle();
+                $('#caja-theme-' + board_theme).toggle();
             } else {
                 $('#caja-comentario-' + parent).toggle();
             }

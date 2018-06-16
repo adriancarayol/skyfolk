@@ -250,6 +250,9 @@
             },
             onAfterPageLoad: function () {
                 $('.loading_skyline').hide();
+                $('div[id^="pub-"]').each(function (i) {
+                    var div = $('[id="' + this.id + '"]').slice(1).remove();
+                });
             }
         });
     </script>

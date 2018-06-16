@@ -169,7 +169,7 @@ def publication_detail(request, publication_id):
                               'videos', 'tags') \
             .select_related('p_author',
                             'board_photo',
-                            'parent')
+                            'parent').order_by('created')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 
@@ -497,13 +497,8 @@ def load_more_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__in=users_not_blocked_me)
-                                                        & Q(level__lte=1)
-                                                        & Q(deleted=False))
-        else:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False))
+        pubs = publication.get_descendants().filter(~Q(p_author__profile__in=users_not_blocked_me)
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(

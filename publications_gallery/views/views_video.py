@@ -167,7 +167,7 @@ def video_publication_detail(request, publication_id):
                               'videos', 'tags') \
             .select_related('author',
                             'board_video',
-                            'parent')
+                            'parent').order_by('created')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 
@@ -422,6 +422,7 @@ def add_video_hate(request):
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
+
 @transaction.atomic
 def edit_video_publication(request):
     """
@@ -494,13 +495,8 @@ def load_more_video_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(level__lte=1)
-                                                        & Q(deleted=False))
-        else:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False))
+        pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(

@@ -275,12 +275,13 @@ def publication_detail(request, publication_id):
                               'shared_group_publication__images',
                               'shared_group_publication__author',
                               'shared_group_publication__videos',
-                              'shared_group_publication__group_extra_content',) \
+                              'shared_group_publication__group_extra_content', ) \
             .select_related('author',
                             'board_owner', 'shared_publication',
                             'parent', 'shared_group_publication').annotate(
             total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).order_by('created')
+
     except Exception as e:
         logger.info(e)
         raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
@@ -542,6 +543,7 @@ def add_hate(request):
                 + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
+
 
 @login_required()
 def edit_publication(request):

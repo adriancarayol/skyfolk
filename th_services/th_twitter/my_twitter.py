@@ -131,7 +131,7 @@ class ServiceTwitter(ServicesMgr):
             return count, search, statuses
 
         if self.token is not None:
-            kw = {'app_label': 'th_services.th_twitter', 'model_name': 'Twitter', 'trigger_id': trigger_id}
+            kw = {'app_label': 'th_twitter', 'model_name': 'Twitter', 'trigger_id': trigger_id}
             twitter_obj = super(ServiceTwitter, self).read_data(**kw)
 
             # https://dev.twitter.com/rest/public/timelines

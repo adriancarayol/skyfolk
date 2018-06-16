@@ -39,6 +39,8 @@ var UTILS = UTILS || (function () {
                             $("#tab-comentarios .btn-filters").after(data.content);
                         }
                     }
+
+
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
                     if ($(no_comments).is(':visible')) {
                         $(no_comments).fadeOut(function () {

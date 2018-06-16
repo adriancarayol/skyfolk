@@ -158,7 +158,8 @@
 <div class="wrapper-reply">
     {% include "photologue/new_reply.html" %}
 </div>
-{% if not node.is_leaf_node %}
+{% if node.level == 0 %}
+    <ul class="children"></ul>
 <div class="row">
     <div class="col s12">
         {% with node.get_children_count as descendants %}
