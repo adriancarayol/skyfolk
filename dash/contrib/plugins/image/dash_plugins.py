@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
-
+from .models import DashImageModel
 from .forms import ImageForm
 from .helpers import delete_file, clone_file
 
@@ -28,14 +28,17 @@ class BaseImagePlugin(BaseDashboardPlugin):
 
     def delete_plugin_data(self):
         """Deletes uploaded file."""
-        delete_file(self.data.image)
+        im = DashImageModel.objects.get(id=self.data.image)
+        im.image.delete()
+        im.delete()
 
     def clone_plugin_data(self, dashboard_entry):
         """Clone plugin data, which means we make a copy of the original image.
 
         TODO: Perhaps rely more on data of ``dashboard_entry``?
         """
-        cloned_image = clone_file(self.data.image, relative_path=True)
+        im = DashImageModel.objects.get(id=self.data.image)
+        cloned_image = clone_file(im.image, relative_path=True)
         return self.get_cloned_plugin_data(update={'image': cloned_image})
 
 

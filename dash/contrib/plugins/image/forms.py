@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
-
+from .models import DashImageModel
 from .helpers import handle_uploaded_file
 from .settings import FIT_METHODS_CHOICES, DEFAULT_FIT_METHOD
 
@@ -39,6 +39,7 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""
         image = self.cleaned_data.get('image', None)
+
         if image:
-            saved_image = handle_uploaded_file(image)
-            self.cleaned_data['image'] = saved_image
+            im = DashImageModel.objects.create(image=image, user_id=request.user.id)
+            self.cleaned_data['image'] = im.id

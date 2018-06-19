@@ -4,9 +4,7 @@
 {% load app_filters %}
 {% load static %}
 <div class="row" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
-    <div class="col s12">
-        <div class="col s12 wrapper"
-             {% if node.level > 0  %}style="min-width: 98% !important;"{% endif %}>
+        <div class="wrapper">
             <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
@@ -203,7 +201,6 @@
                     {% endif %}
         </div>
     </div>
-</div>
 <script>
     $(document).ready(function () {
         $('.materialboxed').materialbox();

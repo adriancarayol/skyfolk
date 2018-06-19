@@ -5,9 +5,7 @@
 {% load embed_video_tags %}
 {% load static %}
 <div class="row infinite-item">
-    <div class="col s12">
-        <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
-        {% if node.level > 0 %}style="min-width: 98% !important;"{% endif %}>
+        <div class="wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
         <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
             data-delay="50"
@@ -177,7 +175,6 @@
     </div>
 </div>
 {% endif %}
-</div>
 </div>
 </div>
 <script>
