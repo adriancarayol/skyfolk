@@ -144,6 +144,7 @@ class PublicationGroupMediaPhoto(PublicationBase):
         if self.author_id != self.board_photo.owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_photo.owner,
+                        action_object=self,
                         description="Te avisamos de que @{0} ha publicado en una foto. <a href='/group/multimedia/publication/detail/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en una foto.' %
@@ -271,6 +272,7 @@ class PublicationGroupMediaVideo(PublicationBase):
         if self.author_id != self.board_video.owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_video.owner,
+                        action_object=self,
                         description="Te avisamos de que @{0} ha publicado en un vídeo. <a href='/group/multimedia/video/publication/detail/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en un vídeo.' %

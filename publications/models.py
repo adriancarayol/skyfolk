@@ -219,6 +219,7 @@ class Publication(PublicationBase):
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
+                        action_object=self,
                         description="Te avisamos de que @{0} ha publicado en tu skyline. <a href='/publication/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu skyline.' %

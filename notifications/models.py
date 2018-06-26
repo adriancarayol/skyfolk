@@ -1,6 +1,5 @@
 import json
 from distutils.version import StrictVersion
-
 from channels import Group as group_channel
 from django import get_version
 from django.conf import settings
@@ -12,7 +11,7 @@ from avatar.models import Avatar
 from avatar.templatetags.avatar_tags import avatar
 from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
-from django.utils.text import Truncator
+from bs4 import BeautifulSoup
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -23,7 +22,7 @@ from django.db import models
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.utils.six import text_type
 from .utils import id2slug
-
+from django.urls import reverse
 from .signals import notify
 
 from model_utils import Choices
@@ -322,7 +321,6 @@ def notify_handler(verb, **kwargs):
             actor_avatar=actor_avatar,  # URL del avatar del usuario que hace la peticion
             verb=text_type(verb),
             public=public,
-            description=description,
             timestamp=timestamp,
             level=level,
         )
@@ -337,6 +335,14 @@ def notify_handler(verb, **kwargs):
         if len(kwargs) and EXTRA_DATA:
             newnotify.data = kwargs
 
+        soup = BeautifulSoup(description)
+        a_description = soup.find('a')
+
+        if a_description is not None:
+            url = reverse('notifications:mark_as_read', kwargs={'slug': id2slug(newnotify.id)})
+            a_description['href'] = url + '?next=' + a_description['href']
+
+        newnotify.description = str(soup)
         newnotify.save()
 
         # Si el usuario desea recibir notificaciones de skyfolk a su correo
@@ -344,7 +350,8 @@ def notify_handler(verb, **kwargs):
             if recipient.notification_settings.email_when_new_notification:
                 notify_via_email(actor, [recipient],
                                  "Skyfolk - {0}, tienes nuevas notificaciones.".format(recipient.username),
-                                 'emails/new_notification.html', {'to_user': recipient.username, 'description': description})
+                                 'emails/new_notification.html',
+                                 {'to_user': recipient.username, 'description': description})
         except ObjectDoesNotExist:
             pass
 

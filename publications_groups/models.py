@@ -124,6 +124,7 @@ class PublicationGroup(PublicationBase):
         if self.author_id != self.board_group.owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_group.owner,
+                        action_object=self,
                         description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}. <a href='/publication/group/detail/{2}/'>Ver</a>".format(
                             self.author.username, self.board_group.name, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %

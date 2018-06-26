@@ -132,6 +132,7 @@ def notify_mentions(instance):
         if instance.author.pk != user.id:
             notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
+                        action_object=instance,
                         verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
                         description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(

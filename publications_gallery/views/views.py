@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -15,6 +16,7 @@ from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue.models import Photo
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication

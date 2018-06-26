@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue.models import Video
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.views import logger
@@ -151,6 +153,8 @@ def video_publication_detail(request, publication_id):
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
+
+
 
     try:
         publication = request_pub.get_descendants(include_self=True) \

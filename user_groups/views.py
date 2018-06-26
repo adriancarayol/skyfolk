@@ -5,6 +5,7 @@ from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -600,7 +601,7 @@ class ProfileGroups(APIView):
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
 
         page = request.GET.get('page', 1)
-        
+
         try:
             groups = paginator.page(page)
         except PageNotAnInteger:
@@ -741,6 +742,25 @@ class AddHateTheme(View):
 class GroupThemeView(DetailView):
     template_name = 'groups/board_theme.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+        theme = GroupTheme.objects.get(slug=self.kwargs['slug'])
+        group = UserGroups.objects.get(id=theme.board_group_id)
+
+        if not group.is_public:
+            is_member = user.user_groups.filter(id=theme.board_group_id).exists()
+            if not is_member:
+                return HttpResponseForbidden()
+
+        try:
+            Notification.objects.filter(
+                action_object_content_type=ContentType.objects.get_for_model(theme)).update(unread=False)
+        except Notification.DoesNotExist:
+            pass
+
+        return super(GroupThemeView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         user = self.request.user
 
@@ -771,7 +791,8 @@ class GroupThemeView(DetailView):
                 When(user_give_me_hate__id=user.id, then=Value(1)),
                 output_field=IntegerField()
             ))).filter(board_theme=self.object,
-                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author').order_by('created')
+                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author').order_by(
+            'created')
 
         paginator = Paginator(publications, 25)
 
@@ -813,7 +834,7 @@ class DeleteGroupTheme(DeleteView):
         group = UserGroups.objects.get(id=self.object.board_group_id)
 
         if self.object.owner_id != user.id and (
-                user != group.owner_id and not user.has_perm('delete_publication', group)):
+                        user != group.owner_id and not user.has_perm('delete_publication', group)):
             return JsonResponse(data)
 
         data['redirect_url'] = reverse('user_groups:group-profile', kwargs={'groupname': group.slug})

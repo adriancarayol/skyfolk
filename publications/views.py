@@ -9,6 +9,7 @@ from PIL import Image
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime, intword
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -27,6 +28,7 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
+from notifications.models import Notification
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
@@ -244,6 +246,7 @@ def publication_detail(request, publication_id):
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
+
 
     try:
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),

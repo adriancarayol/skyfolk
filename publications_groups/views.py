@@ -1,5 +1,6 @@
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -15,6 +16,7 @@ from django.views.generic import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.forms import SharedPublicationForm
 from publications.models import Publication
@@ -413,6 +415,12 @@ class PublicationGroupDetail(ListView):
                 id=user.id).exists():
             return HttpResponseForbidden()
 
+        try:
+            Notification.objects.filter(
+                action_object_content_type=ContentType.objects.get_for_model(self.publication)).update(unread=False)
+        except Notification.DoesNotExist:
+            pass
+
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(
             'shared_group_publication__id')
@@ -493,7 +501,6 @@ class LoadRepliesForPublicationGroup(View):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        
         pubs = publication.get_descendants() \
             .filter(
             ~Q(author__profile__in=users_not_blocked_me)

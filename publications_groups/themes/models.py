@@ -117,6 +117,7 @@ class PublicationTheme(PublicationBase):
         if self.author_id != group_owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_theme.owner,
+                        action_object=self.board_theme,
                         description="Te avisamos de que @{0} ha publicado en el tema {1}. <a href='/groups/theme/{2}/'>Ver</a>".format(
                             self.author.username, self.board_theme.title, self.board_theme.slug),
                         verb=u'<a href="/profile/{0}">@{0}</a> ha publicado en el tema {1}.'.format(

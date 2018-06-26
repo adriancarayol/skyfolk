@@ -708,6 +708,7 @@ def request_friend(request):
                             # enviamos notificacion informando del evento
                             notify.send(user, actor=n.user.username,
                                         recipient=m.user,
+                                        action_object=user,
                                         description="@{0} ahora es tu seguidor.".format(user.username),
                                         verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (
                                             n.user.username, n.user.username),
@@ -779,6 +780,7 @@ def respond_friend_request(request):
                                                            from_profile=recipient.profile, type=FOLLOWING)
                         notify.send(user, actor=user.username,
                                     recipient=recipient,
+                                    action_object=user,
                                     description="@{0} ha aceptado tu solicitud de seguimiento.".format(user.username),
                                     verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
                                         user.username, user.username),

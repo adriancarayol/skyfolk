@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue_groups.models import VideoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
@@ -23,7 +25,8 @@ from publications_gallery_groups.models import PublicationGroupMediaVideo
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery_groups.media_processor import optimize_publication_media, check_num_images, check_image_property
+from publications_gallery_groups.media_processor import optimize_publication_media, check_num_images, \
+    check_image_property
 
 
 class PublicationVideoView(AjaxableResponseMixin, CreateView):
@@ -138,6 +141,7 @@ def video_publication_detail(request, publication_id):
     """
     user = request.user
     page = request.GET.get('page', 1)
+
     try:
         request_pub = PublicationGroupMediaVideo.objects.select_related('board_video').get(id=publication_id,
                                                                                            deleted=False)
@@ -159,6 +163,8 @@ def video_publication_detail(request, publication_id):
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
+
+
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
@@ -502,9 +508,8 @@ def load_more_video_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        
         pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False)).order_by('created')
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(

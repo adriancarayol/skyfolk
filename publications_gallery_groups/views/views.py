@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue_groups.models import PhotoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
@@ -158,6 +160,8 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
 
+
+
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
@@ -218,7 +222,8 @@ def delete_publication(request):
             publication.author.username, publication.board_photo, user.username))
 
         # Borramos publicacion
-        if user.id == publication.author.id or user.id == publication.board_photo.owner_id or user.has_perm('delete_publication', publication.board_video.group):
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id or user.has_perm(
+                'delete_publication', publication.board_video.group):
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -501,9 +506,8 @@ def load_more_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        
         pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False)).order_by('created')
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
