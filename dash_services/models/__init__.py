@@ -1,5 +1,6 @@
 # coding: utf-8
 import arrow
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -17,6 +18,15 @@ from logging import getLogger
 
 logger = getLogger('django_th.trigger_happy')
 
+def upload_service_thumbnail(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return '{0}/{1}/{2}'.format('services/thumbnail', instance.name, filename)
 
 class ServicesActivated(models.Model):
 
@@ -28,6 +38,7 @@ class ServicesActivated(models.Model):
     auth_required = models.BooleanField(default=True)
     self_hosted = models.BooleanField(default=False)
     description = models.CharField(max_length=200)
+    thumbnail = models.ImageField(upload_to=upload_service_thumbnail, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Services'
