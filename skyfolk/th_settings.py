@@ -130,4 +130,4 @@ SERVICES_WITH_TOKEN = ('ServiceInstapush',)
 SERVICES_HOSTED_WITH_AUTH = ('ServiceMastodon', 'ServiceWallabag',)
 
 # list of services that require nothing
-SERVICES_NEUTRAL = ('ServiceRss',)
+SERVICES_NEUTRAL = ('ServiceRss', 'ServiceSkyfolk')

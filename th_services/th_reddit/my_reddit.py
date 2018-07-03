@@ -125,13 +125,16 @@ class ServiceReddit(ServicesMgr):
         :param request:
         :return:
         """
-        redirect_uri = '%s://%s%s' % (request.scheme, request.get_host(), reverse("reddit_callback"))
-        reddit = RedditApi(client_id=self.consumer_key,
+        try:
+            redirect_uri = '%s://%s%s' % (request.scheme, request.get_host(), reverse("reddit_callback"))
+            reddit = RedditApi(client_id=self.consumer_key,
                            client_secret=self.consumer_secret,
                            redirect_uri=redirect_uri,
                            user_agent=self.user_agent)
-        auth_url = reddit.auth.url(['identity', 'read', 'submit', 'save'], 'redirect_uri')
-        return auth_url
+            auth_url = reddit.auth.url(['identity', 'read', 'submit', 'save'], 'redirect_uri')
+            return auth_url
+        except Exception as e:
+            raise ValueError('Hubo un error al conectar tu cuenta de Reddit: {}'.format(e))
 
     def callback(self, request, **kwargs):
         """

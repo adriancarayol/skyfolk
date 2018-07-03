@@ -150,15 +150,18 @@ class ServicePocket(ServicesMgr):
             :return: callback url
             :rtype: string that contains the url to redirect after auth
         """
-        callback_url = self.callback_url(request)
+        try:
+            callback_url = self.callback_url(request)
 
-        request_token = Pocket.get_request_token(consumer_key=self.consumer_key, redirect_uri=callback_url)
-        # Save the request token information for later
-        request.session['request_token'] = request_token
-        # URL to redirect user to, to authorize your app
-        auth_url = Pocket.get_auth_url(code=request_token, redirect_uri=callback_url)
+            request_token = Pocket.get_request_token(consumer_key=self.consumer_key, redirect_uri=callback_url)
+            # Save the request token information for later
+            request.session['request_token'] = request_token
+            # URL to redirect user to, to authorize your app
+            auth_url = Pocket.get_auth_url(code=request_token, redirect_uri=callback_url)
 
-        return auth_url
+            return auth_url
+        except Exception as e:
+            raise ValueError('Hubo un error al conectar tu cuenta de Pocket: {}'.format(e))
 
     def callback(self, request, **kwargs):
         """

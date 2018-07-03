@@ -1,23 +1,29 @@
-{% extends "base.html" %}
+{% extends "account/base_interface.html" %}
 {% load static %}
 {% load i18n %}
 {% load django_th_extras %}
 {% block title %}<title>Skyfolk // {% trans "My Services" %}</title>{% endblock %}
 {% block content %}
-    <div class="col-md-12" id="trigger-content">
-        <h3><span class="glyphicon glyphicon-trash"></span> {% trans 'Deletion of your service' %} {{ userservice.name|service_readable }}</h3>
-        <div class="alert alert-danger">
-            {% blocktrans %}
-                Are you sure you want to remove this service ?<br/><br/>
-                <span class="glyphicon glyphicon-warning-sign icon-white"></span> Be careful, If you reply <span class="label label-danger">Yes</span>, all the related triggers will be deleted too
-            {% endblocktrans %}
+<div class="container">
+    <div class="row">
+        <div class="col offset-s3 s6 z-depth-2 center" id="trigger-content">
+            <h3>{% comment %}{% trans 'Deletion of your service' %}{% endcomment %}Eliminar el servicio {{ userservice.name|service_readable }}</h3>
+            <div class="col s12">
+                {% blocktrans %}
+                ¿Estás seguro de que quieres eliminar este servicio?<br/><br/>
+                <span class="glyphicon glyphicon-warning-sign icon-white"></span>Si respondes <span class="red-text"><b>SÍ</b></span> todos los widgets que usen este servicio no funcionarán.{% endblocktrans %}
+            </div>
+            <div class="divider"></div>
+            <div class="col s12">
+                <form method="post" role="form" action="">
+                    {% csrf_token %}
+                    <div class="col s12">
+                        <input class="btn red" name="ok" type="submit" value="{% trans 'Yes' %}" />
+                        <a href="{% url 'user_services' %}" class="btn blue">{% trans "No" %}</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form method="post" role="form" class="form-horizontal" action="">
-        {% csrf_token %}
-        <div class="form-actions">
-            <input class="btn btn-danger" name="ok" type="submit" value="{% trans 'Yes' %}" />
-            <a href="{% url 'user_services' %}" class="btn btn-primary">{% trans "No" %}</a>
-        </div>
-        </form>
     </div>
+</div>
 {% endblock %}

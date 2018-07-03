@@ -163,13 +163,16 @@ class ServiceGithub(ServicesMgr):
                                      '',
                                      self.consumer_key,
                                      self.consumer_secret)
+
+            if not auth.token:
+                raise Exception("Error al iniciar sesión")
+
             request.session['oauth_token'] = auth.token
             request.session['oauth_id'] = auth.id
-        except AuthenticationFailed as e:
-            messages.add_message(request, messages.ERROR, message="GITHUB RENEW FAILED : Raeson {}".format(e))
-            return reverse('user_services')
-
-        return self.callback_url(request)
+            return self.callback_url(request)
+        except Exception as e:
+            # messages.add_message(request, messages.ERROR, message="GITHUB RENEW FAILED : Raeson {}".format(e))
+            raise ValueError('Hubo un error al conectar con tu cuenta de GitHub: {}'.format(e))
 
     def callback(self, request, **kwargs):
         """

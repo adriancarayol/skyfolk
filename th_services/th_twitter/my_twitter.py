@@ -14,7 +14,7 @@ from logging import getLogger
 
 from th_services.th_twitter.models import Twitter
 # Twitter lib
-from twython import Twython, TwythonAuthError, TwythonRateLimitError
+from twython import Twython, TwythonAuthError, TwythonRateLimitError, TwythonError
 
 
 """
@@ -238,15 +238,16 @@ class ServiceTwitter(ServicesMgr):
         to allow the access of TriggerHappy
         """
         callback_url = self.callback_url(request)
-
         twitter = Twython(self.consumer_key, self.consumer_secret)
 
-        req_token = twitter.get_authentication_tokens(
-            callback_url=callback_url)
-        request.session['oauth_token'] = req_token['oauth_token']
-        request.session['oauth_token_secret'] = req_token['oauth_token_secret']
-
-        return req_token['auth_url']
+        try:
+            req_token = twitter.get_authentication_tokens(
+                callback_url=callback_url)
+            request.session['oauth_token'] = req_token['oauth_token']
+            request.session['oauth_token_secret'] = req_token['oauth_token_secret']
+            return req_token['auth_url']
+        except TwythonError as e:
+            raise ValueError('Error al iniciar sesión en Twitter')
 
     def callback(self, request, **kwargs):
         """

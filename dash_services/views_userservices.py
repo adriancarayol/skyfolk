@@ -9,7 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView
-
+from django.http import HttpResponseForbidden
+from django.template import loader
 from dash_services.models import UserService, ServicesActivated
 from dash_services.forms.base import UserServiceForm
 from dash_services.services import default_provider
@@ -112,7 +113,7 @@ class UserServiceCreateView(CreateView):
     def form_valid(self, form):
         name = form.cleaned_data.get('name').name
         user = self.request.user
-        form.save(user=user, service_name=self.kwargs.get('service_name'))
+        # form.save(user=user, service_name=self.kwargs.get('service_name'))
 
         sa = ServicesActivated.objects.get(name=name)
         # let's build the 'call' of the auth method
@@ -127,8 +128,16 @@ class UserServiceCreateView(CreateView):
             # and redirect to the external service page
             # to auth the application django-th to access to the user
             # account details
-            return redirect(lets_auth(self.request))
-        messages.success(self.request, _('Service %s activated successfully') % name.split('Service')[1])
+            try:
+                http_redirect_obj = redirect(lets_auth(self.request))
+                form.save(user=user, service_name=self.kwargs.get('service_name'))
+                return http_redirect_obj
+            except Exception as e:
+                t = loader.get_template('services/error_service.html')
+                return HttpResponseForbidden(t.render(request=self.request, context={'exception': str(e)}))
+        else:
+            form.save(user=user, service_name=self.kwargs.get('service_name'))
+        # messages.success(self.request, _('Service %s activated successfully') % name.split('Service')[1])
         return HttpResponseRedirect(reverse('user_services'))
 
     def get_form_kwargs(self):
@@ -185,7 +194,7 @@ class UserServiceUpdateView(UserServiceMixin, UpdateView):
         name = form.cleaned_data.get('name').name
         user = self.request.user
         form.save(user=user, service_name=name)
-        messages.success(self.request, _('Service %s modified successfully') % name.split('Service')[1])
+        #messages.success(self.request, _('Service %s modified successfully') % name.split('Service')[1])
         return HttpResponseRedirect(reverse('user_services'))
 
 

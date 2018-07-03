@@ -5,7 +5,7 @@ import datetime
 from django.conf import settings
 from django.core.mail import send_mail, mail_admins
 from django.utils import html
-
+from notifications.signals import notify
 import importlib
 import time
 
@@ -85,6 +85,11 @@ def to_datetime(data):
 
 
 def warn_user_and_admin(consumer_provider, service):
+
+    notify.send(service.user, actor=service.user,
+                recipient=service.user,
+                description='El servicio {} está fallando, comprueba que tus datos son correctos.'.format(service_name),
+                verb=u'¡{} está fallando!'.format(service_name), level='warn_service')
 
     from_mail = settings.DEFAULT_FROM_EMAIL
 

@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+{% extends "account/base_interface.html" %}
 {% load static %}
 {% load i18n %}
 {% load django_th_extras %}
 {% block filter_trigger %}
+{% block title %}<title>Skyfolk // Mis servicios{% comment %}{% trans "My Services" %}{% endcomment %}</title>{% endblock %}
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -33,37 +34,38 @@
                                                         <a class="waves-effect waves-light btn white blue-text"
                                                            role="button"
                                                            href="{% url 'renew_service' service.name.id %}"
-                                                           title="{% trans 'Renew this service ?' %}"><span
+                                                           title="Renovar servicio"><span
                                                                 class="material-icons">autorenew</span></a>
                                                     {% endif %}
                                                     <a class="waves-effect waves-light btn white black-text"
                                                        role="button"
                                                        href="{% url 'edit_service' service.id %}"
-                                                       title="{% trans 'Edit this service' %}"><span
+                                                       title="Editar servicio"><span
                                                             class="material-icons">edit</span></a>
                                                     <a class="waves-effect waves-light btn white orange-text"
                                                        role="button"
                                                        href="{% url 'service_related_triggers_switch_to' service.pk 'off' %}"
-                                                       title="{% trans 'Disable all the triggers of this service' %}"><span
+                                                       title="Desactivar todos los widgets de este servicio"><span
                                                             class="material-icons">pause_circle_filled</span></a>
                                                     <a class="waves-effect waves-light btn white green-text"
                                                        role="button"
                                                        href="{% url 'service_related_triggers_switch_to' service.pk 'on' %}"
-                                                       title="{% trans 'Enable all the triggers of this service' %}"><span
+                                                       title="Activar todos los widgets de este servicio"><span
                                                             class="material-icons">play_circle_filled</span></a>
                                                     <a class="waves-effect waves-light btn white red-text" role="button"
                                                        href="{% url 'delete_service' service.id %}"
-                                                       title="{% trans 'Delete this service ?' %}"><span
+                                                       title="Eliminar este servicio"><span
                                                             class="material-icons">remove</span></a>
                                                 </p>
                                             </div>
+                                            <div class="row"></div>
                                             <div class="col s12">
                                                 <p>
                                                     <span><i class="material-icons">done</i></span>
-                                                    <span>{{ service.counter_ok }} {% trans "ran successfully" %}</span>
+                                                    <span>{{ service.counter_ok }} ejecuciones satisfactorias</span>
                                                     -
                                                     <span><i class="material-icons">error</i></span>
-                                                    <span>{{ service.counter_ko }} {% trans "failed" %}</span>
+                                                    <span>{{ service.counter_ko }} errores</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -75,7 +77,7 @@
                     <div class="divider"></div>
                     {% if service_list_remaining %}
                         <div class="row">
-                            <h3>Services available</h3>
+                            <h3>Servicios disponibles</h3>
                             {% for service in service_list_remaining %}
                                 <div class="col m3 card">
                                     <a class="thumbnail" title="add this service"

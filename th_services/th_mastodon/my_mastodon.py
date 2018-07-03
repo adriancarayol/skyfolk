@@ -88,7 +88,7 @@ class ServiceMastodon(ServicesMgr):
             return search, statuses
 
         if self.token is not None:
-            kw = {'app_label': 'th_services.th_mastodon', 'model_name': 'Mastodon', 'trigger_id': trigger_id}
+            kw = {'app_label': 'th_mastodon', 'model_name': 'Mastodon', 'trigger_id': trigger_id}
             toot_obj = super(ServiceMastodon, self).read_data(**kw)
 
             us = UserService.objects.get(token=self.token, name='ServiceMastodon')
@@ -247,30 +247,33 @@ class ServiceMastodon(ServicesMgr):
             :rtype: dict
         """
         # create app
-        redirect_uris = '%s://%s%s' % (request.scheme, request.get_host(),
-                                       reverse('mastodon_callback'))
-        us = UserService.objects.get(user=request.user,
-                                     name='ServiceMastodon')
-        client_id, client_secret = MastodonAPI.create_app(
-            client_name="TriggerHappy", api_base_url=us.host,
-            redirect_uris=redirect_uris)
+        try:
+            redirect_uris = '%s://%s%s' % (request.scheme, request.get_host(),
+                                           reverse('mastodon_callback'))
+            us = UserService.objects.get(user=request.user,
+                                         name='ServiceMastodon')
+            client_id, client_secret = MastodonAPI.create_app(
+                client_name="TriggerHappy", api_base_url=us.host,
+                redirect_uris=redirect_uris)
 
-        us.client_id = client_id
-        us.client_secret = client_secret
-        us.save()
+            us.client_id = client_id
+            us.client_secret = client_secret
+            us.save()
 
-        us = UserService.objects.get(user=request.user,
-                                     name='ServiceMastodon')
-        # get the token by logging in
-        mastodon = MastodonAPI(
-            client_id=client_id,
-            client_secret=client_secret,
-            api_base_url=us.host
-        )
-        token = mastodon.log_in(username=us.username, password=us.password)
-        us.token = token
-        us.save()
-        return self.callback_url(request)
+            us = UserService.objects.get(user=request.user,
+                                         name='ServiceMastodon')
+            # get the token by logging in
+            mastodon = MastodonAPI(
+                client_id=client_id,
+                client_secret=client_secret,
+                api_base_url=us.host
+            )
+            token = mastodon.log_in(username=us.username, password=us.password)
+            us.token = token
+            us.save()
+            return self.callback_url(request)
+        except Exception as e:
+            raise ValueError('Hubo un error al conectar tu cuenta de Mastodon: {}'.format(e))
 
     def callback_url(self, request):
         us = UserService.objects.get(user=request.user,

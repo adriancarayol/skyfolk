@@ -275,15 +275,18 @@ class ServiceEvernote(ServicesMgr):
         """
             let's auth the user to the Service
         """
-        client = self.get_evernote_client()
-        request_token = client.get_request_token(self.callback_url(request))
-        # Save the request token information for later
-        request.session['oauth_token'] = request_token['oauth_token']
-        request.session['oauth_token_secret'] = request_token['oauth_token_secret']
-        # Redirect the user to the Evernote authorization URL
-        # return the URL string which will be used by redirect()
-        # from the calling func
-        return client.get_authorize_url(request_token)
+        try:
+            client = self.get_evernote_client()
+            request_token = client.get_request_token(self.callback_url(request))
+            # Save the request token information for later
+            request.session['oauth_token'] = request_token['oauth_token']
+            request.session['oauth_token_secret'] = request_token['oauth_token_secret']
+            # Redirect the user to the Evernote authorization URL
+            # return the URL string which will be used by redirect()
+            # from the calling func
+            return client.get_authorize_url(request_token)
+        except Exception as e:
+            raise ValueError('Hubo un error al conectar con tu cuenta de Evernote: {}'.format(e))
 
     def callback(self, request, **kwargs):
         """
@@ -302,8 +305,8 @@ class ServiceEvernote(ServicesMgr):
                                                request.GET.get('oauth_verifier', ''))
             # 3) and save everything
             us.save()
-        except KeyError:
-            return '/'
+        except Exception as e:
+            return ValueError('Error al iniciar sesión en Evernote')
 
         return 'evernote/callback.html'
 

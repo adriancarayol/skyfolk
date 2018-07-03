@@ -351,7 +351,7 @@ def notify_handler(verb, **kwargs):
                 notify_via_email(actor, [recipient],
                                  "Skyfolk - {0}, tienes nuevas notificaciones.".format(recipient.username),
                                  'emails/new_notification.html',
-                                 {'to_user': recipient.username, 'description': description})
+                                 {'to_user': recipient.username, 'description': newnotify.description})
         except ObjectDoesNotExist:
             pass
 

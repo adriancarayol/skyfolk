@@ -99,14 +99,17 @@ class ServiceTumblr(ServicesMgr):
             :return: callback url
             :rtype: string that contains the url to redirect after auth
         """
-        request_token = super(ServiceTumblr, self).auth(request)
-        callback_url = self.callback_url(request)
+        try:
+            request_token = super(ServiceTumblr, self).auth(request)
+            callback_url = self.callback_url(request)
 
-        # URL to redirect user to, to authorize your app
-        auth_url_str = '{auth_url}?oauth_token={token}'
-        auth_url_str += '&oauth_callback={callback_url}'
-        auth_url = auth_url_str.format(auth_url=self.AUTH_URL,
+            # URL to redirect user to, to authorize your app
+            auth_url_str = '{auth_url}?oauth_token={token}'
+            auth_url_str += '&oauth_callback={callback_url}'
+            auth_url = auth_url_str.format(auth_url=self.AUTH_URL,
                                        token=request_token['oauth_token'],
                                        callback_url=callback_url)
 
-        return auth_url
+            return auth_url
+        except Exception as e:
+            raise ValueError('Hubo un error al conectar con tu cuenta de Tumblr: {}'.format(e))

@@ -191,17 +191,20 @@ class ServiceWallabag(ServicesMgr):
             :return: callback url
             :rtype: string that contains the url to redirect after auth
         """
-        service = UserService.objects.get(
-            user=request.user, name='ServiceWallabag')
-        callback_url = 'http://%s%s' % (
-            request.get_host(), reverse('wallabag_callback'))
-        params = {'username': service.username,
+        try:
+            service = UserService.objects.get(
+                user=request.user, name='ServiceWallabag')
+            callback_url = 'http://%s%s' % (
+                request.get_host(), reverse('wallabag_callback'))
+            params = {'username': service.username,
                   'password': service.password,
                   'client_id': service.client_id,
                   'client_secret': service.client_secret}
-        access_token = Wall.get_token(host=service.host, **params)
-        request.session['oauth_token'] = access_token
-        return callback_url
+            access_token = Wall.get_token(host=service.host, **params)
+            request.session['oauth_token'] = access_token
+            return callback_url
+        except Exception as e: 
+            raise ValueError('Hubo un error al conectar con tu cuenta de Wallabag: {}'.format(e))
 
     def callback(self, request, **kwargs):
         """
