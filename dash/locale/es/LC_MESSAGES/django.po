@@ -920,7 +920,7 @@ msgstr ""
 msgid "Add dashboard entry"
 msgstr "Añadir a tablero"
 
-#: templates/dash/add_dashboard_entry_ajax.html:5
+#: templates/dash/add_dashboard_entry_ajax.html:7
 #: templates/dash/add_dashboard_widget_ajax.html:7
 #, python-format
 msgid "Add %(plugin_name)s to Dashboard"
@@ -931,6 +931,7 @@ msgstr "Añadir %(plugin_name)s al tablero"
 #: templates/dash/create_dashboard_workspace_ajax.html:15
 msgid "Add"
 msgstr "Añadir"
+
 
 #: templates/dash/create_dashboard_workspace.html:6
 #: templates/dash/create_dashboard_workspace_ajax.html:5

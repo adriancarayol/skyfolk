@@ -2,7 +2,7 @@
 
 from django import forms
 from th_services.th_reddit.models import Reddit
-
+from django.utils.translation import ugettext_lazy as _
 
 class RedditForm(forms.ModelForm):
 
@@ -12,6 +12,9 @@ class RedditForm(forms.ModelForm):
 
     class Meta:
         model = Reddit
+        labels = {
+            'share_link': _(u'Share link')
+        }
         fields = ['subreddit', 'share_link']
 
 

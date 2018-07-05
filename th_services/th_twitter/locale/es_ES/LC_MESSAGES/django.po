@@ -1,0 +1,3 @@
+# templates/twitter/edit_consumer.html:7
+msgid "Edition of the properties for"
+msgstr "Editar propiedades de"

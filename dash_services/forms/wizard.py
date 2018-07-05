@@ -36,7 +36,7 @@ class ProviderForm(ServiceChoiceForm):
     """
         Set some HTML class to the Provider form
     """
-    provider = forms.ChoiceField()
+    provider = forms.ChoiceField(label=_(u'Provider'))
 
     def __init__(self, *args, **kwargs):
         super(ProviderForm, self).__init__(*args, **kwargs)
@@ -49,7 +49,7 @@ class ConsumerForm(ServiceChoiceForm):
     """
         Set some HTML class to the Consumer form
     """
-    consumer = forms.ChoiceField()
+    consumer = forms.ChoiceField(label=_(u'Consumer'))
 
     def __init__(self, *args, **kwargs):
         super(ConsumerForm, self).__init__(*args, **kwargs)
@@ -67,8 +67,8 @@ class ServicesDescriptionForm(forms.Form):
     """
         Set some HTML class to the Service form
     """
-    description = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': _('A description for your new service')})
+    description = forms.CharField(label=_(u'Description'),
+        widget=forms.TextInput(attrs={'placeholder': _(u'A description for your new pin')})
     )
 
 

@@ -3,7 +3,7 @@
 from django import forms
 from django.forms import TextInput
 from th_services.th_skyfolk.models import Skyfolk
-
+from django.utils.translation import ugettext_lazy as _
 
 class SkyfolkForm(forms.ModelForm):
 
@@ -14,6 +14,9 @@ class SkyfolkForm(forms.ModelForm):
     class Meta:
         model = Skyfolk
         fields = ('name',)
+        labels = {
+            'name': _(u'Give your new pin a name'),
+        }
         widgets = {
             'name': TextInput(attrs={'class': 'form-control'}),
         }

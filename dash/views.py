@@ -391,6 +391,12 @@ class AddDashboardEntry(SessionWizardView):
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
+        plugin.request = self.request
+
+        context['plugin'] = plugin
         context['layout'] = layout
         context['dashboard_settings'] = dashboard_settings
 
