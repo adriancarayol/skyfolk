@@ -4,8 +4,8 @@ Template para los seguidores de un perfil
 {% endcomment %}
 {% load static %}
 {% load render_bundle from webpack_loader %}
-{% block title %}<title>{% if url_name == "followers" %}Seguidores de{% else %}
-    Seguidos{% endif %} {{ username }}</title> {% endblock %}
+{% block title %}{% if url_name == "followers" %}Seguidores de{% else %}
+    Seguidos{% endif %} {{ username }}{% endblock %}
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}">
 {% endblock %}

@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %}<title>Skyfolk // {% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}</title>{% endblock title %}
+{% block title %}{% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}{% endblock title %}
 
 {% block top-nav-menu-wrapper %}
 {% if current_workspace.is_clonable %}

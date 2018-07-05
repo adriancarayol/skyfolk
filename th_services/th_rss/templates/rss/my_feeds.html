@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load django_th_extras %}
 
-{% block title %}{% if user.is_authenticated %}{% trans "My RSS feeds generators" %} - {{ user.username }} - {% else %}{% trans "Home" %} - {% endif %}Trigger Happy{% endblock %}
+{% block title %}{% if user.is_authenticated %}{% trans "My RSS feeds generators" %} - {{ user.username }} - {% else %}{% trans "Home" %} - {% endif %}{% endblock %}
 
 {% block content %}
 

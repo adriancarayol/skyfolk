@@ -64,10 +64,10 @@
                                             {% comment %} Para publicaciones que contienen citas {% endcomment %}
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
-                                                    {% avatar node.shared_publication.author %}<br>
-                                                    <span class="card-title"><a
+                                                    {% avatar node.shared_publication.author "40x40" %}
+                                                    <span class="card-title-md-18"><a
                                                             href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
-                                                        <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i></span>
+                                                        <i class="blue-text text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i></span>
                                                     <p>{{ node.shared_publication.content|safe }}</p>
                                                     {% with node.shared_publication.images.all as images %}
                                                         {% if images %}<br>

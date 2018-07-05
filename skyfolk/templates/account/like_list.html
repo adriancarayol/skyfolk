@@ -3,7 +3,7 @@
   Lista de usuarios que han dado like al perfil pasado como parametro de la url.
 {% endcomment %}
 {% load static %}
-{% block title %} <title>Likes de {{ user_profile }} </title> {% endblock %}
+{% block title %}Likes de {{ user_profile }}{% endblock %}
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
     <link rel="stylesheet" href="{% static "css/profile.css" %}" onload="if(media!='all')media='all'">
