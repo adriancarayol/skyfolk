@@ -1,4 +1,5 @@
 import json
+import urllib.parse
 from distutils.version import StrictVersion
 from channels import Group as group_channel
 from django import get_version
@@ -24,7 +25,7 @@ from django.utils.six import text_type
 from .utils import id2slug
 from django.urls import reverse
 from .signals import notify
-
+from django.contrib.sites.models import Site
 from model_utils import Choices
 from jsonfield.fields import JSONField
 from user_profile.node_models import NodeProfile
@@ -338,11 +339,15 @@ def notify_handler(verb, **kwargs):
         soup = BeautifulSoup(description)
         a_description = soup.find('a')
 
+        current_site = Site.objects.get_current().domain
+
         if a_description is not None:
             url = reverse('notifications:mark_as_read', kwargs={'slug': id2slug(newnotify.id)})
-            a_description['href'] = url + '?next=' + a_description['href']
+            a_description['href'] = urllib.parse.urljoin('http://' + current_site,
+                url + '?next=' + a_description['href'])
 
         newnotify.description = str(soup)
+        print(newnotify.description)
         newnotify.save()
 
         # Si el usuario desea recibir notificaciones de skyfolk a su correo

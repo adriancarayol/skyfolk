@@ -1344,6 +1344,7 @@ def autocomplete(request):
     """
     user = request.user
     q = request.GET.get('q', '')
+
     try:
         sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
         suggestions = [{'username': result.username, 'first_name': result.firstname,
