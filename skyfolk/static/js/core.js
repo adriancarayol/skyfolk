@@ -307,16 +307,16 @@ $(document).ready(function () {
     /* Agregar Amigo por medio de PIN */
     $('#agregar-amigo, #agregar-amigo2').on('click', function () {
         swal({
-            title: "Add new friend!",
+            title: "¡Empieza una nueva relación!",
             customClass: "default-div",
-            text: "Insert the friend's username",
+            text: "Introduce su nombre de usuario",
             type: "input",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Add it!",
-            cancelButtonText: "Cancel!",
+            confirmButtonText: "¡Seguir!",
+            cancelButtonText: "Cancelar",
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         }, function (inputValue) {

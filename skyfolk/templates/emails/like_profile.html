@@ -1,3 +1,6 @@
+{% extends "emails/base_email.html" %}
+{% block content %}
 <p>
     ¡Hola <b>{{ to_user }}</b>! - Te avisamos de que {{ from_user }} te ha dado un like en tu perfil.
 </p>
+{% endblock %}
