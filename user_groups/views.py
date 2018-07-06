@@ -226,7 +226,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                                                                                  Q(deleted=False) & Q(
         level__lte=0) & ~Q(
         author__profile__in=users_not_blocked_me)) \
-        .prefetch_related('group_extra_content', 'images',
+        .prefetch_related('extra_content', 'images',
                           'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
         .select_related('author',
                         'board_group',

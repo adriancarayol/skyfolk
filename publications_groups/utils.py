@@ -51,7 +51,7 @@ def optimize_publication_media(instance, image_upload, exts):
                     process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
                 else:  # es una imagen normal
                     try:
-                        image = Image.open(media)
+                        image = Image.open(media).convert('RGBA')
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
 

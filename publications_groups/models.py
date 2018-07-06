@@ -58,7 +58,7 @@ class ExtraGroupContent(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationGroup', related_name='group_extra_content', on_delete=models.CASCADE)
+    publication = models.OneToOneField('PublicationGroup', related_name='extra_content', on_delete=models.CASCADE)
 
 
 class PublicationGroup(PublicationBase):
@@ -85,7 +85,7 @@ class PublicationGroup(PublicationBase):
         return "group-publication-%d" % self.id
 
     def has_extra_content(self):
-        return hasattr(self, 'group_extra_content')
+        return hasattr(self, 'extra_content')
 
     def send_notification(self, request, type="pub", is_edited=False):
         """

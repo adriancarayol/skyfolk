@@ -121,6 +121,9 @@ a, a:visited {
     color: #1e88e5;
 }
 
+blockquote .info-publication {
+    background-color: #fafafa;
+}
 
 input[type="checkbox"] {
     opacity: 0;

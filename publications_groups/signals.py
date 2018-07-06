@@ -42,7 +42,7 @@ def group_publication_handler(sender, instance, created, **kwargs):
 
         if instance.has_extra_content():  # Para publicaciones editadas
             ExtraGroupContent.objects.filter(publication=instance.id).exclude(
-                url=instance.group_extra_content.url).delete()
+                url=instance.extra_content.url).delete()
         else:
             ExtraGroupContent.objects.filter(publication=instance.id).delete()
 
@@ -66,14 +66,14 @@ def add_extra_content(instance):
     link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
-        instance.group_extra_content.delete()  # Borramos el extra content de esta
-        instance.group_extra_content = None
+        instance.extra_content.delete()  # Borramos el extra content de esta
+        instance.extra_content = None
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
-            group_extra_content = instance.group_extra_content
-            if group_extra_content.url != link_url[-1]:
-                group_extra_content.delete()
-                instance.group_extra_content = None
+            extra_content = instance.extra_content
+            if extra_content.url != link_url[-1]:
+                extra_content.delete()
+                instance.extra_content = None
     # Detectamos el origen de la url
     try:
         backend = detect_backend(link_url[-1])  # youtube, soundcloud...

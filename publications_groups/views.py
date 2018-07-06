@@ -442,7 +442,7 @@ class PublicationGroupDetail(ListView):
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
-            .prefetch_related('group_extra_content', 'images',
+            .prefetch_related('extra_content', 'images',
                               'videos', 'tags') \
             .select_related('author',
                             'board_group',
@@ -524,7 +524,7 @@ class LoadRepliesForPublicationGroup(View):
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related('group_extra_content',
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related('extra_content',
                                                                                                'images',
                                                                                                'videos', 'tags') \
             .select_related('author',
@@ -592,7 +592,7 @@ class ShareGroupPublication(View):
                 pub.add_hashtag()
                 pub.parse_mentions()  # add mentions
                 pub.content = Emoji.replace(pub.content)
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                pub.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
                               'href="/profile/%s">@%s</a><br>%s' % (
                                   pub_to_add.author.username, pub_to_add.author.username, xstr(pub.content))
                 pub.shared_group_publication_id = pub_to_add.id

@@ -91,7 +91,7 @@ class News(ListView):
                                                  'shared_group_publication__images',
                                                  'shared_group_publication__author',
                                                  'shared_group_publication__videos',
-                                                 'shared_group_publication__group_extra_content',
+                                                 'shared_group_publication__extra_content',
                                                  'shared_publication__author').distinct()[
                            offset:limit]
         except ObjectDoesNotExist:

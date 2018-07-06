@@ -207,10 +207,10 @@
                                                 </div>
                                                 {% endif %}
                                                 {% endwith %}
-                                                {% if item.shared_group_publication.group_extra_content %}
+                                                {% if item.shared_group_publication.extra_content %}
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
-                                                {% if item.shared_group_publication.group_extra_content.video %}
-                                                {% video item.shared_group_publication.group_extra_content.video as my_video %}
+                                                {% if item.shared_group_publication.extra_content.video %}
+                                                {% video item.shared_group_publication.extra_content.video as my_video %}
                                                 {% video my_video "100% x 100%" %}
                                                 {% endvideo %}
                                                 {% else %}

@@ -74,24 +74,24 @@
                                             </div>
                                         {% endif %}
                                     {% endwith %}
-                                    {% if node.group_extra_content %}
+                                    {% if node.extra_content %}
                                         {% comment %} Para publicaciones con URL {% endcomment %}
-                                        {% if node.group_extra_content.video %}
-                                            {% video node.group_extra_content.video as my_video %}
+                                        {% if node.extra_content.video %}
+                                            {% video node.extra_content.video as my_video %}
                                                {% video my_video "100% x 100%" %}
                                             {% endvideo %}
                                         {% else %}
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img class="lazyload" data-src="
-                                                        {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
-                                                <span class="card-title white-text">{{ node.group_extra_content.title }}</span>
+                                                        {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                             </div>
                                             <div class="card-content">
-                                                <p>{{ node.group_extra_content.description }}</p>
+                                                <p>{{ node.extra_content.description }}</p>
                                             </div>
                                             <div class="card-action">
-                                                <a href="{{ node.group_extra_content.url }}">Ver</a>
+                                                <a href="{{ node.extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
                                         {% endif %}

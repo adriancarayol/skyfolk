@@ -88,7 +88,7 @@ def load_profile_publications(request, page, profile):
                                              'shared_group_publication__images',
                                              'shared_group_publication__author',
                                              'shared_group_publication__videos',
-                                             'shared_group_publication__group_extra_content',
+                                             'shared_group_publication__extra_content',
                                              'shared_publication__videos', 'shared_publication__extra_content') \
         .select_related('author',
                         'board_owner', 'shared_publication',
@@ -1427,7 +1427,7 @@ class SearchUsuarioView(SearchView):
                                                                                        'shared_group_publication__images',
                                                                                        'shared_group_publication__author',
                                                                                        'shared_group_publication__videos',
-                                                                                       'shared_group_publication__group_extra_content',
+                                                                                       'shared_group_publication__extra_content',
                                                                                        'shared_publication__videos',
                                                                                        'shared_publication__extra_content').filter(
                 deleted=False)

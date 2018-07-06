@@ -88,15 +88,17 @@ def _optimize_publication_media(instance, image_upload, exts):
 
                 else:  # es una imagen normal
                     try:
-                        image = Image.open(media)
+                        image = Image.open(media).convert('RGBA')
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
 
                     fill_color = (255, 255, 255, 0)
+
                     if image.mode in ('RGBA', 'LA'):
                         background = Image.new(image.mode[:-1], image.size, fill_color)
                         background.paste(image, image.split()[-1])
                         image = background
+
                     image.thumbnail((800, 600), Image.ANTIALIAS)
                     output = io.BytesIO()
                     image.save(output, format='JPEG', optimize=True, quality=70)
@@ -278,7 +280,7 @@ def publication_detail(request, publication_id):
                               'shared_group_publication__images',
                               'shared_group_publication__author',
                               'shared_group_publication__videos',
-                              'shared_group_publication__group_extra_content', ) \
+                              'shared_group_publication__extra_content', ) \
             .select_related('author',
                             'board_owner', 'shared_publication',
                             'parent', 'shared_group_publication').annotate(
@@ -712,7 +714,7 @@ def share_publication(request):
                 pub.parse_mentions()  # add mentions
                 pub.content = Emoji.replace(pub.content)
 
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                pub.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
                               'href="/profile/%s">@%s</a><br>%s' % (
                                   pub_to_add.author.username, pub_to_add.author.username, pub.content)
 

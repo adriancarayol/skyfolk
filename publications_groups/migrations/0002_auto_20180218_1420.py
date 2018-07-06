@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='extragroupcontent',
             name='publication',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='group_extra_content', to='publications_groups.PublicationGroup'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='extra_content', to='publications_groups.PublicationGroup'),
         ),
         migrations.AlterUniqueTogether(
             name='publicationgroup',

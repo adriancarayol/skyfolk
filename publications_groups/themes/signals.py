@@ -42,7 +42,7 @@ def theme_publication_handler(sender, instance, created, **kwargs):
 
         if instance.has_extra_content():  # Para publicaciones editadas
             ExtraThemeContent.objects.filter(publication=instance.id).exclude(
-                url=instance.group_extra_content.url).delete()
+                url=instance.extra_content.url).delete()
         else:
             ExtraThemeContent.objects.filter(publication=instance.id).delete()
 
