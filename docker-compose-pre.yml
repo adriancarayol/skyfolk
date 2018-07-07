@@ -1,6 +1,6 @@
 version: '2'
 
-services:    
+services:
   # nginx
   nginx:
     image: nginx:latest
@@ -30,30 +30,7 @@ services:
     restart: always
     networks:
       - webnet
-    
-  # elasticsearch
-  elasticsearch:
-    image: elasticsearch:2.4.6
-    container_name: elasticsearch1
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./esdata/:/usr/share/elasticsearch/data/
-    restart: always
-    networks:
-      - webnet
 
-  kibana:
-    image: kibana:4.6.0
-    ports:
-      - "5601:5601"
-    restart: always
-    volumes:
-      - ./kibana/config/:/usr/share/kibana/config
-    depends_on:
-      - elasticsearch
-    networks:
-      - webnet
 
   # RabbitMQ
   rabbit:
@@ -62,14 +39,14 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
     ports:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
       - webnet
-  
+
   webworker:
     build:
       context: .
@@ -157,4 +134,4 @@ services:
 
 networks:
   webnet:
-    driver: bridge 
+    driver: bridge
