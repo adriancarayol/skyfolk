@@ -382,7 +382,7 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-photo" slug=item.slug %}"
+                                        <a href="{% url "photologue:pl-photo" username=item.author slug=item.slug %}"
                                            class="photo-title truncate">{{ item.title }}</a>
                                         <i class="truncate photo-date"><i
                                                 class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
@@ -405,7 +405,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                        <img class="lazyload" data-src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
                                             <source src="/media/{{ item.video }}" type="video/mp4">
@@ -419,7 +419,7 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                        <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
                                            class="photo-title truncate">
                                             {{ item.name }}</a>
                                         <i class="truncate photo-date"><i
@@ -768,7 +768,7 @@ Template para las busquedas
                                 {% if item.thumbnail %}
                                     <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
                                          alt="{{ item.name }}" title="{{ item.name }}"
-                                         onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                         onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                 {% else %}
                                     <video controls style="width: 100%; height: 100%; outline: none;">
                                         <source src="/media/{{ item.video }}" type="video/mp4">
@@ -782,7 +782,7 @@ Template para las busquedas
                                 </div>
                                 <div class="col l8 m8 s8 legend-user-data">
                                     <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                    <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                    <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
                                        class="photo-title truncate">
                                         {{ item.name }}</a>
                                     <i class="truncate photo-date"><i

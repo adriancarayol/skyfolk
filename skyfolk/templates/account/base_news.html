@@ -193,7 +193,7 @@
                                             {% if item.thumbnail %}
                                             <img class="lazyload" data-src="{{ item.thumbnail.url }}"
                                             alt="{{ item.name }}" title="{{ item.name }}"
-                                            onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                            onclick="location.href='{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}'">
                                             {% else %}
                                             <video controls style="width: 100%; height: 100%; outline: none;">
                                                 <source src="{{ item.video.url }}" type="video/mp4">

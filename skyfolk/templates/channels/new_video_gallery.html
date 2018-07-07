@@ -17,7 +17,7 @@
             {% if photo.thumbnail %}
                 <img class="lazyload" data-src="{{ photo.thumbnail.url }}"
                      alt="{{ photo.name }}" title="{{ photo.name }}"
-                     onclick="location.href='{% url "photologue:pl-video" slug=photo.slug %}'">
+                     onclick="location.href='{% url "photologue:pl-video" username=photo.owner.username slug=photo.slug %}'">
             {% else %}
                 <video controls style="width: 100%; height: 100%; outline: none;">
                     <source src="{{ photo.video.url }}" type="video/mp4">
@@ -31,7 +31,7 @@
             </div>
             <div class="col l8 m8 s8 legend-user-data">
                 <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
-                <a href="{% url "photologue:pl-video" slug=photo.slug %}" class="photo-title truncate">
+                <a href="{% url "photologue:pl-video" username=photo.owner.username slug=photo.slug %}" class="photo-title truncate">
                     <i class="material-icons md-18">videocam</i>{{ photo.name }}</a>
                 <i class="truncate photo-date"><i
                         class="material-icons md-18">access_time</i> {{ photo.date_added|naturaltime }}</i>

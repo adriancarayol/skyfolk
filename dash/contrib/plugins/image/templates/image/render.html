@@ -12,12 +12,13 @@
                 <a href="{{ image.image.url }}" title="{{ plugin.data.title }}">
                 {% endif %}
                     {% if image.image  %}
-                        {% if crop %}
+                        {% comment %}{% if crop %}
                             {% thumbnail image.image  thumb_size crop=crop as im %}
                         {% else %}
                             {% thumbnail image.image  thumb_size as im %}
                         {% endif %}
-                        <img src="{{ im.url }}" alt="{{ plugin.data.title }}"/>
+                        {% endcomment %}
+                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}"/>
                     {% else %}
                         {% trans "No image provided!" %}
                     {% endif %}
