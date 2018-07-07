@@ -546,7 +546,7 @@ class Photo(ImageModel):
                 self.image.save(filename, django_file)
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-photo', args=[self.slug])
+        return reverse('photologue:pl-photo', args=[self.owner.username, self.slug])
 
     def public_galleries(self):
         """Return the public galleries to which this photo belongs."""

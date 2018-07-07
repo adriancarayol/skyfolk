@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.conf import settings
 from django.template import Library, TemplateSyntaxError, Node
@@ -394,3 +395,8 @@ def render_plugin_view(context, plugin):
     except KeyError:
         return 'Error al mostrar la información del widget'
     return plugin.render(request=request)
+
+@register.filter(name='simplify_plugin_name')
+def simplify_plugin_name(value):
+    value = re.sub('\([0-9]x[0-9]\)', '', value)
+    return value

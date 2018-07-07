@@ -64,11 +64,11 @@
             </div>
             <ul id="user-stats" class="stats">
                 <li>
-                    <a href="/users/{{ group_profile.slug }}"><strong
+                    <a href="{% url "user_groups:users_group" groupname=group_profile.slug  %}"><strong
                             id="followers-stats">{{ users_in_group }}</strong><span>Usuarios</span></a>
                 </li>
                 <li>
-                    <a id="likes" href="/glikes/{{ group_profile.slug }}"><strong>{{ likes }}</strong><span
+                    <a id="likes" href="{% url "user_groups:likes_group" groupname=group_profile.slug  %}"><strong>{{ likes }}</strong><span
                             title="me gusta">Me gusta</span></a>
                 </li>
                 <li>

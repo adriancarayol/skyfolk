@@ -1010,3 +1010,6 @@ msgstr ""
 msgid "Submit changes"
 msgstr "Guardar cambios"
 
+#: contrib/plugins/service/dash_plugins.py:22
+msgid "Trigger"
+msgstr "Disparador"

@@ -297,7 +297,9 @@ class AddDashboardEntry(SessionWizardView):
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
         plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
 
-        if plugin is not None and plugin.name != 'Trigger':
+        plugin_name = plugin.uid.split('_')[0]
+
+        if plugin is not None and plugin_name != 'trigger':
             return False
 
         return True
@@ -734,8 +736,9 @@ class EditDashboardEntry(SessionWizardView):
 
     def check_if_service(self):
         plugin = self.obj.get_plugin(fetch_related_data=True)
+        plugin_name = plugin.uid.split('_')[0]
 
-        if plugin is not None and plugin.name != 'Trigger':
+        if plugin is not None and plugin_name != 'trigger':
             return False
 
         return True

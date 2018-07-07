@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/publication_pdetail/' + id_pub;
+        window.location.href = '/photo/publication/' + id_pub;
     }
 
     /* Abrir respuesta a comentario */

@@ -10,6 +10,7 @@ from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 from ....contrib.plugins.poll.dash_widgets import BasePollWidget
 from ....contrib.plugins.statistics.dash_widgets import BaseStatisticsWidget
+from ....contrib.plugins.twitch.dash_widgets import BaseTwitchWidget
 
 from .dash_widgets import (
     URL1x1ProfileMainWidget,
@@ -142,3 +143,10 @@ plugin_widget_factory(BaseStatisticsWidget,
         'main',
         'statistics',
         main_sizes)
+
+plugin_widget_factory(BaseTwitchWidget,
+      'profile',
+      'main',
+      'twitch',
+      main_sizes
+)

@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <link rel="stylesheet" href="{% static "css/notifications.css" %}" type="text/css" media="all"
           onload="if(media!='all')media='all'">
-    {% block title %}Notificaciones - {{ request.user }}{% endblock %}
 {% endblock %}
+{% block title %}Notificaciones - {{ request.user }}{% endblock %}
 {% block content %}
     <div class="container">
         {% if notifications %}

@@ -86,17 +86,16 @@ def to_datetime(data):
 
 def warn_user_and_admin(consumer_provider, service):
 
-    notify.send(service.user, actor=service.user,
-                recipient=service.user,
-                description='El servicio {} está fallando, comprueba que tus datos son correctos.'.format(service_name),
-                verb=u'¡{} está fallando!'.format(service_name), level='warn_service')
-
-    from_mail = settings.DEFAULT_FROM_EMAIL
-
     if consumer_provider == 'provider':
         service_name = service.provider.name.name.split('Service')[1]
     else:
         service_name = service.consumer.name.name.split('Service')[1]
+
+    from_mail = settings.DEFAULT_FROM_EMAIL
+    notify.send(service.user, actor=service.user.username,
+                recipient=service.user,
+                description='El servicio {} está fallando, comprueba que tus datos son correctos.'.format(service_name),
+                verb=u'¡{} está fallando!'.format(service_name), level='warn_service')
 
     title = 'Trigger "{}" disabled'.format(service.description)
 

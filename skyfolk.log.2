@@ -1,726 +1,729 @@
-2018-07-05 12:32:18,310 ERROR exception 16124 Internal Server Error: /dashboard/entry/add/main/trigger_1x1/ws/skyspace-madafaka/pos/2/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/dash/base.py", line 846, in __init__
-    assert self.name
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/functional.py", line 114, in __wrapper__
-    res = func(*self.__args, **self.__kw)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-
-During handling of the above exception, another exception occurred:
-
+2018-07-07 12:09:12,992 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/dash/views.py", line 313, in dispatch
-    if self.check_if_service():
-  File "/home/adrian/skyfolk/dash/views.py", line 298, in check_if_service
-    plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
-  File "/home/adrian/skyfolk/dash/contrib/plugins/service/dash_plugins.py", line 20, in __init__
-    user=user, position=position)
-  File "/home/adrian/skyfolk/dash/base.py", line 851, in __init__
-    self.__class__.__name__)
-NotImplementedError: You should define `uid` and `name` properties in your `dash.factory.Plugin` class.
-2018-07-05 12:32:18,701 ERROR exception 16124 Internal Server Error: /dashboard/edit/skyspace-madafaka/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/encoding.py", line 76, in force_text
-    s = six.text_type(s)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/functional.py", line 119, in __text_cast
-    return func(*self.__args, **self.__kw)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 174, in edit_dashboard
-    registered_plugins = get_user_plugins(request.user)
-  File "/home/adrian/skyfolk/dash/utils.py", line 98, in get_user_plugins
-    return get_registered_plugins()
-  File "/home/adrian/skyfolk/dash/base.py", line 1667, in get_registered_plugins
-    registered_plugins.append((uid, safe_text(plugin.name)))
-  File "/home/adrian/skyfolk/dash/helpers.py", line 34, in safe_text
-    return force_text(text, encoding='utf-8')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/encoding.py", line 88, in force_text
-    raise DjangoUnicodeDecodeError(s, *e.args)
-django.utils.encoding.DjangoUnicodeDecodeError: <unprintable DjangoUnicodeDecodeError object>
-2018-07-05 12:32:19,686 ERROR exception 16124 Internal Server Error: /dashboard/workspaces/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1454, in dashboard_workspaces
-    return render(request, template_name, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
     return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 205, in render
-    with context.bind_template(self):
-  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
-    return next(self.gen)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/context.py", line 263, in bind_template
-    updates.update(processor(self.request))
-  File "/home/adrian/skyfolk/user_profile/custom_context.py", line 14, in user_processor
-    'searchForm': SearchForm(),
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/forms.py", line 34, in __init__
-    super(SearchForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:32:22,839 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:14,160 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:32:43,684 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:15,144 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:32:44,487 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:15,752 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:32:47,131 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:18,280 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:22,883 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:43,667 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:25,490 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:44,649 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:26,577 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:45,585 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:27,273 ERROR exception 16124 Internal Server Error: /profile/adrian/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']
+2018-07-07 12:09:46,382 ERROR exception 4076 Internal Server Error: /multimedia/adrian/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:27,894 ERROR exception 16124 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:28,602 ERROR exception 16124 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:29,505 ERROR exception 16124 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:30,087 ERROR exception 16124 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
-2018-07-05 12:33:30,611 ERROR exception 16124 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 341, in profile_view
-    context['publicationForm'] = PublicationForm()
-  File "/home/adrian/skyfolk/publications/forms.py", line 13, in __init__
-    super(PublicationForm, self).__init__(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 312, in __init__
-    label_suffix, empty_permitted, use_required_attribute=use_required_attribute,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 87, in __init__
-    self.label_suffix = label_suffix if label_suffix is not None else _(':')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/__init__.py", line 89, in ugettext
-    return _trans.ugettext(message)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 338, in gettext
-    return do_translate(message, 'gettext')
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 321, in do_translate
-    _default = _default or translation(settings.LANGUAGE_CODE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 228, in translation
-    _translations[language] = DjangoTranslation(language)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 129, in __init__
-    self._add_installed_apps_translations()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 177, in _add_installed_apps_translations
-    translation = self._new_gnu_trans(localedir)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/translation/trans_real.py", line 156, in _new_gnu_trans
-    fallback=use_null_fallback)
-  File "/usr/lib/python3.6/gettext.py", line 538, in translation
-    t = _translations.setdefault(key, class_(fp))
-  File "/usr/lib/python3.6/gettext.py", line 254, in __init__
-    self._parse(fp)
-  File "/usr/lib/python3.6/gettext.py", line 413, in _parse
-    catalog[str(msg, charset)] = str(tmsg, charset)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 17: ordinal not in range(128)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/photologue/models.py", line 549, in get_absolute_url
+    return reverse('photologue:pl-photo', args=[self.slug])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'pl-photo' with arguments '('3gwt',)' not found. 1 pattern(s) tried: ['multimedia/(?P<username>[\\w-]+)/photo/(?P<slug>[\\-\\d\\w]+)/$']

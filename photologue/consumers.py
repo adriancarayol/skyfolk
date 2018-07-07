@@ -13,6 +13,7 @@ class PhotoConsumer(WebsocketConsumer):
 
     def __init__(self, message, **kwargs):
         slug = kwargs.pop('slug', None)
+        print('SLUG: {}'.format(slug))
         if not slug:
             return
 

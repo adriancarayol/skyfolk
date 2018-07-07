@@ -25,7 +25,7 @@
                             {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
-                    <a href="/photo/{{ photo.slug }}">Ver imagen</a>
+                    <a href="{% url "photologue:pl-photo" username=photo.owner.username slug=photo.slug %}">Ver imagen</a>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                               data-delay="50"
                               data-tooltip="Ver conversación completa"><a class="material-icons"
-                                                                          href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
+                                                                          href="{% url "publications_gallery:publication_photo_detail" node.id %}">open_in_new</a></span>
                                 {% if user.id == node.p_author.id %}
                                     {% if node.event_type == 1 or node.event_type == 3 %}
                                         <span data-id="{{ node.pk }}"

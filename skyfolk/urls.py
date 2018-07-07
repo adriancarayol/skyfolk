@@ -38,7 +38,7 @@ urlpatterns = [
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
-    url(r'^', include('publications_groups.urls', namespace="publications_groups"),
+    url(r'^group/', include('publications_groups.urls', namespace="publications_groups"),
         name="publications_groups"),
     url(r'^group/multimedia/', include('publications_gallery_groups.urls', namespace="publications_gallery_groups"),
         name="publications_gallery_groups"),

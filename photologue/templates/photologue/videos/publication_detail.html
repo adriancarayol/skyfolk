@@ -23,7 +23,7 @@
                     <img src="{% if object.thumbnail %}{{ object.thumbnail.url }}{% endif %}" title="{{ object.name }}" alt="{{ object.name }}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
-                    <a href="{% url "photologue:pl-video" slug=object.slug %}">Ver vídeo</a>
+                    <a href="{% url "photologue:pl-video" username=object.owner.username slug=object.slug %}">Ver vídeo</a>
                 </div>
             </div>
         </div>

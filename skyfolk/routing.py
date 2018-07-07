@@ -18,9 +18,9 @@ channel_routing = [
     # Consumidor para el perfil del usuario
     BlogConsumer.as_route(path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # channels en fotos
-    PhotoConsumer.as_route(path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
+    PhotoConsumer.as_route(path=r'^/multimedia/(?P<username>[\w-]+)/photo/(?P<slug>[\-\d\w]+)/stream/$'),
     # channels en videos
-    VideoConsumer.as_route(path=r'^/video/(?P<slug>[\-\d\w]+)/stream/$'),
+    VideoConsumer.as_route(path=r'^/multimedia/(?P<username>[\w-]+)/video/(?P<slug>[\-\d\w]+)/stream/$'),
     # channels para notificaciones
     NotificationConsumer.as_route(path=r'^.*/notification/$'),
     # channels para inicio
@@ -28,13 +28,13 @@ channel_routing = [
     # channels para conectarse a publication_detail
     PublicationConsumer.as_route(path=r'^/publication/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a publication_photo_detail
-    PublicationPhotoConsumer.as_route(path=r'^/publication_pdetail/(?P<pubid>\d+)/stream/$'),
+    PublicationPhotoConsumer.as_route(path=r'^/photo/publication/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a publication_video_detail
-    PublicationVideoConsumer.as_route(path=r'^/video/publication/detail/(?P<pubid>\d+)/stream/$'),
+    PublicationVideoConsumer.as_route(path=r'^/video/publication/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a group
     GroupConsumer.as_route(path=r'^/group/(?P<groupname>[\w-]+)/stream/$'),
     # channels para conectarse a publication group detail
-    GroupPublicationConsumer.as_route(path=r'^/publication/group/detail/(?P<pk>\d+)/stream/$'),
+    GroupPublicationConsumer.as_route(path=r'^/group/publication/(?P<pk>\d+)/stream/$'),
     # channels para theme
     ThemeConsumer.as_route(path=r'^/groups/theme/(?P<slug>[\w-]+)/stream/$'),
     # photologue groups

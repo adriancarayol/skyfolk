@@ -87,6 +87,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
     'dash.contrib.plugins.poll',
+    'dash.contrib.plugins.twitch',
     'mptt',
     'tasks_server',
     'postman',

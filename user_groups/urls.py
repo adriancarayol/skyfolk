@@ -18,15 +18,15 @@ urlpatterns = [
         name='follow-group'),
     # Para dejar de seguir a un grupo
     url(r'^unfollow_group/$', user_groups_views.unfollow_group,
-        name='follow-group'),
+        name='unfollow-group'),
     # Dar me gusta a un grupo
     url(r'^like_group/$', user_groups_views.like_group,
         name='like-group'),
     # Seguidores de un grupo.
-    url(r'^users/(?P<groupname>[\w-]+)/$',
-        user_groups_views.FollowersGroup.as_view()),
-    url(r'^glikes/(?P<groupname>[\w-]+)/$',
-        user_groups_views.likes_group),
+    url(r'^group/(?P<groupname>[\w-]+)/users/$',
+        user_groups_views.FollowersGroup.as_view(), name='users_group'),
+    url(r'^group/(?P<groupname>[\w-]+)/likes/$',
+        user_groups_views.likes_group, name='likes_group'),
     url(r'^respond_group_request/$',
         user_groups_views.respond_group_request),
     url(r'^remove_group_request/$',
