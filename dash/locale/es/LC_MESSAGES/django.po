@@ -1013,3 +1013,11 @@ msgstr "Guardar cambios"
 #: contrib/plugins/service/dash_plugins.py:22
 msgid "Trigger"
 msgstr "Disparador"
+
+#: contrib/plugins/twitch/forms.py:16
+msgid "Channel"
+msgstr "Canal"
+
+#: contrib/plugins/twitch/forms.py:17
+msgid "Description"
+msgstr "Descripción"

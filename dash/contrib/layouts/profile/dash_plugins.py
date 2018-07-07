@@ -7,7 +7,6 @@ from ....contrib.plugins.memo.dash_widgets import (
 )
 from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
-from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 from ....contrib.plugins.poll.dash_widgets import BasePollWidget
 from ....contrib.plugins.statistics.dash_widgets import BaseStatisticsWidget
 from ....contrib.plugins.twitch.dash_widgets import BaseTwitchWidget
@@ -98,21 +97,6 @@ plugin_widget_factory(BaseVideoWidget,
                       'profile',
                       'main',
                       'video',
-                      main_sizes)
-
-# **************************************************************************
-# ***************** Registering the widgets for Trigger plugin ***************
-# **************************************************************************
-
-
-main_sizes = (
-    (1, 1),
-)
-
-plugin_widget_factory(BaseTriggerWidget,
-                      'profile',
-                      'main',
-                      'trigger',
                       main_sizes)
 
 
