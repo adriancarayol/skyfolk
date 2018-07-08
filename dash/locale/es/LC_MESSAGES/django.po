@@ -1021,3 +1021,7 @@ msgstr "Canal"
 #: contrib/plugins/twitch/forms.py:17
 msgid "Description"
 msgstr "Descripción"
+
+#: dash/plugin_widgets_ajax.html:16
+msgid "Paste from clipboard"
+msgstr "Pegar desde portapapeles"

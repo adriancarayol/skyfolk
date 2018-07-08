@@ -91,14 +91,12 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
         <div class="col s10 m10 l3 info-paw" id="personal-card-info">
             <div class="info-nav default-div">
                 <div class="info-wrapper-pic">
-                    <div class="info-user-pic">{% avatar user_profile 90 %}</div>
+                    <div class="info-user-pic">{% avatar user_profile "90x90" %}</div>
                 </div>
                 <div class="personal-info">
                     <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">
                         @{{ user_profile.username }}</h1>
                     <h3 class="info-user-name_last">{{ user_profile.first_name }} {{ user_profile.last_name }}</h3>
-                    <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
-                    <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
                     <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
                 </div>
                 <ul class="personal-card-controls">
