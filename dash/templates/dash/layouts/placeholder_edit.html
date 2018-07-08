@@ -1,0 +1,7 @@
+{% load i18n %}
+<div class="empty-widget-cell {{ cell_html_class }}">
+	<a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder_uid workspace=workspace position=position %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder_uid position=position %}{% endif %}"
+	class="add-plugin" title="{% trans 'Add widget' %}">
+	<span class="material-icons">add_circle</span>
+</a>
+</div>

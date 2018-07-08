@@ -1016,6 +1016,8 @@ def delete_dashboard_entry(request, entry_id):
     :param int entry_id: ID of the dashboard entry to delete.
     :return django.http.HttpResponse:
     """
+    from django.template.loader import render_to_string
+
     try:
         obj = DashboardEntry._default_manager \
             .select_related('workspace') \
@@ -1026,12 +1028,28 @@ def delete_dashboard_entry(request, entry_id):
         workspace = getattr(obj.workspace, 'slug', None)
         obj.delete()
 
-        if not request.is_ajax():
-            messages.info(request, _('The dashboard widget "{0}" was deleted '
-                                     'successfully.').format(plugin.name))
-
         if request.is_ajax():
-            return HttpResponse(json.dumps({'success': 1}))
+            layout = get_layout(
+                layout_uid=obj.layout_uid,
+                as_instance=True
+            )
+            placeholder = layout.get_placeholder(obj.placeholder_uid)(layout)
+            placeholder.request = request
+            empty_cells = placeholder._generate_widget_cells()
+            cell_html_class = None
+
+            for cell_html in empty_cells:
+                if cell_html[1] == obj.position:
+                    cell_html_class = cell_html[0]
+                    break
+
+            context = {
+                'position': obj.position,
+                'placeholder_uid': obj.placeholder_uid,
+                'cell_html_class': cell_html_class
+            }
+            rendered = render_to_string('dash/layouts/placeholder_edit.html', context)
+            return HttpResponse(json.dumps({'success': 1, 'cell': rendered}))
         else:
             # Redirect to dashboard view.
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

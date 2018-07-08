@@ -24,7 +24,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -635,6 +635,12 @@ def like_profile(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
+        if slug is not None and slug.isnumeric():
+            slug = int(slug)
+
+        if slug == user.id:
+            return HttpResponseBadRequest()
+
         try:
             n = Profile.objects.get(user_id=user.id)
             m = Profile.objects.get(user_id=slug)
@@ -675,6 +681,12 @@ def request_friend(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
+
+        if slug is not None and slug.isnumeric():
+            slug = int(slug)
+
+        if slug == user.id:
+            return HttpResponseBadRequest()
 
         try:
             n = Profile.objects.get(user_id=user.id)
@@ -766,6 +778,12 @@ def respond_friend_request(request):
         profile_user_id = request.POST.get('slug', None)
         request_status = request.POST.get('status', None)
 
+        if profile_user_id is not None and profile_user_id.isnumeric():
+            profile_user_id = int(profile_user_id)
+
+        if user.id == profile_user_id:
+            return HttpResponseBadRequest()
+
         try:
             recipient = User.objects.select_related('profile').get(id=profile_user_id)
             emitter = Profile.objects.get(user_id=user.id)
@@ -820,6 +838,12 @@ def remove_relationship(request):
     user = request.user
     slug = request.POST.get('slug', None)
 
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
+
     if request.method == 'POST':
         try:
             profile_user = Profile.objects.get(user_id=slug)
@@ -849,6 +873,12 @@ def remove_blocked(request):
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
+
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
 
     if request.method == 'POST':
         try:
@@ -885,6 +915,12 @@ def remove_request_follow(request):
     slug = request.POST.get('slug', None)
     status = request.POST.get('status', None)
 
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
+        
     logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))
     if request.method == 'POST':
         if status == 'cancel':
@@ -1080,6 +1116,9 @@ def bloq_user(request):
 
     if request.method == 'POST':
         id_user = request.POST.get('id_user', None)
+
+        if id_user is not None and id_user.isnumeric():
+            id_user = int(id_user)
 
         if id_user == user.id:
             data = {'response': False, 'haslike': haslike}

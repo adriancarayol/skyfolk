@@ -87,6 +87,11 @@ class RelationShipProfile(models.Model):
     class Meta:
         unique_together = ('to_profile', 'from_profile')
 
+    def save(self, *args, **kwargs):
+        if self.to_profile == self.from_profile:
+            raise Exception('to_profile != from_profile')
+        super().save(*args, **kwargs)
+
 
 class LikeProfile(models.Model):
     to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True)
@@ -95,6 +100,11 @@ class LikeProfile(models.Model):
 
     class Meta:
         unique_together = ('to_profile', 'from_profile')
+
+    def save(self, *args, **kwargs):
+        if self.to_profile == self.from_profile:
+            raise Exception('to_profile != from_profile')
+        super().save(*args, **kwargs) 
 
 class Profile(models.Model):
     """

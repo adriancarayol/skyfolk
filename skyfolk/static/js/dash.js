@@ -32,7 +32,7 @@ $(document).ready(function() {
         var el = $(this);
         $.getJSON($(this).attr('href'), function(data) {
             if (data.success) {
-                el.closest('.plugin').remove();
+                el.closest('.plugin').replaceWith(data.cell);
             }
         });
         return false;
