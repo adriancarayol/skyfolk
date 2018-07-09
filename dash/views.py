@@ -1046,7 +1046,8 @@ def delete_dashboard_entry(request, entry_id):
             context = {
                 'position': obj.position,
                 'placeholder_uid': obj.placeholder_uid,
-                'cell_html_class': cell_html_class
+                'cell_html_class': cell_html_class,
+                'workspace': workspace
             }
             rendered = render_to_string('dash/layouts/placeholder_edit.html', context)
             return HttpResponse(json.dumps({'success': 1, 'cell': rendered}))

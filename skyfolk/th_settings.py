@@ -58,7 +58,7 @@ TH_SERVICES = (
     'th_services.th_tumblr.my_tumblr.ServiceTumblr',
     'th_services.th_twitter.my_twitter.ServiceTwitter',
     'th_services.th_wallabag.my_wallabag.ServiceWallabag',
-    'th_services.th_skyfolk.my_skyfolk.ServiceSkyfolk',
+    # 'th_services.th_skyfolk.my_skyfolk.ServiceSkyfolk',
 )
 
 TH_EVERNOTE_KEY = {

@@ -1,7 +1,7 @@
 {% comment %}
 Base para la interfaz en comun de todos los usuarios.
 {% endcomment %}
-{% load static %}
+{% load static compress %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -11,12 +11,12 @@ Base para la interfaz en comun de todos los usuarios.
     <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <meta content="text/html; charset=UTF-8"/>
-
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static "css/core.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection">
     <link rel="stylesheet" type="text/css" href="{% static "css/buscar.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "fonts/iconfont/material-icons.css" %}">
-
+    {% endcompress %}
     <link rel="icon" type="image/ico" href="{% static "img/favicon.ico" %}"/>
 
     <script>
