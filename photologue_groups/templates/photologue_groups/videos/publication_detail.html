@@ -68,23 +68,21 @@
                              style="border-right: 2px solid #1e88e5;"{% endif %}
                              id="pub-{{ node.id }}"
                              data-id="{{ user.pk }}">
-                        <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+                            <div class="row">
+                                <div class="image col l1 m2 s2">
+                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
+                                </div>
+                                <div class="articulo col l11 s10">
+                                    <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="material-icons" href="{% url "publications_gallery:publication_video_detail" publication_id=node.id %}">open_in_new</a></span>
                     {% if user.id == node.author.id %}
-                            {% if node.event_type == 1 or node.event_type == 3 %}
                                 <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
                                       data-position="bottom"
                                       data-delay="50"
                                       data-tooltip="Editar comentario"><i class="material-icons">mode_edit</i></span>
-                            {% endif %}
                         {% endif %}
-                            <div class="row">
-                                <div class="image col l1 m2 s2">
-                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
-                                </div>
-                                <div class="articulo col l9 s8">
                                     <h2 class="author-header"><a
                                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}

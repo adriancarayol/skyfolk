@@ -1,5 +1,6 @@
 # encoding:utf-8
 import logging
+import re
 from django.core import validators
 from PIL import Image
 from allauth.account.forms import LoginForm
@@ -135,14 +136,23 @@ class SignupForm(forms.Form):
 
 
 class UsernameForm(UserCreationForm):
+    username = forms.CharField(max_length=15)
+
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2',)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if len(username) < 3:
-            raise ValidationError('Se necesitan al menos 3 caracteres para el nombre de usuario.')
+
+        reg = re.compile('^[a-zA-Z0-9_]{1,15}$')
+        if not reg.match(username):
+            if len(username) < 3:
+                raise ValidationError('Se necesitan al menos 3 caracteres para el nombre de usuario.')
+            if len(username) > 15:
+                raise ValidationError(_('El nombre de usuario no puede exceder los 15 caracteres'))
+            else:
+                raise ValidationError(_('El nombre de usuario solo puede tener letras, numeros y _'))
         return username
 
     def clean_password2(self):

@@ -29,7 +29,7 @@ class MemoForm(forms.Form, DashboardPluginFormBase):
 
     title = forms.CharField(label=_("Title"), required=False)
     text = forms.CharField(label=_("Text"), required=True,
-                           widget=forms.widgets.Textarea)
+                           widget=forms.widgets.Textarea(attrs={"class": "materialize-textarea"}))
 
 
 # Basic TinyMCE config

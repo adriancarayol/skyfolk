@@ -1,15 +1,6 @@
-{% extends "base.html" %}
+{% extends "services/base_callback.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "My Trigger" %}{% endblock %}
-{% block content %}
-<div class="container">
-	<div class="row">
-		<div class="col s12" id="trigger-content">
-		<p style="color:green">
-		{% trans "Congratulations, you have successfully authorized this application to access your Trello account!" %}
-		</p> 
-		</div>
-	</div>
-</div>
+{% block service_message %}
+    {% trans "Congratulations, you have successfully authorized this application to access your Trello account!" %}
 {% endblock %}

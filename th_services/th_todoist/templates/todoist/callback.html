@@ -1,11 +1,6 @@
-{% extends "base.html" %}
+{% extends "services/base_callback.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "My Trigger" %} - {{ user.username }} - Trigger Happy{% endblock %}
-{% block content %}
-<div class="col-md-12" id="trigger-content">
-<p style="color:green">
-{% trans "Congratulations, you have successfully authorized this application to access your Todoist account!" %}
-</p> 
-</div>
+{% block service_message %}
+    {% trans "Congratulations, you have successfully authorized this application to access your Todoist account!" %}
 {% endblock %}

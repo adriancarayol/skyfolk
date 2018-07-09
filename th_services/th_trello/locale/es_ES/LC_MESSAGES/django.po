@@ -1,0 +1,11 @@
+msgid ""
+msgstr ""
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# templates/trello/callback.html:5
+msgid "Congratulations, you have successfully authorized this application to access your Trello account!"
+msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Trello!"

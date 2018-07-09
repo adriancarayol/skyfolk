@@ -8,7 +8,12 @@
     <div class="col s12">
         <div class="row">
         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" id="pub-{{ node.pk }}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
-               <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+               <div class="row">
+                <div class="image col l1 m2 s2">
+                    <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                </div>
+                <div class="articulo col l11 s10">
+                    <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="material-icons" href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
                {% if user.id == node.p_author.id %}
@@ -18,11 +23,6 @@
                                       data-delay="50"
                                       data-tooltip="Editar comentario"><i class="material-icons">mode_edit</i></span>
                {% endif %}
-               <div class="row">
-                <div class="image col l1 m2 s2">
-                    <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
-                </div>
-                <div class="articulo col l9 s8">
                     <h2 class="author-header"><a
                         href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
                         {% if node.parent %}
@@ -105,14 +105,14 @@
                                             </li>
                                         {% endif %}
                                             {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        
-                                            <li title="No me gusta" class="hate-comment" 
+
+                                            <li title="No me gusta" class="hate-comment"
                                                 >
                                                 <i class="material-icons md-18">keyboard_arrow_down</i>
                                                 <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
                                             </li>
-                                        
-                                       
+
+
                                             <li title="¡Me gusta!" class="like-comment">
                                                 <i class="material-icons md-18">keyboard_arrow_up</i>
                                                 <i class="like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>

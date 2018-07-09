@@ -7,7 +7,16 @@
 <div class="row infinite-item">
         <div class="wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
         <div class="box">
-            <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+            <div class="row">
+                <div class="articulo col s12">
+                    <div class="row">
+                        <div class="image col l1 m2 s2"
+                        {% if user.id == node.author.id %}title="¡Eres el autor!"
+                        style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
+                        <div class="usr-img img-responsive">{% avatar node.author %}</div>
+                    </div>
+                    <div class="col l11 s10">
+                        <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
             data-delay="50"
             data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
             {% if user.id == node.author.id %}
@@ -17,15 +26,6 @@
             data-delay="50"
             data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
             {% endif %}
-            <div class="row">
-                <div class="articulo col s12">
-                    <div class="row">
-                        <div class="image col l1 m2 s2"
-                        {% if user.id == node.author.id %}title="¡Eres el autor!"
-                        style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
-                        <div class="usr-img img-responsive">{% avatar node.author %}</div>
-                    </div>
-                    <div class="col l10 m12 s9">
                         <h2 class="h22"><a
                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                             {% if node.parent %}

@@ -63,7 +63,12 @@
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
-                             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+                            <div class="row">
+                                <div class="image col l1 m2 s2">
+                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
+                                </div>
+                                <div class="articulo col l11 s10">
+                                    <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="material-icons md-18" href="/publication/{{ node.id }}/">open_in_new</a></span>
                     {% if user.id == node.author.id %}
@@ -75,11 +80,6 @@
                                       data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
                             {% endif %}
                         {% endif %}
-                            <div class="row">
-                                <div class="image col l1 m2 s2">
-                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
-                                </div>
-                                <div class="articulo col l9 s8">
                                     <h2 class="author-header"><a
                                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
@@ -100,7 +100,7 @@
                                             <a href="#">+ Mostrar más</a>
                                         </div>
                                     </div>
-                                    
+
                                     {% with node.shared_publication as shared_publication %}
                                             {% include "account/shared_publication.html" %}
                                         {% endwith %}
@@ -227,7 +227,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         {% endfor %}
     </div>

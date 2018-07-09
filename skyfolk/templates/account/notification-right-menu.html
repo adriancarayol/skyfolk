@@ -14,8 +14,8 @@ Menu de notificaciones verticales
 </script>
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 <div id="notification-menu" class="side-nav nav-vertical-and-chat">
+    {% if user_notifications %}
     <ul id="list-notify" class="collection">
-        {% if user_notifications %}
             {% for notification in user_notifications %}
                 <li class="collection-item avatar" data-id="{{ notification.id }}">
                     <a onclick="AJAX_mark_read(this)" class="remove-notification material-icons"
@@ -67,12 +67,13 @@ Menu de notificaciones verticales
             {% endcomment %}
                 </li>
             {% endfor %}
-        {% endif %}
     </ul>
+      {% endif %}
     <div class="nav-vertical-controls">
         <div class="controls-notifications">
-            <a id="clear-notify"
-               class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
+            {% if user_notifications %}
+                <a id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
+            {% endif %}
             <a href="/inbox/notifications/"
                class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
         </div>
