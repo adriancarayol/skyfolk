@@ -1,11 +1,10 @@
 import logging
-import re
 
 import requests
 from badgify.models import Award, Badge
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
@@ -14,12 +13,31 @@ from requests.exceptions import MissingSchema
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
 from .models import Publication, ExtraContent
+from django.db.models import Sum, Count, When, Case, Value, IntegerField, Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=Publication, dispatch_uid='publication_save')
+@receiver(m2m_changed, sender=Publication.user_give_me_like.through)
+def publication_received_like(sender, **kwargs):
+    action = kwargs.pop('action', None)
+
+    if action == "post_add":
+        instance = kwargs.pop('instance', None)
+
+        qs = Publication.objects.filter(author_id=instance.author_id).aggregate(
+            likes=Count(Case(When(~Q(user_give_me_like=instance.author), then=Value(1)))))
+
+        if not qs or not qs['likes']:
+            return
+
+        if qs['likes'] >= 100:
+            Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='editor-recipe'))
+        elif qs['likes'] >= 5000:
+            Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='pulitzer-recipe'))
+
+
 def publication_handler(sender, instance, created, **kwargs):
     # foo is following faa
     if instance.event_type == 2:
@@ -31,8 +49,11 @@ def publication_handler(sender, instance, created, **kwargs):
         return
 
     total_pubs = Publication.objects.filter(author__id=instance.author_id).count()
-    if total_pubs == 10:
-        Award.objects.create(user=instance.author, badge=Badge.objects.get(slug='10-pubs-reached'))
+
+    if total_pubs >= 10:
+        Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='10-pubs-reached'))
+    elif total_pubs >= 1:
+        Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='first-publication'))
 
     if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))

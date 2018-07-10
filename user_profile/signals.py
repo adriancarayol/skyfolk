@@ -14,6 +14,7 @@ from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
 from user_profile.node_models import NodeProfile
 from notifications.signals import notify
 from user_guide.models import Guide, GuideInfo
+from badgify.models import Award, Badge
 
 
 logging.basicConfig(level=logging.INFO)
@@ -88,11 +89,13 @@ def handle_delete_relationship(sender, instance, *args, **kwargs):
     else:
         n.follow.disconnect(m)
 
+
 def create_user_guides(user):
     guides = Guide.objects.all()
     GuideInfo.objects.bulk_create([
         GuideInfo(guide=guide, user=user) for guide in guides
     ])
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -103,15 +106,15 @@ def create_user_profile(sender, instance, created, **kwargs):
                     Profile.objects.create(user=instance)
                     NotificationSettings.objects.create(user=instance)
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
-                                                                 is_public=True)
+                                                     is_public=True)
                     create_user_guides(instance)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception as e:
             logger.info(
-                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile/Notifications/GuideInfo para el user : %s - ERROR: %s" % (instance, e))
-
+                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile/Notifications/GuideInfo para el user : %s - ERROR: %s" % (
+                instance, e))
 
 
 @receiver(post_save, sender=User)
@@ -130,7 +133,8 @@ def save_user_profile(sender, instance, created, **kwargs):
                                     first_name=instance.first_name, last_name=instance.last_name).save()
                     Profile.objects.get_or_create(user=instance)
                     NotificationSettings.objects.get_or_create(user=instance)
-                    DashboardSettings.objects.get_or_create(user=instance, title="Profile", layout_uid="profile", is_public=True)
+                    DashboardSettings.objects.get_or_create(user=instance, title="Profile", layout_uid="profile",
+                                                            is_public=True)
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
                     )
@@ -145,6 +149,7 @@ def save_user_profile(sender, instance, created, **kwargs):
     except Profile.DoesNotExist:
         pass
 
+
 @receiver(post_save, sender=LikeProfile)
 def handle_new_like(sender, instance, created, **kwargs):
     n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
@@ -155,6 +160,15 @@ def handle_new_like(sender, instance, created, **kwargs):
     if rel:
         rel.weight = rel.weight + 10
         rel.save()
+
+    total_likes = LikeProfile.objects.filter(to_profile=instance.to_profile).count()
+
+    if total_likes >= 100:
+        Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='casanova-recipe'))
+    elif total_likes >= 5000:
+        Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='don-juan-recipe'))
+    elif total_likes >= 150000:
+        Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='influencer-recipe'))
 
     notify.send(instance.from_profile.user, actor=instance.from_profile.user.username,
                 recipient=instance.to_profile.user,
