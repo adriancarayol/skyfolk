@@ -25,11 +25,11 @@
                 <span>{{ form.is_active.help_text|safe }}</span>
             </p>
             {% if user.is_active %}
-                <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
+                <button class="btn red right" type="submit" name="action">{% trans "Confirm" %}</button>
             {% endif %}
         </form>
     </div>
     <script>
-        $('.menu-config').find('li:nth-child(9)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': 'tomato'});
+        $('.menu-config').find('li:nth-child(8)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': 'tomato'});
     </script>
 {% endblock %}

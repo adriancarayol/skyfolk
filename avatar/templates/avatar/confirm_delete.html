@@ -21,7 +21,7 @@
 
 {% block cf-title %}
     <div class="hgroup">
-        <h4 class="cn"> Imágen de perfil </h4>
+        <h4 class="cn"> Imagen de perfil </h4>
         <h6 class="ch"> Elimina aquellos avatares que no necesites </h6>
     </div>
 {% endblock %}
@@ -43,7 +43,7 @@
                         </ul>
                         <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
                                 class="fa fa-plus"></i></a>
-                        {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit"
+                        {% csrf_token %}<input class="btn blue waves-effect waves-light right" type="submit"
                                                value="{% trans "Delete These" %}"/>
                     </form>
                 </div>

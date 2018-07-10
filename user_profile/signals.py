@@ -88,6 +88,11 @@ def handle_delete_relationship(sender, instance, *args, **kwargs):
     else:
         n.follow.disconnect(m)
 
+def create_user_guides(user):
+    guides = Guide.objects.all()
+    GuideInfo.objects.bulk_create([
+        GuideInfo(guide=guide, user=user) for guide in guides
+    ])
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -99,8 +104,7 @@ def create_user_profile(sender, instance, created, **kwargs):
                     NotificationSettings.objects.create(user=instance)
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
                                                                  is_public=True)
-                    guide = Guide.objects.get(guide_name='First guide')
-                    GuideInfo.objects.create(guide=guide, user=instance)
+                    create_user_guides(instance)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)

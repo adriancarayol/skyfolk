@@ -47,7 +47,7 @@ Template para el perfil de cada usuario
 
     <div class="container">
         {% if user_profile.is_active %}
-        {% user_guide %}
+        {% user_guide guide_tags=onboarding %}
             {% comment %}
         }
     Formulario para citar un comentario

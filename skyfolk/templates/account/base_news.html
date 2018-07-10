@@ -207,7 +207,7 @@
                                                 </div>
                                                 <div class="col l8 m8 s8 legend-user-data">
                                                     <a href="/profile/{{ item.owner }}">@{{ item.owner }}</a>
-                                                    <a href="{% url "photologue:pl-video" item.slug %}" class="photo-title truncate">{{ item.name }}</a>
+                                                    <a href="{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}" class="photo-title truncate">{{ item.name }}</a>
                                                     <i class="truncate photo-date"><i class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}</i>
                                                 </div>
                                             </div>
