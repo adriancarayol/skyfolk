@@ -14,6 +14,7 @@ class FirstLoginRecipe(BaseRecipe):
     slug = 'new-account'
     description = '¡Bienvenido a Skyfolk! - Has obtenido este logro al registrarte exitosamente.'
     points = 5
+    category = 'hero'
 
     @property
     def image(self):
@@ -32,6 +33,7 @@ class TenPubsReachedRecipe(BaseRecipe):
     slug = '10-pubs-reached'
     description = 'Has obtenido este logro por realizar 10 publicaciones en Skyfolk.'
     points = 25
+    category = 'hero'
 
     @property
     def image(self):
@@ -50,6 +52,7 @@ class FirstPublicationRecipe(BaseRecipe):
     slug = 'first-publication'
     description = 'Has obtenido este logro por realizar tu primera publicación en Skyfolk.'
     points = 5
+    category = 'hero'
 
     @property
     def image(self):
@@ -68,6 +71,7 @@ class FirstDirectMessageRecipe(BaseRecipe):
     slug = 'first-direct-message'
     description = 'Has obtenido este logro por realizar tu primer mensaje privado en Skyfolk.'
     points = 25
+    category = 'hero'
 
     @property
     def image(self):
@@ -86,6 +90,7 @@ class FirstMediaRecipe(BaseRecipe):
     slug = 'first-upload-media'
     description = 'Has obtenido este logro por subir una imagen o un vídeo a Skyfolk.'
     points = 25
+    category = 'hero'
 
     @property
     def image(self):
@@ -104,6 +109,7 @@ class CasanovaRecipe(BaseRecipe):
     slug = 'casanova-recipe'
     description = 'Has obtenido este logro por subir recibir 100 me gusta a tu perfil en Skyfolk.'
     points = 15
+    category = 'star'
 
     @property
     def image(self):
@@ -122,6 +128,7 @@ class DonJuanRecipe(BaseRecipe):
     slug = 'don-juan-recipe'
     description = 'Has obtenido este logro por subir recibir 5000 me gusta a tu perfil en Skyfolk.'
     points = 100
+    category = 'star'
 
     @property
     def image(self):
@@ -140,6 +147,7 @@ class InfluencerRecipe(BaseRecipe):
     slug = 'influencer-recipe'
     description = 'Has obtenido este logro por subir recibir 150000 me gusta a tu perfil en Skyfolk.'
     points = 150
+    category = 'star'
 
     @property
     def image(self):
@@ -158,6 +166,7 @@ class EditorRecipe(BaseRecipe):
     slug = 'editor-recipe'
     description = 'Has obtenido este logro por subir recibir 100 me gusta a tus publicaciones en Skyfolk.'
     points = 15
+    category = 'writer'
 
     @property
     def image(self):
@@ -176,6 +185,7 @@ class PulitzerRecipe(BaseRecipe):
     slug = 'pulitzer-recipe'
     description = 'Has obtenido este logro por subir recibir 5000 me gusta a tus publicaciones en Skyfolk.'
     points = 100
+    category = 'writer'
 
     @property
     def image(self):
