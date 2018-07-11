@@ -9,3 +9,11 @@ msgstr ""
 # templates/evernote/callback.html:5
 msgid "Congratulations, you have successfully authorized this application to access your Evernote account!"
 msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Evernote!"
+
+# forms.py:18
+msgid "Tag"
+msgstr "Etiqueta"
+
+# forms.py:19
+msgid "Notebook"
+msgstr "Libreta"

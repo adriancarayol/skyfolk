@@ -15,3 +15,7 @@ msgstr "Editar propiedades de"
 # templates/wallabag/callback.html:5
 msgid "Congratulations, you have successfully authorized this application to access your Wallabag account!"
 msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Wallabag!"
+
+# forms.py:18
+msgid "Tag"
+msgstr "Etiqueta"

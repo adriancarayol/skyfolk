@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# forms.py:27
+msgid "Team ID"
+msgstr "ID del equipo"
+
+# forms.py:28
+msgid "Slack token"
+msgstr "Token de Slack"
+
+# forms.py:29
+msgid "Channel"
+msgstr "Canal"

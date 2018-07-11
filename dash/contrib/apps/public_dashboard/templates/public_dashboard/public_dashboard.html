@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block page-title %}{% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}{% endblock page-title %}
+{% block title %}{% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}{% endblock page-title %}
 
 {% block site-title %}{{ dashboard_settings.title }}{% endblock site-title %}
 

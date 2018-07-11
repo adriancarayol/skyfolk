@@ -1,22 +1,21 @@
 {% load i18n %}
-<div class="generic-content-wrapper">
-    <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
-    </div>
-    <div class="content-body">
-        <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
-            {% csrf_token %}
-            <ul class="content-listing generic-form">
-                {% include layout.form_snippet_template_name %}
-                <li class="buttons control-group">
-                    <div class="controls">
-                        <button type="submit" class="submit default-button btn btn-primary">{% trans "Save" %}</button>
-                    </div>
-                </li>
-
-                {% include "dash/snippets/plugin_help_text.html" %}
-            </ul>
-        </form>
+<div class="row">
+    <div class="generic-content-wrapper">
+        <div class="wrapper-bg"></div>
+        <div class="col l4 s12 offset-l4">
+            <div class="hero-unit-small">
+                <h2 class="content-title center">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
+            </div>
+        </div>
+        <div class="col l4 s12 offset-l4">
+                <form method="post" action="{{ request.path }}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <ul>
+                        {% include layout.form_snippet_template_name %}
+                    </ul>
+                    {% include "dash/snippets/plugin_help_text.html" %}
+                    <button type="submit" class="btn blue right">{% trans "Save" %}</button>
+                </form>
+        </div>
     </div>
 </div>

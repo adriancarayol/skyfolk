@@ -16,7 +16,11 @@ class TwitterForm(forms.ModelForm):
     class Meta:
         model = Twitter
         fields = ('tag', 'screen', 'fav')
-
+        labels = {
+            'tag': _('Hashtag'),
+            'screen': _('Username'),
+            'fav': _('Favorite')
+        }
         widgets = {
             'tag': TextInput(attrs={'class': 'form-control'}),
             'screen': TextInput(attrs={'class': 'form-control'}),

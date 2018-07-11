@@ -3,10 +3,10 @@
 from django import forms
 from django.forms import TextInput
 from th_services.th_github.models import Github
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 
 class GithubForm(forms.ModelForm):
-
     """
         for to handle Pocket service
     """
@@ -14,6 +14,10 @@ class GithubForm(forms.ModelForm):
     class Meta:
         model = Github
         fields = ('repo', 'project')
+        labels = {
+            'repo': _('Username'),
+            'project': _('Project')
+        }
         widgets = {
             'repo': TextInput(attrs={'class': 'form-control'}),
             'project': TextInput(attrs={'class': 'form-control'}),

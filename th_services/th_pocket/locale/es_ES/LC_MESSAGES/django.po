@@ -9,3 +9,7 @@ msgstr ""
 # templates/pocket/callback.html:5
 msgid "Congratulations, you have successfully authorized this application to access your Pocket account!"
 msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Pocket!"
+
+# forms.py:19
+msgid "Tag"
+msgstr "Etiqueta"

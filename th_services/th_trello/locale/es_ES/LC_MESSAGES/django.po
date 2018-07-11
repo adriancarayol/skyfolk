@@ -9,3 +9,11 @@ msgstr ""
 # templates/trello/callback.html:5
 msgid "Congratulations, you have successfully authorized this application to access your Trello account!"
 msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Trello!"
+
+# forms.py:19
+msgid "Board name"
+msgstr "Nombre del tablero"
+
+# forms.py:20
+msgid "List name"
+msgstr "Lista de nombres"

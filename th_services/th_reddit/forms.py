@@ -4,8 +4,8 @@ from django import forms
 from th_services.th_reddit.models import Reddit
 from django.utils.translation import ugettext_lazy as _
 
-class RedditForm(forms.ModelForm):
 
+class RedditForm(forms.ModelForm):
     """
         form to handle Reddit service
     """

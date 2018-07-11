@@ -1025,3 +1025,7 @@ msgstr "Descripción"
 #: dash/plugin_widgets_ajax.html:16
 msgid "Paste from clipboard"
 msgstr "Pegar desde portapapeles"
+
+#: templates/dash/edit_dashboard_widget_ajax.html:7
+msgid "Edit %(plugin_name)s on Dashboard"
+msgstr "Editar %(plugin_name)s en tablero"

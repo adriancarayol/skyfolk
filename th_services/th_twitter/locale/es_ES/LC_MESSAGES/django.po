@@ -15,3 +15,11 @@ msgstr "Editar propiedades de"
 # templates/twitter/callback.html:5
 msgid "Congratulations, you have successfully authorized this application to access your Twitter account!"
 msgstr "¡Enhorabuena, acabas de autorizar a esta aplicación para acceder a tu cuenta de Twitter!"
+
+# forms.py:21
+msgid "Username"
+msgstr "Nombre de usuario"
+
+# forms.py:22
+msgid "Favorite"
+msgstr "Favorito"

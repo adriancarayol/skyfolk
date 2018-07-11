@@ -1,11 +1,11 @@
 # coding: utf-8
 
 from django import forms
-
+from django.utils.translation import ugettext_lazy as _
 from django.forms import TextInput
 from th_services.th_pushbullet.models import Pushbullet
 
-PUSH_TYPE = (('note', 'Note'), ('link', 'Link'), ('file', 'File'))
+PUSH_TYPE = (('note', _('Note')), ('link', _('Link')), ('file', _('File')))
 
 
 class PushbulletForm(forms.ModelForm):
@@ -19,6 +19,12 @@ class PushbulletForm(forms.ModelForm):
     class Meta:
         model = Pushbullet
         fields = ('type', 'device', 'email', 'channel_tag')
+        labels = {
+            'type': _('Type'),
+            'device': _('Device'),
+            'email': _('Email'),
+            'channel_tag': _('Channel')
+        }
         widgets = {
             'device': TextInput(attrs={'class': 'form-control'}),
             'email': TextInput(attrs={'class': 'form-control'}),
