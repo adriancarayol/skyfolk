@@ -27,17 +27,19 @@ def publication_received_like(sender, **kwargs):
         instance = kwargs.pop('instance', None)
 
         qs = Publication.objects.filter(author_id=instance.author_id).aggregate(
-            likes=Count(Case(When(~Q(user_give_me_like=instance.author), then=Value(1)))))
+            likes=Count(Case(When(~Q(user_give_me_like=instance.author) & ~Q(user_give_me_like=None), then=Value(1)))))
 
         if not qs or not qs['likes']:
             return
 
+        print(qs)
         if qs['likes'] >= 100:
-            Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='editor-recipe'))
+            Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='editor-recipe'))
         elif qs['likes'] >= 5000:
-            Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='pulitzer-recipe'))
+            Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='pulitzer-recipe'))
 
 
+@receiver(post_save, sender=Publication)
 def publication_handler(sender, instance, created, **kwargs):
     # foo is following faa
     if instance.event_type == 2:
