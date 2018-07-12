@@ -1,16 +1,12 @@
 {% extends "account/base_cf.html" %}
 {% load static %}
+{% load app_filters %}
 {% comment %}
 	Template para cambiar de contraseña
 {% endcomment %}
 {% block additional_files %}
-    <style type="text/css">
-        #container {
-            max-width: 100%;
-            height: 100%;
-            margin: auto;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "css/welcome.css" %}"/>
+
 {% endblock %}
 {% block cf-title %}
     <div class="hgroup">
@@ -19,18 +15,46 @@
     </div>
 {% endblock %}
 {% block cf-form %}
-    <div id="container" class="wr">
-    </div>
-    <script src="{% static "js/sigma.min.js" %}"></script>
-    <script src="{% static "js/sigma.parsers.json.min.js" %}"></script>
-    <script>
-        var data = JSON.parse('{{ data|safe }}');
-        var s = new sigma({
-            graph: data,
-            container: 'container',
-            settings: {
-                defaultNodeColor: '#ec5148'
-            }
-        });
-    </script>
+    <div class="col s12 m12 l12 title">
+            <h3 class="grey-text darken-1 center-align">Elige tus intereses</h3>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="chips chips-placeholder"></div>
+                <p>Introduce una "," para añadir un nuevo interés.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <p class="flow-text">Los usuarios han mostrado interés por... </p>
+                {% for theme in top_tags %}
+                    <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0 }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="divider"></div>
+        <form id="submit-themes" action="" method="post">{% csrf_token %}
+            <div class="row">
+                {% for choice in form.choices %}
+                    <div class="col s12 m12 l4">
+                        <div class="card white">
+                            <div class="card-content">
+                                <span class="card-title grey-text darken-1">{{ choice.data.value|interest_to_icon|safe }} {{ choice.choice_label }}</span>
+                            </div>
+                            <div class="card-action">
+                                <p>
+                                    {{ choice.tag }}
+                                    <label for="{{ choice.id_for_label }}"></label>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <button type="submit" class="waves-effect waves-light btn right blue darken-1">He acabado
+                        </button>
+            </div>
+        </form>
+       <script src="{% static "js/welcome.js" %}"></script>
 {% endblock %}

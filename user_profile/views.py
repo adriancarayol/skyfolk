@@ -36,6 +36,7 @@ from el_pagination.views import AjaxListView
 from haystack.generic_views import SearchView
 from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from neomodel import db
+from django.urls import reverse
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from django.http import Http404
@@ -524,13 +525,30 @@ def config_blocked(request):
                                                        })
 
 
-class InterestsView(TemplateView):
+class InterestsView(FormView):
     template_name = "account/cf-interests.html"
+    form_class = ThemesForm
+    success_url = "/config/interests/"
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        print('POLE')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        results, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
+        context['top_tags'] = results
+        context['form'] = ThemesForm
+
+        return context
+
+
+# TODO
+class AffinityView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         query = "MATCH (n:NodeProfile)-[:FOLLOW]->(m:NodeProfile) WHERE n.user_id=%d RETURN {id: m.user_id, label: m.title} ORDER BY m.title" % self.request.user.id
@@ -555,15 +573,13 @@ class InterestsView(TemplateView):
 
         for index, node in enumerate(dict_results):
             nodes.append({"id": "n" + str(node['id']), "label": node['label'], "x": index, "y": index, "size": 4})
-            edges.append({"id": "e" + str(node['id']), "source": "n" + str(node['id']), "target": "n" + str(self.request.user.id)})
-
+            edges.append({"id": "e" + str(node['id']), "source": "n" + str(node['id']),
+                          "target": "n" + str(self.request.user.id)})
 
         data = {
             "nodes": nodes,
             "edges": edges
         }
-
-        print(data)
         context['data'] = json.dumps(data)
         return context
 
