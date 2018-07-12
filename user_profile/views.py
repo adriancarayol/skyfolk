@@ -524,6 +524,50 @@ def config_blocked(request):
                                                        })
 
 
+class InterestsView(TemplateView):
+    template_name = "account/cf-interests.html"
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        query = "MATCH (n:NodeProfile)-[:FOLLOW]->(m:NodeProfile) WHERE n.user_id=%d RETURN {id: m.user_id, label: m.title} ORDER BY m.title" % self.request.user.id
+        results, meta = db.cypher_query(query=query)
+        dict_results = [item for sublist in results for item in sublist]
+        nodes = [
+            {
+                "id": "n" + str(self.request.user.id),
+                "label": self.request.user.username,
+                "x": 4,
+                "y": 4,
+                "size": 8
+            }
+        ]
+        edges = [
+            {
+                "id": "e" + str(self.request.user.id),
+                "source": "n" + str(self.request.user.id),
+                "target": "n" + str(10)
+            }
+        ]
+
+        for index, node in enumerate(dict_results):
+            nodes.append({"id": "n" + str(node['id']), "label": node['label'], "x": index, "y": index, "size": 4})
+            edges.append({"id": "e" + str(node['id']), "source": "n" + str(node['id']), "target": "n" + str(self.request.user.id)})
+
+
+        data = {
+            "nodes": nodes,
+            "edges": edges
+        }
+
+        print(data)
+        context['data'] = json.dumps(data)
+        return context
+
+
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
     """
@@ -920,7 +964,7 @@ def remove_request_follow(request):
 
     if user.id == slug:
         return HttpResponseBadRequest()
-        
+
     logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))
     if request.method == 'POST':
         if status == 'cancel':

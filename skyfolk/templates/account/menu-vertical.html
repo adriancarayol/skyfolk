@@ -4,6 +4,7 @@
 {% load avatar_tags %}
 {% load app_filters %}
 {% load static %}
+
 <ul id="vertical-menu" class="side-nav">
     <li>
         <div class="userView">
@@ -24,7 +25,7 @@
         <div class="divider"></div>
     </li>
     <li class="hide-on-large-only">
-        <div class="field" id="searchform">
+        <div class="field small-search" id="searchform">
             <form class="autocomplete-me" method='get' action='{% url 'user_profile:general-search' %}'>
                 {{ searchForm }}
             </form>

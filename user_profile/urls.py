@@ -61,6 +61,8 @@ urlpatterns = [
         name="account_done_password"),
     url(r"^config/notifications/$", user_profile_views.NotificationSettingsView.as_view(),
         name="account_notifications"),
+    url(r'^config/interests/$', user_profile_views.InterestsView.as_view(),
+        name='account_interests'),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', user_profile_views.welcome_view,
         name='welcome'),

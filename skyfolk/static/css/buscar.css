@@ -18,7 +18,7 @@
 
 .field > form input[type=text] {
     position: relative;
-    width: 300px;
+    max-width: 100%;
     border: none;
     height: 46px;
     line-height: 46px;
@@ -34,6 +34,7 @@
     background-size: 13px;
     padding: 0 20px;
     color: black !important;
+    box-sizing: inherit !important;
 }
 
 .field > form input[type=text]:focus {
@@ -117,22 +118,12 @@
 }
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
-    .field {
-        width: 831px;
+    .small-search {
+        width: 100% !important;
     }
 }
 
 @media only screen and (max-width: 640px) {
-    .field {
-        width: 631px;
-    }
-}
-
-@media only screen and (max-width: 640px) {
-    .field {
-        width: 600px;
-    }
-
     .notification-bell, .fa-comment {
         right: -255px;
     }

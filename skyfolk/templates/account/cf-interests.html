@@ -1,0 +1,36 @@
+{% extends "account/base_cf.html" %}
+{% load static %}
+{% comment %}
+	Template para cambiar de contraseña
+{% endcomment %}
+{% block additional_files %}
+    <style type="text/css">
+        #container {
+            max-width: 100%;
+            height: 100%;
+            margin: auto;
+        }
+    </style>
+{% endblock %}
+{% block cf-title %}
+    <div class="hgroup">
+        <h4 class="cn"> Intereses </h4>
+        <h6 class="ch"> Controla tus intereses en Skyfolk</h6>
+    </div>
+{% endblock %}
+{% block cf-form %}
+    <div id="container" class="wr">
+    </div>
+    <script src="{% static "js/sigma.min.js" %}"></script>
+    <script src="{% static "js/sigma.parsers.json.min.js" %}"></script>
+    <script>
+        var data = JSON.parse('{{ data|safe }}');
+        var s = new sigma({
+            graph: data,
+            container: 'container',
+            settings: {
+                defaultNodeColor: '#ec5148'
+            }
+        });
+    </script>
+{% endblock %}
