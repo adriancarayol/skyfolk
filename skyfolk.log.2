@@ -1,62 +1,4 @@
-2018-07-10 16:34:33,320 ERROR exception 16874 Internal Server Error: /publication/add_like/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if total_likes >= 100:
-TypeError: '>=' not supported between instances of 'dict' and 'int'
-2018-07-10 16:34:50,411 ERROR exception 16993 Internal Server Error: /publication/add_like/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.total_likes >= 100:
-AttributeError: 'dict' object has no attribute 'total_likes'
-2018-07-10 16:36:17,365 ERROR exception 17539 Internal Server Error: /publication/add_like/
+2018-07-10 16:52:33,597 ERROR exception 23207 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -83,11 +25,25 @@ Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/publications/signals.py", line 30, in publication_received_like
-    When(~Q(user_give_me_like=instance.author_id), then=Value(1)), default=0), output_field=IntegerField()))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/aggregates.py", line 69, in __init__
-    expression, distinct='DISTINCT ' if distinct else '', output_field=IntegerField(), **extra)
-TypeError: __init__() got multiple values for keyword argument 'output_field'
-2018-07-10 16:37:50,270 ERROR exception 18497 Internal Server Error: /publication/add_like/
+    likes=Count(When(~Q('user_give_me_like'), then=Value(1))))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 348, in aggregate
+    query.add_annotation(aggregate_expr, alias, is_summary=True)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 973, in add_annotation
+    summarize=is_summary)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/aggregates.py", line 19, in resolve_expression
+    c = super(Aggregate, self).resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/expressions.py", line 548, in resolve_expression
+    c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/expressions.py", line 798, in resolve_expression
+    c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query_utils.py", line 90, in resolve_expression
+    clause, joins = query._add_q(self, reuse, allow_joins=allow_joins, split_subq=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1151, in build_filter
+    arg, value = filter_expr
+ValueError: too many values to unpack (expected 2)
+2018-07-10 16:53:00,864 ERROR exception 23386 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -114,11 +70,11 @@ Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/publications/signals.py", line 30, in publication_received_like
-    When(~Q(user_give_me_like=instance.author_id), then=Value(1)), default=0), output_field=IntegerField()))
+    likes=Count(When(~Q('user_give_me_like'), then=Value(1)), output_field=IntegerField()))
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/aggregates.py", line 69, in __init__
     expression, distinct='DISTINCT ' if distinct else '', output_field=IntegerField(), **extra)
 TypeError: __init__() got multiple values for keyword argument 'output_field'
-2018-07-10 16:39:13,184 ERROR exception 19079 Internal Server Error: /publication/add_like/
+2018-07-10 16:53:41,014 ERROR exception 23647 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -144,18 +100,28 @@ Traceback (most recent call last):
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    print(qs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 226, in __repr__
-    data = list(self[:REPR_OUTPUT_SIZE + 1])
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 250, in __iter__
-    self._fetch_all()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 1118, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 69, in __iter__
-    setattr(obj, attr_name, row[col_pos])
-AttributeError: can't set attribute
-2018-07-10 16:39:14,342 ERROR exception 19079 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/publications/signals.py", line 30, in publication_received_like
+    likes=Count(Case(When(~Q('user_give_me_like'), then=Value(1)))))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 348, in aggregate
+    query.add_annotation(aggregate_expr, alias, is_summary=True)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 973, in add_annotation
+    summarize=is_summary)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/aggregates.py", line 19, in resolve_expression
+    c = super(Aggregate, self).resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/expressions.py", line 548, in resolve_expression
+    c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/expressions.py", line 865, in resolve_expression
+    c.cases[pos] = case.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/expressions.py", line 798, in resolve_expression
+    c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query_utils.py", line 90, in resolve_expression
+    clause, joins = query._add_q(self, reuse, allow_joins=allow_joins, split_subq=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1151, in build_filter
+    arg, value = filter_expr
+ValueError: too many values to unpack (expected 2)
+2018-07-11 13:21:58,043 ERROR exception 23181 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -181,18 +147,10 @@ Traceback (most recent call last):
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    print(qs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 226, in __repr__
-    data = list(self[:REPR_OUTPUT_SIZE + 1])
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 250, in __iter__
-    self._fetch_all()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 1118, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 69, in __iter__
-    setattr(obj, attr_name, row[col_pos])
-AttributeError: can't set attribute
-2018-07-10 16:40:48,080 ERROR exception 19589 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/publications/signals.py", line 36, in publication_received_like
+    Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='editor-recipe'))
+AttributeError: 'Publication' object has no attribute 'to_profile'
+2018-07-11 13:22:59,408 ERROR exception 25290 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -218,12 +176,10 @@ Traceback (most recent call last):
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:41:11,893 ERROR exception 19746 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/publications/signals.py", line 38, in publication_received_like
+    Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='editor-recipe'))
+AttributeError: 'Publication' object has no attribute 'to_profile'
+2018-07-11 13:23:18,033 ERROR exception 25445 Internal Server Error: /publication/add_like/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -249,12 +205,10 @@ Traceback (most recent call last):
     for receiver in self._live_receivers(sender)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
     for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:41:15,557 ERROR exception 19746 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/publications/signals.py", line 38, in publication_received_like
+    Award.objects.get_or_create(user=instance.to_profile.user, badge=Badge.objects.get(slug='editor-recipe'))
+AttributeError: 'Publication' object has no attribute 'to_profile'
+2018-07-11 14:01:20,921 ERROR exception 6818 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -268,24 +222,22 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:41:16,319 ERROR exception 19746 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 51, in get
+    points = np.sum([x.points for x in exp])
+  File "/home/adrian/skyfolk/awards/views.py", line 51, in <listcomp>
+    points = np.sum([x.points for x in exp])
+AttributeError: 'dict' object has no attribute 'points'
+2018-07-11 14:34:45,923 ERROR exception 8541 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -299,24 +251,20 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:42:07,646 ERROR exception 20091 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 51, in get
+    points = np.sum([x['points'] for x in exp])
+UnboundLocalError: local variable 'exp' referenced before assignment
+2018-07-11 14:35:36,452 ERROR exception 14479 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -330,24 +278,20 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:42:18,849 ERROR exception 20208 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 56, in get
+    if badge.category in exp:
+AttributeError: 'dict' object has no attribute 'category'
+2018-07-11 14:35:58,165 ERROR exception 14748 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -361,24 +305,20 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:42:20,710 ERROR exception 20208 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 56, in get
+    if badge.category in exp:
+AttributeError: 'dict' object has no attribute 'category'
+2018-07-11 14:36:30,688 ERROR exception 14954 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -392,24 +332,20 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:43:59,745 ERROR exception 20613 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 59, in get
+    exp[badge['category']] = badge.points
+AttributeError: 'dict' object has no attribute 'points'
+2018-07-11 14:43:01,139 ERROR exception 16764 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -423,24 +359,22 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs['total_likes'] >= 100:
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 265, in __getitem__
-    raise TypeError
-TypeError
-2018-07-10 16:44:29,039 ERROR exception 20852 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 75, in get
+    exp, points = self.calculate_exp(profile)
+  File "/home/adrian/skyfolk/awards/views.py", line 28, in calculate_exp
+    if badge['category'] in exp:
+TypeError: 'Badge' object is not subscriptable
+2018-07-11 14:43:55,951 ERROR exception 17023 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -454,22 +388,22 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 31, in publication_received_like
-    print(qs.likes)
-AttributeError: 'TreeQuerySet' object has no attribute 'likes'
-2018-07-10 16:45:08,841 ERROR exception 21035 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 76, in get
+    exp, points = self.calculate_exp(profile)
+  File "/home/adrian/skyfolk/awards/views.py", line 41, in calculate_exp
+    for key, value in exp:
+ValueError: too many values to unpack (expected 2)
+2018-07-11 14:47:05,780 ERROR exception 17948 Internal Server Error: /awards/user/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -483,22 +417,40 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 31, in publication_received_like
-    print(qs.likes)
-AttributeError: 'TreeQuerySet' object has no attribute 'likes'
-2018-07-10 16:45:18,749 ERROR exception 21168 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 489, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 449, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/rest_framework/views.py", line 486, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/awards/views.py", line 77, in get
+    exp, points = self.calculate_exp(profile)
+  File "/home/adrian/skyfolk/awards/views.py", line 27, in calculate_exp
+    print(badge.points)
+AttributeError: 'dict' object has no attribute 'points'
+2018-07-12 12:49:30,808 ERROR exception 7400 Internal Server Error: /config/interests/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    "returned None instead." % (callback.__module__, view_name)
+ValueError: The view user_profile.views.InterestsView didn't return an HttpResponse object. It returned None instead.
+2018-07-12 12:50:00,586 ERROR exception 7400 Internal Server Error: /config/interests/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    "returned None instead." % (callback.__module__, view_name)
+ValueError: The view user_profile.views.InterestsView didn't return an HttpResponse object. It returned None instead.
+2018-07-12 13:15:32,318 ERROR exception 15644 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -510,24 +462,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'TreeQuerySet' object has no attribute 'likes'
-2018-07-10 16:46:46,959 ERROR exception 21617 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 533, in dispatch
+    "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN \{ Title: n.title \} ORDER BY n.title")
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Invalid input '\': expected whitespace, comment, DISTINCT, GRAPHS, SOURCE GRAPH [AS <name>], TARGET GRAPH [AS <name>], GRAPH AT <graph-url> [AS <name>], GRAPH OF <pattern> [AS <name>], GRAPH, GRAPH <graph-ref> [AS <name>], >>, '*' or an expression (line 1, column 64 (offset: 63))
+"MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN \{ Title: n.title \} ORDER BY n.title"
+                                                                ^
+2018-07-12 13:18:03,708 ERROR exception 16237 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -539,24 +501,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'TreeQuerySet' object has no attribute 'likes'
-2018-07-10 16:47:05,433 ERROR exception 21738 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 534, in dispatch
+    for k, v in results:
+ValueError: not enough values to unpack (expected 2, got 1)
+2018-07-12 13:20:01,747 ERROR exception 16914 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/sessions/middleware.py", line 58, in process_response
+    request.session.save()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/sessions/backends/cache.py", line 63, in save
+    raise UpdateError
+django.contrib.sessions.backends.base.UpdateError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 131, in get_response
+    response = middleware_method(request, response)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/sessions/middleware.py", line 61, in process_response
+    "The request's session was deleted before the "
+django.core.exceptions.SuspiciousOperation: The request's session was deleted before the request completed. The user may have logged out in a concurrent request, for example.
+2018-07-12 13:25:29,168 ERROR exception 18625 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -568,24 +540,18 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:10,058 ERROR exception 21738 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 533, in dispatch
+    request.user.id)
+KeyError: 'Title'
+2018-07-12 13:26:36,929 ERROR exception 18998 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -597,24 +563,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:25,500 ERROR exception 21903 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 533, in dispatch
+    results, meta = db.cypher_query(query=query)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Expression in WITH must be aliased (use AS) (line 1, column 81 (offset: 80))
+"MATCH (n:NodeProfile)-[:FOLLOW]-(m:NodeProfile) WHERE n.user_id=1 WITH DISTINCT m.user_id RETURN {Title: m.title} ORDER BY m.title"
+                                                                                 ^
+2018-07-12 13:27:51,587 ERROR exception 19398 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -626,24 +602,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:31,210 ERROR exception 21903 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 533, in dispatch
+    results, meta = db.cypher_query(query=query)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Variable `interest` not defined (line 1, column 99 (offset: 98))
+"MATCH (n:NodeProfile)-[:FOLLOW]->(m:NodeProfile) WHERE n.user_id=1 RETURN {Title: m.title}, COUNT(interest) AS score ORDER BY score DESC LIMIT 10"
+                                                                                                   ^
+2018-07-12 13:28:38,876 ERROR exception 19748 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -655,24 +641,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:37,877 ERROR exception 21903 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 534, in dispatch
+    results, meta = db.cypher_query(query=query)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Variable `interest` not defined (line 1, column 98 (offset: 97))
+"MATCH (n:NodeProfile)-[:FOLLOW]->(m:NodeProfile) WHERE n.user_id=1 RETURN {Title: m.title},COUNT(interest) AS score ORDER BY score DESC LIMIT 10"
+                                                                                                  ^
+2018-07-12 13:29:45,126 ERROR exception 20058 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -684,24 +680,34 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:39,279 ERROR exception 21903 Internal Server Error: /publication/add_like/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 536, in dispatch
+    results, meta = db.cypher_query(query=query)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Invalid input '(': expected <init> (line 1, column 1 (offset: 0))
+"([[<Node id=2787 labels={'NodeProfile'} properties={'is_active': True, 'privacity': 'A', 'title': 'ctangana', 'user_id': 10}>, 1]], ('u2', 'score'))"
+ ^
+2018-07-12 13:30:06,318 ERROR exception 20191 Internal Server Error: /config/interests/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -713,49 +719,30 @@ Traceback (most recent call last):
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
-2018-07-10 16:47:39,875 ERROR exception 21903 Internal Server Error: /publication/add_like/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/lib/python3.6/contextlib.py", line 52, in inner
-    return func(*args, **kwds)
-  File "/home/adrian/skyfolk/publications/views.py", line 438, in add_like
-    publication.user_give_me_like.add(user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 934, in add
-    self._add_items(self.source_field_name, self.target_field_name, *objs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 1112, in _add_items
-    model=self.model, pk_set=new_ids, using=db,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
-    for receiver in self._live_receivers(sender)
-  File "/home/adrian/skyfolk/publications/signals.py", line 32, in publication_received_like
-    if qs.likes >= 100:
-AttributeError: 'dict' object has no attribute 'likes'
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 536, in dispatch
+    results, meta = db.cypher_query(query=query)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 32, in wrapper
+    return func(self, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 119, in cypher_query
+    raise exc_info[1].with_traceback(exc_info[2])
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 107, in cypher_query
+    response = session.run(query, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 325, in run
+    self._connection.fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 290, in fetch
+    return self._fetch()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/bolt/connection.py", line 330, in _fetch
+    response.on_failure(summary_metadata or {})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/result.py", line 70, in on_failure
+    raise CypherError.hydrate(**metadata)
+neo4j.exceptions.CypherSyntaxError: Invalid input '(': expected <init> (line 1, column 1 (offset: 0))
+"([[<Node id=2787 labels={'NodeProfile'} properties={'is_active': True, 'privacity': 'A', 'title': 'ctangana', 'user_id': 10}>, 1]], ('u2', 'score'))"
+ ^

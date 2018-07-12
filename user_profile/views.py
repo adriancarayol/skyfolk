@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 from elasticsearch.exceptions import RequestError
 import numpy as np
 from allauth.account import app_settings
@@ -534,35 +535,82 @@ class InterestsView(FormView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        print('POLE')
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(self.request.POST or None)
+
+        if not form.is_valid():
+            return super().post(request, *args, **kwargs)
+
+        user = request.user
+        user_node = NodeProfile.nodes.get(user_id=user.id)
+        response = "success"
+
+        tags = request.POST.getlist('tags[]')
+        for tag in tags:
+            if tag.isspace():
+                response = "with_spaces"
+                return HttpResponse(json.dumps(response), content_type='application/json')
+            interest = TagProfile.nodes.get_or_none(title=tag)
+            if not interest and tag:
+                interest = TagProfile(title=tag).save()
+            if interest:
+                if interest.user.is_connected(user_node):
+                    interest.user.disconnect(user_node)
+                else:
+                    interest.user.connect(user_node)
+        # Procesar temas por defecto
+        choices = request.POST.getlist('choices[]')
+        if not tags and not choices:
+            response = "empty"
+            return HttpResponse(json.dumps(response), content_type='application/json')
+        for choice in choices:
+            value = dict(ThemesForm.CHOICES).get(choice)
+            interest = TagProfile.nodes.get_or_none(title=value)
+            if not interest and value:
+                interest = TagProfile(title=value).save()
+            if interest:
+                if interest.user.is_connected(user_node):
+                    interest.user.disconnect(user_node)
+                else:
+                    interest.user.connect(user_node)
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         results, meta = db.cypher_query(
             "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
+        my_interests, meta_2 = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.user_id=%d RETURN interest.title" % self.request.user.id)
+        context['my_interests'] = [item for sublist in my_interests for item in sublist]
         context['top_tags'] = results
         context['form'] = ThemesForm
-
         return context
 
 
 # TODO
 class AffinityView(TemplateView):
+    template_name = "account/cf-affinity.html"
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        query = "MATCH (n:NodeProfile)-[:FOLLOW]->(m:NodeProfile) WHERE n.user_id=%d RETURN {id: m.user_id, label: m.title} ORDER BY m.title" % self.request.user.id
+        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.user_id=%d and b.is_active=true RETURN {id: b.user_id, label: b.title, weight: follow.weight} ORDER BY follow.weight DESC" % self.request.user.id
         results, meta = db.cypher_query(query=query)
         dict_results = [item for sublist in results for item in sublist]
         nodes = [
             {
                 "id": "n" + str(self.request.user.id),
                 "label": self.request.user.username,
-                "x": 4,
-                "y": 4,
-                "size": 8
+                "x": 0,
+                "y": 0,
+                "size": 8,
+                "color": "#ccc"
             }
         ]
+
         edges = [
             {
                 "id": "e" + str(self.request.user.id),
@@ -572,7 +620,11 @@ class AffinityView(TemplateView):
         ]
 
         for index, node in enumerate(dict_results):
-            nodes.append({"id": "n" + str(node['id']), "label": node['label'], "x": index, "y": index, "size": 4})
+            r = lambda: random.randint(0, 255)
+            nodes.append(
+                {"id": "n" + str(node['id']), "label": node['label'] + ' (' + str(node['weight']) + ')',
+                 "x": random.randint(1, 100), "y": random.randint(1, 100),
+                 "size": node['weight'], "color": '#%02X%02X%02X' % (r(),r(),r())})
             edges.append({"id": "e" + str(node['id']), "source": "n" + str(node['id']),
                           "target": "n" + str(self.request.user.id)})
 

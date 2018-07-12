@@ -63,6 +63,8 @@ urlpatterns = [
         name="account_notifications"),
     url(r'^config/interests/$', user_profile_views.InterestsView.as_view(),
         name='account_interests'),
+    url(r'^config/affinity/$', user_profile_views.AffinityView.as_view(),
+        name='account_affinity'),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', user_profile_views.welcome_view,
         name='welcome'),
