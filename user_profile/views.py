@@ -311,12 +311,6 @@ def profile_view(request, username,
     except Exception as e:
         num_followers = 0
 
-    # Recuperamos el numero de seguidos y la lista de seguidos
-    try:
-        num_follows = RelationShipProfile.objects.get_total_following(n.id)
-    except Exception as e:
-        num_follows = 0
-
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
         if user.username == username:
@@ -329,7 +323,6 @@ def profile_view(request, username,
     context['liked'] = liked
     context['n_likes'] = total_likes
     context['followers'] = num_followers
-    context['following'] = num_follows
     context['isBlocked'] = isBlocked
     context['isFollower'] = isFollower
     context['isFriend'] = isFollow

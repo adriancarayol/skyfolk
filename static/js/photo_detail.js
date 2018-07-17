@@ -33,6 +33,7 @@ $(document).ready(function () {
         return false;
     });
 
+
     $(tab_messages).on('click', '.wrapper .zoom-pub', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
@@ -40,36 +41,8 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/publication_pdetail/' + id_pub;
+        window.location.href = '/photo/publication/' + id_pub;
     }
-
-    $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
-        var tag = $(this);
-        $(wrapper_shared_pub).attr('data-id', tag.attr('data-id'));
-        $(wrapper_shared_pub).show();
-    });
-
-    /* Compartir a skyline */
-    $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
-        event.preventDefault();
-        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
-        var pub_id = $(wrapper_shared_pub).attr('data-id');
-        var tag = $('#pub-' + pub_id).find('.add-timeline').first();
-        AJAX_add_timeline_gallery(pub_id, tag, content);
-    });
-
-    /* Cerrar div de compartir publicacion */
-    $('#close_share_publication').click(function () {
-        $(wrapper_shared_pub).hide();
-    });
-
-    /* Eliminar skyline */
-    $(tab_messages).on('click', '.options_comentarios .remove-timeline', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
-        var tag = $(this);
-        AJAX_add_timeline_gallery($(caja_publicacion).attr('id').split('-')[1], tag, null);
-    });
-
 
     /* Abrir respuesta a comentario */
     $(tab_messages).on('click', '.options_comentarios .reply-comment', function () {
@@ -104,21 +77,28 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
                 AJAX_delete_publication_gallery(caja_publicacion);
             }
         });
+    });
+
+
+    $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
+        event.preventDefault();
+        var form = $('#messages-wrapper').find('#message-photo-form');
+        AJAX_submit_photo_publication(form, 'publication');
     });
 
     /* Editar comentario */
@@ -129,9 +109,8 @@ $(document).ready(function () {
 
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#p_author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_publication_gallery(id, content);
+        var edit = $(this).closest('form').serialize();
+        AJAX_edit_publication_gallery(edit);
     });
 
     $(tab_messages).on('click', '.load_more_descendants', function (e) {
@@ -144,13 +123,12 @@ $(document).ready(function () {
         AJAX_load_descendants_gallery(pub_id, loader, page, this);
     });
 
-    $('#messages-wrapper').on('click', '#load-comments', function(e) {
+    $('#messages-wrapper').on('click', '#load-comments', function (e) {
         e.preventDefault();
-        $.ajax({ 
+        $.ajax({
             type: "GET",
-            url: $(this).attr('href'),   
-            success : function(data)
-            {
+            url: $(this).attr('href'),
+            success: function (data) {
                 $('#load-comments').remove();
                 $('.loading_publications').before(data);
             }
@@ -174,24 +152,13 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
         enctype: 'multipart/form-data',
         processData: false,
         success: function (data) {
-            var response = data.response;
             var msg = data.msg;
-
-            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+            if (typeof(msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
                     customClass: 'default-div',
                     type: "success"
-                });
-            } else if (response === true) {
-
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
                 });
             }
             if (type === "reply") {
@@ -201,27 +168,18 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
             } else if (type === "publication") {
                 $('#message-photo').val(''); // Ocultamos el DIV al publicar un mensaje.
             }
-        },
-        error: function (data, textStatus) {
-            var response = $.parseJSON(data.responseText);
-            var error_msg = response.error[0];
-            var type_error = response.type_error;
-
-            if (type_error === 'incorrent_data') {
-                swal({
-                    title: '¡Ups!',
-                    text: error_msg, // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            } else {
-                swal({
-                    title: '¡Ups!',
-                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            }
+        }, error: function (data, textStatus, jqXHR) {
+            var errors = [];
+            $.each(data.responseJSON, function (i, val) {
+                errors.push(val);
+            });
+            swal({
+                title: "Tenemos un problema...",
+                customClass: 'default-div',
+                text: errors.join(),
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
     }).done(function () {
 
@@ -244,8 +202,10 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data == true) {
-                $(caja_publicacion).fadeToggle("fast");
+            if (data === true) {
+                $(caja_publicacion).closest('.infinite-item').remove();
+                $(".infinite-container").find(`[data-parent='${id_pub}']`).closest('.infinite-item').remove();
+
             } else {
                 swal({
                     title: "Fail",
@@ -263,14 +223,13 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
 
 /*****************************************************/
 /********** AJAX para añadir me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_like_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
     var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
@@ -341,14 +300,13 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 
 /*****************************************************/
 /******* AJAX para añadir no me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
     var id_user = $(caja_publicacion).attr('id'); // obtengo id
     var data = {
@@ -421,74 +379,8 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     });
 }
 
-function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
-
-    var data = {
-        'publication_id': pub_id,
-        'content': data_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-
-    var shared_tag = tag.find('.share-values');
-    var count_shared = $(shared_tag).text();
-    count_shared = count_shared.replace(/ /g, '');
-
-    $.ajax({
-        url: '/publication_p/share/publication/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var status = data.status;
-                if (status == 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    tag.attr("class", "remove-timeline");
-                    tag.css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status == 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    tag.attr("class", "add-timeline");
-                    tag.css('color', '#555');
-                }
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to add to timeline.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + e);
-        }
-    });
-}
-
-
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_gallery(pub, content) {
-    var data = {
-        'id': pub,
-        'content': content,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_edit_publication_gallery(data) {
     $.ajax({
         url: '/publication_p/edit/',
         type: 'POST',
@@ -497,11 +389,8 @@ function AJAX_edit_publication_gallery(pub, content) {
 
         success: function (data) {
             var response = data.data;
-            console.log(data.data);
             // borrar caja publicacion
-            if (response == true) {
-                $('#p_author-controls-' + pub).fadeToggle("fast");
-            } else {
+            if (response === false) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
@@ -520,18 +409,23 @@ function AJAX_load_descendants_gallery(pub, loader, page, btn) {
         url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
         type: 'GET',
         dataType: 'html',
-        beforeSend: function() {
+        beforeSend: function () {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
-            
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
+
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
             if ($result_child_count > 0)

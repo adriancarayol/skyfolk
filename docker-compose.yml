@@ -77,7 +77,7 @@ services:
   webworker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/code
       - /tmp:/tmp
@@ -96,7 +96,7 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     hostname: web
     command: ./run_web.sh
     volumes:
@@ -118,7 +118,7 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     command: ./run_celery.sh
     volumes:
       - .:/code
@@ -134,7 +134,7 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     command: ./run_beat.sh
     volumes:
       - .:/code

@@ -105,15 +105,15 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -444,12 +444,16 @@ function AJAX_load_descendants_group_gallery(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
 
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');

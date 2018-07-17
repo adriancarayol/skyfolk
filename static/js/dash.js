@@ -8,8 +8,6 @@ $(document).ready(function() {
         $('select').material_select();
     };
 
-    // By concept (we don't want to load things in an iframe), we only show shortcut views in AJAX overlays.
-    // All main views are shown as stand-alone pages.
 
     // Add dashboard plugin.
     $('.add-plugin').colorbox({
@@ -32,7 +30,13 @@ $(document).ready(function() {
         var el = $(this);
         $.getJSON($(this).attr('href'), function(data) {
             if (data.success) {
-                el.closest('.plugin').remove();
+                el.closest('.plugin').replaceWith(data.cell);
+                $('.add-plugin').colorbox({
+                    'width': '576px',
+                    'height': '550px',
+                    'opacity': '0.5',
+                    'onComplete': onLightboxAddPluginOpen
+                });
             }
         });
         return false;

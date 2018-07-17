@@ -60,6 +60,20 @@ $(document).ready(function () {
         });
     });
 
+
+    $('.info-workspaces').on('click', function () {
+        var id = $(this).data('id');
+        $(".workspaces").toggle(0, function () {
+            if ($(this).is(":visible")) {
+                $('.wrapper-workspaces').load('/dashboard/public/workspaces/' + id + '/');
+            }
+        });
+    });
+
+    $('#close-workspaces').on('click', function () {
+        $(".workspaces").hide();
+    });
+
     $('#close-trofeos').on('click', function () {
         $(".trofeos").hide();
     });
@@ -76,6 +90,11 @@ $(document).ready(function () {
     $('.grupos').on('click', '.wrapper-groups .pagination a', function (e) {
         e.preventDefault()
         $('.wrapper-groups').load($(this).attr('href'));
+    });
+
+    $('.workspaces').on('click', '.wrapper-workspaces .pagination a', function (e) {
+        e.preventDefault()
+        $('.wrapper-workspaces').load($(this).attr('href'));
     });
 
     $('#configurationOnProfile').on('click', function () {
@@ -158,15 +177,15 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -205,8 +224,8 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $(this).on('click', '.like-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+    $(document).on('click', '.like-comment', function () {
+        var caja_publicacion = $(this).closest('.infinite-item');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
@@ -360,11 +379,17 @@ function AJAX_load_publications(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
@@ -386,7 +411,6 @@ function AJAX_load_publications(pub, loader, page, btn) {
 
 /* EDIT PUBLICATION */
 function AJAX_edit_publication(data) {
-    console.log(data);
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',

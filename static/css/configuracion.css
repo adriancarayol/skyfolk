@@ -68,8 +68,7 @@
   position: relative;
   margin: auto;
   width: auto;
-  height: 300px;
-  left: 27%; }
+  height: 300px; }
 
 #recent, #new, #new2 {
   display: list-item; }
