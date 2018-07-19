@@ -22,7 +22,6 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
         ("title", ""),
         ("image", ""),
         ("fit_method", DEFAULT_FIT_METHOD),
-        ("show_link", True)
     ]
 
     title = forms.CharField(label=_("Title"), required=True)
@@ -31,10 +30,6 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
                                    required=False,
                                    initial=DEFAULT_FIT_METHOD,
                                    choices=FIT_METHODS_CHOICES)
-    show_link = forms.BooleanField(label=_("Show link?"),
-                                   required=False,
-                                   initial=True,
-                                   )
 
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""

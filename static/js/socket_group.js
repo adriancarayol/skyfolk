@@ -19,7 +19,7 @@ var UTILS = UTILS || (function () {
                 // Create the inner content of the post div
                 if (data.type === "pub") {
                     // See if there's a div to replace it in, or if we should add a new one
-                    var existing = $('#pub-' + data.id);
+                    var existing = $('#list-publications').find('#pub-' + data.id).first();
                     var no_comments = $('#without-comments');
 
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
@@ -28,17 +28,15 @@ var UTILS = UTILS || (function () {
                     } else {
                         var $parent = $('#pub-' + data.parent_id);
                         if ($parent.length) {
-                            if (data.level === 1 || data.level === 2) {
+                            if (data.level === 1) {
                                 var $children_list = $parent.find('.children').first();
-                                if (!$children_list.length) {
-                                    $children_list = $parent.find('.wrapper-reply').after('<ul class="children"></ul>');
-                                }
-                                $children_list.prepend(data.content);
                             } else {
-                                $parent.closest('.row').after(data.content);
+                                var $children_list = $parent.closest('.children').first();
                             }
+
+                            $children_list.append(data.content);
                         } else if (data.parent_id == null) {
-                            $("#tab-comentarios").prepend(data.content);
+                            $("#list-publications").prepend(data.content);
                         }
                     }
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */

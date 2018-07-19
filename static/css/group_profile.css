@@ -66,4 +66,12 @@
       box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
       color: #1e88e5; }
 
+.theme .card-action > p > span {
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none; }
+
 /*# sourceMappingURL=group_profile.css.map */

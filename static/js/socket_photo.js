@@ -30,15 +30,12 @@ var UTILS = UTILS || (function () {
                     } else {
                         var $parent = $('#pub-' + data.parent_id);
                         if ($parent.length) {
-                            if (data.level == 1 || data.level == 2) {
+                            if (data.level === 1) {
                                 var $children_list = $parent.find('.children').first();
-                                if (!$children_list.length) {
-                                    $children_list = $parent.find('.wrapper-reply').after('<ul class="children"></ul>');
-                                }
-                                $children_list.prepend(data.content);
                             } else {
-                                $parent.closest('.row').after(data.content);
+                                var $children_list = $parent.closest('.children').first();
                             }
+                            $children_list.append(data.content);
                         } else if (data.parent_id == null) {
                             $("#messages-wrapper").prepend(data.content);
                         }

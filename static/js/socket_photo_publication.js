@@ -18,7 +18,7 @@ var UTILS = UTILS || (function () {
                 var data = JSON.parse(message.data);
                 // Create the inner content of the post div
                 if (data.type === "pub") {
-                    var existing = $('#pub-' + data.id);
+                    var existing = $('#publication-thread').find('#pub-' + data.id).first();
                     var no_comments = $('#without-comments');
 
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
@@ -27,8 +27,8 @@ var UTILS = UTILS || (function () {
                     } else {
                         var parent = $('#pub-' + data.parent_id);
                         if (parent.length) {
-                            parent.closest('.row-pub').after(data.content);
-                        } else if (data.parent_id == null) {
+                            $('#publication-thread').append(data.content);
+                        } else if (data.parent_id === 'undefined') {
                             $("#publication-thread").append(data.content);
                         }
                     }

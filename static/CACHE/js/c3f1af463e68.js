@@ -1,2 +1,0 @@
-;var retrievedEmojis=localStorage.getItem('emojis');if(retrievedEmojis===null){$.getJSON('/emoji/all.json',function(data){var retrievedEmojis=data;localStorage.setItem('emojis',JSON.stringify(data));});}
-$('#message2, .message-reply, #message3').textcomplete([{match:/\B:([\-+\w]*)$/,search:function(term,callback){callback($.map(retrievedEmojis,function(key,emoji){return emoji.indexOf(term)===0?emoji:null;}));},template:function(value){return'<img src="/static/emoji/img/'+value+'.png"></img>'+value;},replace:function(value){return':'+value+': ';},index:1}],{})

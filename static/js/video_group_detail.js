@@ -415,12 +415,17 @@ function AJAX_load_descendants_video_group_gallery(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                
+                if (element.length) {
+                    element.remove();
+                }
+            });
 
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
