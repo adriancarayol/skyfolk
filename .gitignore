@@ -31,3 +31,5 @@ kibana/
 tmp/
 *.log
 config/config
+# local_static_files
+static/
