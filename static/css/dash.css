@@ -6,9 +6,6 @@
         `django-dash` main styles.
 */
 
-root { 
-    display: block;
-}
 
 body > * {
     margin: 0;

@@ -35,9 +35,6 @@ __all__ = (
 class BaseImageWidget(BaseDashboardPluginWidget):
     """Base image plugin widget."""
 
-    media_js = (
-        'js/dash_plugin_image.js',
-    )
     media_css = (
         'css/dash_plugin_image.css',
     )

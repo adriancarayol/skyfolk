@@ -1,31 +1,36 @@
 {% load i18n %}
-<div class="generic-content-wrapper">
-    <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
-    </div>
-    <div class="content-body">
-        <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
-            {% csrf_token %}
-            {{ wizard.management_form }}
-            {% if wizard.form.forms %}
+<div class="container">
+    <div class="row">
+        <div class="col l4 s12 offset-l4">
+            <div class="wrapper-bg"></div>
+            <div class="hero-unit-small center">
+                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
+            </div>
+        </div>
+        <div class="col l4 s12 offset-l4">
+            <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
+                {% csrf_token %}
+                {{ wizard.management_form }}
+                {% if wizard.form.forms %}
                 {{ wizard.form.management_form }}
                 {% for form in wizard.form.forms %}
-                    {{ form }}
+                {{ form }}
                 {% endfor %}
-            {% else %}
+                {% else %}
                 {{ wizard.form }}
-            {% endif %}
-
-            {% if wizard.steps.prev %}
+                {% endif %}
+                {% if wizard.steps.prev %}
                 <button name="wizard_goto_step" type="submit"
-                        value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                value="{{ wizard.steps.first }}" class="btn blue left">{% trans "first step" %}</button>
                 <button name="wizard_goto_step" type="submit"
-                        value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
-            {% endif %}
-                <input type="submit" value="{% trans "submit" %}"/>
+                value="{{ wizard.steps.prev }}" class="btn blue left">{% trans "prev step" %}</button>
+                {% endif %}
+                <div class="row">
+                    <button type="submit" class="btn right blue">{% trans "submit" %}</button>
+                </div>
                 {% include "dash/snippets/plugin_help_text.html" %}
             </ul>
         </form>
     </div>
+</div>
 </div>

@@ -38,7 +38,7 @@ class BaseImagePlugin(BaseDashboardPlugin):
         TODO: Perhaps rely more on data of ``dashboard_entry``?
         """
         im = DashImageModel.objects.get(id=self.data.image)
-        cloned_image = clone_file(im.image, relative_path=True)
+        cloned_image = clone_file(im.image, relative_path=False)
         return self.get_cloned_plugin_data(update={'image': cloned_image})
 
 

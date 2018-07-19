@@ -40,7 +40,7 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/video/publication/detail/' + id_pub;
+        window.location.href = '/video/publication/' + id_pub;
     }
 
     $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
@@ -523,13 +523,18 @@ function AJAX_load_descendants_video_gallery(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
-            
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();

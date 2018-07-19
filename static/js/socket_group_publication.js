@@ -10,24 +10,19 @@ socket.onmessage = function (message) {
     var data = JSON.parse(message.data);
     // Create the inner content of the post div
     if (data.type === "pub") {
-        // See if there's a div to replace it in, or if we should add a new one
-        var existing = $('#pub-' + data.id);
+        var existing = $('#publication-thread').find('#pub-' + data.id).first();
         var no_comments = $('#without-comments');
 
         /* Comprobamos si el elemento existe, si es asi lo modificamos */
         if (existing.length) {
-            existing.replaceWith(data.content);
+            existing.closest('.row-pub').replaceWith(data.content);
         } else {
             var parent = $('#pub-' + data.parent_id);
             if (parent.length) {
-                parent.closest('.row-pub').after(data.content);
-            } else if (data.parent_id == null) {
+                $('#publication-thread').append(data.content);
+            } else if (data.parent_id === 'undefined') {
                 $("#publication-thread").append(data.content);
             }
-        }
-        /* Eliminamos el div de "Este perfil no tiene comentarios" */
-        if ($(no_comments).is(':visible')) {
-            $(no_comments).fadeOut();
         }
     } else if (data.type === "video") {
         var existing_pub = $('#pub-' + data.id);

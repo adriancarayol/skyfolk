@@ -20,7 +20,6 @@ a, a:visited {
 .wrapper {
     min-height: 155px;
     background: #fff;
-    border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 0 10px #ddd;
     overflow: hidden;
@@ -122,6 +121,9 @@ a, a:visited {
     color: #1e88e5;
 }
 
+blockquote .info-publication {
+    background-color: #fafafa;
+}
 
 input[type="checkbox"] {
     opacity: 0;

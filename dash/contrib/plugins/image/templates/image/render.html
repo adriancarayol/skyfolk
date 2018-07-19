@@ -4,28 +4,16 @@
         <div class="wrapper">
             <div class="widget-wr">
                 <div class="row widget-title blue white-text">
-                        <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
-                    </div>
+                    <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
                 </div>
-                {% if plugin.data.show_link %}
-                <div class="center">
-                <a href="{{ image.image.url }}" title="{{ plugin.data.title }}">
-                {% endif %}
-                    {% if image.image  %}
-                        {% comment %}{% if crop %}
-                            {% thumbnail image.image  thumb_size crop=crop as im %}
-                        {% else %}
-                            {% thumbnail image.image  thumb_size as im %}
-                        {% endif %}
-                        {% endcomment %}
-                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}"/>
-                    {% else %}
-                        {% trans "No image provided!" %}
-                    {% endif %}
-                {% if plugin.data.show_link %}
-                </a>
             </div>
+            <div class="center">
+                {% if image.image  %}
+                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}" class="materialboxed lazyloaded" width="100%" height="100%"/>
+                {% else %}
+                    {% trans "No image provided!" %}
                 {% endif %}
             </div>
+        </div>
     </div>
 </div>

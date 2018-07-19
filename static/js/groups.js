@@ -357,7 +357,7 @@ $(function () {
         var $like_btn = $(this).find('.like-value');
         var countLikes = parseInt($like_btn.text()) || 0;
         $.ajax({
-            url: '/publication/group/theme/like/',
+            url: '/group/publication/theme/like/',
             type: 'POST',
             data: {
                 'pk': pub_box.data('id'),
@@ -413,7 +413,7 @@ $(function () {
         var $hate_btn = $(this).find('.hate-value');
         var countHates = parseInt($hate_btn.text()) || 0;
         $.ajax({
-            url: '/publication/group/theme/hate/',
+            url: '/group/publication/theme/hate/',
             type: 'POST',
             data: {
                 'pk': pub_box.data('id')
@@ -479,7 +479,7 @@ $(function () {
         }, function (isConfirm) {
             if (isConfirm) {
                 $.ajax({
-                    url: '/publication/group/theme/delete/',
+                    url: '/group/publication/theme/delete/',
                     type: 'POST',
                     data: {
                         'pk': pub_id
@@ -773,7 +773,7 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     $.ajax({
-        url: '/publication_g/',
+        url: '/group/new/publication/',
         type: 'POST',
         data: form,
         async: true,
@@ -888,7 +888,7 @@ function AJAX_delete_group_publication(id, board_group) {
         'csrfmiddlewaretoken': csrftoken
     };
     $.ajax({
-        url: '/publication/group/delete/',
+        url: '/group/publication/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -939,7 +939,7 @@ function AJAX_add_like_group_publication(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication/group/add_like/',
+        url: '/group/publication/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -1010,7 +1010,7 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication/group/add_hate/',
+        url: '/group/publication/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -1075,7 +1075,7 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
 
 function AJAX_edit_group_publication(data) {
     $.ajax({
-        url: '/publication/group/edit/',
+        url: '/group/publication/edit/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -1099,7 +1099,7 @@ function AJAX_edit_group_publication(data) {
 
 function AJAX_edit_theme_publication(data) {
     $.ajax({
-        url: '/publication/group/theme/edit/',
+        url: '/group/publication/theme/edit/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -1135,13 +1135,21 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
             loadDescendantsRunning = true;
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
+            
+            var parsed = $.parseHTML(data.content);
+
+            for(var i = 0; i < parsed.length; i++) {
+                var pub_id = $(parsed[i]).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
             }
+            
             $children_list.append(data.content);
-            btn.attr('href', '/publication/group/load/replies/?page=' + data.page + '&pubid=' + pub);
+            btn.attr('href', '/group/publication/load/replies/?page=' + data.page + '&pubid=' + pub);
             var $child_count = btn.find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - data.childs;
             if ($result_child_count > 0)
@@ -1166,7 +1174,7 @@ function AJAX_add_publication_to_skyline(pub_id, tag, data_pub) {
     count_shared = count_shared.replace(/ /g, '');
 
     $.ajax({
-        url: '/publication/group/share/',
+        url: '/group/publication/share/',
         type: 'POST',
         dataType: 'json',
         data: data_pub,
@@ -1207,7 +1215,7 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
     count_shared = count_shared.replace(/ /g, '');
 
     $.ajax({
-        url: '/publication/group/delete/share/',
+        url: '/group/publication/delete/share/',
         type: 'POST',
         dataType: 'json',
         data: {
@@ -1247,7 +1255,7 @@ function AJAX_submit_theme_publication(form) {
     form_data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
     $.ajax({
-        url: '/publication/group/theme/reply/',
+        url: '/group/publication/theme/reply/',
         type: 'POST',
         data: form_data,
         async: true,
@@ -1258,7 +1266,7 @@ function AJAX_submit_theme_publication(form) {
             var parent = form_data.get('parent');
             var board_theme = form_data.get('board_theme');
             if (parent === null) {
-                $('#caja-comentario-' + board_theme).toggle();
+                $('#caja-theme-' + board_theme).toggle();
             } else {
                 $('#caja-comentario-' + parent).toggle();
             }

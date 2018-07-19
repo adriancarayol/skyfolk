@@ -67,7 +67,7 @@ $(document).ready(function () {
             processData: false,
             success: function (data) {
                 if (data.result === true) {
-                    $('.container-gallery > .row').prepend(data.content);
+                    $('.container-gallery .row').prepend(data.content);
                 } else {
                     swal({
                         title: "¡Ups!.",
@@ -98,7 +98,7 @@ function AJAX_delete_group_photo() {
         dataType: 'json',
         success: function (json) {
             swal({
-                title: "Photo was deleted.",
+                title: "¡Foto eliminada!",
                 text: json.msg,
                 timer: 2500,
                 showConfirmButton: true
@@ -124,7 +124,7 @@ function AJAX_delete_group_video() {
         dataType: 'json',
         success: function (json) {
             swal({
-                title: "Photo was deleted.",
+                title: "¡Video eliminado!",
                 text: json.msg,
                 timer: 2500,
                 showConfirmButton: true
