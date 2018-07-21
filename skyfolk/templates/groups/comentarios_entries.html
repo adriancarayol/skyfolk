@@ -203,8 +203,8 @@
     {% endfor %}
 </div>
 {% if publications.has_next %}
-    <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
-       href="?page={{ publications.next_page_number }}&qs=publications">More</a>
+    <a class="infinite-more-link hidden"
+       href="?page={{ publications.next_page_number }}&qs=publications"></a>
 {% endif %}
 <div class="progress loading_skyline" style="display: none">
     <div class="indeterminate blue darken-1"></div>
