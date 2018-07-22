@@ -36,7 +36,7 @@ RUN pip install scikit-image sklearn
 RUN python -c "import imageio; imageio.plugins.ffmpeg.download()"
 
 #add soft link so that ffmpeg can executed (like usual) from command line
-RUN ln -s /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
+RUN ln -sf /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
 
 RUN mkdir -p /var/www/skyfolk.net/run/static/static
 RUN mkdir -p /var/www/skyfolk.net/run/static/media
