@@ -85,3 +85,6 @@ Reiniciamos el servidor postfix con:
 systemctl restart postfix
 ```
 Y listo.
+
+### Problemas con ASCII
+Instalar es_ES-UTF-8 y setearlo por defecto.
