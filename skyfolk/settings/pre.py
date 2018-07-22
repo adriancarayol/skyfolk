@@ -20,6 +20,7 @@ ALLOWED_HOSTS += ['127.0.0.1']
 SECRET_KEY = get_env_variable('SECRET_KEY')
 SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 
+COMPRESS_ENABLED=True
 COMPRESS_OFFLINE = True
 # S3 + CDN
 STATICFILES_STORAGE = 'custom_storages.custom_storages.CachedS3Boto3Storage'
