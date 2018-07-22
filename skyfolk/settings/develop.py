@@ -11,8 +11,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_ENV_DB', 'skyfolk_pre_db'),
+        'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'skyfolk_pre'),
+        'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', 'gDFgg$G=4h_%H'),
+        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'localhost'),
+        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5432'),
     }
 }
 

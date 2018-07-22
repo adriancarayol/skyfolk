@@ -191,7 +191,7 @@ def handle_delete_like(sender, instance, *args, **kwargs):
 
 def handle_login(sender, user, request, **kwargs):
     try:
-        user_node = NodeProfile.nodes.get(user_id=user.id)
+        user_node = NodeProfile.nodes.get(title=user.username, user_id=user.id)
     except NodeProfile.DoesNotExist:
         NodeProfile(user_id=user.id, title=user.username).save()
 

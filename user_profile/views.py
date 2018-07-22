@@ -580,7 +580,6 @@ class InterestsView(FormView):
         return context
 
 
-# TODO
 class AffinityView(TemplateView):
     template_name = "account/cf-affinity.html"
 
@@ -605,11 +604,7 @@ class AffinityView(TemplateView):
         ]
 
         edges = [
-            {
-                "id": "e" + str(self.request.user.id),
-                "source": "n" + str(self.request.user.id),
-                "target": "n" + str(10)
-            }
+            
         ]
 
         for index, node in enumerate(dict_results):

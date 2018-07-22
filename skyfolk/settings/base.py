@@ -56,7 +56,6 @@ THIRD_PARTY_APPS = (
     'django_celery_results',
     'formtools',
     'collectfast',
-    "compressor",
     'django_js_reverse',
     'th_services',
     'th_services.th_rss',
@@ -368,7 +367,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 )
 
 # collecfast == (collecstatic)
