@@ -128,8 +128,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form = self.get_form(form_class)
 
         try:
-            emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-            board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
+            emitter = Profile.objects.get(user_id=self.request.user.id)
+            board_owner = Profile.objects.get(user_id=request.POST['board_owner'])
         except NodeProfile.DoesNotExist as e:
             form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
             return self.form_invalid(form=form)
@@ -139,10 +139,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
-        logger.info('tipo emitter: {}'.format(type(emitter.title)))
-        logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
-
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
@@ -150,8 +146,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 if parent:
                     parent_owner = parent.author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter.profile,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_owner', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 

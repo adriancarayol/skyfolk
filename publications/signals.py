@@ -74,9 +74,9 @@ def publication_handler(sender, instance, created, **kwargs):
         decrease_affinity(instance)
 
         if instance.has_extra_content():  # Para publicaciones editadas
-            ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
+            ExtraContent.objects.filter(publication=instance).exclude(url=instance.extra_content.url).delete()
         else:
-            ExtraContent.objects.filter(publication=instance.id).delete()
+            ExtraContent.objects.filter(publication=instance).delete()
 
 
 def add_hashtags(instance):

@@ -20,7 +20,7 @@ ALLOWED_HOSTS += ['127.0.0.1']
 SECRET_KEY = get_env_variable('SECRET_KEY')
 SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 # S3 + CDN
-STATICFILES_STORAGE = 'custom_storages.custom_storages.CachedS3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 AWS_S3_CUSTOM_DOMAIN = 'd32rim3h420riw.cloudfront.net'
 AWS_ACCESS_KEY_ID = 'AKIAJYNH343VWWRAP2EA'
@@ -35,9 +35,9 @@ STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 
 MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
-DEFAULT_FILE_STORAGE = 'custom_storages.custom_storages.CachedS3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
-THUMBNAIL_DEFAULT_STORAGE = 'custom_storages.custom_storages.CachedS3Boto3Storage'
+THUMBNAIL_DEFAULT_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # MEDIA_ROOT = MEDIA_URL
 
 DATABASES = {
