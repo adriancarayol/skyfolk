@@ -110,6 +110,7 @@ services:
     depends_on:
       - rabbit
       - web
+      - neo4j
     restart: always
 
   # Django web server
