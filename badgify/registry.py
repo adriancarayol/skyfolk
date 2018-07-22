@@ -103,7 +103,7 @@ class BadgifyRegistry(object):
                 recipe = self.get_recipe_instance(badge)
                 valid.append(recipe)
             except BadgeNotFound:
-                logger.debug('✘ Badge "%s" has not been registered', badge)
+                logger.debug('Badge "%s" has not been registered', badge)
                 invalid.append(badge)
 
         return (valid, invalid)

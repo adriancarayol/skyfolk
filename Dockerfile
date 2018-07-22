@@ -12,6 +12,12 @@ RUN pip install -r pre.txt
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
+# Install PSQL
+
+RUN pip install psycopg2
+RUN apt-get update
+RUN apt-get install -y postgresql-client
+
 # Install numpy using system package manager
 RUN apt-get -y update && apt-get -y install libav-tools imagemagick libopencv-dev python-opencv
 
