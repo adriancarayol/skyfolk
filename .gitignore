@@ -17,6 +17,9 @@ db.sqlite3
 .vscode
 Web.config
 *.log
+*.log.*
+.sass-cache/
+node_modules/
 
 # vi temp files
 *~
@@ -29,7 +32,6 @@ esdata/
 db/
 kibana/
 tmp/
-*.log
 config/config
 # local_static_files
 static/
