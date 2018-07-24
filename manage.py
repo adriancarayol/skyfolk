@@ -17,16 +17,17 @@ if __name__ == "__main__":
         primerParam = "null"
         segundoParam = "null"
 
-    print("primer parametro: " + primerParam + " segundo paramentro: " + segundoParam)
+    print("primer parametro: " + primerParam +
+          " segundo paramentro: " + segundoParam)
     if primerParam == "--entorno" and (segundoParam == "develop" or
-                                               segundoParam == "pre" or
-                                               segundoParam == "master"):
-        # print("Antes de extraer parametros: " + str(sys.argv))
+                                       segundoParam == "pre" or
+                                       segundoParam == "master"):
+        # Extract parameters
         deploy = True
         entorno = segundoParam
         sys.argv.remove(str(sys.argv[1]))
         sys.argv.remove(str(sys.argv[1]))
-        # print("Despues de extraer parametros: " + str(sys.argv))
+
     else:
         # develop
         entorno = "develop"
@@ -34,7 +35,8 @@ if __name__ == "__main__":
     print("Lanzando entorno: [" + entorno + " / argv: " + str(sys.argv) + "]")
     if entorno == "master":
         os.environ['DAPHNE_RUNLEVEL'] = 'master'
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.master")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE",
+                              "skyfolk.settings.master")
         execute_from_command_line(sys.argv)
     elif entorno == "pre":
         os.environ['DAPHNE_RUNLEVEL'] = 'pre'
@@ -45,6 +47,7 @@ if __name__ == "__main__":
         os.environ['SECRET_KEY'] = 'develop'
         os.environ['DAPHNE_RUNLEVEL'] = 'develop'
 
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE",
+                              "skyfolk.settings.develop")
 
         execute_from_command_line(sys.argv)
