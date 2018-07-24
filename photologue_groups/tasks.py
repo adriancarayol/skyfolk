@@ -10,7 +10,6 @@ from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 import photologue_groups
-from photologue.utils.utils import generate_thumbnail_path_video
 from skyfolk.celery import app
 from utils.media import create_thumbnail_video
 

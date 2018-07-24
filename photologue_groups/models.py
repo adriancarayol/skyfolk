@@ -220,7 +220,7 @@ class PhotoGroup(ImageModel):
     def save(self, *args, **kwargs):
         self.slug = orig = slugify(str(self.owner_id) + self.title)
         for x in itertools.count(1):
-            if not PhotoGroup.objects.filter(slug=self.slug).exists():
+            if not PhotoGroup.objects.filter(slug=self.slug).exclude(id=self.id).exists():
                 try:
                     self.get_remote_image()
                     super(PhotoGroup, self).save(*args, **kwargs)
@@ -369,7 +369,7 @@ class VideoGroup(models.Model):
     def save(self, *args, **kwargs):
         self.slug = orig = slugify(str(self.owner_id) + self.name)
         for x in itertools.count(1):
-            if not VideoGroup.objects.filter(slug=self.slug).exists():
+            if not VideoGroup.objects.filter(slug=self.slug).exclude(id=self.id).exists():
                 try:
                     super(VideoGroup, self).save(*args, **kwargs)
                     break

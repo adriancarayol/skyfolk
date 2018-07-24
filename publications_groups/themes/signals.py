@@ -99,7 +99,7 @@ def add_extra_content(instance):
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
         if description:
-            description = description.get('content', None)[:265]
+            description = description.get('content', None)[:256]
         if title:
             title = title.get('content', None)[:63]
         if image:

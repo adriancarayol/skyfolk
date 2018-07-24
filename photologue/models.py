@@ -678,23 +678,24 @@ class Video(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-video', args=[self.slug])
+        return reverse('photologue:pl-video', args=[self.owner.username, self.slug])
 
     def save(self, created=True, *args, **kwargs):
-        if created:
-            if self.is_public:
-                self.slug = orig = slugify(str(self.owner_id) + self.name)
-            else:
-                self.slug = orig = slugify(str(self.owner_id) + self.name + str(uuid.uuid4()))
-            for x in itertools.count(1):
-                if not Video.objects.filter(slug=self.slug).exists():
-                    try:
-                        super(Video, self).save(*args, **kwargs)
-                        break
-                    except IntegrityError:
-                        if x > 50:
-                            raise Exception('Cant save video: {}'.format(self.name))
-                self.slug = '%s-%d' % (orig, x)
+        if self.is_public:
+            self.slug = orig = slugify(str(self.owner_id) + self.name)
+        else:
+            self.slug = orig = slugify(str(self.owner_id) + self.name + str(uuid.uuid4()))
+
+        for x in itertools.count(1):
+            if not Video.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+                try:
+                    super(Video, self).save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save video: {}'.format(self.name))
+            self.slug = '%s-%d' % (orig, x)
+
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -1084,18 +1085,5 @@ def generate_thumb(instance, created, **kwargs):
         transaction.on_commit(lambda: generate_thumbnails.delay(instance=instance.pk))
 
 
-def generate_video_thumb(instance, created, **kwargs):
-    """
-    Generamos thumbnail para video
-    :param instance: Video
-    :param created: Si es creado o actualizado
-    :param kwargs:
-    :return:
-    """
-    if instance.video:
-        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
-
-
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)
-# post_save.connect(generate_video_thumb, sender=Video)

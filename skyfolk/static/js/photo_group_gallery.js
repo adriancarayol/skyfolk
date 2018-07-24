@@ -67,7 +67,7 @@ $(document).ready(function () {
             processData: false,
             success: function (data) {
                 if (data.result === true) {
-                    $('.container-gallery .row').prepend(data.content);
+                    $('.container-gallery .row').first().prepend(data.content);
                 } else {
                     swal({
                         title: "¡Ups!.",

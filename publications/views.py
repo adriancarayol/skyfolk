@@ -146,7 +146,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 if parent:
                     parent_owner = parent.author_id
-                    if RelationShipProfile.objects.is_blocked(to_profile=emitter.profile,
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
                                                               from_profile=parent.author.profile):
                         form.add_error('board_owner', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)

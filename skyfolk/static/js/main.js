@@ -282,7 +282,7 @@
                     this.$avatarForm.trigger("reset");
 
                     if (data.content) {
-                        $('.container-gallery .row').prepend(data.content);
+                        $('.container-gallery .row').first().prepend(data.content);
                     }
                 } else {
                     swal({

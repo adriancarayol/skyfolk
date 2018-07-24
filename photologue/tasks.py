@@ -102,4 +102,4 @@ def generate_video_thumbnail(instance):
         tmp_video.seek(0)
 
         create_thumbnail_video(tmp_video.name, thumb_tmp.name)
-        video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, True)
+        video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, save=True)

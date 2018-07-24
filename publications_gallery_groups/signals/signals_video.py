@@ -102,7 +102,7 @@ def add_extra_content(instance):
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
         if description:
-            description = description.get('content', None)[:265]
+            description = description.get('content', None)[:256]
         if title:
             title = title.get('content', None)[:63]
         if image:
@@ -131,7 +131,7 @@ def notify_mentions(instance):
     for user in users:
 
         if instance.author.pk != user.id:
-            notify.send(instance.p_author, actor=instance.author.username,
+            notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
                         action_object=instance,
                         verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),

@@ -20,7 +20,7 @@ from django.utils.six import BytesIO
 from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-
+from django.db import transaction
 from itertools import chain
 
 
@@ -193,7 +193,7 @@ def upload_video(request):
     Función para subir un nuevo video a la galeria del usuario
     """
     user = request.user
-
+    
     if request.method == 'POST':
         form = UploadFormVideo(request.POST, request.FILES or None)
         if form.is_valid():
@@ -215,21 +215,29 @@ def upload_video(request):
 
             try:
                 if isinstance(file, str):
-                    with open(form.cleaned_data['video'], 'rb') as f:
-                        obj.video.save("video.mp4", File(f), True)
-            finally:
-                generate_video_thumbnail.delay(instance=obj.pk)
-
-            obj.save()
-            form.save_m2m()  # Para guardar los tags de la foto
-
-            data = {
-                'result': True,
-                'state': 200,
-                'message': 'Success',
-                'content': render_to_string(request=request, template_name='channels/new_video_group_gallery.html',
+                    with open(file, 'rb') as f:
+                        obj.video = File(f)
+                        with transaction.atomic():
+                            obj.save()
+                            transaction.on_commit(lambda:generate_video_thumbnail.delay(instance=obj.pk))
+                else:
+                    with transaction.atomic():
+                        obj.save()
+                        transaction.on_commit(lambda:generate_video_thumbnail.delay(instance=obj.pk))
+                form.save_m2m()  # Para guardar los tags del video
+                data = {
+                    'result': True,
+                    'state': 200,
+                    'message': 'Success',
+                    'content': render_to_string(request=request, template_name='channels/new_video_group_gallery.html',
                                             context={'photo': obj})
-            }
+                }
+            except Exception as e:
+                data = {
+                    'result': False,
+                    'state': 500,
+                    'message': get_form_errors(form),
+                }
         else:
             data = {
                 'result': False,

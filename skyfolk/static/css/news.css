@@ -20,7 +20,8 @@ html, body {
         height: 100%; }
     .wrapper-news .notice-item .contenido {
       padding-left: 10px;
-      display: block; }
+      display: block;
+      word-wrap: break-word; }
       .wrapper-news .notice-item .contenido > p > img {
         width: 20px;
         height: 20px; }
