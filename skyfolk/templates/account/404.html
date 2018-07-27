@@ -1,0 +1,12 @@
+{% extends "account/base.html" %}
+{% block head_title %}Página no encontrada{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row center">
+		{% block menu %}
+		{% endblock %}
+		<h4>No se ha encontrado la página solicitada.</h4>
+		<a href="/" class="waves-effect waves-light btn blue lighten-2">¡Sácame de aquí!</a>
+	</div>
+</div>
+{% endblock %}

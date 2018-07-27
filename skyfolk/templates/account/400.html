@@ -1,0 +1,12 @@
+{% extends "account/base.html" %}
+{% block head_title %}Petición incorrecta{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row center">
+		{% block menu %}
+		{% endblock %}
+		<h4>Ups, parece que has realizado una petición incorrecta.</h4>
+		<a href="/" class="waves-effect waves-light btn blue lighten-2">¡Sácame de aquí!</a>
+	</div>
+</div>
+{% endblock %}

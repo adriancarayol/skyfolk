@@ -25,7 +25,9 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, Http404, \
+    HttpResponseBadRequest, HttpResponseForbidden, \
+    HttpResponseNotFound, HttpResponseServerError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -1839,3 +1841,26 @@ class CustomSignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin, Ses
 
 
 signup = CustomSignupView.as_view()
+
+
+def page_not_found(request, exception, template_name='account/404.html'):
+    context = {
+        'error_code': 404
+    }
+    return render(request, template_name, context, status=404)
+
+
+def server_error(request, template_name='account/500.html'):
+    return render(request, template_name, status=500)
+
+
+def permission_denied(request, exception, template_name='account/403.html'):
+    return render(request, template_name, status=403)
+
+
+def bad_request(request, exception, template_name='account/400.html'):
+    return render(request, template_name, status=400)
+
+
+def csrf_failure(request, reason="", template_name='account/403_csrf.html'):
+    return render(request, template_name, status=403)
