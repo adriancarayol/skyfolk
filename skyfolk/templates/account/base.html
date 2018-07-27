@@ -17,18 +17,6 @@
 </head>
 <body>
 {% block body %}
-    {% comment "No es necesario" %}
-    {% if messages %}
-    <div class="div-messages">
-      <strong>{% trans "Messages" %}:</strong>
-      <ul>
-  {% for message in messages %}
-  <li>{{message}}</li>
-  {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-    {% endcomment %}
     <div class="display-info-reset-password">
         <div class="navbar-fixed">
             <nav>

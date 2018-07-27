@@ -21,6 +21,13 @@ admin.autodiscover()
 # router.register(r'api/users', views.UserViewSet)
 # router.register(r'api/groups', views.GroupViewSet)
 
+handler404 = 'user_profile.views.page_not_found'
+handler500 = 'user_profile.views.server_error'
+handler403 = 'user_profile.views.permission_denied'
+handler400 = 'user_profile.views.bad_request'
+CSRF_FAILURE_VIEW = 'user_profile.views.csrf_failure'
+
+
 urlpatterns = [
     url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
