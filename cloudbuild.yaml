@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/skyfolk-211121/web:1', '.']
+images: ['gcr.io/${PROJECT_ID}/my-image']
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/skyfolk-211121/web:1', '.']
+images: ['gcr.io/${PROJECT_ID}/my-image']
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/skyfolk-211121/web:1', '.']
+images: ['gcr.io/${PROJECT_ID}/my-image']

@@ -6,9 +6,9 @@ RUN mkdir /code
 
 WORKDIR /code
 
-ADD requirements/develop.txt /code/
+ADD ../requirements/pre.txt /code/
 
-RUN pip install -r develop.txt
+RUN pip install -r pre.txt
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
@@ -51,6 +51,7 @@ RUN chmod -R g+w /var/www
 RUN chmod -R 777 /var/www
 
 RUN chmod -R 770 /root/
+
 
 # modify ImageMagick policy file so that Textclips work correctly.
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml

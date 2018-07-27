@@ -7,7 +7,7 @@ services:
     hostname: redis
     restart: always
     networks:
-      - skyfolknetwork
+      - webnet
   
   #neo4j
   neo4j:
@@ -18,10 +18,10 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/1518
     volumes:
-      - ./run/db/dbms:/data/dbms
+      - ./db/dbms:/data/dbms
     restart: always
     networks:
-      - skyfolknetwork
+      - webnet
     depends_on:
       - dbpostgres
 
@@ -29,7 +29,7 @@ services:
   dbpostgres:
     image: postgres:latest
     volumes:
-      - ./run/postgresql:/var/lib/postgresql
+      - /private/var/lib/postgresql:/var/lib/postgresql
     restart: always
     ports:
       - "5432:5432"
@@ -38,19 +38,19 @@ services:
       - POSTGRES_PASSWORD=skyfolk_password
       - POSTGRES_DB=skyfolk_db
     networks:
-      - skyfolknetwork
+      - webnet
 
   # elasticsearch
   elasticsearch:
     image: elasticsearch:2.4.6
-    container_name: elasticsearch
+    container_name: elasticsearch1
     ports:
       - "9200:9200"
     volumes:
-      - ./run/esdata/:/usr/share/elasticsearch/data/
+      - ./esdata/:/usr/share/elasticsearch/data/
     restart: always
     networks:
-      - skyfolknetwork
+      - webnet
 
   # kibana
   kibana:
@@ -59,11 +59,11 @@ services:
       - "5601:5601"
     restart: always
     volumes:
-      - ./run/kibana/config/:/usr/share/kibana/config
+      - ./kibana/config/:/usr/share/kibana/config
     depends_on:
       - elasticsearch
     networks:
-      - skyfolknetwork
+      - webnet
 
   # RabbitMQ
   rabbit:
@@ -78,7 +78,7 @@ services:
       - "15672:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
-      - skyfolknetwork
+      - webnet
       
   # nodo 2
   rabbit_2:
@@ -93,13 +93,12 @@ services:
       - "15673:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
-      - skyfolknetwork
+      - webnet
 
   webworker:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: skyfolk/webworker
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/code
       - /tmp:/tmp
@@ -107,7 +106,7 @@ services:
     env_file:
       - web-variables.env
     networks:
-      - skyfolknetwork
+      - webnet
     depends_on:
       - rabbit
       - web
@@ -120,8 +119,8 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
-    image: skyfolk/web
+      dockerfile: Dockerfile.dev
+    image: eu.gcr.io/skyfolk-211121/web:1
     hostname: web
     command: ./run_web.sh
     volumes:
@@ -129,12 +128,14 @@ services:
       - /tmp:/tmp
     ports:
         - "8000:8000"
+    networks:
+      - webnet
     depends_on:
       - rabbit
       - neo4j
       - dbpostgres
     networks:
-      - skyfolknetwork
+      - webnet
     restart: always
 
   # Celery worker
@@ -143,14 +144,14 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
-    image: skyfolk/celery-worker
+      dockerfile: Dockerfile.dev
+    image: eu.gcr.io/skyfolk-211121/celery_worker:1
     command: ./run_celery.sh
     volumes:
       - .:/code
       - /tmp:/tmp
     networks:
-      - skyfolknetwork
+      - webnet
     depends_on:
       - web
     restart: always
@@ -160,18 +161,18 @@ services:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
-    image: skyfolk/celery-beat
+      dockerfile: Dockerfile.dev
+    image: eu.gcr.io/skyfolk-211121/celery_beat:1
     command: ./run_beat.sh
     volumes:
       - .:/code
       - /tmp:/tmp
     networks:
-      - skyfolknetwork
+      - webnet
     depends_on:
       - web
     restart: always
 
 networks:
-  skyfolknetwork:
+  webnet:
     driver: bridge 

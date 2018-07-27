@@ -1,0 +1,137 @@
+version: '2'
+
+services:
+  # nginx
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    restart: always
+    ports:
+        - "80:80"
+    volumes:
+        - ..:/code  # mount current directory inside container
+        - ./config/nginx:/etc/nginx/conf.d
+        - ../skyfolk/static:/static
+        - /tmp:/tmp
+        - ./run/static/static/:/var/www/skyfolk.net/run/static/static/
+        - ./run/static/media/:/var/www/skyfolk.net/run/static/media/
+    depends_on:
+        - web
+        - webworker
+    networks:
+        - webnet
+    extra_hosts:
+        - "cluster:172.17.0.1"
+
+  # Redis
+  redis:
+    image: redis:4.0
+    hostname: redis
+    restart: always
+    networks:
+      - webnet
+
+
+  # RabbitMQ
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    ports:
+      - "5672:5672"  # we forward this port because it's useful for debugging
+      - "15672:15672"  # here, we can access rabbitmq management plugin
+    restart: always
+    networks:
+      - webnet
+
+  webworker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/code
+      - /tmp:/tmp
+      - ./run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./run/static/media/:/var/www/skyfolk.net/run/static/media/
+    command: ./script/run_worker_pre.sh
+    env_file:
+      - ./env/web-pre-variables.env
+    networks:
+      - webnet
+    depends_on:
+      - rabbit
+    restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
+  # Django web server
+  web:
+    env_file:
+      - ./env/web-pre-variables.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: web
+    command: ./script/run_web_pre.sh
+    volumes:
+      - ..:/code  # mount current directory inside container
+      - /tmp:/tmp
+      - ../skyfolk/static:/static
+      - ./run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./run/static/media/:/var/www/skyfolk.net/run/static/media/
+    expose:
+        - "8000"
+    networks:
+      - webnet
+    depends_on:
+      - rabbit
+    networks:
+      - webnet
+    restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
+  # Celery worker
+  celery_worker:
+    env_file:
+      - ./env/web-pre-variables.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./script/run_celery.sh
+    volumes:
+      - ..:/code
+      - /tmp:/tmp
+      - ./run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./run/static/media/:/var/www/skyfolk.net/run/static/media/
+    networks:
+      - webnet
+    depends_on:
+      - web
+    restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
+  celery_beat:
+    env_file:
+      - .env/web-pre-variables.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./script/run_beat.sh
+    volumes:
+      - ..:/code
+      - /tmp:/tmp
+      - ./run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./run/static/media/:/var/www/skyfolk.net/run/static/media/
+    networks:
+      - webnet
+    depends_on:
+      - web
+    restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
+
+networks:
+  webnet:
+    driver: bridge
