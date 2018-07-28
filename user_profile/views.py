@@ -1432,13 +1432,14 @@ class RecommendationUsers(ListView):
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
 
 
-class LikeListUsers(AjaxListView):
+class LikeListUsers(ListView):
     """
     Lista de usuarios que han dado like a un perfil
     """
     model = User
     template_name = "account/like_list.html"
     context_object_name = "object_list"
+    paginate_by = 1
 
     def __init__(self, *args, **kwargs):
         super(LikeListUsers, self).__init__(*args, **kwargs)
@@ -1451,24 +1452,12 @@ class LikeListUsers(AjaxListView):
     def get_queryset(self):
         username = self.kwargs['username']
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        n = NodeProfile.nodes.get(title=username)
-        usernmames = [u.title for u in n.get_like_to_me(offset=offset, limit=25)]
-
-        total_users = n.count_likes()
-        total_pages = int(total_users / 25)
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-
-        return User.objects.filter(username__in=usernames).select_related('profile')
+        profile = Profile.objects.get(user__username=username)
+        return LikeProfile.objects.filter(to_profile=profile).select_related('from_profile', 'from_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
-        context['pagination'] = self.pagination
         user = self.request.user
 
         return context
