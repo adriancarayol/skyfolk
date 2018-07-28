@@ -42,8 +42,8 @@ class News(ListView):
 
     def get_queryset(self):
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
+        limit = 50 * current_page
+        offset = limit - 50
 
         try:
             profile = Profile.objects.get(user_id=self.request.user.id)
@@ -179,8 +179,8 @@ class News(ListView):
         total_videos = len(videos)
         total_placeholders = len(placeholders)
 
-        if total_pubs >= 25 or total_photos >= 25 or \
-                        total_videos >= 25 or total_placeholders >= 25:
+        if total_pubs >= 50 or total_photos >= 50 or \
+                        total_videos >= 50 or total_placeholders >= 50:
             self.pagination = current_page + 1
         else:
             self.pagination = None
