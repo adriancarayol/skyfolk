@@ -10,9 +10,8 @@ services:
         - "80:80"
     volumes:
         - .:/code  # mount current directory inside container
-        - ./config:/etc/nginx/conf.d
+        - ./deployment/config:/etc/nginx/conf.d
         - ./skyfolk/static:/static
-        - /tmp:/tmp
         - ./code/static/static/:/var/www/skyfolk.net/run/static/static/
         - ./code/static/media/:/var/www/skyfolk.net/run/static/media/
     depends_on:

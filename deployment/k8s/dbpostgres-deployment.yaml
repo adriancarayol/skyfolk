@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -v -f docker-compose.yml
+    kompose.version: 1.15.0 (e3cd4d4)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dbpostgres
+  name: dbpostgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: dbpostgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: skyfolk_db
+        - name: POSTGRES_PASSWORD
+          value: skyfolk_password
+        - name: POSTGRES_USER
+          value: skyfolk
+        image: postgres:latest
+        name: dbpostgres
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: dbpostgres-claim0
+      restartPolicy: Always
+      volumes:
+      - name: dbpostgres-claim0
+        persistentVolumeClaim:
+          claimName: dbpostgres-claim0
+status: {}

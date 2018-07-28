@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -v -f docker-compose.yml
+    kompose.version: 1.15.0 (e3cd4d4)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redis
+  name: redis
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redis
+    spec:
+      containers:
+      - image: redis:4.0
+        name: redis
+        resources: {}
+      hostname: redis
+      restartPolicy: Always
+status: {}

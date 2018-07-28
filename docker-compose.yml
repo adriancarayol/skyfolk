@@ -1,7 +1,7 @@
-version: '2'
 
+version: '2'
 services:    
-  # Redis
+  # redis
   redis:
     image: redis:4.0
     hostname: redis
@@ -9,7 +9,7 @@ services:
     networks:
       - skyfolknetwork
   
-  #neo4j
+  # neo4j
   neo4j:
     image: neo4j:latest
     ports:
@@ -65,7 +65,7 @@ services:
     networks:
       - skyfolknetwork
 
-  # RabbitMQ
+  # rabbitmq nodo 1
   rabbit:
     hostname: rabbit
     image: rabbitmq:latest
@@ -80,7 +80,7 @@ services:
     networks:
       - skyfolknetwork
       
-  # nodo 2
+  # rabbitmq nodo 2
   rabbit_2:
     hostname: rabbit_2
     image: rabbitmq:latest
@@ -95,6 +95,7 @@ services:
     networks:
       - skyfolknetwork
 
+  # daphne worker
   webworker:
     build:
       context: .
@@ -114,7 +115,7 @@ services:
       - neo4j
     restart: always
 
-  # Django web server
+  # django web server
   web:
     env_file:
       - web-variables.env
@@ -137,7 +138,7 @@ services:
       - skyfolknetwork
     restart: always
 
-  # Celery worker
+  # celery worker
   celery_worker:
     env_file:
       - web-variables.env
@@ -155,6 +156,7 @@ services:
       - web
     restart: always
 
+  # celery beat
   celery_beat:
     env_file:
       - web-variables.env

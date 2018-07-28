@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -v -f docker-compose.yml
+    kompose.version: 1.15.0 (e3cd4d4)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbit
+  name: rabbit
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rabbit
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_DEFAULT_PASS
+          value: guest
+        - name: RABBITMQ_DEFAULT_USER
+          value: guest
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: '''secret_cookie'''
+        image: rabbitmq:latest
+        name: rabbit
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources: {}
+      hostname: rabbit
+      restartPolicy: Always
+status: {}
