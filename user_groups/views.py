@@ -131,7 +131,7 @@ class UserGroupList(ListView):
         del usuario que hace la peticion
         """
         results, meta = db.cypher_query(
-            "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % self.request.user.id)
+            "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.title='%s' RETURN n.group_id" % self.request.user.username)
         return [y for x in results for y in x]
 
     def get_queryset(self):

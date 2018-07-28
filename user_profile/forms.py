@@ -32,7 +32,7 @@ class CustomLoginForm(LoginForm):
 
     def login(self, request, redirect_url=None):
         try:
-            user_profile = NodeProfile.nodes.get(user_id=self.user.id)
+            user_profile = NodeProfile.nodes.get(title=self.user.username)
         except NodeProfile.DoesNotExist:
             user_profile = None
             logger.warning("LOGIN: No existe instancia NodeProfile para el usuario : %s " % self.user.username)

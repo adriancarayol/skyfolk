@@ -14,7 +14,6 @@ from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
 from itertools import chain, zip_longest
 from dash.base import get_layout
-from allauth.account.forms import SignupForm
 from dash.utils import get_user_plugins, get_workspaces, get_public_dashboard_url, \
     get_dashboard_settings
 from django.contrib.auth.decorators import login_required
@@ -25,9 +24,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, Http404, \
-    HttpResponseBadRequest, HttpResponseForbidden, \
-    HttpResponseNotFound, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -39,7 +36,6 @@ from el_pagination.views import AjaxListView
 from haystack.generic_views import SearchView
 from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from neomodel import db
-from django.urls import reverse
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from django.http import Http404
@@ -414,7 +410,7 @@ def advanced_view(request):
 def config_privacity(request):
     user = request.user
     try:
-        user_profile = NodeProfile.nodes.get(user_id=user.id)
+        user_profile = NodeProfile.nodes.get(title=user.username)
         profile = Profile.objects.get(user_id=user.id)
     except ObjectDoesNotExist:
         raise Http404
@@ -512,7 +508,7 @@ def config_profile(request):
 @login_required(login_url='/')
 def config_blocked(request):
     user = request.user
-    n = NodeProfile.nodes.get(user_id=user.id)
+    n = NodeProfile.nodes.get(title=user.username)
     id_users = [u.user_id for u in n.bloq.match()]
     list_blocked = User.objects.filter(id__in=id_users).select_related('profile')
 
@@ -537,7 +533,7 @@ class InterestsView(FormView):
             return super().post(request, *args, **kwargs)
 
         user = request.user
-        user_node = NodeProfile.nodes.get(user_id=user.id)
+        user_node = NodeProfile.nodes.get(title=user.username)
         response = "success"
 
         tags = request.POST.getlist('tags[]')
@@ -575,7 +571,7 @@ class InterestsView(FormView):
         results, meta = db.cypher_query(
             "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
         my_interests, meta_2 = db.cypher_query(
-            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.user_id=%d RETURN interest.title" % self.request.user.id)
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title" % self.request.user.username)
         context['my_interests'] = [item for sublist in my_interests for item in sublist]
         context['top_tags'] = results
         context['form'] = ThemesForm
@@ -591,12 +587,13 @@ class AffinityView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.user_id=%d and b.is_active=true RETURN {id: b.user_id, label: b.title, weight: follow.weight} ORDER BY follow.weight DESC" % self.request.user.id
+        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC" % self.request.user.username
         results, meta = db.cypher_query(query=query)
         dict_results = [item for sublist in results for item in sublist]
+
         nodes = [
             {
-                "id": "n" + str(self.request.user.id),
+                "id": "n" + str(self.request.user.username),
                 "label": self.request.user.username,
                 "x": 0,
                 "y": 0,
@@ -606,22 +603,23 @@ class AffinityView(TemplateView):
         ]
 
         edges = [
-            
+
         ]
 
         for index, node in enumerate(dict_results):
             r = lambda: random.randint(0, 255)
             nodes.append(
-                {"id": "n" + str(node['id']), "label": node['label'] + ' (' + str(node['weight']) + ')',
-                 "x": random.randint(1, 100), "y": random.randint(1, 100),
-                 "size": node['weight'], "color": '#%02X%02X%02X' % (r(),r(),r())})
-            edges.append({"id": "e" + str(node['id']), "source": "n" + str(node['id']),
-                          "target": "n" + str(self.request.user.id)})
+                {"id": "n" + str(node['label']), "label": node['label'] + ' (' + str(node['weight']) + ')',
+                 "x": random.randint(1, len(dict_results)), "y": random.randint(1, len(dict_results)),
+                 "size": node['weight'], "color": '#%02X%02X%02X' % (r(), r(), r())})
+            edges.append({"id": "e" + str(node['label']), "source": "n" + str(node['label']),
+                          "target": "n" + str(self.request.user.username)})
 
         data = {
             "nodes": nodes,
             "edges": edges
         }
+
         context['data'] = json.dumps(data)
         return context
 
@@ -659,19 +657,19 @@ def add_friend_by_username_or_pin(request):
 
             if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'its_your_friend'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             if RelationShipProfile.objects.is_blocked(from_profile=friend, to_profile=user_profile):
                 data['response'] = 'user_blocked'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             if RelationShipProfile.objects.is_blocked(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'blocked_profile'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
@@ -1169,7 +1167,7 @@ class DeactivateAccount(FormView):
         if user.is_authenticated():
             if form.is_valid():
                 try:
-                    node_profile = NodeProfile.nodes.get(user_id=user.id)
+                    node_profile = NodeProfile.nodes.get(title=user.username)
                 except NodeProfile.DoesNotExist:
                     raise ObjectDoesNotExist
 
@@ -1333,7 +1331,7 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
-    user_node = NodeProfile.nodes.get(user_id=user.id)
+    user_node = NodeProfile.nodes.get(title=user.username)
 
     context = {'user_profile': user}
 
@@ -1406,14 +1404,14 @@ class RecommendationUsers(ListView):
         offset = limit - 25
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' "
             "AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
-            (user.id, offset, 25))
+            (user.username, offset, 25))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
 
         if not users:
-            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:25]
+            users = NodeProfile.nodes.filter(privacity__ne='N', title__ne=user.username).order_by('?')[offset:25]
 
         total_users = len(NodeProfile.nodes.all())
         total_pages = int(total_users / 25)
@@ -1421,8 +1419,8 @@ class RecommendationUsers(ListView):
             total_pages += 1
         self.pagination = make_pagination_html(current_page, total_pages)
 
-        user_ids = [u.user_id for u in users]
-        return User.objects.filter(id__in=user_ids).select_related('profile')
+        usernames = [u.title for u in users]
+        return User.objects.filter(username__in=usernames).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)
@@ -1457,7 +1455,7 @@ class LikeListUsers(AjaxListView):
         offset = limit - 25
 
         n = NodeProfile.nodes.get(title=username)
-        id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=25)]
+        usernmames = [u.title for u in n.get_like_to_me(offset=offset, limit=25)]
 
         total_users = n.count_likes()
         total_pages = int(total_users / 25)
@@ -1465,7 +1463,7 @@ class LikeListUsers(AjaxListView):
             total_pages += 1
         self.pagination = make_pagination_html(current_page, total_pages)
 
-        return User.objects.filter(id__in=id_users).select_related('profile')
+        return User.objects.filter(username__in=usernames).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
@@ -1657,35 +1655,37 @@ def recommendation_real_time(request):
         except Exception:
             return JsonResponse({'response': None})
 
-        if ids:
-            exclude_ids = ','.join(str(e) for e in ids)
-        else:
-            exclude_ids = []
+        if len(ids) > 100:
+            ids = []
 
-        if len(exclude_ids) > 100:
-            exclude_ids = []
+        usernames = User.objects.filter(id__in=ids).values_list('username', flat=True)
+
+        if len(usernames) > 0:
+            exclude_usernames = ','.join("'" + str(e) + "'" for e in usernames)
+        else:
+            exclude_usernames = []
 
         user = request.user
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
-            "AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY "
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' "
+            "AND NOT u2.privacity='N' AND NOT (u2.title IN [%s]) RETURN u2.title, COUNT(tag) AS score ORDER BY "
             "score DESC LIMIT 50" % (
-                user.id, exclude_ids))
-        users = []
+                user.username, exclude_usernames))
 
         if not results:
-            ids.append(user.id)
-            results = NodeProfile.nodes.exclude(privacity='N', user_id__in=ids).order_by('?')[:50]
-            [users.append(x.user_id) for x in results]
+            usernames = list(usernames)
+            usernames.append(user.username)
+            results = NodeProfile.nodes.exclude(privacity='N', title__in=usernames).order_by(
+                '?')[:50]
+            users = [x.title for x in results]
         else:
-            [users.append(x[0]) for x in results]
+            users = [x[0] for x in results]
 
-        sql_result = User.objects.filter(id__in=users)
-        sql_users = []
-        [sql_users.append({'id': u.id, 'username': u.username,
-                           'first_name': u.first_name, 'last_name': u.last_name,
-                           'avatar': avatar_url(u)}) for u in sql_result]
+        sql_result = User.objects.filter(username__in=users)
+        sql_users = [{'id': u.id, 'username': u.username,
+                      'first_name': u.first_name, 'last_name': u.last_name,
+                      'avatar': avatar_url(u)} for u in sql_result]
         return JsonResponse(sql_users, safe=False)
 
     return JsonResponse({'response': None})
@@ -1696,11 +1696,11 @@ class FollowingByAffinityList(generics.ListAPIView):
     renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        n = NodeProfile.nodes.get(user_id=user_id)
-        pk_list = [u.user_id for u in n.get_favs_users()]
-        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-        return User.objects.filter(id__in=pk_list).order_by(preserved)
+        user = self.request.user
+        n = NodeProfile.nodes.get(title=user.username)
+        usernames = [u.title for u in n.get_favs_users()]
+        preserved = Case(*[When(username=username, then=pos) for pos, username in enumerate(usernames)])
+        return User.objects.filter(username__in=usernames).order_by(preserved)
 
 
 class FollowersByAffinityList(generics.ListAPIView):
@@ -1708,11 +1708,11 @@ class FollowersByAffinityList(generics.ListAPIView):
     renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        n = NodeProfile.nodes.get(user_id=user_id)
-        pk_list = [u.user_id for u in n.get_favs_followers_users()]
-        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-        return User.objects.filter(id__in=pk_list).order_by(preserved)
+        user = self.request.user
+        n = NodeProfile.nodes.get(title=user.username)
+        usernames = [u.title for u in n.get_favs_followers_users()]
+        preserved = Case(*[When(username=username, then=pos) for pos, username in enumerate(usernames)])
+        return User.objects.filter(username__in=usernames).order_by(preserved)
 
 
 class NotificationSettingsView(AjaxableResponseMixin, UpdateView):

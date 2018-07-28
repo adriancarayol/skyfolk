@@ -12,7 +12,7 @@ from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
-from publications_gallery.models import PublicationPhoto, ExtraContentPubPhoto, ExtraContentPubVideo
+from publications_gallery.models import PublicationPhoto, ExtraContentPubPhoto
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -113,9 +113,9 @@ def add_extra_content(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
-    if n.user_id != m.user_id:
+    n = NodeProfile.nodes.get(title=instance.p_author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1
@@ -143,10 +143,10 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(title=instance.p_author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1

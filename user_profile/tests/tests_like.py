@@ -15,8 +15,8 @@ class LikeProfileTest(TestCase):
     def test_like_profile(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)
@@ -32,8 +32,8 @@ class LikeProfileTest(TestCase):
     def test_like_profile_bad_slug(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)
@@ -48,8 +48,8 @@ class LikeProfileTest(TestCase):
     def test_like_profile_without_slug(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)
@@ -64,8 +64,8 @@ class LikeProfileTest(TestCase):
     def test_remove_like_profile(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)

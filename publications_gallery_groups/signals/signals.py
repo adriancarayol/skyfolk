@@ -113,9 +113,9 @@ def add_extra_content(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
-    if n.user_id != m.user_id:
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1
@@ -143,10 +143,10 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1

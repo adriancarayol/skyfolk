@@ -21,15 +21,10 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
     plugin_data_fields = [
         ("title", ""),
         ("image", ""),
-        ("fit_method", DEFAULT_FIT_METHOD),
     ]
 
     title = forms.CharField(label=_("Title"), required=True)
     image = forms.ImageField(label=_("Image"), required=True)
-    fit_method = forms.ChoiceField(label=_("Fit method"),
-                                   required=False,
-                                   initial=DEFAULT_FIT_METHOD,
-                                   choices=FIT_METHODS_CHOICES)
 
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""

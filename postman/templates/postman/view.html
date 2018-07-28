@@ -25,7 +25,6 @@
                         class="material-icons right">account_circle</i>({{ item.title }})
                 </li>
             {% endfor %}
-            <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
         </ul>
     </div>
             {% endblock %}
@@ -90,13 +89,13 @@
                                    value="{{ message.thread_id }}"{% else %}name="pks"
                                    value="{{ message.pk }}"{% endif %}/>
                             <a class="waves-effect waves-light btn blue darken-1" href="{{ next_url }}"><i class="material-icons left">arrow_back</i>{% trans "Back" %}</a>
-                            <span id="pm_buttons">
+                            
                             <button class="waves-effect waves-light btn red" type="submit"
                                     onclick="this.form.action='{% url 'postman:delete' %}?next={{ next_url|urlencode }}'">{% trans "Delete" %}</button>
                                 {% if not archived %}
                                     <button class="waves-effect waves-light btn blue darken-1"  type="submit"
                                             onclick="this.form.action='{% url 'postman:archive' %}?next={{ next_url|urlencode }}'">{% trans "Archive" %}</button>{% endif %}
-</span>
+
                             {% if reply_to_pk %}
                                 <a class="waves-effect waves-light btn blue darken-1" href="{% url 'postman:reply' reply_to_pk %}?next={{ next_url|urlencode }}"><i class="material-icons left">reply</i>{% trans "Reply" %}</a>{% endif %}
                         </form>

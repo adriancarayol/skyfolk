@@ -62,24 +62,26 @@ def handle_delete_request(sender, instance, *args, **kwargs):
 def user_group_changed_handler(sender, instance, action, **kwargs):
     if isinstance(instance, UserGroups):
         pk_set = kwargs.pop('pk_set', [])
+        users = User.objects.filter(id__in=pk_set).values_list('username', flat=True)
+
         try:
             g = NodeGroup.nodes.get(group_id=instance.id)
         except NodeGroup.DoesNotExist:
             raise ObjectDoesNotExist
 
         if action == 'post_add':
-            for p in pk_set:
+            for p in users:
                 try:
-                    n = NodeProfile.nodes.get(user_id=p)
+                    n = NodeProfile.nodes.get(title=p)
                 except (NodeGroup, NodeProfile) as e:
                     raise ObjectDoesNotExist
 
                 g.members.connect(n)
 
         elif action == 'post_remove':
-            for p in pk_set:
+            for p in users:
                 try:
-                    n = NodeProfile.nodes.get(user_id=p)
+                    n = NodeProfile.nodes.get(title=p)
                 except (NodeGroup, NodeProfile) as e:
                     raise Http404
 
@@ -91,7 +93,7 @@ def handle_new_like(sender, instance, created, *args, **kwargs):
     if created:
         try:
             g = NodeGroup.nodes.get(group_id=instance.to_like.id)
-            n = NodeProfile.nodes.get(user_id=instance.from_like.id)
+            n = NodeProfile.nodes.get(title=instance.from_like.username)
         except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
             raise ObjectDoesNotExist
 
@@ -102,7 +104,7 @@ def handle_new_like(sender, instance, created, *args, **kwargs):
 def handle_delete_like(sender, instance, *args, **kwargs):
     try:
         g = NodeGroup.nodes.get(group_id=instance.to_like.id)
-        n = NodeProfile.nodes.get(user_id=instance.from_like.id)
+        n = NodeProfile.nodes.get(title=instance.from_like.username)
         g.likes.disconnect(n)
     except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
         pass

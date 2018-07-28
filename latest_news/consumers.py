@@ -1,6 +1,6 @@
 from channels.generic.websockets import WebsocketConsumer
 
-from user_profile.node_models import NodeProfile
+from user_profile.models import Profile
 
 
 class MyFeedConsumer(WebsocketConsumer):
@@ -12,13 +12,14 @@ class MyFeedConsumer(WebsocketConsumer):
     strict_ordering = False
 
     def connection_groups(self, **kwargs):
-        username = self.message.user.username
-        if not username:
+        id = self.message.user.id
+
+        if not id:
             return
 
         try:
-            profile = NodeProfile.nodes.get(title=username)
-        except NodeProfile.DoesNotExist:
+            profile = Profile.objects.get(user_id=id)
+        except Profile.DoesNotExist:
             return
 
         return [profile.news_channel]

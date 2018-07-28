@@ -21,7 +21,7 @@
                                 <a href="/profile/{{ item.username }}">{{ item.username }}</a>
                             </span>
                             <div class="divider"></div>
-                            <br> {% for tag in item.id|get_tags %}
+                            <br> {% for tag in item.username|get_tags %}
                             <div class="chip">{{ tag.title }}</div>
                         {% endfor %}
                         </div>

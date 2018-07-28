@@ -28,8 +28,8 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     type_of_relationship = instance.type
 
     try:
-        n = NodeProfile.nodes.get(user_id=emitter.id)
-        m = NodeProfile.nodes.get(user_id=recipient.id)
+        n = NodeProfile.nodes.get(title=emitter.username)
+        m = NodeProfile.nodes.get(title=recipient.username)
     except NodeProfile.DoesNotExist:
         raise Exception("No se encuentran los nodos en neo4j")
 
@@ -64,7 +64,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                 raise Exception("Publication relationship not created: {}".format(e))
 
             # Aumentamos la fuerza de la relacion entre los usuarios
-            if n.user_id != m.user_id:
+            if n.title != m.title:
                 rel = n.follow.relationship(m)
                 if rel:
                     rel.weight = rel.weight + 20
@@ -73,14 +73,14 @@ def handle_new_relationship(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=RelationShipProfile)
 def handle_delete_relationship(sender, instance, *args, **kwargs):
-    emitter_id = instance.from_profile.user_id
-    recipient_id = instance.to_profile.user_id
+    emitter_username = instance.from_profile.user.username
+    recipient_username = instance.to_profile.user.username
 
     type_of_relationship = instance.type
 
     try:
-        n = NodeProfile.nodes.get(user_id=emitter_id)
-        m = NodeProfile.nodes.get(user_id=recipient_id)
+        n = NodeProfile.nodes.get(title=emitter_username)
+        m = NodeProfile.nodes.get(title=recipient_username)
     except NodeProfile.DoesNotExist:
         raise Exception("No se encuentran los nodos en neo4j")
 
@@ -108,7 +108,7 @@ def create_user_profile(sender, instance, created, **kwargs):
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
                                                      is_public=True)
                     create_user_guides(instance)
-                    NodeProfile(user_id=instance.id, title=instance.username,
+                    NodeProfile(title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception as e:
@@ -127,9 +127,9 @@ def save_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using="default"):
                 with db.transaction:
-                    node = NodeProfile.nodes.get_or_none(user_id=instance.id)
+                    node = NodeProfile.nodes.get_or_none(title=instance.username)
                     if not node:
-                        NodeProfile(user_id=instance.id, title=instance.username,
+                        NodeProfile(title=instance.username,
                                     first_name=instance.first_name, last_name=instance.last_name).save()
                     Profile.objects.get_or_create(user=instance)
                     NotificationSettings.objects.get_or_create(user=instance)
@@ -152,8 +152,8 @@ def save_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=LikeProfile)
 def handle_new_like(sender, instance, created, **kwargs):
-    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
-    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+    n = NodeProfile.nodes.get(title=instance.from_profile.user.username)
+    m = NodeProfile.nodes.get(title=instance.to_profile.user.username)
 
     n.like.connect(m)
     rel = n.follow.relationship(m)
@@ -179,8 +179,8 @@ def handle_new_like(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=LikeProfile)
 def handle_delete_like(sender, instance, *args, **kwargs):
-    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
-    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+    n = NodeProfile.nodes.get(title=instance.from_profile.user.username)
+    m = NodeProfile.nodes.get(title=instance.to_profile.user.username)
 
     n.like.disconnect(m)
     rel = n.follow.relationship(m)
@@ -191,9 +191,9 @@ def handle_delete_like(sender, instance, *args, **kwargs):
 
 def handle_login(sender, user, request, **kwargs):
     try:
-        user_node = NodeProfile.nodes.get(title=user.username, user_id=user.id)
+        user_node = NodeProfile.nodes.get(title=user.username)
     except NodeProfile.DoesNotExist:
-        NodeProfile(user_id=user.id, title=user.username).save()
+        NodeProfile(title=user.username).save()
 
     profile = Profile.objects.get_or_create(user_id=user.id)
     NotificationSettings.objects.get_or_create(user=user)
