@@ -50,7 +50,7 @@ def url_exists(value):
 def check_follow(request, author):
     # obtenemos el model del autor del comentario
     try:
-        user_profile = NodeProfile.nodes.get(user_id=author)
+        user_profile = NodeProfile.nodes.get(title=author)
     except NodeProfile.DoesNotExist:
         return False
 
@@ -62,12 +62,12 @@ def check_follow(request, author):
         return True
 
     try:
-        me = NodeProfile.nodes.get(user_id=request)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
     # saber si sigo al perfil que visito
-    if me.user_id != user_profile.user_id:
+    if me.title != user_profile.title:
         try:
             isFriend = me.follow.is_connected(user_profile)
         except Exception:
@@ -80,7 +80,7 @@ def check_follow(request, author):
         return True
 
     # saber si el perfil me sigue
-    if me.user_id != me.user_id:
+    if me.title != me.title:
         try:
             isFollower = user_profile.follow.is_connected(me)
         except ObjectDoesNotExist:
@@ -100,8 +100,8 @@ def check_follow(request, author):
 @register.filter(name='check_blocked')
 def check_blocked(request, author):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=author)
-        me = NodeProfile.nodes.get(user_id=request)
+        user_profile = NodeProfile.nodes.get(title=author)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
@@ -116,12 +116,12 @@ def check_blocked(request, author):
 @register.filter(name='is_follow')
 def is_follow(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=profile)
-        me = NodeProfile.nodes.get(user_id=request)
+        user_profile = NodeProfile.nodes.get(title=profile)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
-    if me.user_id != user_profile.user_id:
+    if me.title != user_profile.title:
         try:
             return me.follow.is_connected(user_profile)
         except Exception:
@@ -132,14 +132,14 @@ def is_follow(request, profile):
 @register.filter(name='exist_request')
 def exist_request(request, profile):
     try:
-        m = NodeProfile.nodes.get(user_id=profile)
-        n = NodeProfile.nodes.get(user_id=request)
+        m = NodeProfile.nodes.get(title=profile)
+        n = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         try:
-            return Request.objects.get_follow_request(from_profile=n.user_id, to_profile=m.user_id)
+            return Request.objects.get_follow_request(from_profile__username=n.title, to_profile__username=m.title)
         except ObjectDoesNotExist:
             pass
     return False
@@ -148,12 +148,12 @@ def exist_request(request, profile):
 @register.filter(name='is_blocked')
 def is_blocked(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=profile)
-        me = NodeProfile.nodes.get(user_id=request)
+        user_profile = NodeProfile.nodes.get(title=profile)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
-    if me.user_id != user_profile.user_id:
+    if me.title != user_profile.title:
         try:
             return me.bloq.is_connected(user_profile)
         except Exception:
@@ -170,7 +170,7 @@ def get_tags(request):
     :return Lista de intereses del usuario:
     """
     r, m = db.cypher_query(
-        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.user_id=%s RETURN tag" % request
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.title='%s' RETURN tag" % request
     )
     results = [TagProfile.inflate(row[0]) for row in r]
     return results

@@ -76,14 +76,6 @@ def handle_uploaded_file(image_file):
     return image_file
 
 
-def get_crop_filter(fit_method):
-    """Get crop filter."""
-    if fit_method in (FIT_METHOD_CROP_SMART,
-                      FIT_METHOD_CROP_CENTER,
-                      FIT_METHOD_CROP_SCALE):
-        return fit_method
-
-
 def delete_file(image_file):
     """Delete file from disc."""
     try:

@@ -20,7 +20,7 @@ class UserTestClass(TestCase):
             with transaction.atomic(using="default"):
                 with db.transaction:
                     sql_row = User.objects.create(username="example", password="foo")
-                    neo4j_node = NodeProfile(title="example", user_id=sql_row.id).save()
+                    neo4j_node = NodeProfile(title="example").save()
                     raise Exception
         except Exception as e:
             pass
@@ -36,7 +36,7 @@ class UserTestClass(TestCase):
             with transaction.atomic(using="default"):
                 with db.transaction:
                     sql_row = User.objects.create(username="example", password="foo")
-                    neo4j_node = NodeProfile(title="example", user_id=sql_row.id).save()
+                    neo4j_node = NodeProfile(title="example").save()
         except Exception as e:
             sql_row = None
             neo4j_node = None

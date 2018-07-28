@@ -3,7 +3,6 @@ from django.conf import settings
 
 from ....base import BaseDashboardPluginWidget
 from .models import DashImageModel
-from .helpers import get_crop_filter
 from .settings import FIT_METHOD_FIT_WIDTH, FIT_METHOD_FIT_HEIGHT
 
 __title__ = 'dash.contrib.plugins.image.dash_widgets'
@@ -42,22 +41,12 @@ class BaseImageWidget(BaseDashboardPluginWidget):
     def render(self, request=None):
         """Render."""
         im = DashImageModel.objects.get(id=self.plugin.data.image)
-        crop = get_crop_filter(self.plugin.data.fit_method)
-        # Widget size with 8px cropped in width and height.
-        if FIT_METHOD_FIT_WIDTH == self.plugin.data.fit_method:
-            thumb_size = (self.get_width() - 8, 0)
-        elif FIT_METHOD_FIT_HEIGHT == self.plugin.data.fit_method:
-            thumb_size = (0, self.get_height() - 8)
-        else:
-            thumb_size = self.get_size(-8, -8)
-
         context = {
             'plugin': self.plugin,
             'image': im,
             'MEDIA_URL': settings.MEDIA_URL,
-            'crop': crop,
-            'thumb_size': thumb_size
         }
+
         return render_to_string('image/render.html', context)
 
 # **********************************************************************

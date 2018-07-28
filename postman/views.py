@@ -89,7 +89,7 @@ class FolderMixin(NamespaceMixin, object):
             'by_message_url': reverse(viewname, args=[OPTION_MESSAGES], current_app=current_instance),
             'current_url': self.request.get_full_path(),
             'gets': self.request.GET,  # useful to postman_order_by template tag
-            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'friends_top12': NodeProfile.nodes.get(title=self.request.user.username).get_favs_users(),
         })
         return context
 
@@ -205,7 +205,7 @@ class ComposeMixin(NamespaceMixin, object):
         context.update({
             'autocompleter_app': autocompleter_app,
             'next_url': self.request.GET.get('next') or _get_referer(self.request),
-            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'friends_top12': NodeProfile.nodes.get(title=self.request.user.username).get_favs_users(),
         })
         return context
 
@@ -364,7 +364,7 @@ class DisplayMixin(NamespaceMixin, object):
             'reply_to_pk': received.pk if received else None,
             'form': self.form_class(initial=received.quote(*self.formatters)) if received else None,
             'next_url': self.request.GET.get('next') or reverse('postman:inbox', current_app=self.request.resolver_match.namespace),
-            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'friends_top12': NodeProfile.nodes.get(title=self.request.user.username).get_favs_users(),
         })
         return context
 

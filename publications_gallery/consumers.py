@@ -69,8 +69,6 @@ class PublicationVideoConsumer(WebsocketConsumer):
     strict_ordering = False
 
     def __init__(self, message, **kwargs):
-        print('xdxdxdxdxdxd')
-
         pubid = kwargs.get('pubid', None)
         if not pubid:
             return
@@ -82,7 +80,7 @@ class PublicationVideoConsumer(WebsocketConsumer):
             return
 
         try:
-            self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
+            self.board_owner = Profile.objects.get(user_id=publication_board_owner)
         except NodeProfile.DoesNotExist:
             return
 

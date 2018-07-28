@@ -28,13 +28,11 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
-from notifications.models import Notification
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
-from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
-from user_profile.node_models import NodeProfile
+from .models import Publication, PublicationImage, PublicationVideo
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
+from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported
 from .tasks import process_video_publication, process_gif_publication
 from latest_news.tasks import send_to_stream
 
@@ -130,7 +128,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         try:
             emitter = Profile.objects.get(user_id=self.request.user.id)
             board_owner = Profile.objects.get(user_id=request.POST['board_owner'])
-        except NodeProfile.DoesNotExist as e:
+        except Profile.DoesNotExist as e:
             form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
             return self.form_invalid(form=form)
 

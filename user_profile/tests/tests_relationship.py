@@ -18,8 +18,8 @@ class FollowUserTest(TestCase):
     def test_follow_user(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
 
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
@@ -40,8 +40,8 @@ class FollowUserTest(TestCase):
     def test_follow_user_without_slug(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
 
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
@@ -60,8 +60,8 @@ class FollowUserTest(TestCase):
     def test_follow_user_with_wrong_slug(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
 
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
@@ -81,8 +81,8 @@ class FollowUserTest(TestCase):
         self.test_follow_user()
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         request = self.client.post(reverse('user_profile:remove_relationship'), {'slug': user_2.id})
         self.assertEqual(request.status_code, 200)
         self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
@@ -93,8 +93,8 @@ class FollowUserTest(TestCase):
         self.test_follow_user()
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         request = self.client.post(reverse('user_profile:remove_relationship'))
         self.assertEqual(request.status_code, 200)
         self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
@@ -105,8 +105,8 @@ class FollowUserTest(TestCase):
         self.test_follow_user()
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertRaises(ValueError, self.client.post, path=reverse('user_profile:remove_relationship'),
                           data={'slug': '1123fasf'})
         self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
@@ -117,8 +117,8 @@ class FollowUserTest(TestCase):
         self.test_follow_user()
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
 
         with mock.patch.object(RelationShipProfile.objects, 'filter') as mock_method:
             mock_method.side_effect = Exception("test error")
@@ -132,8 +132,8 @@ class FollowUserTest(TestCase):
     def test_block_user(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)
@@ -152,8 +152,8 @@ class FollowUserTest(TestCase):
         self.test_follow_user()
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
 
         request = self.client.post(reverse('user_profile:bloq_user'), {'id_user': user_2.id})
         self.assertEqual(request.status_code, 200)
@@ -166,8 +166,8 @@ class FollowUserTest(TestCase):
     def test_block_user_liked(self):
         user_1 = User.objects.get(username='user1')
         user_2 = User.objects.get(username='user2')
-        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
-        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        node_1 = NodeProfile.nodes.get(title=user_1.username)
+        node_2 = NodeProfile.nodes.get(title=user_2.username)
         self.assertIsNotNone(user_1)
         self.assertIsNotNone(user_2)
         self.assertIsNotNone(node_1)

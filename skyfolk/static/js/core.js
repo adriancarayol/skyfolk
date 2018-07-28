@@ -496,16 +496,16 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                 });
             } else if (response === 'your_own_username') {
                 swal({
-                    title: "Wait a moment!",
-                    text: "It's your own username!",
+                    title: "¡Espera un momento!",
+                    text: "¿Estás intentando seguirte a ti mismo?",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'its_your_friend') {
                 swal({
-                    title: "Wait a moment!",
-                    text: "It's already your friend!",
+                    title: "¡Espera un momento!",
+                    text: "¡Ya lo sigues!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
@@ -536,16 +536,16 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                 });
             } else if (response === 'new_petition') {
                 swal({
-                    title: "New petition sent!",
-                    text: "Wait to confirm!.",
+                    title: "¡Petición enviada!",
+                    text: "¡Ahora espera a que te acepte la invitación!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'user_blocked') {
                 swal({
-                    title: "Petición denegada.",
-                    text: "El usuario te ha bloqueado.",
+                    title: "Petición denegada",
+                    text: "El usuario te ha bloqueado",
                     customClass: 'default-div',
                     type: "error",
                     timer: 4000,
@@ -554,13 +554,21 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                 });
             } else if (response === 'blocked_profile') {
                 swal({
-                    title: "Petición denegada.",
-                    text: "Tienes bloqueado a este perfil.",
+                    title: "Petición denegada",
+                    text: "Tienes bloqueado a este perfil",
                     customClass: 'default-div',
                     type: "error",
                     timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
+                });
+            } else {
+                swal({
+                    title: "Tenemos un problema...",
+                    text: "Parece que no existe ningún usuario con ese nombre",
+                    customClass: 'default-div',
+                    timer: 4000,
+                    showConfirmButton: true
                 });
             }
         },

@@ -49,8 +49,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             if not self.request.user.user_groups.filter(id=photo.group_id).exists():
                 return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        emitter = NodeProfile.nodes.get(title=self.request.user.username)
+        board_photo_owner = NodeProfile.nodes.get(title=photo.owner.username)
 
         privacity = board_photo_owner.is_visible(emitter)
 
@@ -66,8 +66,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
+                    parent_owner = parent.author.username
+                    parent_node = NodeProfile.nodes.get(title=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)

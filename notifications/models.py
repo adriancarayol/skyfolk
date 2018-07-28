@@ -290,8 +290,8 @@ def notify_handler(verb, **kwargs):
     for recipient in recipients:
         try:
             try:
-                n = NodeProfile.nodes.get(user_id=actor.id)
-                m = NodeProfile.nodes.get(user_id=recipient.id)
+                n = NodeProfile.nodes.get(title=actor.username)
+                m = NodeProfile.nodes.get(title=recipient.username)
             except NodeProfile.DoesNotExist:
                 return
 

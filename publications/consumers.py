@@ -1,10 +1,8 @@
 from channels.generic.websockets import WebsocketConsumer
 
 from user_profile.models import Profile
-from user_profile.node_models import NodeProfile
 from .models import Publication
 from .utils import get_channel_name
-from django.http import Http404
 
 
 class PublicationConsumer(WebsocketConsumer):
