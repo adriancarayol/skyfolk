@@ -1040,7 +1040,7 @@ class FollowersListView(ListView):
     """
     Lista de seguidores del usuario
     """
-    context_object_name = "friends_top4"
+    context_object_name = "followers"
     template_name = "account/relations.html"
     paginate_by = 25
 
@@ -1049,11 +1049,9 @@ class FollowersListView(ListView):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        followers_list = RelationShipProfile.objects.filter(
+        return RelationShipProfile.objects.filter(
             to_profile__user__username=self.kwargs.get('username', None),
-            type=FOLLOWING).values('from_profile_id')
-        return User.objects.filter(profile__in=followers_list).select_related(
-            'profile')
+            type=FOLLOWING).select_related('from_profile', 'from_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
@@ -1070,7 +1068,7 @@ class FollowingListView(ListView):
     """
     Lista de seguidos del usuario
     """
-    context_object_name = "friends_top4"
+    context_object_name = "following"
     template_name = "account/relations.html"
     paginate_by = 25
 
@@ -1079,11 +1077,10 @@ class FollowingListView(ListView):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        following_list = RelationShipProfile.objects.filter(
-            from_profile__user__username=self.kwargs.get('username', None),
-            type=FOLLOWING).values('to_profile_id')
-        return User.objects.filter(profile__in=following_list).select_related(
-            'profile')
+        username = self.kwargs.get('username', None)
+        return RelationShipProfile.objects.filter(
+            from_profile__user__username=username,
+            type=FOLLOWING).select_related('to_profile', 'to_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
@@ -1439,7 +1436,7 @@ class LikeListUsers(ListView):
     model = User
     template_name = "account/like_list.html"
     context_object_name = "object_list"
-    paginate_by = 1
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(LikeListUsers, self).__init__(*args, **kwargs)

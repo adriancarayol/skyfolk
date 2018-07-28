@@ -1,21 +1,22 @@
 {% load app_filters %}
 {% load avatar_tags %}
 {% load static %}
-{% for item in friends_top4 %}
+{% if following %}
+{% for item in following %}
     <div class="col l3 m10 s12 offset-m2">
         <div class="personal-card">
             <div class="row">
                 <div class="col s12">
                     <div class="header">
-                        {% if item.profile.back_image %}
-                            <img class="back-profile-user lazyload" data-src="{{ item.profile.back_image.url }}">
+                        {% if item.to_profile.back_image %}
+                            <img class="back-profile-user lazyload" data-src="{{ item.to_profile.back_image.url }}">
                         {% else %}
                             <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.png" %}">
                         {% endif %}
                         <i class="material-icons like-him">person</i>
                         <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.username }}'"
-                                 class="profile-user-bg">{% avatar item.username %}</div>
+                            <div onclick="location.href='/profile/{{ item.to_profile.user.username }}'"
+                                 class="profile-user-bg">{% avatar item.to_profile.user.username %}</div>
                         </div>
                     </div>
                 </div>
@@ -23,12 +24,43 @@
             <div class="row">
                 <div class="col s12">
                     <div class="name-friend">
-                        <a href="/profile/{{ item.username }}">@{{ item.username }} </a><br><br>
-                        <p>{{ item.first_name }} {{ item.last_name }}</p>
+                        <a href="/profile/{{ item.to_profile.user.username }}">@{{ item.to_profile.user.username }} </a><br><br>
+                        <p>{{ item.to_profile.user.first_name }} {{ item.to_profile.user.last_name }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 {% endfor %}
-
+{% elif followers %}
+{% for item in followers %}
+    <div class="col l3 m10 s12 offset-m2">
+        <div class="personal-card">
+            <div class="row">
+                <div class="col s12">
+                    <div class="header">
+                        {% if item.from_profile.back_image %}
+                            <img class="back-profile-user lazyload" data-src="{{ item.from_profile.back_image.url }}">
+                        {% else %}
+                            <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.png" %}">
+                        {% endif %}
+                        <i class="material-icons like-him">person</i>
+                        <div class="bg-user">
+                            <div onclick="location.href='/profile/{{ item.from_profile.user.username }}'"
+                                 class="profile-user-bg">{% avatar item.from_profile.user.username %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="name-friend">
+                        <a href="/profile/{{ item.from_profile.user.username }}">@{{ item.from_profile.user.username }} </a><br><br>
+                        <p>{{ item.from_profile.user.first_name }} {{ item.from_profile.user.last_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endif %}
