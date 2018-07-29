@@ -11,9 +11,8 @@ Base para la interfaz en comun de todos los usuarios.
     <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <meta content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="{% static "css/core.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "dist/css/bundle.min.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection">
-    <link rel="stylesheet" type="text/css" href="{% static "css/buscar.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "fonts/iconfont/material-icons.css" %}">
     <link rel="icon" type="image/ico" href="{% static "img/favicon.ico" %}"/>
 
@@ -230,79 +229,6 @@ Base para la interfaz en comun de todos los usuarios.
         </table>
     </div>
     {% endblock %}
-    {% block create-group %}
-    <div class="row">
-        <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
-            <form id="from_new_group" method="post" enctype="multipart/form-data">{% csrf_token %}
-                <div class="row">
-                    {{ groupForm.name.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">title</i>
-                        {{ groupForm.name }}
-                        <label for="id_name">Escribe un nombre para el grupo.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ groupForm.description.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">description</i>
-                        {{ groupForm.description }}
-                        <label for="id_description">Escribe una descripcion para el grupo.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="file-field input-field">
-                        <div class="btn blue lighten-2">
-                            <span>Avatar</span>
-                            {{ groupForm.avatar }}
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="file-field input-field">
-                        <div class="btn blue lighten-2">
-                            <span>Cabecera</span>
-                            {{ groupForm.back_image }}
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ groupForm.tags.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">bookmark</i>
-                        {{ groupForm.tags }}
-                        <label for="id_tags">Introduce una "," para añadir un nuevo tema. (Música, Deporte)</label>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ groupForm.is_public.errors }}
-                    <div class="col s12">
-                        <i class="material-icons prefix"></i>
-                        {{ groupForm.is_public }}
-                        <label for="id_is_public">Active esta casilla para hacer el grupo privado.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <button type="submit" id="btn_new_group"
-                        class="waves-effect waves-light btn right blue">
-                        Crear grupo<i class="material-icons right">people</i></button>
-                        <button type="submit" id="btn_close_group"
-                        class="waves-effect waves-light btn right transparent black-text">
-                        Cerrar<i class="material-icons right">close</i>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-{% endblock %}
 {% endif %}
 {% comment "menu movil" %}
 Menu para versiones tablet/movil

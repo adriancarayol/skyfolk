@@ -143,7 +143,7 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
-        $('.button-menu-left').sideNav('hide');
+        console.log('CLICK NIGGA');
     });
 
     /* Close nuevo grupo */

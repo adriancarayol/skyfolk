@@ -102,7 +102,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 return self.form_invalid(form=form)
 
             return self.form_valid(form=form,
-                                   msg='¡Tu grupo ha sido creado, haz click <a href="{0}">aquí</a> para visitarlo.'.format(
+                                   msg='¡Tu grupo ha sido creado, haz click <a href="{0}">&emsp;aquí&emsp;</a> para visitarlo.'.format(
                                        reverse_lazy('user_groups:group-profile', kwargs={'groupname': group.slug})))
 
         print(form.errors)
