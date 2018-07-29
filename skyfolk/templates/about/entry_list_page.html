@@ -20,7 +20,7 @@
                 {% endif %}
             </div>
             <div class="card-action">
-              <a href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a>
+              <a class="white-text blue right btn right" href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a>
                 <b class="right">{{ pub.created }}</b>
             </div>
           </div>

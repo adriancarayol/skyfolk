@@ -9,7 +9,7 @@
             </div>
             <div class="center">
                 {% if image.image  %}
-                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}" class="materialboxed lazyloaded" width="100%" height="100%"/>
+                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}" class="materialboxed lazyloaded" />
                 {% else %}
                     {% trans "No image provided!" %}
                 {% endif %}

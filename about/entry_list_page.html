@@ -7,7 +7,7 @@
                 <p class="flow-text">{{ pub.content|safe }}</p>{% if pub.image %}
                     <img src="{{ pub.image.url }}" width="300" height="300"> {% endif %}</div>
             <div class="card-action"><a
-                    href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a> <b
+                    class="white-text blue right btn right"  href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a> <b
                     class="right">{{ pub.created }}</b></div>
         </div>
     </div>{% endfor %}</div>{% show_more %}
