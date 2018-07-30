@@ -58,6 +58,10 @@ module.exports = [
         }
     },
     {
+        
+    }
+    /*
+    {
         context: __dirname,
         name: 'css',
         entry: {
@@ -95,6 +99,7 @@ module.exports = [
         new ExtractTextPlugin("bundle.min.css"),
       ]
     }
+    */
 ];
 
 function toObject(paths) {
