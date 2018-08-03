@@ -9,7 +9,83 @@
 {% endblock %}
 
 {% block content %}
+{% block create-group %}
+    <div class="row">
+        <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
+            <form id="from_new_group" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="row">
+                    {{ groupForm.name.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">title</i>
+                        {{ groupForm.name }}
+                        <label for="id_name">Escribe un nombre para el grupo.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.description.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">description</i>
+                        {{ groupForm.description }}
+                        <label for="id_description">Escribe una descripcion para el grupo.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.tags.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">bookmark</i>
+                        {{ groupForm.tags }}
+                        <label for="id_tags">Introduce una "," para añadir un nuevo tema. (Música, Deporte)</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.is_public.errors }}
+                    <div class="col s12">
+                        <i class="material-icons prefix"></i>
+                        {{ groupForm.is_public }}
+                        <label for="id_is_public">Active esta casilla para hacer el grupo privado.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="file-field input-field col l6 s12">
+                        <div class="btn blue lighten-2">
+                            <span>Avatar</span>
+                            {{ groupForm.avatar }}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Imagen de perfil para tu grupo">
+                        </div>
+                    </div>
+                    <div class="file-field input-field col l6 s12">
+                        <div class="btn blue lighten-2">
+                            <span>Cabecera</span>
+                            {{ groupForm.back_image }}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Imagen de fondo para tu grupo">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <button type="submit" id="btn_new_group"
+                        class="waves-effect waves-light btn right blue">
+                        Crear grupo<i class="material-icons right">people</i></button>
+                        <button type="submit" id="btn_close_group"
+                        class="waves-effect waves-light btn right transparent black-text">
+                        Cerrar<i class="material-icons right">close</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
 <div class="container">
+    <div class="row center">
+        <div class="col s12">
+            <button class="waves-effect waves-light btn blue white-text" id="new_group">Crear grupo</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col s12 wrapper-groups">
             <div class="row">

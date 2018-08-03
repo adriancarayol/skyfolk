@@ -1,6 +1,9 @@
+import uuid
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.six import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
 from .models import DashImageModel
@@ -28,8 +31,17 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
 
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""
+        maxsize = (600, 350)
         image = self.cleaned_data.get('image', None)
 
-        if image:
-            im = DashImageModel.objects.create(image=image, user_id=request.user.id)
+        img = Image.open(image)
+        img.thumbnail(maxsize)
+        tempfile_io = BytesIO()
+        img.save(tempfile_io, "JPEG")
+        tempfile_io.seek(0)
+
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+
+        if image_file:
+            im = DashImageModel.objects.create(image=image_file, user_id=request.user.id)
             self.cleaned_data['image'] = im.id

@@ -34,5 +34,3 @@ db/
 kibana/
 tmp/
 config/config
-# local_static_files
-static/

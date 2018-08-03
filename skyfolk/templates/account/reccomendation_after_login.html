@@ -28,17 +28,17 @@
                         <div class="card-action">
                             {% if user.id|is_blocked:item.id %}
                                 <button data-user-id="{{ item.user_id }}"
-                                        class="btn waves-effect waves-light blue darken-1 unblock-user" type="submit">
+                                        class="btn waves-effect waves-light blue darken-1 unblock-user right" type="submit">
                                     Desbloquear
                                 </button>
                             {% elif user.id|exist_request:item.id %}
                                 <button data-user-id="{{ item.id }}"
-                                        class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">
+                                        class="btn waves-effect waves-light blue darken-1 follow_request right" type="submit">
                                     Solicitud enviada
                                 </button>
                             {% else %}
                                 <button data-user-id="{{ item.id }}"
-                                        class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">
+                                        class="btn waves-effect waves-light blue darken-1 follow-user right" type="submit">
                                     {% if user.id|is_follow:item.id %}Dejar de seguir {% else %}
                                         Seguir{% endif %}</button>
                             {% endif %}
