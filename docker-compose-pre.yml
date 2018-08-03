@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   # nginx
@@ -22,7 +22,7 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-  # Redis
+  # redis
   redis:
     image: redis:4.0
     hostname: redis
@@ -30,7 +30,7 @@ services:
     networks:
       - skyfolknetwork
 
-  # RabbitMQ
+  # rabbitmq
   rabbit:
     hostname: rabbit
     image: rabbitmq:latest
@@ -45,7 +45,7 @@ services:
     networks:
       - skyfolknetwork
 
-  # Daphne Web Worker
+  # daphne worker
   webworker:
     build:
       context: .
@@ -67,7 +67,7 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-  # Django app
+  # django app
   web:
     env_file:
       - web-pre-variables.env
@@ -95,7 +95,7 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-  # Celery worker
+  # celery worker
   celery_worker:
     env_file:
       - web-pre-variables.env
@@ -117,7 +117,7 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-  # Celery beat
+  # celery beat
   celery_beat:
     env_file:
       - web-pre-variables.env

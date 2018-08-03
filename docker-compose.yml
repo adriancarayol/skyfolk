@@ -1,5 +1,5 @@
 
-version: '2'
+version: '3'
 services:    
   # redis
   redis:
@@ -115,7 +115,7 @@ services:
       - neo4j
     restart: always
 
-  # django web server
+  # django app
   web:
     env_file:
       - web-variables.env
