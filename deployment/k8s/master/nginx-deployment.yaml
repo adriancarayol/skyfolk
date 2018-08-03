@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-master.yml -o deployment/k8s/master/
+    kompose.version: 1.15.0 (e3cd4d4)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: nginx
+    spec:
+      containers:
+      - image: nginx:latest
+        name: ng01
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /code
+          name: nginx-claim0
+        - mountPath: /etc/nginx/conf.d
+          name: nginx-claim1
+        - mountPath: /static
+          name: nginx-claim2
+        - mountPath: /var/www/skyfolk.net/run/static/static/
+          name: nginx-claim3
+        - mountPath: /var/www/skyfolk.net/run/static/media/
+          name: nginx-claim4
+      restartPolicy: Always
+      volumes:
+      - name: nginx-claim0
+        persistentVolumeClaim:
+          claimName: nginx-claim0
+      - name: nginx-claim1
+        persistentVolumeClaim:
+          claimName: nginx-claim1
+      - name: nginx-claim2
+        persistentVolumeClaim:
+          claimName: nginx-claim2
+      - name: nginx-claim3
+        persistentVolumeClaim:
+          claimName: nginx-claim3
+      - name: nginx-claim4
+        persistentVolumeClaim:
+          claimName: nginx-claim4
+status: {}

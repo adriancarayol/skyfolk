@@ -1,0 +1,126 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-master.yml -o deployment/k8s/master/
+    kompose.version: 1.15.0 (e3cd4d4)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: celery-beat
+  name: celery-beat
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: celery-beat
+    spec:
+      containers:
+      - args:
+        - ./run_beat.sh
+        env:
+        - name: DB_ENV_DB
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_DB
+              name: celery-beat-web-master-variables-env
+        - name: DB_ENV_POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_POSTGRES_PASSWORD
+              name: celery-beat-web-master-variables-env
+        - name: DB_ENV_POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_POSTGRES_USER
+              name: celery-beat-web-master-variables-env
+        - name: DB_PORT_5432_TCP_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT_5432_TCP_ADDR
+              name: celery-beat-web-master-variables-env
+        - name: DB_PORT_5432_TCP_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT_5432_TCP_PORT
+              name: celery-beat-web-master-variables-env
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SETTINGS_MODULE
+              name: celery-beat-web-master-variables-env
+        - name: ELASTICSEARCH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: ELASTICSEARCH_URL
+              name: celery-beat-web-master-variables-env
+        - name: EMAIL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_HOST
+              name: celery-beat-web-master-variables-env
+        - name: NEO4J_BOLT_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_BOLT_URL
+              name: celery-beat-web-master-variables-env
+        - name: NEO4J_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_HOST
+              name: celery-beat-web-master-variables-env
+        - name: NEO4J_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_PASSWORD
+              name: celery-beat-web-master-variables-env
+        - name: NEO4J_USER
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_USER
+              name: celery-beat-web-master-variables-env
+        - name: RABBIT_PORT_5672_TCP
+          valueFrom:
+            configMapKeyRef:
+              key: RABBIT_PORT_5672_TCP
+              name: celery-beat-web-master-variables-env
+        - name: REDIS_PORT_6379_TCP_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_PORT_6379_TCP_ADDR
+              name: celery-beat-web-master-variables-env
+        - name: SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SECRET_KEY
+              name: celery-beat-web-master-variables-env
+        image: skyfolk/celery-beat
+        name: celery-beat
+        resources: {}
+        volumeMounts:
+        - mountPath: /code
+          name: celery-beat-claim0
+        - mountPath: /tmp
+          name: celery-beat-claim1
+        - mountPath: /var/www/skyfolk.net/run/static/static/
+          name: celery-beat-claim2
+        - mountPath: /var/www/skyfolk.net/run/static/media/
+          name: celery-beat-claim3
+      restartPolicy: Always
+      volumes:
+      - name: celery-beat-claim0
+        persistentVolumeClaim:
+          claimName: celery-beat-claim0
+      - name: celery-beat-claim1
+        persistentVolumeClaim:
+          claimName: celery-beat-claim1
+      - name: celery-beat-claim2
+        persistentVolumeClaim:
+          claimName: celery-beat-claim2
+      - name: celery-beat-claim3
+        persistentVolumeClaim:
+          claimName: celery-beat-claim3
+status: {}

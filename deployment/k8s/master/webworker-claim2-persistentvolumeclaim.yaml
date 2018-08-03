@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: kibana-claim0
-  name: kibana-claim0
+    io.kompose.service: webworker-claim2
+  name: webworker-claim2
 spec:
   accessModes:
   - ReadWriteOnce

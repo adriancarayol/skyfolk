@@ -2,12 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -v -f docker-compose.yml
+    kompose.cmd: kompose convert -f docker-compose-master.yml -o deployment/k8s/master/
     kompose.version: 1.15.0 (e3cd4d4)
   creationTimestamp: null
   labels:
-    io.kompose.service: rabbit-2
-  name: rabbit-2
+    io.kompose.service: rabbit
+  name: rabbit
 spec:
   replicas: 1
   strategy: {}
@@ -15,7 +15,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: rabbit-2
+        io.kompose.service: rabbit
     spec:
       containers:
       - env:
@@ -26,11 +26,11 @@ spec:
         - name: RABBITMQ_ERLANG_COOKIE
           value: '''secret_cookie'''
         image: rabbitmq:latest
-        name: rabbit-2
+        name: rabbit
         ports:
         - containerPort: 5672
         - containerPort: 15672
         resources: {}
-      hostname: rabbit_2
+      hostname: rabbit
       restartPolicy: Always
 status: {}
