@@ -1,3 +1,4 @@
+timeout: 5600s # One hour
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -7,6 +8,7 @@ steps:
     '--file=Dockerfile.master',
     '--tag=gcr.io/$PROJECT_ID/web',
     '.' ]
+
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -15,6 +17,8 @@ steps:
     '--file=Dockerfile.master',
     '--tag=gcr.io/$PROJECT_ID/webworker',
     '.' ]
+  waitFor: ['-']
+
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -23,6 +27,8 @@ steps:
     '--file=Dockerfile.master',
     '--tag=gcr.io/$PROJECT_ID/celery-worker',
     '.' ]
+  waitFor: ['-']
+
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -31,6 +37,7 @@ steps:
     '--file=Dockerfile.master',
     '--tag=gcr.io/$PROJECT_ID/celery-beat',
     '.' ]
+  waitFor: ['-']
 
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
