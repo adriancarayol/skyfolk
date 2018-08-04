@@ -162,7 +162,7 @@ urlpatterns = [
     url(r'^dashboard/', include('dash.urls')),
     # API_REST
     url(r'^api/', include('api.urls')),
-    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
+    url(r'^graphql', GraphQLView.as_view(graphiql=False)),
     # user guide
     url(r'^user-guide/', include('user_guide.urls')),
 ]

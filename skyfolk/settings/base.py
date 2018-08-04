@@ -195,6 +195,12 @@ REST_FRAMEWORK = {
 }
 # /REST FRAMEWORK
 
+# GRAPHQL
+
+GRAPHENE = {
+    'SCHEMA': 'skyfolk.schema.schema'
+}
+
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
 

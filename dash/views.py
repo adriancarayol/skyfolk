@@ -1961,31 +1961,26 @@ def swap_widget_position(request, workspace=None):
         as_instance=True
     )
 
-    # If workspace with slug given is not found in the list of workspaces
-    # redirect to the default dashboard.
     if workspaces['current_workspace_not_found']:
-        msg = _('The workspace with slug "{0}" does '
-                'not belong to layout "{1}".').format(workspace, layout.name)
-        if dashboard_settings.allow_different_layouts:
-            msg = _('The workspace with slug "{0}" does not exist').format(
-                workspace
-            )
-        messages.info(request, msg)
-        return redirect('user_profile:profile', username=request.user.username)
+        raise Http404("Workspace does not exist")
 
-    # Getting the (frozen) queryset.
-    dashboard_entries = DashboardEntry._default_manager \
-                            .get_for_user(user=request.user,
-                                          layout_uid=layout.uid,
-                                          workspace=workspace) \
-                            .filter(plugin_uid__in=user_plugin_uids,
-                                    position__in=positions, )[:2]
+    plugin_source = DashboardEntry.objects.filter(user=request.user,
+                        layout_uid=layout.uid, workspace=workspace,
+                        plugin_uid__in=user_plugin_uids,
+                        position=positions[1]).first()
+
+    plugin_target = DashboardEntry.objects.filter(user=request.user,
+                        layout_uid=layout.uid,
+                        workspace=workspace,
+                        plugin_uid__in=user_plugin_uids,
+                        position=positions[0]).first()
+
     try:
         with transaction.atomic():
-            dashboard_entries[0].position, dashboard_entries[1].position = \
-                dashboard_entries[1].position, dashboard_entries[0].position
-            dashboard_entries[0].save()
-            dashboard_entries[1].save()
+            plugin_source.position, plugin_target.position = \
+                plugin_target.position, plugin_source.position
+            plugin_source.save(update_fields=['position'])
+            plugin_target.save(update_fields=['position'])
     except IndexError as e:
         print(e)
     except Exception as a:
