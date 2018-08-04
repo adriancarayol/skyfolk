@@ -97,7 +97,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: web-web-master-variables-env
-        image: skyfolk/web
+        image: eu.gcr.io/skyfolk-211121/web:latest
         name: web
         resources: {}
         volumeMounts:

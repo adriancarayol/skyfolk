@@ -97,7 +97,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: celery-beat-web-master-variables-env
-        image: skyfolk/celery-beat
+        image: eu.gcr.io/skyfolk-211121/celery-beat:latest
         name: celery-beat
         resources: {}
         volumeMounts:

@@ -97,7 +97,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: celery-worker-web-master-variables-env
-        image: skyfolk/celery-worker
+        image: eu.gcr.io/skyfolk-211121/celery-worker:latest
         name: celery-worker
         resources: {}
         volumeMounts:

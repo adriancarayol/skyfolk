@@ -97,7 +97,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: webworker-web-master-variables-env
-        image: skyfolk/webworker
+        image: eu.gcr.io/skyfolk-211121/webworker:latest
         name: webworker
         resources: {}
         volumeMounts:

@@ -4,6 +4,8 @@ services:
   # nginx
   nginx:
     image: nginx:latest
+    deploy:
+      replicas: 1
     container_name: ng01
     restart: always
     ports:
@@ -25,6 +27,8 @@ services:
   # redis
   redis:
     image: redis:4.0
+    deploy:
+      replicas: 1
     hostname: redis
     restart: always
     networks:
@@ -34,6 +38,8 @@ services:
   rabbit:
     hostname: rabbit
     image: rabbitmq:latest
+    deploy:
+      replicas: 1
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -50,7 +56,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.master
-    image: skyfolk/webworker
+    image: eu.gcr.io/skyfolk-211121/webworker:latest
+    deploy:
+      replicas: 1
     volumes:
       - .:/code
       - /tmp:/tmp
@@ -74,7 +82,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.master
-    image: skyfolk/web
+    image: eu.gcr.io/skyfolk-211121/web:latest
+    deploy:
+      replicas: 1
     hostname: web
     command: ./run_web_master.sh
     volumes:
@@ -102,7 +112,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.master
-    image: skyfolk/celery-worker
+    image: eu.gcr.io/skyfolk-211121/celery-worker:latest
+    deploy:
+      replicas: 1
     command: ./run_celery.sh
     volumes:
       - .:/code
@@ -124,7 +136,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.master
-    image: skyfolk/celery-beat
+    image: eu.gcr.io/skyfolk-211121/celery-beat:latest
+    deploy:
+      replicas: 1
     command: ./run_beat.sh
     volumes:
       - .:/code

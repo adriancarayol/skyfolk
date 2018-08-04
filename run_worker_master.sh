@@ -16,4 +16,4 @@ done
 
 >&2 echo "neo4j is up - executing command"
 
-python manage.py --entorno pre runworker -v2
+python manage.py --entorno master runworker -v2
