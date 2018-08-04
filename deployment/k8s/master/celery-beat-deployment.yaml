@@ -2,7 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose-master.yml -o deployment/k8s/master/
+    kompose.cmd: kompose convert -v -f docker-compose-master.yml -o deployment/k8s/master/
+      -v
     kompose.version: 1.15.0 (e3cd4d4)
   creationTimestamp: null
   labels:
@@ -97,7 +98,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: celery-beat-web-master-variables-env
-        image: eu.gcr.io/skyfolk-211121/celery-beat:latest
+        image: eu.gcr.io/skyfolk-211121/web:latest
         name: celery-beat
         resources: {}
         volumeMounts:

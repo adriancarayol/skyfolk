@@ -11,11 +11,10 @@ services:
     ports:
         - "80:80"
     volumes:
-        - .:/code  # mount current directory inside container
-        - ./deployment/config:/etc/nginx/conf.d
-        - ./skyfolk/static:/static
-        - ./code/static/static/:/var/www/skyfolk.net/run/static/static/
-        - ./code/static/media/:/var/www/skyfolk.net/run/static/media/
+        #- ./deployment/config:/etc/nginx/conf.d
+        #- ./skyfolk/static:/static
+        - static-content:/var/www/skyfolk.net/run/static/static/
+        - static-content:/var/www/skyfolk.net/run/static/media/
     depends_on:
         - web
         - webworker
@@ -51,30 +50,6 @@ services:
     networks:
       - skyfolknetwork
 
-  # daphne worker
-  webworker:
-    build:
-      context: .
-      dockerfile: Dockerfile.master
-    image: eu.gcr.io/skyfolk-211121/webworker:latest
-    deploy:
-      replicas: 1
-    volumes:
-      - .:/code
-      - /tmp:/tmp
-      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
-    command: ./run_worker_master.sh
-    env_file:
-      - web-master-variables.env
-    networks:
-      - skyfolknetwork
-    depends_on:
-      - rabbit
-    restart: always
-    extra_hosts:
-        - "cluster:172.17.0.1"
-
   # django app
   web:
     env_file:
@@ -88,11 +63,9 @@ services:
     hostname: web
     command: ./run_web_master.sh
     volumes:
-      - .:/code  # mount current directory inside container
-      - /tmp:/tmp
-      - ./skyfolk/static:/static
-      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      #- ./skyfolk/static:/static
+      - static-content:/var/www/skyfolk.net/run/static/static/
+      - static-content:/var/www/skyfolk.net/run/static/media/
     expose:
         - "8000"
     networks:
@@ -105,22 +78,36 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
+  # daphne worker
+  webworker:
+    image: eu.gcr.io/skyfolk-211121/web:latest
+    deploy:
+      replicas: 1
+    volumes:
+      - static-content:/var/www/skyfolk.net/run/static/static/
+      - static-content:/var/www/skyfolk.net/run/static/media/
+    command: ./run_worker_master.sh
+    env_file:
+      - web-master-variables.env
+    networks:
+      - skyfolknetwork
+    depends_on:
+      - rabbit
+    restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
+
   # celery worker
   celery_worker:
     env_file:
       - web-master-variables.env
-    build:
-      context: .
-      dockerfile: Dockerfile.master
-    image: eu.gcr.io/skyfolk-211121/celery-worker:latest
+    image: eu.gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     command: ./run_celery.sh
     volumes:
-      - .:/code
-      - /tmp:/tmp
-      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - static-content:/var/www/skyfolk.net/run/static/static/
+      - static-content:/var/www/skyfolk.net/run/static/media/
     networks:
       - skyfolknetwork
     depends_on:
@@ -133,18 +120,13 @@ services:
   celery_beat:
     env_file:
       - web-master-variables.env
-    build:
-      context: .
-      dockerfile: Dockerfile.master
-    image: eu.gcr.io/skyfolk-211121/celery-beat:latest
+    image: eu.gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     command: ./run_beat.sh
     volumes:
-      - .:/code
-      - /tmp:/tmp
-      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - static-content:/var/www/skyfolk.net/run/static/static/
+      - static-content:/var/www/skyfolk.net/run/static/media/
     networks:
       - skyfolknetwork
     depends_on:
@@ -153,6 +135,8 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
+volumes:
+  static-content:
 networks:
   skyfolknetwork:
     driver: bridge

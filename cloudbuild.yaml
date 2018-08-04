@@ -3,44 +3,12 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',
+    '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',  # Try to use cached images
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '--file=Dockerfile.master',
     '--tag=gcr.io/$PROJECT_ID/web',
     '.' ]
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/webworker:latest',
-    '-t', 'gcr.io/$PROJECT_ID/webworker:latest',
-    '--file=Dockerfile.master',
-    '--tag=gcr.io/$PROJECT_ID/webworker',
-    '.' ]
-  waitFor: ['-']
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/celery-worker:latest',
-    '-t', 'gcr.io/$PROJECT_ID/celery-worker:latest',
-    '--file=Dockerfile.master',
-    '--tag=gcr.io/$PROJECT_ID/celery-worker',
-    '.' ]
-  waitFor: ['-']
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/celery-beat:latest',
-    '-t', 'gcr.io/$PROJECT_ID/celery-beat:latest',
-    '--file=Dockerfile.master',
-    '--tag=gcr.io/$PROJECT_ID/celery-beat',
-    '.' ]
-  waitFor: ['-']
+  id: web
 
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
-- 'gcr.io/$PROJECT_ID/webworker:latest'
-- 'gcr.io/$PROJECT_ID/celery-worker:latest'
-- 'gcr.io/$PROJECT_ID/celery-beat:latest'
