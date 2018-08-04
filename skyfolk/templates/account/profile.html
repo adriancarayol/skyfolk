@@ -13,13 +13,13 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block extra-css %}
-        <style>
-            .card-content img {
-                max-width: 100%;
-                max-height: 100%;
-                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-            }
-        </style>
+    <style>
+        .card-content img {
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+        }
+    </style>
 
     {% if liked == True %}
         <style type="text/css">
@@ -32,41 +32,93 @@ Template para el perfil de cada usuario
 
 {% block content %}
 
-        <script src="{% static "js/profile.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/jquery.easytabs.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/jquery.hashchange.min.js" %}" type="text/javascript"></script>
-        <script src="{% static 'colorbox/jquery.colorbox-min.js' %}"></script>
-        <script src="{% static "js/dash.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/draggable.bundle.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/plugins.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/profile.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery.easytabs.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery.hashchange.min.js" %}" type="text/javascript"></script>
+    <script src="{% static 'colorbox/jquery.colorbox-min.js' %}"></script>
+    <script src="{% static "js/dash.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/draggable.bundle.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/plugins.js" %}" type="text/javascript"></script>
 
-        <script type="text/javascript">
-            document.addEventListener('DOMContentLoaded', function() {
-                const containers = document.querySelectorAll('#id_main');
-                const droppable = new window.Draggable.Swappable(containers, {
-                    draggable: '.plugin',
-                    mirror: {
-                        constrainDimensions: true,
-                    },
-                    swapAnimation: {
-                        duration: 200,
-                        easingFunction: 'ease-in-out'
-                    },
-                    plugins: [Plugins.SwapAnimation]
-                });
-
-                droppable.on('drag:start', function(event) {
-                    event.data.source.style.opacity = 0;
-                });
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const containers = document.querySelectorAll('#id_main');
+            const swappable = new window.Draggable.Sortable(containers, {
+                draggable: '.plugin',
+                mirror: {
+                    constrainDimensions: true,
+                },
+                swapAnimation: {
+                    duration: 200,
+                    easingFunction: 'ease-in-out'
+                },
+                plugins: [Plugins.SwapAnimation]
             });
-        </script>
-        {% for script in js %}
-            <script src="{% static script %}" type="text/javascript"></script>
-        {% endfor %}
+            var lastOverContainer;
+            var source;
+            var target;
+
+            swappable.on('drag:start', (event) => {
+                lastOverContainer = event.sourceContainer;
+                source = event.data.originalSource;
+            });
+
+            swappable.on('sortable:sorted', (event) => {
+                target = event.data.dragEvent.data.over;
+                if (lastOverContainer === event.dragEvent.overContainer) {
+                    return;
+                }
+                lastOverContainer = event.dragEvent.overContainer;
+            });
+
+            swappable.on('sortable:stop', (event) => {
+                let source_id = source.dataset.id;
+                source.dataset.id = target.dataset.id;
+                target.dataset.id = source_id;
+                var query = `mutation {
+                              swapDashboardEntry(
+                                input: {
+                                  targetPosition: ` + source.dataset.id +`,
+                                  sourcePosition: ` + target.dataset.id + `
+                                }
+                              ) {
+                                source {
+                                  id
+                                },
+                                target {
+                                  id
+                                }
+                              }
+                            }`;
+                $.ajax({
+                    method: "POST",
+                    url: "/graphql",
+                    contentType: "application/json",
+                    headers: {
+                        Authorization: "bearer ***********"
+                    },
+                    data: JSON.stringify({
+                        query: query
+                    }),
+                    success: function (data) {
+                        if (data.errors) {
+                            Materialize.toast("Hubo un error al intercambiar los widgets, prueba a intentarlo de nuevo.");
+                        } else {
+                            Materialize.toast("¡Tus widgets es han movido correctamente!");
+                        }
+                    }
+                })
+
+            });
+        });
+    </script>
+    {% for script in js %}
+        <script src="{% static script %}" type="text/javascript"></script>
+    {% endfor %}
 
     <div class="container">
         {% if user_profile.is_active %}
-        {% user_guide guide_tags=onboarding %}
+            {% user_guide guide_tags=onboarding %}
             {% comment %}
         }
     Formulario para citar un comentario
@@ -111,14 +163,14 @@ Template para el perfil de cada usuario
                         {% if request.user == user_profile %}
                             {% for placeholder in placeholders %}
                                 <div id="{{ placeholder.html_id }}"
-                                        class="placeholder">
+                                     class="placeholder">
                                     {{ placeholder.render_for_edit|safe }}
                                 </div>
                             {% endfor %}
                         {% else %}
                             {% for placeholder in placeholders %}
                                 <div id="{{ placeholder.html_id }}"
-                                        class="placeholder">
+                                     class="placeholder">
                                     {{ placeholder.render_for_view|safe }}
                                 </div>
                             {% endfor %}
@@ -126,113 +178,113 @@ Template para el perfil de cada usuario
                     </div>
                 </div>
                 <div class="col l8 m12 s12 pull-l4">
-                        <div id="div-separator">
-                            <div class="sidebar card" id="tab-container">
-                                <ul class="unstyled table fullwidth links">
-                                    {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
-                                    <li class="tab" id="li-tab-comentarios"><a
-                                            href="#tab-comentarios">skyline</a></li>
-                                    <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
-                                </ul>
-                                <div class="unstyled content" id="hood-tabs">
-                                    {% comment %}
+                    <div id="div-separator">
+                        <div class="sidebar card" id="tab-container">
+                            <ul class="unstyled table fullwidth links">
+                                {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
+                                <li class="tab" id="li-tab-comentarios"><a
+                                        href="#tab-comentarios">skyline</a></li>
+                                <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
+                            </ul>
+                            <div class="unstyled content" id="hood-tabs">
+                                {% comment %}
                             Incluimos el tab timeline
                             {% include "account/tab-timeline.html" %}
                             {% endcomment %}
-                                    {% comment %}
+                                {% comment %}
                             Incluimos el tab comentarios
                             {% endcomment %}
-                                    <div id="tab-comentarios">
-                                        <div class="btn-filters row">
-                                            <div id="react">
-                                            </div>
-                                            <script>
-                                                window.board_owner = {{ user_profile.id }};
-                                            </script>
-                                            {% render_bundle component %}
+                                <div id="tab-comentarios">
+                                    <div class="btn-filters row">
+                                        <div id="react">
                                         </div>
-                                        {% if publications|length == 0 %}
-                                            <div class="no-comments" id="without-comments">
-                                                <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                                <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
-                                                   class="no-comments-new-comment">
-                                                    <i class="material-icons">send</i>
-                                                </a>
-                                            </div>
-                                        {% else %}
-                                            {% include "account/profile_comments.html" %}
-                                        {% endif %}
+                                        <script>
+                                            window.board_owner = {{ user_profile.id }};
+                                        </script>
+                                        {% render_bundle component %}
                                     </div>
-                                    {% comment %}
+                                    {% if publications|length == 0 %}
+                                        <div class="no-comments" id="without-comments">
+                                            <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                            <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
+                                               class="no-comments-new-comment">
+                                                <i class="material-icons">send</i>
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        {% include "account/profile_comments.html" %}
+                                    {% endif %}
+                                </div>
+                                {% comment %}
                             Incluimos el tab amigos
                             {% endcomment %}
-                                    {% include "account/tab-amigos.html" %}
-                                </div>
+                                {% include "account/tab-amigos.html" %}
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
             </div>
 
-                <script type="text/javascript">
-                    $('#tab-container').easytabs({
-                        defaultTab: "#li-tab-comentarios",
-                        animate: true,
-                        animationSpeed: "fast",
-                        updateHash: false
-                    });
+            <script type="text/javascript">
+                $('#tab-container').easytabs({
+                    defaultTab: "#li-tab-comentarios",
+                    animate: true,
+                    animationSpeed: "fast",
+                    updateHash: false
+                });
 
-                    var infinite = new Waypoint.Infinite({
-                        element: $('#list-publications'),
-                        offset: 'bottom-in-view',
-                        onBeforePageLoad: function () {
-                            $('.loading_skyline').show();
-                        },
-                        onAfterPageLoad: function () {
-                            $('.loading_skyline').hide();
+                var infinite = new Waypoint.Infinite({
+                    element: $('#list-publications'),
+                    offset: 'bottom-in-view',
+                    onBeforePageLoad: function () {
+                        $('.loading_skyline').show();
+                    },
+                    onAfterPageLoad: function () {
+                        $('.loading_skyline').hide();
+                    }
+                });
+
+                var submitFollowed = false;
+                $('#tab-container')
+                    .bind('easytabs:after', function (evt, tab, panel, data) {
+                        if (tab[0].text.toLowerCase() === 'seguidos') {
+                            if (submitFollowed) return;
+                            submitFollowed = true;
+                            $.get("?page=1&qs=following", function (data, status) {
+                                var $load_following = $('.load_following');
+                                $load_following.show();
+                                $('.followed-container').html($(data));
+                                $load_following.hide();
+                            }).always(function () {
+                                submitFollowed = true;
+                            });
+                        } else if (tab[0].text.toLowerCase() === 'skyline') {
                         }
                     });
 
-                    var submitFollowed = false;
-                    $('#tab-container')
-                        .bind('easytabs:after', function (evt, tab, panel, data) {
-                            if (tab[0].text.toLowerCase() === 'seguidos') {
-                                if (submitFollowed) return;
-                                submitFollowed = true;
-                                $.get("?page=1&qs=following", function (data, status) {
-                                    var $load_following = $('.load_following');
-                                    $load_following.show();
-                                    $('.followed-container').html($(data));
-                                    $load_following.hide();
-                                }).always(function () {
-                                    submitFollowed = true;
-                                });
-                            } else if (tab[0].text.toLowerCase() === 'skyline') {
-                            }
-                        });
+            </script>
 
-                </script>
-
-                {% if user_profile == user %}
-                    <script>
-                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
-                    </script>
-                {% endif %}
-                <script src="{% static "js/socket.js" %}"></script>
+            {% if user_profile == user %}
                 <script>
-                    UTILS.init([{{ user.pk }}]);
-                    UTILS.conn_socket();
+                    $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
                 </script>
-                {% comment "Add follow to tab %}
+            {% endif %}
+            <script src="{% static "js/socket.js" %}"></script>
+            <script>
+                UTILS.init([{{ user.pk }}]);
+                UTILS.conn_socket();
+            </script>
+            {% comment "Add follow to tab %}
 Add follow to profile tab
 {% endcomment %}
-                {% if user_profile.id == user.id %}
-                    <script>
-                        function addItemToFriendList(name, lastname, username, avatar_url) {
-                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
-                        }
-                    </script>
-                {% endif %}
+            {% if user_profile.id == user.id %}
+                <script>
+                    function addItemToFriendList(name, lastname, username, avatar_url) {
+                        $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                    }
+                </script>
+            {% endif %}
         {% else %}
             <h1 class="account-disabled">Cuenta desactivada.</h1>
         {% endif %}

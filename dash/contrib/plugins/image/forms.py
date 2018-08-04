@@ -35,6 +35,11 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
         image = self.cleaned_data.get('image', None)
 
         img = Image.open(image)
+        fill_color = (255, 255, 255)
+        if img.mode in ('RGBA', 'LA'):
+            background = Image.new(img.mode[:-1], img.size, fill_color)
+            background.paste(img, img.split()[-1])
+            img = background
         img.thumbnail(maxsize)
         tempfile_io = BytesIO()
         img.save(tempfile_io, "JPEG")

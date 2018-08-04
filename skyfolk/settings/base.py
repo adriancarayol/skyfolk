@@ -103,6 +103,7 @@ THIRD_PARTY_APPS = (
     'invitations',
     'webpack_loader',
     'user_guide',
+    'graphene_django',
 )
 
 FIRST_PARTY_APPS = (
@@ -193,6 +194,12 @@ REST_FRAMEWORK = {
     ),
 }
 # /REST FRAMEWORK
+
+# GRAPHQL
+
+GRAPHENE = {
+    'SCHEMA': 'skyfolk.schema.schema'
+}
 
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
