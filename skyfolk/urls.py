@@ -8,11 +8,12 @@ from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, Se
 from user_profile.views import signup
 from dash_services.views_fbv import logout_view
 from dash_services.views_fbv import service_related_triggers_switch_to
-
 from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
 from dash_services.views_userservices import UserServiceDeleteView, renew_service
 from dash_services.views_wizard import UserServiceWizard, finalcallback
 from allauth.account import views as allauth_views
+from graphene_django.views import GraphQLView
+
 
 admin.autodiscover()
 
@@ -159,11 +160,9 @@ urlpatterns = [
     url(r'^th/api/slack/webhook/', include('th_services.th_slack.urls')),
     # dash
     url(r'^dashboard/', include('dash.urls')),
-    url(r'^dash/contrib/plugins/rss-feed/',
-                include('dash.contrib.plugins.rss_feed.urls')),
-    # url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
     # API_REST
     url(r'^api/', include('api.urls')),
+    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
     # user guide
     url(r'^user-guide/', include('user_guide.urls')),
 ]

@@ -23,6 +23,7 @@ from django.contrib.auth.models import User
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db import transaction
 from .base import (
     get_layout,
     plugin_registry,
@@ -69,8 +70,8 @@ else:
     from django.core.urlresolvers import reverse
     from django.shortcuts import render_to_response
 
-
 logger = logging.getLogger(__name__)
+
 
 # ***************************************************************************
 # ***************************************************************************
@@ -1723,7 +1724,6 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
     except Exception as err:
         plugin_uid, success = str(err), False
 
-
     if plugin_uid and success:
         plugin = plugin_registry.get(plugin_uid)
         messages.info(
@@ -1761,6 +1761,7 @@ def update_entry_info(request):
             'plugin_uid': '0000'
         }
         return JsonResponse(data)
+
 
 def public_dashboard(request,
                      username,
@@ -1842,9 +1843,9 @@ def public_dashboard(request,
         entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
 
     dashboard_entries = DashboardEntry._default_manager \
-        .filter(entries_q) \
-        .select_related('workspace', 'user') \
-        .order_by('placeholder_uid', 'position')[:]
+                            .filter(entries_q) \
+                            .select_related('workspace', 'user') \
+                            .order_by('placeholder_uid', 'position')[:]
 
     # logger.debug(dashboard_entries)
 
@@ -1891,6 +1892,7 @@ def public_dashboard(request,
             template_name, context, context_instance=RequestContext(request)
         )
 
+
 class PublicWorkspacesAJAX(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "dash/public_workspaces_ajax.html"
@@ -1914,8 +1916,6 @@ class PublicWorkspacesAJAX(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-
-
         queryset = DashboardWorkspace._default_manager.filter(user=user, is_public=True)
 
         paginator = Paginator(queryset, 12)
@@ -1931,4 +1931,64 @@ class PublicWorkspacesAJAX(APIView):
             # If page is out of range (e.g. 9999), deliver last page of results.
             workspaces = paginator.page(paginator.num_pages)
 
-        return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id })
+        return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id})
+
+
+def swap_widget_position(request, workspace=None):
+    positions = (3, 4)
+
+    if len(positions) != 2:
+        return Response({"ERROR": "ERROR"})
+
+    registered_plugins = get_user_plugins(request.user)
+    user_plugin_uids = [uid for uid, repr in registered_plugins]
+
+    dashboard_settings = get_or_create_dashboard_settings(request.user)
+
+    workspaces = get_workspaces(
+        request.user,
+        dashboard_settings.layout_uid,
+        workspace,
+        different_layouts=dashboard_settings.allow_different_layouts
+    )
+
+    layout = get_layout(
+        layout_uid=(
+            workspaces['current_workspace'].layout_uid
+            if workspaces['current_workspace']
+            else dashboard_settings.layout_uid
+        ),
+        as_instance=True
+    )
+
+    # If workspace with slug given is not found in the list of workspaces
+    # redirect to the default dashboard.
+    if workspaces['current_workspace_not_found']:
+        msg = _('The workspace with slug "{0}" does '
+                'not belong to layout "{1}".').format(workspace, layout.name)
+        if dashboard_settings.allow_different_layouts:
+            msg = _('The workspace with slug "{0}" does not exist').format(
+                workspace
+            )
+        messages.info(request, msg)
+        return redirect('user_profile:profile', username=request.user.username)
+
+    # Getting the (frozen) queryset.
+    dashboard_entries = DashboardEntry._default_manager \
+                            .get_for_user(user=request.user,
+                                          layout_uid=layout.uid,
+                                          workspace=workspace) \
+                            .filter(plugin_uid__in=user_plugin_uids,
+                                    position__in=positions, )[:2]
+    try:
+        with transaction.atomic():
+            dashboard_entries[0].position, dashboard_entries[1].position = \
+                dashboard_entries[1].position, dashboard_entries[0].position
+            dashboard_entries[0].save()
+            dashboard_entries[1].save()
+    except IndexError as e:
+        print(e)
+    except Exception as a:
+        print(a)
+
+    return Response({'message': 'POLE'})

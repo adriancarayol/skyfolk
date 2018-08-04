@@ -43,7 +43,7 @@ Template para el perfil de cada usuario
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 const containers = document.querySelectorAll('#id_main');
-                const droppable = new window.Draggable.Swappable(containers, {
+                const swappable = new window.Draggable.Sortable(containers, {
                     draggable: '.plugin',
                     mirror: {
                         constrainDimensions: true,
@@ -54,9 +54,28 @@ Template para el perfil de cada usuario
                     },
                     plugins: [Plugins.SwapAnimation]
                 });
+                var lastOverContainer;
+                var source;
+                var target;
 
-                droppable.on('drag:start', function(event) {
-                    event.data.source.style.opacity = 0;
+                swappable.on('drag:start', (event) => {
+                    lastOverContainer = event.sourceContainer;
+                    source = event.data.originalSource;
+                });
+
+                swappable.on('sortable:sorted', (event) => {
+                    target = event.data.dragEvent.data.over;
+                    if (lastOverContainer === event.dragEvent.overContainer) {
+                        return;
+                    }
+                    lastOverContainer = event.dragEvent.overContainer;
+                });
+
+                swappable.on('sortable:stop', (event) => {
+                    let source_id = source.dataset.id;
+                    let target_id = target.dataset.id;
+                    source.dataset.id = target_id;
+                    target.dataset.id = source_id;
                 });
             });
         </script>
