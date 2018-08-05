@@ -42,7 +42,7 @@ PLUGINS_MODULE_NAME = 'dash_plugins'
 LAYOUTS_MODULE_NAME = 'dash_layouts'
 
 # UID of the active layout.
-ACTIVE_LAYOUT = 'android'
+ACTIVE_LAYOUT = 'skyspace'
 
 # Allowed layout cell units.
 LAYOUT_CELL_UNITS = (

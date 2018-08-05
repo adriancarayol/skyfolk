@@ -75,7 +75,7 @@ THIRD_PARTY_APPS = (
     'th_services.th_wallabag',
     'th_services.th_skyfolk',
     'dash',
-    'dash.contrib.layouts.android',
+    'dash.contrib.layouts.skyspace',
     'dash.contrib.layouts.profile',
     'dash.contrib.plugins.dummy',
     'dash.contrib.plugins.service',

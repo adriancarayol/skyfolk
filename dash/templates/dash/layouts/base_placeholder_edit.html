@@ -1,13 +1,5 @@
 {% load i18n dash_tags %}
 
-{% for cell_html_class, cell_position in widget_cells %}
-    <div class="plugin empty-widget-cell {{ cell_html_class }}" data-id="{{ cell_position }}">
-        <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace position=cell_position %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid position=cell_position %}{% endif %}"
-           class="add-plugin" title="{% trans 'Add widget' %}">
-            <span class="material-icons">add_circle</span>
-        </a>
-    </div>
-{% endfor %}
 {% for entry in dashboard_entries %}
     {% get_dash_plugin entry as plugin %}
 
@@ -31,5 +23,13 @@
                 {% if rendered %}{{ rendered }}{% endif %}
             {% endwith %}
         </div>
+    </div>
+{% endfor %}
+{% for cell_html_class, cell_position in widget_cells %}
+    <div class="plugin empty-widget-cell {{ cell_html_class }}" data-id="{{ cell_position }}">
+        <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace position=cell_position %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid position=cell_position %}{% endif %}"
+           class="add-plugin" title="{% trans 'Add widget' %}">
+            <span class="material-icons">add_circle</span>
+        </a>
     </div>
 {% endfor %}

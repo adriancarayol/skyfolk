@@ -14,7 +14,7 @@ __all__ = (
 
 
 class URL1x1ProfileMainWidget(URL1x1Widget):
-    """URL plugin widget for Android layout (placeholder `main`)."""
+    """URL plugin widget for Profile layout (placeholder `main`)."""
 
     layout_uid = 'profile'
     placeholder_uid = 'main'

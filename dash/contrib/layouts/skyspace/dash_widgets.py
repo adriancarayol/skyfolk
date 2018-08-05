@@ -3,13 +3,13 @@ from ....contrib.plugins.url.dash_widgets import (
     URL1x1Widget,
 )
 
-__title__ = 'dash.contrib.layouts.android.dash_widgets'
+__title__ = 'dash.contrib.layouts.skyspace.dash_widgets'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
-    'URL1x1AndroidMainWidget',
-    'URL1x1AndroidShortcutWidget',
+    'URL1x1SkySpaceMainWidget',
+    'URL1x1SkySpaceShortcutWidget',
 )
 
 # *********************************************************
@@ -19,17 +19,17 @@ __all__ = (
 # *********************************************************
 
 
-class URL1x1AndroidMainWidget(URL1x1Widget):
-    """URL plugin widget for Android layout (placeholder `main`)."""
+class URL1x1SkySpaceMainWidget(URL1x1Widget):
+    """URL plugin widget for SkySpace layout (placeholder `main`)."""
 
-    layout_uid = 'android'
+    layout_uid = 'skyspace'
     placeholder_uid = 'main'
     media_css = (
-        'css/dash_plugin_url_android.css',
+        'css/dash_plugin_url_skyspace.css',
     )
 
 
-class URL1x1AndroidShortcutWidget(URL1x1AndroidMainWidget):
-    """URL plugin widget for Android layout (placeholder `shortcuts`)."""
+class URL1x1SkySpaceShortcutWidget(URL1x1SkySpaceMainWidget):
+    """URL plugin widget for SkySpace layout (placeholder `shortcuts`)."""
 
     placeholder_uid = 'shortcuts'

@@ -11,11 +11,11 @@ from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
 from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 
 from .dash_widgets import (
-    URL1x1AndroidMainWidget,
-    URL1x1AndroidShortcutWidget,
+    URL1x1SkySpaceMainWidget,
+    URL1x1SkySpaceShortcutWidget,
 )
 
-__title__ = 'dash.contrib.layouts.android.dash_plugins'
+__title__ = 'dash.contrib.layouts.skyspace.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
@@ -35,7 +35,7 @@ main_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseImageWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'image',
                       main_sizes)
@@ -52,12 +52,12 @@ shortcut_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseMemoWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'memo',
                       main_sizes)
 plugin_widget_factory(BaseMemoWidget,
-                      'android',
+                      'skyspace',
                       'shortcut',
                       'memo',
                       shortcut_sizes)
@@ -71,7 +71,7 @@ main_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseTinyMCEMemoWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'tinymce_memo',
                       main_sizes)
@@ -85,7 +85,7 @@ main_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseReadRSSFeedWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'read_rss_feed',
                       main_sizes)
@@ -95,8 +95,8 @@ plugin_widget_factory(BaseReadRSSFeedWidget,
 # **************************************************************************
 
 
-plugin_widget_registry.register(URL1x1AndroidMainWidget)
-plugin_widget_registry.register(URL1x1AndroidShortcutWidget)
+plugin_widget_registry.register(URL1x1SkySpaceMainWidget)
+plugin_widget_registry.register(URL1x1SkySpaceShortcutWidget)
 
 # **************************************************************************
 # ***************** Registering the widgets for Video plugin ***************
@@ -107,7 +107,7 @@ main_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseVideoWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'video',
                       main_sizes)
@@ -122,7 +122,7 @@ main_sizes = (
     (1, 1),
 )
 plugin_widget_factory(BaseTriggerWidget,
-                      'android',
+                      'skyspace',
                       'main',
                       'trigger',
                       main_sizes)
@@ -136,7 +136,7 @@ plugin_widget_factory(BaseTriggerWidget,
 #    (1, 1),
 #)
 # plugin_widget_factory(BaseWeatherWidget,
- #                     'android',
+ #                     'skyspace',
  #                     'main',
  #                    'weather',
  #                     main_sizes)
