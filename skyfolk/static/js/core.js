@@ -201,7 +201,7 @@ $(document).ready(function () {
 
     /* Atajo para enviar comentarios mas rapido */
     $(page_wrapper).find('#message3').keypress(function (e) {
-        //tecla ENTER presinada + Shift
+        //tecla ENTER presinada + CTRL
         if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
@@ -210,7 +210,7 @@ $(document).ready(function () {
     });
     /* Atajo para enviar comentarios mas rapido a mi perfil. */
     $(self_page_wrapper).find('#message2').keypress(function (e) {
-        //tecla ENTER presinada + Shift
+        //tecla ENTER presinada + CTRL
         if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendselfformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
