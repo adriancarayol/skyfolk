@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 
 module.exports = [
-    {
+     {
         context: __dirname,
         name: 'react',
         entry: toObject(glob.sync('./skyfolk-react/src/pages/**/*.js*')),
@@ -57,11 +57,8 @@ module.exports = [
             extensions: ['.js', '.jsx']
         }
     },
-    {
 
-    }
-    /*
-    {
+    /* {
         context: __dirname,
         name: 'css',
         entry: {
@@ -98,8 +95,8 @@ module.exports = [
       plugins: [
         new ExtractTextPlugin("bundle.min.css"),
       ]
-    }
-    */
+    } */
+
 ];
 
 function toObject(paths) {

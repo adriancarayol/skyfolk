@@ -12,11 +12,6 @@ a, a:visited {
     text-decoration: none;
 }
 
-/*1 */
-.children .wrapper {
-    border-right: 3px solid #1e88e5;
-}
-
 .wrapper {
     min-height: 155px;
     background: #fff;

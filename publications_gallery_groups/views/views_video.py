@@ -47,8 +47,8 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         video = get_object_or_404(VideoGroup.objects.select_related('group'), id=request.POST.get('board_video', None))
 
-        emitter = NodeProfile.nodes.get(title=self.request.user.username)
-        board_video_owner = NodeProfile.nodes.get(title=video.owner.username)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_video_owner = Profile.objects.get(user=video.owner)
 
         privacity = board_video_owner.is_visible(emitter)
 
@@ -68,9 +68,8 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.author.username
-                    parent_node = NodeProfile.nodes.get(title=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_video', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 

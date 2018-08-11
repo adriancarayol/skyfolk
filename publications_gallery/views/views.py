@@ -25,7 +25,6 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery.utils import optimize_publication_media, check_num_images, check_image_property
 
@@ -48,8 +47,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         photo = get_object_or_404(Photo, id=request.POST.get('board_photo', None))
 
-        emitter = NodeProfile.nodes.get(title=self.request.user.username)
-        board_photo_owner = NodeProfile.nodes.get(title=photo.owner.username)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_photo_owner = Profile.objects.get(user=photo.owner)
 
         privacity = board_photo_owner.is_visible(emitter)
 
@@ -65,9 +64,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.p_author.username
-                    parent_node = NodeProfile.nodes.get(title=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.p_author.profile):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 

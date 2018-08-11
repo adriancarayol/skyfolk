@@ -301,6 +301,8 @@ def crop_image(obj, request):
 
     im.seek(0)
 
+    im = im.convert('RGBA')
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])

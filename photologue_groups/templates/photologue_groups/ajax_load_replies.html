@@ -171,7 +171,7 @@
         {% if node.level < 2 %}
         {% with node.get_descendants_not_deleted as descendants %}
         {% if descendants > 0 %}
-        <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_descendants"
+        <a class="waves-effect waves-light btn blue darken-1 white-text center load_more_descendants"
         href="#"
         data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
         comentarios (<span
