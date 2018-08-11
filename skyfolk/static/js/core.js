@@ -143,7 +143,6 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
-        console.log('CLICK NIGGA');
     });
 
     /* Close nuevo grupo */
@@ -204,7 +203,6 @@ $(document).ready(function () {
     $(this).on('keypress', function (e) {
         var activeElement = document.activeElement;
         var form = $(activeElement).closest('form').first();
-        console.log(form);
         if (form) {
             if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
                 var submit = $(form).find(':submit');
@@ -473,7 +471,6 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
         },
         dataType: "json",
         success: function (data) {
-            console.log(data);
             var response = data.response;
 
             if (response === "added_friend") {
