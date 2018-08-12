@@ -1160,6 +1160,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
         complete: function () {
             $(loader).fadeOut();
             loadDescendantsRunning = false;
+            $('.dropdown-button').dropdown();
         },
         error: function (rs, e) {
             // console.log(e);

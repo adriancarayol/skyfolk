@@ -64,7 +64,8 @@ var UTILS = UTILS || (function () {
                     }
                 }
             };
-
+            
+            recallDropDownEvent();
             // Helpful debugging
             if (socket.readyState == WebSocket.OPEN) socket.onopen();
             socket.onclose = function () {
@@ -73,3 +74,7 @@ var UTILS = UTILS || (function () {
         }
     };
 }());
+
+function recallDropDownEvent() {
+    $('.dropdown-button').dropdown();
+}

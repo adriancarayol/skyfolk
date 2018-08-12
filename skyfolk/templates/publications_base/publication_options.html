@@ -2,9 +2,11 @@
 
 <div class="options_comentarios">
         <ul class="opciones">
-            <li class="message-settings dropdown-button" data-activates='dropdown-{{ node.pk }}'>
-                <i class="material-icons">more_horiz</i>
-            </li>
+            {% if user.id == node.author.id or user.id == user_profile.id %}
+                <li class="message-settings dropdown-button" data-activates='dropdown-{{ node.pk }}'>
+                    <i class="material-icons">more_horiz</i>
+                </li>
+            {% endif %}
             <li id="check-{{ node.pk }}" class="zoom-pub" title="Ver conversación completa">
                 <i class="material-icons md-18">open_in_new</i>
             </li>

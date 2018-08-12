@@ -68,18 +68,6 @@
                                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                 </div>
                                 <div class="articulo col l11 s10">
-                                    <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons md-18" href="/publication/{{ node.id }}/">open_in_new</a></span>
-                    {% if user.id == node.author.id %}
-                        {% if node.event_type == 1 or node.event_type == 3 %}
-                                <span data-id="{{ node.pk }}"
-                                      class="top-options edit-comment tooltipped"
-                                      data-position="bottom"
-                                      data-delay="50"
-                                      data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                            {% endif %}
-                        {% endif %}
                                     <h2 class="author-header"><a
                                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
@@ -161,34 +149,9 @@
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
-                                <div class="options_comentarios col s12">
-                                    <ul class="opciones">
-                                    {% if user.id == node.author.id or user.id == user_profile.id %}
-                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                        <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
-                                        </li>
-                                    {% endif %}
-                                        {% comment %} Si el usuario esta logueado {% endcomment %}
-                                         <li title="No me gusta" class="hate-comment" {% if node.have_hate %}
-                                            style="color: rgb(186, 104, 200);"{% endif %}>
-                                        <i class="material-icons md-18">keyboard_arrow_down</i>
-                                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
-                                        </li>
-                                        <li title="¡Me gusta!" class="like-comment"
-                                            {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                        <i class="material-icons md-18">keyboard_arrow_up</i>
-                                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
-                                        </li>
-                                        <li id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.have_shared %}"remove-timeline" title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi skyline" {% endif %}
-                                        >
-                                        <i class="material-icons md-18">format_quote</i>
-                                        <i class="share-values"> {{ node.total_shared|zero_to_empty }}</i>
-                                        </li>
-                                    <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}">
-                                    <i class="material-icons md-18">reply</i>
-                                    </li>
-                                </ul>
-                                </div>
+                                {% with node.board_owner as user_profile %}
+                                    {% include "publications_base/publication_options.html" %}
+                                {% endwith %}
                             </div>
                             {% if user.id == node.author.id %}
                             <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
