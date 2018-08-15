@@ -220,7 +220,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='/photo/{{ item.slug }}'">
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
@@ -577,7 +577,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='/photo/{{ item.slug }}'">
+                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                             </div>
                             <div class="col s12 legend-content">
                                 <div class="legend-user-image">
