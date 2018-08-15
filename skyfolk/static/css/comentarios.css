@@ -17,7 +17,6 @@ a, a:visited {
     background: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px #ddd;
-    overflow: hidden;
     height: auto;
     margin-top: 0.25%;
 }
@@ -96,12 +95,12 @@ a, a:visited {
     height: 100%;
 }
 
-.wrapper .author-controls, .wrapper .p_author-controls {
+.wrapper .author-controls, .wrapper .author-controls {
     display: none;
     clear: both;
 }
 
-.wrapper .author-controls .edit-comment-btn, .wrapper .p_author-controls .edit-comment-btn {
+.wrapper .author-controls .edit-comment-btn, .wrapper .author-controls .edit-comment-btn {
     margin-right: 2%;
 }
 

@@ -47,7 +47,7 @@ def upload_image_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    final_path = os.path.join('photo_publications/images', instance.publication.p_author.username)
+    final_path = os.path.join('photo_publications/images', instance.publication.author.username)
     return os.path.join(final_path, filename)
 
 
@@ -77,7 +77,7 @@ class PublicationPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    p_author = models.ForeignKey(User, null=True)
+    author = models.ForeignKey(User, null=True)
     board_photo = models.ForeignKey(Photo, related_name='board_photo')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_photo_me')
@@ -141,14 +141,14 @@ class PublicationPhoto(PublicationBase):
         }) for x in self.get_ancestors().only('id')]
 
         # Enviamos al owner de la notificacion
-        if self.p_author_id != self.board_photo.owner_id:
-            notify.send(self.p_author, actor=self.p_author.username,
+        if self.author_id != self.board_photo.owner_id:
+            notify.send(self.author, actor=self.author.username,
                         recipient=self.board_photo.owner,
                         action_object=self,
                         description="Te avisamos de que @{0} ha publicado en una foto. <a href='/publication_pdetail/{1}/'>Ver</a>".format(
-                            self.p_author.username, self.id),
+                            self.author.username, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en una foto.' %
-                             (self.p_author.username, self.p_author.username), level='notification_board_owner')
+                             (self.author.username, self.author.username), level='notification_board_owner')
 
 
 # Video publications

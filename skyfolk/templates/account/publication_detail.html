@@ -195,7 +195,7 @@
         {% endfor %}
     </div>
     {% if publication.has_next %}
-        <a class="infinite-more-link waves-effect waves-light btn blue darken-1 white-text center" href="?page={{ publication.next_page_number }}">More</a>
+        <a class="infinite-more-link waves-effect waves-light btn blue darken-1 white-text center hidden" href="?page={{ publication.next_page_number }}"></a>
     {% endif %}
     <div class="progress loading_skyline" style="display: none">
         <div class="indeterminate blue darken-1"></div>
@@ -217,6 +217,7 @@
         $('div[id^="pub-"]').each(function (i) {
             var div = $('[id="' + this.id + '"]').slice(1).remove();
         });
+        $('.dropdown-button').dropdown();
     }
     });
     </script>

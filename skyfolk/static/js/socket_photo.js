@@ -62,9 +62,9 @@ var UTILS = UTILS || (function () {
                     content += "";
                     content += "";
                     content += "                <div class=\"comment-reply\">";
-                    content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.p_author_username + '" width="120" height="120"><\/div>';
+                    content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
                     content += "                    <div class=\"author-reply\">";
-                    content += '                      <a href="/profile/' + data.p_author_username + '">' + data.p_author_username + '</a>';
+                    content += '                      <a href="/profile/' + data.author_username + '">' + data.author_username + '</a>';
                     content += '                      <i class="reply-created">' + data.created + '<\/i>';
                     content += "                    </div>";
                     content += '                      <div class="content-reply">' + data.content + '</div>';
@@ -76,6 +76,7 @@ var UTILS = UTILS || (function () {
                     var pub = $('#pub-' + data.parent);
                     $(pub).append(content);
                 }
+                $('.dropdown-button').dropdown();
             };
 
             // Helpful debugging

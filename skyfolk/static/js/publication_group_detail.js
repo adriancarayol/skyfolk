@@ -3,8 +3,11 @@ $(document).ready(function () {
 
    /* Borrar publicacion */
     $thread.on('click', '.trash-comment', function () {
-        var id = $(this).closest('.options_comentarios').data('id');
-        var board_group = $(this).closest('.options_comentarios').data('board');
+        var publication_wrapper = $(this).closest('.infinite-item');
+        var id = $(publication_wrapper).attr('id').split('-')[1];
+        var board_group = $(publication_wrapper).data('id');
+        console.log(id);
+        console.log(board_group);
         swal({
             title: "¿Estás seguro?",
             text: "¡No podrás recuperar esta publicación!",

@@ -88,8 +88,10 @@ $(function () {
     });
     /* Borrar publicacion */
     $tab_commentarios.on('click', '.trash-comment', function () {
-        var id = $(this).closest('.options_comentarios').data('id');
-        var board_group = $(this).closest('.options_comentarios').data('board');
+        var publication_wrapper = $(this).closest('.infinite-item');
+        console.log(publication_wrapper);
+        var id = $(publication_wrapper).attr('id').split('-')[1];
+        var board_group = $(publication_wrapper).data('id');
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this publication!",
@@ -146,7 +148,8 @@ $(function () {
     });
 
     $tab_commentarios.on('click', '.zoom-pub', function () {
-        window.location.href = $(this).data('url');
+        var id = $(this).attr('id').split('-')[1];
+        window.location.href = '/group/publication/' + id;
     });
 
     $tab_commentarios.on('click', '.load_more_publications', function (e) {
@@ -887,6 +890,7 @@ function AJAX_delete_group_publication(id, board_group) {
         'board_group': board_group,
         'csrfmiddlewaretoken': csrftoken
     };
+
     $.ajax({
         url: '/group/publication/delete/',
         type: 'POST',
@@ -1137,7 +1141,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
         success: function (data) {
             var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            
+
             var parsed = $.parseHTML(data.content);
 
             for(var i = 0; i < parsed.length; i++) {
@@ -1147,7 +1151,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
                     element.remove();
                 }
             }
-            
+
             $children_list.append(data.content);
             btn.attr('href', '/group/publication/load/replies/?page=' + data.page + '&pubid=' + pub);
             var $child_count = btn.find('.child_count');

@@ -229,10 +229,11 @@ class DeletePublicationTheme(UpdateView):
             return JsonResponse({'response': False})
 
         user = request.user
+
         group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
             id=self.object.board_theme.board_group_id)
 
-        if self.object.author_id != user.id and user.id != group_owner_id:
+        if self.object.author_id != user.id and user.id != group_owner_id and self.object.board_theme.owner_id != user.id:
             return HttpResponseForbidden()
 
         self.object.deleted = True

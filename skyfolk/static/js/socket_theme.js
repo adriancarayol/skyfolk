@@ -35,6 +35,7 @@ socket.onmessage = function (message) {
             }
         }
     }
+    $('.dropdown-button').dropdown();
 };
 
 // Helpful debugging

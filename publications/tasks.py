@@ -68,7 +68,7 @@ def clean_deleted_photo_publications():
     publications_contains_shared = publications.values_list('id', flat=True)
 
     for publication in publications:
-        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author,
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.author,
                                                                 content=publication.content,
                                                                 created=publication.created, type_publication=2)
         extra_content = publication.has_extra_content()

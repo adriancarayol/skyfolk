@@ -19,16 +19,6 @@
                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                     </div>
                     <div class="col l11 s10">
-                        <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-            data-delay="50"
-            data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
-            {% if user.id == node.author.id %}
-            <span data-id="{{ node.pk }}"
-            class="top-options edit-comment tooltipped"
-            data-position="bottom"
-            data-delay="50"
-            data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-            {% endif %}
                         <h2 class="h22"><a
                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                             {% if node.parent %}
@@ -103,31 +93,14 @@
         <div class="row">
             <div class="divider"></div>
             <!-- OPCIONES DE COMENTARIOS -->
-            <div class="options_comentarios">
-                <ul class="opciones">
-                    {% if user.id == node.author.id or user.id == object.owner_id %}
-                    {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                    <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
-                    </li>
-                    {% endif %}
-                    {% comment %} Si el usuario esta logueado {% endcomment %}
-                    <li title="No me gusta" class="hate-comment"{% if node.have_hate %} style="color: rgb(186, 104, 200);"{% endif %}>
-                        <i class="material-icons md-18">keyboard_arrow_down</i>
-                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
-                    </li>
-                    <li title="¡Me gusta!" class="like-comment" {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
-                        <i class="material-icons md-18">keyboard_arrow_up</i>
-                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
-                    </li>
-                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
-                     </li>
-                 </ul>
-             </div>
+            {% with photo.owner as user_profile %}
+                {% include "publications_base/publication_options.html" %}
+            {% endwith %}
          </div>
      </div>
      {% if user.id == node.author.id %}
-     <div id="p_author-controls-{{ node.pk }}"
-     class="p_author-controls">
+     <div id="author-controls-{{ node.pk }}"
+     class="author-controls">
      <div class="row">
         <div class="col s12">
             <form method="post" accept-charset="utf-8">{% csrf_token %}

@@ -7,8 +7,8 @@ from .models import PublicationPhoto, ExtraContentPubPhoto, PublicationPhotoVide
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):
-    list_display = ('p_author', 'content', 'created', 'board_photo')
-    list_filter = ('created', 'p_author', 'parent', 'board_photo')
+    list_display = ('author', 'content', 'created', 'board_photo')
+    list_filter = ('created', 'author', 'parent', 'board_photo')
 
 
 class ExtraContentAdmin(admin.ModelAdmin):

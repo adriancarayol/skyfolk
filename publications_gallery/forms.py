@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class PublicationPhotoForm(forms.ModelForm):
     class Meta:
         model = PublicationPhoto
-        exclude = ['image', 'created', 'user_give_me_like', 'p_author',
+        exclude = ['image', 'created', 'user_give_me_like', 'author',
                    'user_give_me_hate', 'tags', 'deleted', 'event_type']
 
     def __init__(self, *args, **kwargs):

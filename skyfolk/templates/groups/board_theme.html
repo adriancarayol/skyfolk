@@ -4,116 +4,121 @@
 {% load humanize %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
 {% endblock %}
 {% block title %}Tema {{ object.board_group }}-{{ object.title }}{% endblock %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col offset-l1 l10 s12 theme" data-id="{{ object.id }}" id="theme-{{ object.id }}">
-                <div class="card horizontal">
-                    <div class="card-image">
-                        <img class="lazyload" data-src="{% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
-                             style="width: 120px; height: 120px;">
+<div class="container">
+    <div class="row">
+        <div class="col offset-l1 l10 s12 theme" data-id="{{ object.id }}" id="theme-{{ object.id }}">
+            <div class="card horizontal">
+                <div class="card-image">
+                    <img class="lazyload" data-src="
+
+                            {% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
+                         style="width: 120px; height: 120px;">
+                </div>
+                <div class="card-stacked">
+                    <div class="card-content">
+                        <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
+                        <i>{{ theme.created|naturaltime }}</i>
+                        <h4>{{ object.title|safe }}</h4>
+                        <p>{{ object.description|safe }}</p>
                     </div>
-                    <div class="card-stacked">
-                        <div class="card-content">
-                            {% if user.id == object.owner.id %}
-                                <span data-id="{{ object.pk }}"
-                                      class="right tooltipped edit-theme-btn"
-                                      data-position="bottom"
-                                      data-delay="50"
-                                      data-tooltip="Editar comentario"><i
-                                        class="material-icons md-18">mode_edit</i></span>
-                            {% endif %}
-                            <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
-                            <i>{{ theme.created|naturaltime }}</i>
-                            <h4>{{ object.title|safe }}</h4>
-                            <p>{{ object.description|safe }}</p>
-                        </div>
-                        <div class="card-action">
-                            <p class="right">
+                    <div class="card-action">
+                        <p class="right">
                                 <span class="reply_theme"><i class="material-icons">comment</i><i
                                         class="pubs-theme-value">{{ publications.paginator.count|zero_to_empty }}</i></span>
-                                <span class="like-theme"
-                                      {% if object.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i
-                                        class="material-icons">keyboard_arrow_up</i><i
-                                        class="like-theme-value">{{ object.likes|zero_to_empty }}</i></span>
-                                <span class="hate-theme"
-                                      {% if object.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i
-                                        class="material-icons">keyboard_arrow_down</i><i
-                                        class="hate-theme-value">{{ object.hates|zero_to_empty }}</i></span>
-                                {% if user.id == object.owner.id or user.id == group_owner_id %}
-                                <span class="delete-theme">
-                                    <i class="material-icons">delete_forever</i>
-                                </span>
+                            <span class="like-theme"
+                                  {% if object.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i
+                                    class="material-icons">keyboard_arrow_up</i><i
+                                    class="like-theme-value">{{ object.likes|zero_to_empty }}</i></span>
+                            <span class="hate-theme"
+                                  {% if object.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i
+                                    class="material-icons">keyboard_arrow_down</i><i
+                                    class="hate-theme-value">{{ object.hates|zero_to_empty }}</i></span>
+                            {% if user.id == object.owner.id %}
+                                <span class="message-settings dropdown-button"
+                                      data-activates='dropdown-{{ object.pk }}'>
+                                            <i class="material-icons">more_horiz</i>
+                                        </span>
                             {% endif %}
-                            </p>
-                        </div>
+                        </p>
+                        <ul id='dropdown-{{ object.pk }}' class='dropdown-content'>
+                            <li data-id="{{ object.pk }}"
+                                class="right tooltipped edit-theme-btn"
+                                data-position="bottom"
+                                data-delay="50"
+                                data-tooltip="Editar comentario"><span>Editar</span></li>
+                            <li class="delete-theme">
+                                <span class="red-text">Eliminar</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                {% include "groups/new_reply_theme.html" %}
-                <div class="edit-theme-wrapper" style="display: none;">
-                    <form class="edit-theme-form" method="post" enctype="multipart/form-data">{% csrf_token %}
-                        {{ edit_form.pk }}
-                        {{ edit_form.board_group }}
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <i class="material-icons prefix">title</i>
-                                {{ edit_form.title }}
-                                <label for="id_title">Título</label>
+            </div>
+            {% include "groups/new_reply_theme.html" %}
+            <div class="edit-theme-wrapper" style="display: none;">
+                <form class="edit-theme-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ edit_form.pk }}
+                    {{ edit_form.board_group }}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">title</i>
+                            {{ edit_form.title }}
+                            <label for="id_title">Título</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">closed_caption</i>
+                            {{ edit_form.description }}
+                            <label for="id_description">Descripción</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Imágen</span>
+                                {{ edit_form.image }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <i class="material-icons prefix">closed_caption</i>
-                                {{ edit_form.description }}
-                                <label for="id_description">Descripción</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="file-field input-field">
-                                <div class="btn">
-                                    <span>Imágen</span>
-                                    {{ edit_form.image }}
-                                </div>
-                                <div class="file-path-wrapper">
-                                    <input class="file-path validate" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="waves-effect waves-light btn right blue">Editar</button>
-                    </form>
-                </div>
+                    </div>
+                    <button type="submit" class="waves-effect waves-light btn right blue">Editar</button>
+                </form>
             </div>
         </div>
-        <div class="row theme-publications infinite-container">
-            {% include "groups/board_theme_publications.html" %}
-        </div>
-        {% if publications.has_next %}
-            <a class="infinite-more-link hidden"
-               href="?page={{ publications.next_page_number }}"></a>
-        {% endif %}
-        <div class="progress loading_board_theme" style="display: none">
-            <div class="indeterminate blue darken-1"></div>
-        </div>
     </div>
-    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
-    <script src="{% static "js/socket_theme.js" %}"></script>
-    <script>
-        var infinite = new Waypoint.Infinite({
-            element: $('.infinite-container')[0],
-            offset: 'bottom-in-view',
-            onBeforePageLoad: function () {
-                $('.loading_board_theme').show();
-            },
-            onAfterPageLoad: function () {
-                $('.loading_board_theme').hide();
-                $('div[id^="pub-"]').each(function (i) {
-                    var div = $('[id="' + this.id + '"]').slice(1).remove();
-                });
-            }
-        });
-    </script>
+    <div class="row theme-publications infinite-container">
+        {% include "groups/board_theme_publications.html" %}
+    </div>
+    {% if publications.has_next %}
+        <a class="infinite-more-link hidden"
+           href="?page={{ publications.next_page_number }}"></a>
+    {% endif %}
+    <div class="progress loading_board_theme" style="display: none">
+        <div class="indeterminate blue darken-1"></div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+<script src="{% static "js/socket_theme.js" %}"></script>
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        offset: 'bottom-in-view',
+        onBeforePageLoad: function () {
+            $('.loading_board_theme').show();
+        },
+        onAfterPageLoad: function () {
+            $('.loading_board_theme').hide();
+            $('div[id^="pub-"]').each(function (i) {
+                var div = $('[id="' + this.id + '"]').slice(1).remove();
+            });
+            $('.dropdown-button').dropdown();
+        }
+    });
+</script>
 {% endblock %}

@@ -208,7 +208,7 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationGroupMediaPhoto.objects.select_related('board_video', 'board_photo__group').get(
+            publication = PublicationGroupMediaPhoto.objects.select_related('board_photo', 'board_photo__group').get(
                 id=publication_id)
         except PublicationGroupMediaPhoto.DoesNotExist:
             response = False

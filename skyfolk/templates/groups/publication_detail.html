@@ -61,7 +61,7 @@
         </div>
         <div class="infinite-container">
             {% for node in object_list %}
-                <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
+                <div class="row row-pub infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
                     <div class="col s12">
                         <div class="row">
                             <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}"
@@ -213,6 +213,7 @@
                 $('div[id^="pub-"]').each(function (i) {
                     var div = $('[id="' + this.id + '"]').slice(1).remove();
                 });
+                $('.dropdown-button').dropdown();
             }
         });
     </script>

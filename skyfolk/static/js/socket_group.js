@@ -69,8 +69,8 @@ var UTILS = UTILS || (function () {
                         $theme_list.prepend(data.theme);
                     }
                 }
+                $('.dropdown-button').dropdown();
             };
-
             // Helpful debugging
             if (socket.readyState == WebSocket.OPEN) socket.onopen();
             socket.onclose = function () {

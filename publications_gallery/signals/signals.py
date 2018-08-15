@@ -26,7 +26,7 @@ def photo_publication_handler(sender, instance, created, **kwargs):
         return
 
     if not instance.deleted:
-        logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
+        logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
         # Parse extra content
         add_extra_content(instance)
         # add hashtags
@@ -113,7 +113,7 @@ def add_extra_content(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.p_author.username)
+    n = NodeProfile.nodes.get(title=instance.author.username)
     m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
     if n.title != m.title:
         rel = n.follow.relationship(m)
@@ -129,12 +129,12 @@ def notify_mentions(instance):
     users = User.objects.only('username', 'id').filter(username__in=menciones)
     for user in users:
 
-        if instance.p_author.pk != user.id:
-            notify.send(instance.p_author, actor=instance.p_author.username,
+        if instance.author.pk != user.id:
+            notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
                         action_object=instance,
-                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
-                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.p_author.username,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
+                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(
                                                                                                 'publications_gallery:publication_photo_detail',
                                                                                                 kwargs={
@@ -143,7 +143,7 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.p_author.username)
+    n = NodeProfile.nodes.get(title=instance.author.username)
     m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
     if n.title != m.title:
