@@ -1,3 +1,4 @@
+import datetime
 import io
 import json
 import logging
@@ -6,10 +7,8 @@ import tempfile
 
 import magic
 from PIL import Image
-from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime, intword
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -25,7 +24,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.edit import CreateView
 from mptt.templatetags.mptt_tags import cache_tree_children
-
+from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
 from user_profile.models import RelationShipProfile, BLOCK, Profile
@@ -242,7 +241,6 @@ def publication_detail(request, publication_id):
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
-
 
     try:
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
@@ -666,7 +664,6 @@ def load_more_comments(request):
 
 
 @login_required(login_url='/')
-@transaction.atomic
 def share_publication(request):
     """
     Copia la publicacion de otro skyline
@@ -674,11 +671,11 @@ def share_publication(request):
     """
     response = False
     status = 0
-    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
+
     if request.POST:
         user = request.user
         form = SharedPublicationForm(request.POST or None)
-        print(request.POST)
+
         if form.is_valid():
             obj_pub = form.cleaned_data['pk']
             try:
@@ -698,32 +695,29 @@ def share_publication(request):
             if privacity and privacity != 'all':
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
-            shared = Publication.objects.filter(shared_publication_id=obj_pub, author_id=user.id,
-                                                deleted=False).exists()
+            pub = form.save(commit=False)
+            pub.parse_content()
+            pub.add_hashtag()
+            pub.parse_mentions()
 
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
+            try:
+                obj = Publication.objects.get(shared_publication=pub_to_add, author=user, board_owner=user)
+            except Publication.DoesNotExist:
+                obj = Publication.objects.create(shared_publication=pub_to_add, author=user, board_owner=user)
 
-                pub.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
+            obj.content = Emoji.replace(pub.content)
+            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
+                          'href="/profile/%s">@%s</a><br>%s' % (
+                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
+            obj.created = timezone.now()
+            obj.event_type = 6
+            obj.deleted = False
 
-                pub.shared_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 6
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    response = True
-                except IntegrityError as e:
-                    logger.info(e)
-                logger.info('Compartido el comentario %d' % pub_to_add.id)
+            with transaction.atomic(using='default'):
+                obj.save()
+                transaction.on_commit(lambda: obj.send_notification(request))
+
+            response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')
 

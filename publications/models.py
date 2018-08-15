@@ -157,10 +157,9 @@ class Publication(PublicationBase):
                             related_name='reply', db_index=True)
     objects = PublicationManager()
 
-    # objects = PublicationManager()
-
     class Meta:
-        unique_together = (('shared_publication', 'id'),
+        unique_together = (('shared_publication', 'author'),
+                           ('shared_group_publication', 'author'),
                            ('board_owner', 'id'))
 
     class MPTTMeta:
