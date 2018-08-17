@@ -99,7 +99,7 @@ THIRD_PARTY_APPS = (
     'embed_video',
     'haystack',
     'badgify',
-    'django_celery_beat',
+    # 'django_celery_beat', Wait for stable version
     'invitations',
     'webpack_loader',
     'user_guide',
