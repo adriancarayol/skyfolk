@@ -78,7 +78,7 @@ Template para el perfil de cada usuario
                 var query = `mutation {
                               swapDashboardEntry(
                                 input: {
-                                  targetPosition: ` + source.dataset.id +`,
+                                  targetPosition: ` + source.dataset.id + `,
                                   sourcePosition: ` + target.dataset.id + `
                                 }
                               ) {
@@ -221,8 +221,8 @@ Template para el perfil de cada usuario
                     </div>
                 </div>
             </div>
+            {% include "dash/wrapper_add_plugin.html" %}
             </div>
-
             <script type="text/javascript">
                 $('#tab-container').easytabs({
                     defaultTab: "#li-tab-comentarios",

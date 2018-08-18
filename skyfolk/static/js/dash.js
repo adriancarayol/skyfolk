@@ -1,20 +1,28 @@
-$(document).ready(function() {
-    var onLightboxOpen = function() {
+$(document).ready(function () {
+    var onLightboxOpen = function () {
         $('.submenu').hide();
     };
-
-    var onLightboxAddPluginOpen = function() {
-        $('.submenu').hide();
-        $('select').material_select();
-    };
-
 
     // Add dashboard plugin.
-    $('.add-plugin').colorbox({
-        'width': '576px',
-        'height': '550px',
-        'opacity': '0.5',
-        'onComplete': onLightboxAddPluginOpen
+    $('.container').on('click', '.add-plugin', function () {
+        var url = $(this).attr('href');
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $.get(url, function (data) {
+            $(window).scrollTop(0);
+            list_of_plugins.find('.content').html(data);
+            list_of_plugins.show();
+            progress_bar.hide();
+        });
+        return false;
+    });
+
+    $('#close_list_of_plugins').click(function () {
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $(this).closest(list_of_plugins).hide();
     });
 
     // Show all workspaces.
@@ -26,56 +34,76 @@ $(document).ready(function() {
     });
 
     // Handling AJAX delete plugin widget requests.
-    $('.remove-plugin').bind('click', function() {
+    $('.remove-plugin').bind('click', function () {
         var el = $(this);
-        $.getJSON($(this).attr('href'), function(data) {
+        $.getJSON($(this).attr('href'), function (data) {
             if (data.success) {
                 el.closest('.plugin').replaceWith(data.cell);
-                $('.add-plugin').colorbox({
-                    'width': '576px',
-                    'height': '550px',
-                    'opacity': '0.5',
-                    'onComplete': onLightboxAddPluginOpen
-                });
             }
         });
         return false;
     });
 
-    // Submenu.
-    $('.menu-dashboard-settings').bind('click', function() {
-        $('.submenu').toggle();
-    });
-
     // Create dashboard workspace.
-    $('a.menu-dashboard-create-workspace').colorbox({
-        'width': '576px',
-        'height': '420px',
-        'opacity': '0.5',
-        'onComplete': onLightboxOpen
+    $('.container').on('click', '.menu-dashboard-create-workspace', function () {
+        var url = $(this).attr('href');
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $.get(url, function (data) {
+            $(window).scrollTop(0);
+            list_of_plugins.find('.content').html(data);
+            list_of_plugins.show();
+            progress_bar.hide();
+        });
+        return false;
     });
 
     // Edit dashboard workspace.
-    $('a.menu-dashboard-edit-workspace').colorbox({
-        'width': '576px',
-        'height': '420px',
-        'opacity': '0.5',
-        'onComplete': onLightboxOpen
+
+    $('.container').on('click', '.menu-dashboard-edit-workspace', function () {
+        var url = $(this).attr('href');
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $.get(url, function (data) {
+            $(window).scrollTop(0);
+            list_of_plugins.find('.content').html(data);
+            list_of_plugins.show();
+            progress_bar.hide();
+        });
+        return false;
     });
 
     // Edit dashboard settings
-    $('a.menu-dashboard-edit-settings').colorbox({
-        'width': '576px',
-        'height': '570px',
-        'opacity': '0.5',
-        'onComplete': onLightboxOpen
+    $('.container').on('click', '.menu-dashboard-edit-settings', function () {
+        var url = $(this).attr('href');
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $.get(url, function (data) {
+            $(window).scrollTop(0);
+            list_of_plugins.find('.content').html(data);
+            list_of_plugins.show();
+            progress_bar.hide();
+        });
+        return false;
     });
 
     // Delete dashboard workspace.
-    $('a.menu-dashboard-delete-workspace').colorbox({
-        'width': '576px',
-        'height': '300px',
-        'opacity': '0.5',
-        'onComplete': onLightboxOpen
+
+    $('.container').on('click', '.menu-dashboard-delete-workspace', function () {
+        var url = $(this).attr('href');
+        let list_of_plugins = $('#list_of_plugins');
+        let progress_bar = list_of_plugins.find('.progress');
+        progress_bar.show();
+        $.get(url, function (data) {
+            $(window).scrollTop(0);
+            list_of_plugins.find('.content').html(data);
+            list_of_plugins.show();
+            progress_bar.hide();
+        });
+        return false;
     });
+
 });
