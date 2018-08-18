@@ -4,6 +4,7 @@
     <div class="hgroup">
         <h4 class="cn"> Afinidad </h4>
         <h6 class="ch"> Visualiza la afinidad con tus contactos</h6>
+        <p class="ch">Muestra un limite de 3000 relaciones</p>
     </div>
 {% endblock %}
 {% block extra-css %}
@@ -29,6 +30,7 @@
                 defaultNodeColor: '#ec5148'
             }
         });
+        s.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 0.1 });
         var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
     </script>
     <script>

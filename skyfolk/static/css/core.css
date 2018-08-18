@@ -407,8 +407,7 @@ body > .container {
 .compose-div {
   cursor: default;
   font-family: "Open Sans", sans-serif;
-  overflow: hidden;
-  position: fixed;
+  position: absolute;
   top: 20%;
   margin: 0 auto 0 auto;
   right: 0 !important;

@@ -1,6 +1,6 @@
 {% extends "dash/layouts/base_layout.html" %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{% if current_workspace %}{{ current_workspace.name }} - {% endif %}
     {% trans 'Edit dashboard' %}{% endblock %}
@@ -14,4 +14,81 @@
             {% endfor %}
         </div>
     </div>
+    <script src="{% static "js/draggable.bundle.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/plugins.js" %}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const containers = document.querySelectorAll('#id_main');
+            const swappable = new window.Draggable.Sortable(containers, {
+                draggable: '.plugin',
+                mirror: {
+                    constrainDimensions: true,
+                },
+                swapAnimation: {
+                    duration: 200,
+                    easingFunction: 'ease-in-out'
+                },
+                plugins: [Plugins.SwapAnimation]
+            });
+            var lastOverContainer;
+            var source;
+            var target;
+
+            swappable.on('drag:start', (event) => {
+                lastOverContainer = event.sourceContainer;
+                source = event.data.originalSource;
+            });
+
+            swappable.on('sortable:sorted', (event) => {
+                target = event.data.dragEvent.data.over;
+                if (lastOverContainer === event.dragEvent.overContainer) {
+                    return;
+                }
+                lastOverContainer = event.dragEvent.overContainer;
+            });
+
+            swappable.on('sortable:stop', (event) => {
+                let source_id = source.dataset.id;
+                source.dataset.id = target.dataset.id;
+                target.dataset.id = source_id;
+                let workspace = window.location.pathname.split('?')[0].split('/').filter(function (i) { return i !== ""}).slice(-1)[0];
+
+                var query = `mutation {
+                              swapDashboardEntry(
+                                input: {
+                                  targetPosition: ${source.dataset.id},
+                                  sourcePosition: ${target.dataset.id},
+                                  workspaceName: "${workspace}",
+                                }
+                              ) {
+                                source {
+                                  id
+                                },
+                                target {
+                                  id
+                                }
+                              }
+                            }`;
+
+                $.ajax({
+                    method: "POST",
+                    url: "/graphql",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        query: query
+                    }),
+                    success: function (data) {
+                        if (data.errors) {
+                            Materialize.toast("Hubo un error al intercambiar los widgets, prueba a intentarlo de nuevo.");
+                        } else {
+                            Materialize.toast("¡Tus widgets es han movido correctamente!");
+                        }
+                    }
+                })
+
+            });
+        });
+    </script>
+    {% include "dash/wrapper_add_plugin.html" %}
 {% endblock content %}

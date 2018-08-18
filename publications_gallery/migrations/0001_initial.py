@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('board_photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='board_photo', to='photologue.Photo')),
-                ('p_author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply_photo', to='publications_gallery.PublicationPhoto')),
                 ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
                 ('user_give_me_hate', models.ManyToManyField(blank=True, related_name='hate_photo_me', to=settings.AUTH_USER_MODEL)),

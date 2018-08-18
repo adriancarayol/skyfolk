@@ -1,14 +1,20 @@
-{% load dash_tags %}
+{% load i18n dash_tags %}
 
 {% for entry in dashboard_entries %}
     {% get_dash_plugin entry as plugin %}
-        <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
-            <div class="plugin-content-wrapper">
-                {% with plugin.render as rendered %}
-                    {% if rendered %}
-                    	{{ rendered }}
-                    {% endif %}
-                {% endwith %}
-            </div>
+    <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
+        <div class="ventana-pin blue" style="display: block;">
+            <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
+               title="{% trans 'Copy widget' %}">
+                <span class="material-icons">content_copy</span>
+            </a>
         </div>
+        <div class="plugin-content-wrapper">
+            {% with plugin.render as rendered %}
+                {% if rendered %}
+                    {{ rendered }}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
 {% endfor %}

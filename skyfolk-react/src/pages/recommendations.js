@@ -18,13 +18,13 @@ class RecommendationForm extends React.Component {
     }
 
     componentDidMount() {
-       this.fetchRecommendations(); 
+       this.fetchRecommendations();
     }
 
     setRecommendations(result) {
         var exclude_ids = this.state.exclude.slice();
         if (typeof result !== 'undefined' && result.length > 0) {
-            result.map(item => 
+            result.map(item =>
                 exclude_ids.push(item.id)
             );
             this.setState({
@@ -53,17 +53,17 @@ class RecommendationForm extends React.Component {
             body: JSON.stringify(exclude)
         })
             .then(response => response.json())
-            .then(body => this.setRecommendations(body)); 
+            .then(body => this.setRecommendations(body));
     }
 
     render() {
         const { exclude, results } = this.state;
-        const list = results; 
+        const list = results;
 
         return (
             <div className="page">
                 <div className="interactions center">
-                    <FilterButton buttonName={'actualizar'} buttonText={'Actualizar'} onClick={() => this.fetchRecommendations()}/>
+                    <FilterButton buttonName={'show_more_users'} buttonText={'Mostrar más usuarios'} onClick={() => this.fetchRecommendations()}/>
                 </div>
                 {
                     results && <Items list={list} />
@@ -73,7 +73,7 @@ class RecommendationForm extends React.Component {
     }
 }
 
-const Items = ({ list }) => ( 
+const Items = ({ list }) => (
     <div className="recommendantions">
         {
             list.map(item =>

@@ -48,12 +48,12 @@ def optimize_publication_media(instance, image_upload, exts):
                         tmp = tempfile.NamedTemporaryFile(delete=False)
                         for block in media.chunks():
                             tmp.write(block)
-                        process_video_publication.delay(tmp.name, instance.id, media.name, instance.p_author.id)
+                        process_video_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
                 elif exts[index][0] == "image" and exts[index][1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
-                    process_gif_publication.delay(tmp.name, instance.id, media.name, instance.p_author.id)
+                    process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
                 else:  # es una imagen normal
                     try:
                         image = Image.open(media).convert('RGBA')

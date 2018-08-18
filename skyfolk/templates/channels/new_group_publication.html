@@ -3,7 +3,7 @@
 {% load embed_video_tags %}
 {% load app_filters %}
 {% load static %}
-<div class="row" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
+<div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}">
         <div class="wrapper">
             <div class="box">
                 <div class="row">
@@ -15,16 +15,6 @@
                                 <div class="usr-img img-responsive">{% avatar node.author %}</div>
                             </div>
                             <div class="col l11 s10">
-                                <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa" data-url="{% url "publications_groups:detail_group_publication" pk=node.id %}"><i class="material-icons md-18">open_in_new</i></span>
-                {% if user.id == node.author.id %}
-                    <span data-id="{{ node.pk }}"
-                          class="top-options edit-comment tooltipped"
-                          data-position="bottom"
-                          data-delay="50"
-                          data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                {% endif %}
                                 <h2 class="h22"><a
                                         href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                     {% if node.parent %}
@@ -103,43 +93,9 @@
                 <div class="row">
                     <div class="divider"></div>
                     <!-- OPCIONES DE COMENTARIOS -->
-                    <div class="options_comentarios" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
-                        <ul class="opciones">
-                            {% if user.id == node.author.id or user.id == group_profile.owner_id %}
-                                {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
-                                </li>
-                            {% endif %}
-                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                            {% with node.user_give_me_hate.all as hates %}
-                                <li title="No me gusta" class="hate-comment" {% if user in hates %}
-                                    style="color: rgb(186, 104, 200);"{% endif %}>
-                                    <i class="material-icons md-18">keyboard_arrow_down</i>
-                                    <i class="hate-value">{% if hates|length > 0 %}
-                                        {{ hates|length|intword }}{% endif %}</i>
-                                </li>
-                            {% endwith %}
-                            {% with node.user_give_me_like.all as likes %}
-                                <li title="¡Me gusta!" class="like-comment"
-                                    {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                    <i class="material-icons md-18">keyboard_arrow_up</i>
-                                    <i class="like-value">{% if likes|length > 0 %}
-                                        {{ likes|length|intword }}{% endif %}</i>
-                                </li>
-                            {% endwith %}
-                            <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
-                                class={% if node.id in pubs_shared_with_me %}"remove-timeline"
-                                title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi
-                                    skyline" {% endif %}
-                            >
-                            <i class="material-icons md-18">format_quote</i>
-                            <i class="share-values"> </i>
-                            </li>
-                            <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}">
-                                <i class="material-icons md-18">reply</i>
-                            </li>
-                        </ul>
-                    </div>
+                     {% with group_profile.owner as user_profile %}
+                         {% include "publications_base/publication_options.html" %}
+                     {% endwith %}
                 </div>
             </div>
             {% if user.id == node.author.id %}
@@ -183,7 +139,7 @@
                             <div class="col s12">
                                 {% with node.get_children_count as descendants %}
                                     {% if descendants > 0 %}
-                                        <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications"
+                                        <a class="waves-effect waves-light btn blue darken-1 white-text center load_more_publications"
                                            href="/publication/group/load/replies/?page=1&pubid={{ node.id }}"
                                            data-id="{{ node.id }}" data-created="{{ node.created|date:"U" }}"><i
                                                 class=" material-icons left">expand_more</i>Cargar

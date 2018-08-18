@@ -2,50 +2,33 @@
 {% load app_filters %}
 {% load static %}
 <div class="row">
-    <ul>
+    <ul class="collection">
         {% for group in groups %}
-            <li>
-                <div class="col l3 m6 s12">
-                    <div class="user-award z-depth-2">
-                        <div class="row">
-                            <div class="col s2">
-                                {% if group.avatar %}
-                                    <img src="{{ group.avatar.url }}" width="48" height="48">
-                                {% else %}
-                                    <img src="{% static "img/ic_people_black_24dp_2x.png" %}">
-                                {% endif %}
-                            </div>
-                            <div class="col s10"><br>
-                                <b>{% if not group.is_public %}<i class="material-icons md-18 left"
-                                                                  title="Este grupo es privado.">lock</i>{% endif %}<a
-                                        href="{% url 'user_groups:group-profile' groupname=group.slug %}">{{ group.name }}</a></b>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12">
-                                <p>{{ group.description|truncatechars:"120" }}</p>
-                            </div>
-                        </div>
-                        <div class="row center">
-                            <a class="btn-large disabled"><i
-                                    class="material-icons left">person</i>{{ group.members|intword }}</a>
-                        </div>
-                    </div>
-                </div>
+        <li class="collection-item avatar">
+            {% if group.avatar %}
+                <img src="{{ group.avatar.url }}" width="48" height="48" class="circle">
+            {% else %}
+                <img src="{% static "img/ic_people_black_24dp_2x.png" %}" class="circle">
+            {% endif %}
+            <span class="title"><a
+              href="{% url 'user_groups:group-profile' groupname=group.slug %}">{% if not group.is_public %}<i class="material-icons md-18 left"
+              title="Este grupo es privado.">lock</i>{% endif %}{{ group.name }}</a></span>
+              <p>{{ group.description|truncatechars:"120" }}</p>
+              <span class="secondary-content"><i class="material-icons">person</i>{{ group.members|intword }}</span>
             </li>
-        {% endfor %}
-    </ul>
-</div>
-<ul class="pagination center">
-    {% if groups.has_previous %}
+            {% endfor %}
+        </ul>
+    </div>
+    <ul class="pagination center">
+        {% if groups.has_previous %}
         <li><a href="{% url "user_groups:list_group_profile" user_id=profile_id %}?page={{ groups.previous_page_number }}"><i
-                class="material-icons">chevron_left</i></a>
+            class="material-icons">chevron_left</i></a>
         </li>
-    {% endif %}
-    <li class="active blue darken-1 white-text">{{ groups.number }}</li>
-    {% if groups.has_next %}
+        {% endif %}
+        <li class="active blue darken-1 white-text">{{ groups.number }}</li>
+        {% if groups.has_next %}
         <li><a href="{% url "user_groups:list_group_profile" user_id=profile_id %}?page={{ groups.next_page_number }}">
             <i class="material-icons">chevron_right</i>
         </a></li>
-    {% endif %}
-</ul>
+        {% endif %}
+    </ul>

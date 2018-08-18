@@ -49,6 +49,7 @@ var UTILS = UTILS || (function () {
                         }
                     }
                 }
+                recallDropDownEvent();
             };
 
             // Helpful debugging
@@ -59,3 +60,7 @@ var UTILS = UTILS || (function () {
         }
     };
 }());
+
+function recallDropDownEvent() {
+    $('.dropdown-button').dropdown();
+}

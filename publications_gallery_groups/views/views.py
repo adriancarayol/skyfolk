@@ -22,7 +22,6 @@ from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery_groups.utils import optimize_publication_media, check_num_images, check_image_property
 
@@ -49,8 +48,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             if not self.request.user.user_groups.filter(id=photo.group_id).exists():
                 return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
-        emitter = NodeProfile.nodes.get(title=self.request.user.username)
-        board_photo_owner = NodeProfile.nodes.get(title=photo.owner.username)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_photo_owner = Profile.objects.get(user=photo.owner)
 
         privacity = board_photo_owner.is_visible(emitter)
 
@@ -63,12 +62,10 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.author.username
-                    parent_node = NodeProfile.nodes.get(title=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
@@ -211,7 +208,7 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationGroupMediaPhoto.objects.select_related('board_video', 'board_photo__group').get(
+            publication = PublicationGroupMediaPhoto.objects.select_related('board_photo', 'board_photo__group').get(
                 id=publication_id)
         except PublicationGroupMediaPhoto.DoesNotExist:
             response = False

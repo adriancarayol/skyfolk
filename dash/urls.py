@@ -21,7 +21,6 @@ from .views import (
     plugin_widgets,
     update_entry_info,
     public_dashboard,
-    swap_widget_position
 )
 
 from .contrib.plugins.poll.views import submit_poll_response
@@ -101,15 +100,6 @@ urlpatterns = [
     url(_(r'^edit/(?P<workspace>[\w_\-]+)/$'),
         view=edit_dashboard,
         name='dash.edit_dashboard'),
-     # Swap position
-    url(r'^swap/(?P<workspace>[\w_\-]+)/$',
-        view=swap_widget_position,
-        name='dash.swap_entry'
-    ),
-    url(r'^swap/$',
-        view=swap_widget_position,
-        name='dash.swap_entry'
-    ),
     url(_(r'^edit/$'),
         view=edit_dashboard,
         name='dash.edit_dashboard'),

@@ -193,7 +193,7 @@ def upload_video(request):
     Función para subir un nuevo video a la galeria del usuario
     """
     user = request.user
-    
+
     if request.method == 'POST':
         form = UploadFormVideo(request.POST, request.FILES or None)
         if form.is_valid():
@@ -294,6 +294,9 @@ def crop_image(obj, request):
         return
 
     im.seek(0)
+
+    im = im.convert('RGBA')
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])

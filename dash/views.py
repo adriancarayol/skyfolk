@@ -1554,6 +1554,19 @@ def clone_dashboard_workspace(request, workspace_id):
         else:
             return redirect('user_profile:profile', username=request.user.username)
 
+
+    try:
+        n = Profile.objects.get(user=workspace.user)
+        m = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        raise Http404
+
+    # Privacidad del usuario
+    privacity = n.is_visible(m)
+
+    if privacity != ('all' or None):
+        return HttpResponseForbidden("No tienes permiso para visitar este workspace.")
+
     if not (workspace.is_clonable or request.user.pk == workspace.user.pk):
         messages.info(request, _("You are not allowed to clone the given "
                                  "workspace."))
@@ -1653,9 +1666,22 @@ def copy_dashboard_entry(request, entry_id):
 
     dashboard_entry = DashboardEntry._default_manager \
         .select_related('workspace') \
-        .get(pk=entry_id, user=request.user)
+        .get(pk=entry_id)
+
     workspace = dashboard_entry.workspace
     plugin = dashboard_entry.get_plugin()
+
+    try:
+        n = Profile.objects.get(user=dashboard_entry.user)
+        m = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        raise Http404
+
+    # Privacidad del usuario
+    privacity = n.is_visible(m)
+
+    if privacity != ('all' or None):
+        return HttpResponseForbidden("No tienes permiso para visitar este workspace.")
 
     copy_entry_to_clipboard(request, dashboard_entry)
 
@@ -1694,6 +1720,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
             })
         try:
             workspace = DashboardWorkspace._default_manager.get(**filters)
+
         except ObjectDoesNotExist as e:
             if dashboard_settings.allow_different_layouts:
                 message = _('The workspace with slug "{0}" was not found.'
@@ -1706,12 +1733,14 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
             messages.info(request, message)
             return redirect('user_profile:profile', username=request.user.username)
 
+
     if dashboard_settings.allow_different_layouts and workspace:
         layout_uid = workspace.layout_uid
     else:
         layout_uid = dashboard_settings.layout_uid
 
     layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
 
     try:
         plugin_uid, success = paste_entry_from_clipboard(
@@ -1932,58 +1961,3 @@ class PublicWorkspacesAJAX(APIView):
             workspaces = paginator.page(paginator.num_pages)
 
         return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id})
-
-
-def swap_widget_position(request, workspace=None):
-    positions = (3, 4)
-
-    if len(positions) != 2:
-        return Response({"ERROR": "ERROR"})
-
-    registered_plugins = get_user_plugins(request.user)
-    user_plugin_uids = [uid for uid, repr in registered_plugins]
-
-    dashboard_settings = get_or_create_dashboard_settings(request.user)
-
-    workspaces = get_workspaces(
-        request.user,
-        dashboard_settings.layout_uid,
-        workspace,
-        different_layouts=dashboard_settings.allow_different_layouts
-    )
-
-    layout = get_layout(
-        layout_uid=(
-            workspaces['current_workspace'].layout_uid
-            if workspaces['current_workspace']
-            else dashboard_settings.layout_uid
-        ),
-        as_instance=True
-    )
-
-    if workspaces['current_workspace_not_found']:
-        raise Http404("Workspace does not exist")
-
-    plugin_source = DashboardEntry.objects.filter(user=request.user,
-                        layout_uid=layout.uid, workspace=workspace,
-                        plugin_uid__in=user_plugin_uids,
-                        position=positions[1]).first()
-
-    plugin_target = DashboardEntry.objects.filter(user=request.user,
-                        layout_uid=layout.uid,
-                        workspace=workspace,
-                        plugin_uid__in=user_plugin_uids,
-                        position=positions[0]).first()
-
-    try:
-        with transaction.atomic():
-            plugin_source.position, plugin_target.position = \
-                plugin_target.position, plugin_source.position
-            plugin_source.save(update_fields=['position'])
-            plugin_target.save(update_fields=['position'])
-    except IndexError as e:
-        print(e)
-    except Exception as a:
-        print(a)
-
-    return Response({'message': 'POLE'})

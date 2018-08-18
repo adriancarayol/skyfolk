@@ -4,13 +4,13 @@ try:
     class Config(AppConfig):
         """Config."""
 
-        name = 'dash.contrib.layouts.android'
-        label = 'dash_contrib_layouts_android'
+        name = 'dash.contrib.layouts.skyspace'
+        label = 'dash_contrib_layouts_skyspace'
 
 except ImportError:
     pass
 
-__title__ = 'dash.contrib.layouts.android.apps'
+__title__ = 'dash.contrib.layouts.skyspace.apps'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'

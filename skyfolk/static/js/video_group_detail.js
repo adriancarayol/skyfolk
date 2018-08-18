@@ -103,7 +103,7 @@ $(document).ready(function () {
     /* Editar comentario */
     $(tab_messages).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
-        $("#p_author-controls-" + id).slideToggle("fast");
+        $("#author-controls-" + id).slideToggle("fast");
     });
 
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
@@ -437,6 +437,7 @@ function AJAX_load_descendants_video_group_gallery(pub, loader, page, btn) {
         },
         complete: function () {
             $(loader).fadeOut();
+            $('.dropdown-button').dropdown();
         },
         error: function (rs, e) {
         }

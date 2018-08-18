@@ -49,6 +49,7 @@ var UTILS = UTILS || (function () {
                         }
                     }
                 }
+                $('.dropdown-button').dropdown();
             };
 
             // Helpful debugging

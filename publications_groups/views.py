@@ -10,6 +10,7 @@ from django.db.models import Count, Q, Case, When, Value, IntegerField, Subquery
 from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView
@@ -462,7 +463,7 @@ class PublicationGroupDetail(ListView):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
         if not self.request.is_ajax():
             context['publication_id'] = self.kwargs.get('pk', None)
-            context['share_publication'] = SharedPublicationForm()
+            context['asdasdadaddr'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
         context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(
             id=self.publication.board_group_id))
@@ -564,7 +565,9 @@ class ShareGroupPublication(View):
         form = SharedPublicationForm(request.POST or None)
 
         if form.is_valid():
-            data = {}
+            data = {
+                'response': False
+            }
             user = request.user
             pub_id = form.cleaned_data['pk']
             try:
@@ -583,29 +586,29 @@ class ShareGroupPublication(View):
             if privacity and privacity != 'all':
                 return HttpResponseForbidden()
 
-            shared = Publication.objects.filter(shared_group_publication=pub_id, author_id=user.id,
-                                                deleted=False).exists()
+            pub = form.save(commit=False)
+            pub.parse_content()
+            pub.add_hashtag()
+            pub.parse_mentions()
 
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
-                pub.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.author.username, pub_to_add.author.username, xstr(pub.content))
-                pub.shared_group_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 8
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    data['response'] = True
-                except IntegrityError as e:
-                    logger.info(e)
+            try:
+                obj = Publication.objects.get(shared_group_publication=pub_to_add, author=user, board_owner=user)
+            except Publication.DoesNotExist:
+                obj = Publication.objects.create(shared_group_publication=pub_to_add, author=user, board_owner=user)
+
+            obj.content = Emoji.replace(pub.content)
+            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
+                          'href="/profile/%s">@%s</a><br>%s' % (
+                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
+            obj.created = timezone.now()
+            obj.event_type = 6
+            obj.deleted = False
+
+            with transaction.atomic(using='default'):
+                obj.save()
+                transaction.on_commit(lambda: obj.send_notification(request))
+
+            data['response'] = True
 
             return JsonResponse(data)
 

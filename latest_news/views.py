@@ -37,7 +37,11 @@ class News(ListView):
             "AND u2.privacity='A' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT 25" %
             (self.request.user.username, offset))
 
-        users = [NodeProfile.inflate(row[0]) for row in results]
+        if len(results) <= 0:
+            users = NodeProfile.nodes.filter(privacity__ne='N',
+                title__ne=self.request.user.username).order_by('?')[:25]
+        else:
+            users = [NodeProfile.inflate(row[0]) for row in results]
         return users
 
     def get_queryset(self):
@@ -150,7 +154,6 @@ class News(ListView):
 
         if len(photos) <= 0 or len(publications) <= 0 or len(videos) <= 0 or len(placeholders) <= 0:
             extended_list = [u.title for u in self.get_recommendation_users(offset)]
-            print(extended_list)
 
         if len(photos) <= 0:
             photos = Photo.objects.filter(owner__username__in=extended_list)[offset:limit]

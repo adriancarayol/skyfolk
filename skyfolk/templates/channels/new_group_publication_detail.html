@@ -5,8 +5,7 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% load static %}
-
-            <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
+            <div class="row row-pub infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}
@@ -16,16 +15,6 @@
                                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                 </div>
                                 <div class="articulo col l11 s10">
-                                    <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons" href="{% url 'publications_groups:detail_group_publication' pk=node.id %}">open_in_new</a></span>
-                    {% if user.id == node.author.id %}
-                                <span data-id="{{ node.pk }}"
-                                      class="top-options edit-comment tooltipped"
-                                      data-position="bottom"
-                                      data-delay="50"
-                                      data-tooltip="Editar comentario"><i class="material-icons">mode_edit</i></span>
-                        {% endif %}
                                     <h2 class="author-header"><a
                                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
@@ -100,34 +89,9 @@
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
-                                <div class="options_comentarios col s12" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
-                                    <ul class="opciones">
-                                        {% if user.id == node.author.id or user.id == group_profile.owner_id %}
-                                            <li class="trash-comment" title="Borrar comentario"><i
-                                                    class="material-icons">delete_forever</i>
-                                            </li>
-                                        {% endif %}
-                                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        {% with node.user_give_me_hate.all as hates %}
-                                            <li title="No me gusta" class="hate-comment"
-                                                {% if user in hates %}style="color: rgb(186, 104, 200);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_down</i>
-                                                <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
-                                            </li>
-                                        {% endwith %}
-                                        {% with node.user_give_me_like.all as likes %}
-                                            <li title="¡Me gusta!" class="like-comment"
-                                                {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_up</i>
-                                                <i class="like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
-                                            </li>
-                                        {% endwith %}
-                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i><i class="share-values"> </i></li>
-                                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                                {% with group_profile.owner as user_profile %}
+                                    {% include "publications_base/publication_options.html" %}
+                                {% endwith %}
                         {% if user.id == node.author.id %}
                             <div id="author-controls-{{ node.pk }}"
                              class="author-controls">

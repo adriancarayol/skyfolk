@@ -301,6 +301,8 @@ def crop_image(obj, request):
 
     im.seek(0)
 
+    im = im.convert('RGBA')
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])
@@ -467,11 +469,11 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(p_author__profile__in=users_not_blocked_me)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
-                .select_related('p_author',
+                .select_related('author',
                                 'board_photo', 'parent'), 10)
 
         try:
@@ -487,7 +489,7 @@ class PhotoDetailView(DetailView):
             self.template_name = 'photologue/publications_entries.html'
             return context
 
-        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
+        initial_photo = {'author': user.pk, 'board_photo': self.photo}
 
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)

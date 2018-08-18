@@ -143,7 +143,6 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
-        console.log('CLICK NIGGA');
     });
 
     /* Close nuevo grupo */
@@ -192,6 +191,7 @@ $(document).ready(function () {
         event.preventDefault();
         AJAX_submit_group();
     });
+
     /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
@@ -199,22 +199,15 @@ $(document).ready(function () {
         $('#atajos-keyboard-profile').hide();
     });
 
-    /* Atajo para enviar comentarios mas rapido */
-    $(page_wrapper).find('#message3').keypress(function (e) {
-        //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
-            $('#sendformpubli').click();
-            $(this).val(''); // CLEAR TEXTAREA
-            $(this).blur(); // OFF FOCUS
-        }
-    });
-    /* Atajo para enviar comentarios mas rapido a mi perfil. */
-    $(self_page_wrapper).find('#message2').keypress(function (e) {
-        //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
-            $('#sendselfformpubli').click();
-            $(this).val(''); // CLEAR TEXTAREA
-            $(this).blur(); // OFF FOCUS
+    /* Submit new message */
+    $(this).on('keypress', function (e) {
+        var activeElement = document.activeElement;
+        var form = $(activeElement).closest('form').first();
+        if (form) {
+            if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+                var submit = $(form).find(':submit');
+                submit.click();
+            }
         }
     });
 
@@ -478,7 +471,6 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
         },
         dataType: "json",
         success: function (data) {
-            console.log(data);
             var response = data.response;
 
             if (response === "added_friend") {

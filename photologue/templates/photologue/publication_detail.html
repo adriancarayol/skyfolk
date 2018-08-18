@@ -42,30 +42,16 @@
                                  data-id="{{ user.pk }}">
                                 <div class="row">
                                     <div class="image col l1 m2 s2">
-                                        <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                                        <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
                                     <div class="articulo col l11 s10">
-                                        <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                              data-delay="50"
-                              data-tooltip="Ver conversación completa"><a class="material-icons"
-                                                                          href="{% url "publications_gallery:publication_photo_detail" node.id %}">open_in_new</a></span>
-                                {% if user.id == node.p_author.id %}
-                                    {% if node.event_type == 1 or node.event_type == 3 %}
-                                        <span data-id="{{ node.pk }}"
-                                              class="top-options edit-comment tooltipped"
-                                              data-position="bottom"
-                                              data-delay="50"
-                                              data-tooltip="Editar comentario"><i
-                                                class="material-icons">mode_edit</i></span>
-                                    {% endif %}
-                                {% endif %}
                                         <h2 class="author-header"><a
-                                                href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                                                href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                             {% if node.parent %}
                                                 <span class="chip">
-                                                        {% avatar node.parent.p_author %}
+                                                        {% avatar node.parent.author %}
                                                         <a
-                                                                href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                                                href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                                                 </span>
                                             {% endif %}
                                         </h2>
@@ -87,8 +73,8 @@
                                                             <div class="col s4 z-depth-2">
                                                                 <img class="materialboxed responsive-img lazyload"
                                                                      data-src="{{ image.image.url }}"
-                                                                     alt="Imagen de: {{ node.p_author }}"
-                                                                     title="Imagen de: {{ node.p_author }}">
+                                                                     alt="Imagen de: {{ node.author }}"
+                                                                     title="Imagen de: {{ node.author }}">
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -138,34 +124,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="divider"></div>
-                                    <div class="options_comentarios col s12">
-                                        <ul class="opciones">
-                                            {% if user.id == photo.owner_id or user.id == node.p_author_id %}
-                                                <li class="trash-comment" title="Borrar comentario"><i
-                                                        class="material-icons">delete_forever</i>
-                                                </li>
-                                            {% endif %}
-                                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                                            <li title="No me gusta" class="hate-comment"{% if node.have_hate %}
-                                                style="color: rgb(186, 104, 200);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_down</i>
-                                                <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
-                                            </li>
-                                            <li title="¡Me gusta!" class="like-comment"
-                                                {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_up</i>
-                                                <i class="like-value">{{ node.likes|zero_to_empty }}</i>
-                                            </li>
-                                            <li title="Responder" class="reply-comment"
-                                                id="reply-caja-comentario-{{ node.pk }}"><i
-                                                    class="material-icons md-18">reply</i>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    {% with photo.owner as user_profile %}
+                                        {% include "publications_base/publication_options.html" %}
+                                    {% endwith %}
                                 </div>
-                                {% if user.id == node.p_author.id %}
-                                    <div id="p_author-controls-{{ node.pk }}"
-                                         class="p_author-controls">
+                                {% if user.id == node.author.id %}
+                                    <div id="author-controls-{{ node.pk }}"
+                                         class="author-controls">
                                         <div class="row">
                                             <div class="col s12">
                                                 <form method="post" accept-charset="utf-8">
@@ -204,7 +169,7 @@
             {% endfor %}
         </div>
         {% if publication.has_next %}
-            <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
+            <a class="infinite-more-link waves-effect waves-light btn blue darken-1 white-text center"
                href="?page={{ publication.next_page_number }}">More</a>
         {% endif %}
         <div class="progress loading_skyline" style="display: none">
@@ -227,6 +192,7 @@
                 $('div[id^="pub-"]').each(function (i) {
                     var div = $('[id="' + this.id + '"]').slice(1).closest('.row-pub').remove();
                 });
+                $('.dropdown-button').dropdown();
             }
         });
     </script>

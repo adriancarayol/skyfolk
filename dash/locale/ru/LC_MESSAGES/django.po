@@ -949,7 +949,7 @@ msgstr "Удалить рабочее пространство %(workspace_name)
 msgid "Delete dashboard workspace"
 msgstr "Удалить рабочее пространство"
 
-#: templates/dash/delete_dashboard_workspace_ajax.html:13
+#: templates/dash/delete_dashboard_workspace_ajax.html:9
 #, python-format
 msgid "Are you sure you want to delete the dashboard workspace %(workspace_name)s?"
 msgstr "Вы уверены, что хотите удалить рабочее пространство %(workspace_name)s?"

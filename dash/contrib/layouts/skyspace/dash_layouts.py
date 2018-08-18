@@ -4,14 +4,14 @@ from ....base import (
     layout_registry
 )
 
-__title__ = 'dash.contrib.layouts.android.dash_layouts'
+__title__ = 'dash.contrib.layouts.skyspace.dash_layouts'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('AndroidLayout',)
+__all__ = ('SkySpaceLayout',)
 
 
-class AndroidMainPlaceholder(BaseDashboardPlaceholder):
+class SkySpaceMainPlaceholder(BaseDashboardPlaceholder):
     """Main placeholder."""
 
     uid = 'main'
@@ -21,7 +21,7 @@ class AndroidMainPlaceholder(BaseDashboardPlaceholder):
     cell_height = 110
 
 
-class AndroidShortcutsPlaceholder(BaseDashboardPlaceholder):
+class SkySpaceShortcutsPlaceholder(BaseDashboardPlaceholder):
     """Shortcuts placeholder."""
 
     uid = 'shortcuts'
@@ -31,20 +31,20 @@ class AndroidShortcutsPlaceholder(BaseDashboardPlaceholder):
     cell_height = 55
 
 
-class AndroidLayout(BaseDashboardLayout):
-    """Android layout."""
+class SkySpaceLayout(BaseDashboardLayout):
+    """Skyspace layout."""
 
-    uid = 'android'
+    uid = 'skyspace'
     name = 'Skyspace'
-    view_template_name = 'android/view_layout.html'
-    edit_template_name = 'android/edit_layout.html'
-    placeholders = [AndroidMainPlaceholder, AndroidShortcutsPlaceholder]
+    view_template_name = 'skyspace/view_layout.html'
+    edit_template_name = 'skyspace/edit_layout.html'
+    placeholders = [SkySpaceMainPlaceholder, SkySpaceShortcutsPlaceholder]
     cell_units = 'px'
     media_css = (
         'css/dash_dotted_borders.css',
-        'android/css/dash_layout_android.css',
+        'skyspace/css/dash_layout_skyspace.css',
     )
     # media_js = ('js/dash_layout_android.js',)
 
 
-layout_registry.register(AndroidLayout)
+layout_registry.register(SkySpaceLayout)

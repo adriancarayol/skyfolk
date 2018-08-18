@@ -402,6 +402,7 @@ function AJAX_load_publications(pub, loader, page, btn) {
         },
         complete: function () {
             $(loader).fadeOut();
+            $('.dropdown-button').dropdown();
         },
         error: function (rs, e) {
             console.log(e);

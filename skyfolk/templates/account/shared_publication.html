@@ -95,8 +95,10 @@
 </div>
 <div class="row">
     <div class="divider"></div>
-    <a class="white-text blue right btn"
-    href="/publication/{{ shared_publication.pk }}">Ver</a>
+    {% with shared_publication|classname as classname %}
+        <a class="white-text blue right btn"
+            href="{% if classname == 'Publication' %}/publication/{% elif classname == 'PublicationGroup'%}/group/publication/{% endif %}{{ shared_publication.pk }}">Ver</a>
+        {% endwith %}
 </div>
 </blockquote>
 {% endif %}

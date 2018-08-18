@@ -72,10 +72,14 @@ Menu de notificaciones verticales
     <div class="nav-vertical-controls">
         <div class="controls-notifications">
             {% if user_notifications %}
-                <a id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
+                <a id="clear-notify"
+                title="Limpiar todas"
+                class="waves-effect waves-light btn white red-text nav-button-notifications"><i class="material-icons">clear_all</i></a>
             {% endif %}
             <a href="/inbox/notifications/"
-               class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
+                title="Ver todas"
+               class="waves-effect waves-light btn white blue-text nav-button-notifications">
+               <i class="material-icons">list</i></a>
         </div>
     </div>
 </div>

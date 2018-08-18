@@ -587,7 +587,7 @@ class AffinityView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC" % self.request.user.username
+        query = "MATCH (a)<-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
         results, meta = db.cypher_query(query=query)
         dict_results = [item for sublist in results for item in sublist]
 
@@ -610,7 +610,7 @@ class AffinityView(TemplateView):
             r = lambda: random.randint(0, 255)
             nodes.append(
                 {"id": "n" + str(node['label']), "label": node['label'] + ' (' + str(node['weight']) + ')',
-                 "x": random.randint(1, len(dict_results)), "y": random.randint(1, len(dict_results)),
+                 "x": random.uniform(0, 0.1), "y": random.uniform(0, 0.1),
                  "size": node['weight'], "color": '#%02X%02X%02X' % (r(), r(), r())})
             edges.append({"id": "e" + str(node['label']), "source": "n" + str(node['label']),
                           "target": "n" + str(self.request.user.username)})

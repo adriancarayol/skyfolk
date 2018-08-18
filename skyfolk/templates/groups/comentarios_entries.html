@@ -6,7 +6,7 @@
 {% load static %}
 <div id="list-publications" class="infinite-container">
     {% for node in publications %}
-        <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
+        <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}">
                 <div class="wrapper"
                      {% if node.level > 0 %}style="min-width: 98% !important;"{% endif %}>
                     <div class="box">
@@ -19,18 +19,6 @@
                                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
                                     <div class="col l11 s10">
-                                        <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa"
-                  data-url="{% url "publications_groups:detail_group_publication" pk=node.id %}">
-                <i class="material-icons md-18">open_in_new</i></span>
-                        {% if user.id == node.author.id %}
-                            <span data-id="{{ node.pk }}"
-                                  class="top-options edit-comment tooltipped"
-                                  data-position="bottom"
-                                  data-delay="50"
-                                  data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                        {% endif %}
                                         <h2 class="h22"><a
                                                 href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                             {% if node.parent %}
@@ -108,37 +96,9 @@
                         </div>
                         <div class="row">
                             <div class="divider"></div>
-                            <!-- OPCIONES DE COMENTARIOS -->
-                            <div class="options_comentarios" data-id="{{ node.id }}"
-                                 data-board="{{ node.board_group.id }}">
-                                <ul class="opciones">
-                                    {% if user.id == node.author.id or enable_control_pubs_btn %}
-                                        <li class="trash-comment" title="Borrar comentario"><i
-                                                class="material-icons md-18">delete_forever</i>
-                                        </li>
-                                    {% endif %}
-                                    <li title="No me gusta" class="hate-comment" {% if node.have_hate %}
-                                            style="color: rgb(186, 104, 200);"{% endif %}>
-                                        <i class="material-icons md-18">keyboard_arrow_down</i>
-                                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
-                                    </li>
-                                    <li title="¡Me gusta!" class="like-comment"
-                                            {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                        <i class="material-icons md-18">keyboard_arrow_up</i>
-                                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
-                                    </li>
-                                    <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
-                                        class={% if node.have_shared %}"remove-timeline"
-                                        title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi skyline" {% endif %}>
-                                    <i class="material-icons md-18">format_quote</i>
-                                    <i class="share-values"> {{ node.total_shared|zero_to_empty }}</i>
-                                    </li>
-                                    <li title="Responder" class="reply-comment"
-                                        id="reply-caja-comentario-{{ node.pk }}">
-                                        <i class="material-icons md-18">reply</i>
-                                    </li>
-                                </ul>
-                            </div>
+                            {% with group_profile.owner as user_profile %}
+                                {% include "publications_base/publication_options.html" %}
+                            {% endwith %}
                         </div>
                     </div>
                     {% if user.id == node.author.id %}
@@ -183,7 +143,7 @@
                                 {% with node.get_children_count as descendants %}
                                     {% if descendants > 0 %}
                                         <a class="waves-effect waves-light btn blue darken-1 white-text center load_more_publications"
-                                           href="/publication/group/load/replies/?page=1&pubid={{ node.id }}"
+                                           href="/group/publication/load/replies/?page=1&pubid={{ node.id }}"
                                            data-id="{{ node.id }}" data-created="{{ node.created|date:"U" }}"><i
                                                 class=" material-icons left">expand_more</i>Cargar
                                             comentarios (<span
