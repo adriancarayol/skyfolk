@@ -67,7 +67,6 @@ module.exports = [
               path.resolve('./skyfolk/static/css/profile.css'),
               path.resolve('./skyfolk/static/css/buscar.css'),
               path.resolve('./skyfolk/static/css/comentarios.css'),
-              path.resolve('./skyfolk/static/colorbox/colorbox.css'),
               path.resolve('./skyfolk/static/dist/sweetalert.css'),
               path.resolve('./skyfolk/static/emoji/css/textarea_find_emoji.css'),
               path.resolve('./skyfolk/static/themes/google/google.css'),
