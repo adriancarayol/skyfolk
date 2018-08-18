@@ -489,6 +489,37 @@ class AddDashboardEntry(SessionWizardView):
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
+        if not validate_placeholder_uid(layout, placeholder_uid):
+            raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder_uid))
+
+        if not validate_plugin_uid(plugin_uid):
+            raise Http404(ugettext("Invalid plugin name: {0}").format(plugin_uid))
+
+        placeholder = layout.get_placeholder(placeholder_uid)
+
+        # Cell that would be occupied by the plugin upon addition.
+        widget_occupied_cells = get_occupied_cells(
+            layout,
+            placeholder,
+            plugin_uid,
+            position,
+            check_boundaries=True,
+            fail_silently=True
+        )
+
+        # Cells currently occupied in the workspace given.
+        occupied_cells = build_cells_matrix(
+            self.request.user,
+            layout,
+            placeholder,
+            workspace
+        )
+
+        # Checking if it's still possible to insert a widget.
+        if widget_occupied_cells is False \
+                or lists_overlap(widget_occupied_cells, occupied_cells):
+            raise Http404(ugettext("Collisions detected"))
+
         for index, form in enumerate(form_list):
             data = form.cleaned_data
 
@@ -1554,7 +1585,6 @@ def clone_dashboard_workspace(request, workspace_id):
         else:
             return redirect('user_profile:profile', username=request.user.username)
 
-
     try:
         n = Profile.objects.get(user=workspace.user)
         m = Profile.objects.get(user_id=request.user.id)
@@ -1733,14 +1763,12 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
             messages.info(request, message)
             return redirect('user_profile:profile', username=request.user.username)
 
-
     if dashboard_settings.allow_different_layouts and workspace:
         layout_uid = workspace.layout_uid
     else:
         layout_uid = dashboard_settings.layout_uid
 
     layout = get_layout(layout_uid=layout_uid, as_instance=True)
-
 
     try:
         plugin_uid, success = paste_entry_from_clipboard(

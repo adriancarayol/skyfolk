@@ -25,14 +25,6 @@ $(document).ready(function () {
         $(this).closest(list_of_plugins).hide();
     });
 
-    // Show all workspaces.
-    $('.menu-dashboard-workspaces').colorbox({
-        'width': '576px',
-        'height': '400px',
-        'opacity': '0.5',
-        'onComplete': onLightboxOpen
-    });
-
     // Handling AJAX delete plugin widget requests.
     $('.remove-plugin').bind('click', function () {
         var el = $(this);
