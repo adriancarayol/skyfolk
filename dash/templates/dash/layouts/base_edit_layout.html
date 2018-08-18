@@ -8,6 +8,7 @@
     <div class="container">
         <div class="row">
             {% for placeholder in placeholders %}
+                <div class="divider"></div>
                 <div id="{{ placeholder.html_id }}" class="placeholder {{ placeholder.html_class }}">
                     {{ placeholder.render_for_edit|safe }}
                 </div>
