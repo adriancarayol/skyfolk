@@ -5,7 +5,7 @@ from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from neomodel import db
 
-from user_profile.models import Request
+from user_profile.models import Request, Profile, RelationShipProfile
 from user_profile.node_models import NodeProfile, TagProfile
 
 register = template.Library()
@@ -116,15 +116,15 @@ def check_blocked(request, author):
 @register.filter(name='is_follow')
 def is_follow(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(title=profile)
-        me = NodeProfile.nodes.get(title=request)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(id=profile)
+        me = Profile.objects.get(id=request)
+    except Profile.DoesNotExist:
         return False
 
-    if me.title != user_profile.title:
+    if me != user_profile:
         try:
-            return me.follow.is_connected(user_profile)
-        except Exception:
+            return RelationShipProfile.objects.is_follow(user_profile, me)
+        except ObjectDoesNotExist:
             pass
     return False
 
@@ -132,14 +132,14 @@ def is_follow(request, profile):
 @register.filter(name='exist_request')
 def exist_request(request, profile):
     try:
-        m = NodeProfile.nodes.get(title=profile)
-        n = NodeProfile.nodes.get(title=request)
-    except NodeProfile.DoesNotExist:
+        m = Profile.objects.get(user_id=profile)
+        n = Profile.objects.get(user_id=request)
+    except Profile.DoesNotExist:
         return False
 
-    if n.title != m.title:
+    if n != m:
         try:
-            return Request.objects.get_follow_request(from_profile__username=n.title, to_profile__username=m.title)
+            return Request.objects.get_follow_request(from_profile=n.user, to_profile=m.user)
         except ObjectDoesNotExist:
             pass
     return False
@@ -148,15 +148,15 @@ def exist_request(request, profile):
 @register.filter(name='is_blocked')
 def is_blocked(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(title=profile)
-        me = NodeProfile.nodes.get(title=request)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(user_id=profile)
+        me = Profile.objects.get(user_id=request)
+    except ObjectDoesNotExist:
         return False
 
-    if me.title != user_profile.title:
+    if me != user_profile:
         try:
-            return me.bloq.is_connected(user_profile)
-        except Exception:
+            return RelationShipProfile.objects.is_blocked(user_profile, me)
+        except ObjectDoesNotExist:
             pass
 
     return False
