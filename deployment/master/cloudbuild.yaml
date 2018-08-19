@@ -45,4 +45,10 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+  id: k8s-apply
   waitFor: ['push-web-image','push-nginx-image']
+
+# Delete old pods
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['delete','pods','--all']
+  waitFor: ['k8s-apply']
