@@ -16,6 +16,9 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '.' ]
   id: nginx
+- name: 'gcr.io/cloud-builders/kubectl'
+  env: ['CLOUDSDK_COMPUTE_ZONE=europe-west3-a', 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1']
+  args: ['apply', '-f', '/workspace/deployment/master/k8s']
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
 - 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest'
