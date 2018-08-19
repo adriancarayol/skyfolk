@@ -19,7 +19,7 @@ spec:
         io.kompose.service: nginx
     spec:
       containers:
-      - image: eu.gcr.io/skyfolk-211121/skyfolk-nginx:latest
+      - image: gcr.io/skyfolk-211121/skyfolk-nginx:latest
         name: ng01
         ports:
         - containerPort: 80

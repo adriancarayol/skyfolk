@@ -16,7 +16,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'push',
-    'eu.gcr.io/$PROJECT_ID/web:latest']
+    'gcr.io/$PROJECT_ID/web:latest']
   id: push-web-image
   waitFor: ['build-web-image']
 
@@ -35,7 +35,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'push',
-    'eu.gcr.io/$PROJECT_ID/skyfolk-nginx:latest']
+    'gcr.io/$PROJECT_ID/skyfolk-nginx:latest']
   id: push-nginx-image
   waitFor: ['build-nginx-image']
 

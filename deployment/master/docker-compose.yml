@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: docker/skyfolk-nginx.Dockerfile
-    image: eu.gcr.io/skyfolk-211121/skyfolk-nginx:latest
+    image: gcr.io/skyfolk-211121/skyfolk-nginx:latest
     deploy:
       replicas: 1
     container_name: ng01
@@ -59,7 +59,7 @@ services:
     build:
       context: .
       dockerfile: docker/web.Dockerfile
-    image: eu.gcr.io/skyfolk-211121/web:latest
+    image: gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     hostname: web
@@ -79,7 +79,7 @@ services:
 
   # daphne worker
   webworker:
-    image: eu.gcr.io/skyfolk-211121/web:latest
+    image: gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     volumes:
@@ -100,7 +100,7 @@ services:
   celery_worker:
     env_file:
       - env/web.env
-    image: eu.gcr.io/skyfolk-211121/web:latest
+    image: gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     command: ./deployment/master/script/run_celery.sh
@@ -119,7 +119,7 @@ services:
   celery_beat:
     env_file:
       - env/web.env
-    image: eu.gcr.io/skyfolk-211121/web:latest
+    image: gcr.io/skyfolk-211121/web:latest
     deploy:
       replicas: 1
     command: ./deployment/master/script/run_beat.sh

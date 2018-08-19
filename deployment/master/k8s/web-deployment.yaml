@@ -97,7 +97,7 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: web-env-web-env
-        image: eu.gcr.io/skyfolk-211121/web:latest
+        image: gcr.io/skyfolk-211121/web:latest
         name: web
         resources: {}
         volumeMounts:
