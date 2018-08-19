@@ -48,7 +48,7 @@ VOLUME /root
 
 # Install some demands
 ADD requirements/master.txt /tmp/requirements.txt
-RUN pip install -r requirements/master.txt
+RUN pip install -r /tmp/requirements.txt
 
 # Reuse base image
 FROM base
