@@ -6,7 +6,8 @@ steps:
     '-f','./deployment/docker/web.Dockerfile',
     '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
-    '.' ]
+    '../../../' ]
+  dir: 'deployment/docker'
   id: web
 - name: 'gcr.io/cloud-builders/docker'
   args: [
@@ -14,7 +15,8 @@ steps:
     '-f','./deployment/docker/skyfolk-nginx.Dockerfile',
     '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
-    '.' ]
+    '../../../' ]
+    dir: 'deployment/docker'
   id: nginx
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
