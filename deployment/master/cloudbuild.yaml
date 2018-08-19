@@ -1,5 +1,7 @@
 timeout: 5600s # One hour
 steps:
+
+# Build web image
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -7,7 +9,19 @@ steps:
     '--cache-from', 'eu.gcr.io/$PROJECT_ID/web:latest',
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '.' ]
-  id: web
+  id: build-web-image
+  waitFor: ['-'] # runs immediately
+
+# Push web image
+docker push  eu.gcr.io/skyfolk-211121/web:latest
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'eu.gcr.io/$PROJECT_ID/web:latest']
+  id: push-web-image
+  waitFor: ['build-web-image']
+
+# Build nginx image
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
@@ -15,13 +29,21 @@ steps:
     '--cache-from', 'eu.gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '.' ]
-  id: nginx
-  waitFor: ['-'] # runs immediately
+  id: build-nginx-image
+  waitFor: ['-']
+
+# Push nginx image
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'eu.gcr.io/$PROJECT_ID/web:latest']
+  id: push-nginx-image
+  waitFor: ['build-nginx-image']
+
+# Update k8s cluster
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', '/workspace/deployment/master/k8s']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
-images:
-- 'gcr.io/$PROJECT_ID/web:latest'
-- 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest'
+  waitFor: ['push-web-image','push-nginx-image']
