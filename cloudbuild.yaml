@@ -16,7 +16,7 @@ steps:
     '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '../../../' ]
-    dir: 'deployment/docker'
+  dir: 'deployment/docker'
   id: nginx
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
