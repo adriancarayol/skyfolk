@@ -14,7 +14,6 @@ from dash_services.views_wizard import UserServiceWizard, finalcallback
 from allauth.account import views as allauth_views
 from graphene_django.views import GraphQLView
 
-
 admin.autodiscover()
 
 # REST Framework
@@ -27,7 +26,6 @@ handler500 = 'user_profile.views.server_error'
 handler403 = 'user_profile.views.permission_denied'
 handler400 = 'user_profile.views.bad_request'
 CSRF_FAILURE_VIEW = 'user_profile.views.csrf_failure'
-
 
 urlpatterns = [
     url(r'^$', allauth_views.login),
@@ -142,18 +140,18 @@ urlpatterns = [
     # every service will use django_th.views.finalcallback
     # and give the service_name value to use to
     # trigger the real callback
-    url(r"^th/callbackevernote/$", finalcallback, {'service_name': 'ServiceEvernote', }, name="evernote_callback",),
-    url(r"^th/callbackgithub/$", finalcallback, {'service_name': 'ServiceGithub', }, name="github_callback",),
-    url(r"^th/callbackpocket/$", finalcallback, {'service_name': 'ServicePocket', }, name="pocket_callback",),
+    url(r"^th/callbackevernote/$", finalcallback, {'service_name': 'ServiceEvernote', }, name="evernote_callback", ),
+    url(r"^th/callbackgithub/$", finalcallback, {'service_name': 'ServiceGithub', }, name="github_callback", ),
+    url(r"^th/callbackpocket/$", finalcallback, {'service_name': 'ServicePocket', }, name="pocket_callback", ),
     url(r"^th/callbackpushbullet/$", finalcallback, {'service_name': 'ServicePushbullet', },
-        name="pushbullet_callback",),
-    url(r"^th/callbackreddit/$", finalcallback, {'service_name': 'ServiceReddit', }, name="reddit_callback",),
-    url(r"^th/callbacktodoist/$", finalcallback, {'service_name': 'ServiceTodoist', }, name="todoist_callback",),
-    url(r"^th/callbacktrello/$", finalcallback, {'service_name': 'ServiceTrello', }, name="trello_callback",),
-    url(r"^th/callbacktumblr/$", finalcallback, {'service_name': 'ServiceTumblr', }, name="tumblr_callback",),
-    url(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback",),
-    url(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback",),
-    url(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback",),
+        name="pushbullet_callback", ),
+    url(r"^th/callbackreddit/$", finalcallback, {'service_name': 'ServiceReddit', }, name="reddit_callback", ),
+    url(r"^th/callbacktodoist/$", finalcallback, {'service_name': 'ServiceTodoist', }, name="todoist_callback", ),
+    url(r"^th/callbacktrello/$", finalcallback, {'service_name': 'ServiceTrello', }, name="trello_callback", ),
+    url(r"^th/callbacktumblr/$", finalcallback, {'service_name': 'ServiceTumblr', }, name="tumblr_callback", ),
+    url(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback", ),
+    url(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback", ),
+    url(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback", ),
     # url(r'^th/myfeeds/', include('th_services.th_rss.urls')),
 
     url(r'^th/api/taiga/webhook/', include('th_services.th_taiga.urls')),
@@ -165,6 +163,8 @@ urlpatterns = [
     url(r'^graphql', GraphQLView.as_view(graphiql=False)),
     # user guide
     url(r'^user-guide/', include('user_guide.urls')),
+    # Feedback contact
+    url(r'^feedback/', include('feedback.urls', namespace='feedback')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
@@ -172,6 +172,7 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns

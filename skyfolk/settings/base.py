@@ -121,6 +121,7 @@ FIRST_PARTY_APPS = (
     'awards',  # logros
     'api',
     'api.user_profile_api',
+    'feedback',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
