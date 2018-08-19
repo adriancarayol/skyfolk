@@ -5,7 +5,7 @@ steps:
     'build',
     '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',  # Try to use cached images
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
-    '--file=deployment/docker/web.Dockerfile',
+    '--file=./deployment/docker/web.Dockerfile',
     '--tag=gcr.io/$PROJECT_ID/web',
     '.' ]
   id: web
@@ -14,7 +14,7 @@ steps:
     'build',
     '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',  # Try to use cached images
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
-    '--file=deployment/docker/skyfolk-nginx.Dockerfile',
+    '--file=./deployment/docker/skyfolk-nginx.Dockerfile',
     '--tag=gcr.io/$PROJECT_ID/skyfolk-nginx',
     '.' ]
   id: nginx
