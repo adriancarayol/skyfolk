@@ -3,13 +3,6 @@ FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
 
-# Copy code
-RUN mkdir /code
-WORKDIR /code
-COPY . /code
-
-# Install some demands
-RUN pip install -r requirements/master.txt
 RUN apt-get update && \
     apt-get install -y --no-install-recommends apt-utils
 
@@ -52,3 +45,11 @@ RUN chmod -R 770 /root/
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml
 
 VOLUME /root
+
+# Copy code
+RUN mkdir /code
+WORKDIR /code
+COPY . /code
+
+# Install some demands
+RUN pip install -r requirements/master.txt
