@@ -4,7 +4,7 @@ steps:
   args: [
     'build',
     '-f','./deployment/master/docker/web.Dockerfile',
-    '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',
+    '--cache-from', 'eu.gcr.io/$PROJECT_ID/web:latest',
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '.' ]
   id: web
@@ -12,7 +12,7 @@ steps:
   args: [
     'build',
     '-f','./deployment/master/docker/skyfolk-nginx.Dockerfile',
-    '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
+    '--cache-from', 'eu.gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '.' ]
   id: nginx
