@@ -1,0 +1,116 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f deployment/master/docker-compose.yml -o deployment/master/k8s/
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: webworker
+  name: webworker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: webworker
+    spec:
+      containers:
+      - args:
+        - ./deployment/master/script/run_worker.sh
+        env:
+        - name: DB_ENV_DB
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_DB
+              name: webworker-env-web-env
+        - name: DB_ENV_POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_POSTGRES_PASSWORD
+              name: webworker-env-web-env
+        - name: DB_ENV_POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DB_ENV_POSTGRES_USER
+              name: webworker-env-web-env
+        - name: DB_PORT_5432_TCP_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT_5432_TCP_ADDR
+              name: webworker-env-web-env
+        - name: DB_PORT_5432_TCP_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT_5432_TCP_PORT
+              name: webworker-env-web-env
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SETTINGS_MODULE
+              name: webworker-env-web-env
+        - name: ELASTICSEARCH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: ELASTICSEARCH_URL
+              name: webworker-env-web-env
+        - name: EMAIL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_HOST
+              name: webworker-env-web-env
+        - name: NEO4J_BOLT_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_BOLT_URL
+              name: webworker-env-web-env
+        - name: NEO4J_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_HOST
+              name: webworker-env-web-env
+        - name: NEO4J_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_PASSWORD
+              name: webworker-env-web-env
+        - name: NEO4J_USER
+          valueFrom:
+            configMapKeyRef:
+              key: NEO4J_USER
+              name: webworker-env-web-env
+        - name: RABBIT_PORT_5672_TCP
+          valueFrom:
+            configMapKeyRef:
+              key: RABBIT_PORT_5672_TCP
+              name: webworker-env-web-env
+        - name: REDIS_PORT_6379_TCP_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_PORT_6379_TCP_ADDR
+              name: webworker-env-web-env
+        - name: SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SECRET_KEY
+              name: webworker-env-web-env
+        image: eu.gcr.io/skyfolk-211121/web:latest
+        name: webworker
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/www/skyfolk.net/run/static/static/
+          name: static-content
+        - mountPath: /var/www/skyfolk.net/run/static/media/
+          name: static-content-media
+      restartPolicy: Always
+      volumes:
+      - name: static-content
+        persistentVolumeClaim:
+          claimName: static-content
+      - name: static-content-media
+        persistentVolumeClaim:
+          claimName: static-content-media
+status: {}
