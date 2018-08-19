@@ -13,7 +13,6 @@ steps:
   waitFor: ['-'] # runs immediately
 
 # Push web image
-docker push  eu.gcr.io/skyfolk-211121/web:latest
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'push',
