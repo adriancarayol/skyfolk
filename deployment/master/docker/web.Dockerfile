@@ -1,5 +1,5 @@
 # Base image
-FROM python:3.6
+FROM python:3.6 AS base
 
 ENV PYTHONUNBUFFERED 1
 
@@ -46,10 +46,14 @@ RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMag
 
 VOLUME /root
 
+# Install some demands
+ADD requirements/master.txt /tmp/requirements.txt
+RUN pip install -r requirements/master.txt
+
+# Reuse base image
+FROM base
+
 # Copy code
 RUN mkdir /code
 WORKDIR /code
 COPY . /code
-
-# Install some demands
-RUN pip install -r requirements/master.txt
