@@ -15,6 +15,8 @@ from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from ipware.ip import get_real_ip, get_ip
 from django.contrib.auth.forms import UserCreationForm
+
+from mailer.mailer import Mailer
 from user_profile.models import AuthDevices, NotificationSettings
 from user_profile.node_models import NodeProfile
 from .validators import validate_file_extension
@@ -38,11 +40,14 @@ class CustomLoginForm(LoginForm):
             logger.warning("LOGIN: No existe instancia NodeProfile para el usuario : %s " % self.user.username)
 
         auth_token_device = self.cleaned_data['auth_browser']
+
         ip = get_real_ip(request)
+
         if ip is not None:
             logger.info("IP: {} del usuario: {}".format(ip, self.user.username))
         else:
             ip = get_ip(request)
+
         if auth_token_device and user_profile:
             try:
                 components = auth_token_device.split()
@@ -50,26 +55,17 @@ class CustomLoginForm(LoginForm):
                                                                     browser_token=components.pop(0))
                 if created:
                     device.save()
-                    send_mail(
-                        '[Skyfolk] - Nuevo inicio de sesión.',
-                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(
-                            components).replace(",", " "),
-                        'noreply@skyfolk.net',
-                        [self.user.email],
-                        fail_silently=False,
-                    )
+                    mail = Mailer()
+                    message = 'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(
+                        components).replace(",", " ")
+                    mail.send_messages('Skyfolk - Nuevo inicio de sesión..',
+                                       template='emails/new_login.html',
+                                       context={'to_user': self.user.username, 'message': message},
+                                       to_emails=(self.user.email,))
             except IntegrityError:
                 pass
         else:
-            # Aqui informamos al usuario por email de que
-            # el fingerprint browser no se ha podido coger
-            send_mail(
-                '[Skyfolk] - Nuevo inicio de sesión',
-                'Hemos detectado un nuevo inicio de sesión.',
-                'noreply@skyfolk.net',
-                [self.user.email],
-                fail_silently=False,
-            )
+            return ValidationError('Hubo un error al inciar sesion, intentalo de nuevo.')
 
         return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
 
