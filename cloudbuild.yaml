@@ -3,22 +3,19 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',  # Try to use cached images
-    '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '-f','deployment/docker/web.Dockerfile',
-    '--tag=gcr.io/$PROJECT_ID/web',
+    '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',
+    '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '.' ]
   id: web
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',  # Try to use cached images
-    '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-f','deployment/docker/skyfolk-nginx.Dockerfile',
-    '--tag=gcr.io/$PROJECT_ID/skyfolk-nginx',
+    '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
+    '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '.' ]
   id: nginx
-
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
 - 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest'
