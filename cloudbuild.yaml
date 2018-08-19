@@ -3,7 +3,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '-f','deployment/docker/Dockerfile.web',
+    '-f','./deployment/docker/Dockerfile.web',
     '--cache-from', 'gcr.io/$PROJECT_ID/web:latest',
     '-t', 'gcr.io/$PROJECT_ID/web:latest',
     '.' ]
@@ -11,7 +11,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '-f','deployment/docker/Dockerfile.skyfolk-nginx',
+    '-f','./deployment/docker/Dockerfile.skyfolk-nginx',
     '--cache-from', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '-t', 'gcr.io/$PROJECT_ID/skyfolk-nginx:latest',
     '.' ]
