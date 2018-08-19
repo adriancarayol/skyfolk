@@ -46,12 +46,13 @@ RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMag
 
 VOLUME /root
 
-# Install some demands
+# Install requirements
+FROM base AS requirements
 ADD requirements/master.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
 # Reuse base image
-FROM base
+FROM requirements
 
 # Copy code
 RUN mkdir /code
