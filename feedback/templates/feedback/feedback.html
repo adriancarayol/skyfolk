@@ -1,0 +1,37 @@
+{% extends "account/base.html" %}
+
+{% block head_title %}Contacto{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        <div class="row">
+            <div class="col offset-l3 col l6 m12 s12">
+                <form method="post">{% csrf_token %}
+                    <div class="row">
+                        {{ form.email.errors }}
+                        <div class="input-field col s12">
+                            {{ form.email }}
+                            <label for="id_title">{{ form.email.label }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.subject.errors }}
+                        <div class="input-field col s12">
+                            {{ form.subject }}
+                            <label for="id_title">{{ form.subject.label }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.message.errors }}
+                        <div class="input-field col s12">
+                            {{ form.message }}
+                            <label for="id_title">{{ form.message.label }}</label>
+                        </div>
+                    </div>
+                    <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Enviar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

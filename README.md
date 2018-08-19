@@ -54,7 +54,7 @@ daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:channel_layer
 Para lanzar celery debemos lanzar los siguientes comandos:
 ```
 celery -A skyfolk worker -l info
-celery -A skyfolk beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+celery -A skyfolk beat -l info
 ```
 ### Lanzar con Docker
 Antes de nada, debemos desactivar los servicios de rabbitmq-server, redis-server y elasticsearch con el comando:

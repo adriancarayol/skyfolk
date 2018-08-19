@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+{% block content %}
+
+    <p>
+        ¡Hola <b>{{ email }}</b>!.
+    </p>
+    <p>
+        Gracias por enviarnos tus comentarios, los tendremos muy en cuenta.
+    </p>
+    <p>
+    A continuación, te dejamos una copia del mensaje:
+    </p>
+    <p>
+        {{ message }}
+    </p>
+{% endblock %}
