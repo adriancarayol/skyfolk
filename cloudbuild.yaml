@@ -17,7 +17,7 @@ steps:
     '--file=deployment/docker/skyfolk-nginx.Dockerfile',
     '--tag=gcr.io/$PROJECT_ID/skyfolk-nginx',
     '.' ]
-  id: web
+  id: nginx
 
 images:
 - 'gcr.io/$PROJECT_ID/web:latest'
