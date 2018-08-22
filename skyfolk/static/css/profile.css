@@ -1599,7 +1599,8 @@ span[class*="group-profile"], span[class*="like-profile"] {
 .placeholder .material-placeholder {
   max-height: 350px; }
   .placeholder .material-placeholder > img {
-    margin: auto; }
+    margin: auto;
+    max-width: 100%; }
 
 .card.small .card-image {
   height: 60%; }
