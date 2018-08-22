@@ -28,7 +28,7 @@ from neomodel import db
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.template.loader import render_to_string
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.forms import SharedPublicationForm
@@ -58,6 +58,24 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         super(UserGroupCreate, self).__init__(**kwargs)
         self.object = None
 
+
+    def form_valid(self, form, group_created, msg=None):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        
+        if self.request.is_ajax():
+            data = {
+                'pk': self.object.pk,
+                'msg': msg,
+                'group_created': group_created
+            }
+
+            return JsonResponse(data)
+        else:
+            return response
+
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
@@ -67,6 +85,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 group.owner = user
                 group.avatar = request.FILES.get('avatar', None)
                 image = request.FILES.get('back_image', None)
+
                 if image:
                     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
                         raise ValueError('BackImage > 5MB!')
@@ -86,6 +105,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
                                                       tempfile_io.tell(), None)
                     group.back_image = image_file
+
                 tags = form.cleaned_data.get('tags', None)
                 try:
                     with transaction.atomic():
@@ -100,10 +120,15 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     return self.form_invalid(form=form)
             except IntegrityError as e:
                 return self.form_invalid(form=form)
-
+            
+            data = {
+                'msg': '¡Tu grupo ha sido creado, haz click <a href="{0}">&emsp;aquí&emsp;</a> para visitarlo.'.format(
+                                       reverse_lazy('user_groups:group-profile', kwargs={'groupname': group.slug})),
+                'group_created': render_to_string("groups/item_group.html", {'group': group})
+            }
             return self.form_valid(form=form,
-                                   msg='¡Tu grupo ha sido creado, haz click <a href="{0}">&emsp;aquí&emsp;</a> para visitarlo.'.format(
-                                       reverse_lazy('user_groups:group-profile', kwargs={'groupname': group.slug})))
+                                    group_created=data['group_created'],
+                                    msg=data['msg'])
 
         print(form.errors)
         return self.form_invalid(form=form)

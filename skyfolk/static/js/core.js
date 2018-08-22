@@ -718,11 +718,14 @@ function AJAX_submit_group() {
         data: form,
         success: function (data) {
             var msg = data.msg;
+            var group_created = data.group_created;
             if (typeof(msg) !== 'undefined' && msg !== null) {
                 Materialize.toast(msg, 4000);
             }
             if (typeof data.pk !== 'undefined' && data.pk !== null) {
                 f.trigger("reset");
+                var wrapper_groups_row = $('.wrapper-groups').find('.row').first();
+                $(wrapper_groups_row).prepend(group_created);
                 $('#create_group').hide();
             }
         },
