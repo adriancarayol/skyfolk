@@ -40,6 +40,7 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
             background = Image.new(img.mode[:-1], img.size, fill_color)
             background.paste(img, img.split()[-1])
             img = background
+            
         img.thumbnail(maxsize)
         tempfile_io = BytesIO()
         img.save(tempfile_io, "JPEG")
