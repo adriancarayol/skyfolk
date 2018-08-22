@@ -59,6 +59,9 @@ Template para el perfil de cada usuario
             var target;
 
             swappable.on('drag:start', (event) => {
+                if (!$('html, body').hasClass('body-inConf')) {
+                    event.cancel();
+                }
                 lastOverContainer = event.sourceContainer;
                 source = event.data.originalSource;
             });
@@ -99,9 +102,9 @@ Template para el perfil de cada usuario
                     }),
                     success: function (data) {
                         if (data.errors) {
-                            Materialize.toast("Hubo un error al intercambiar los widgets, prueba a intentarlo de nuevo.");
+                            Materialize.toast("Hubo un error al intercambiar los widgets, prueba a intentarlo de nuevo.", 1200);
                         } else {
-                            Materialize.toast("¡Tus widgets es han movido correctamente!");
+                            Materialize.toast("¡Tus widgets es han movido correctamente!", 1200);
                         }
                     }
                 })
