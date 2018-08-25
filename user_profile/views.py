@@ -244,7 +244,6 @@ def profile_view(request, username,
 
     # Recuperamos si el perfil es gustado.
 
-
     if user.username != username:
         try:
             liked = LikeProfile.objects.filter(to_profile__user__username=username, from_profile__user=user).exists()
@@ -587,9 +586,19 @@ class AffinityView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        query = "MATCH (a)<-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
-        results, meta = db.cypher_query(query=query)
-        dict_results = [item for sublist in results for item in sublist]
+        # Get follows of user
+        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
+        follows, meta = db.cypher_query(query=query)
+        dict_results = [item for sublist in follows for item in sublist]
+        print(dict_results)
+        # Get followers of user
+        query = "MATCH (a)<-[follow:FOLLOW]-(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
+        followers, meta = db.cypher_query(query=query)
+        followers = [item for sublist in followers for item in sublist]
+
+        for dict_result in followers:
+            if not any(dict_result['label'] == d['label'] for d in dict_results):
+                dict_results.append(dict_result)
 
         nodes = [
             {
@@ -1506,42 +1515,45 @@ class SearchUsuarioView(SearchView):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                                                      | SQ(author_id=self.request.user.id)) | (
-                                                        (~SQ(
-                                                            board_owner__profile__in=users_not_blocked_me) & ~SQ(
-                                                            board_owner__profile__privacity='N') & ~SQ(
-                                                            author__profile__in=users_not_blocked_me)) &
-                                                        ((SQ(board_owner__profile__privacity='A') | (
-                                                            (SQ(board_owner__profile__privacity='OF') &
-                                                             SQ(
-                                                                 board_owner__profile__in=following)) | (
-                                                                SQ(board_owner__profile__privacity='OFAF') &
-                                                                (SQ(
-                                                                    board_owner__profile__in=following) | SQ(
-                                                                    board_owner__profile__in=followers))
-                                                            )) & ((SQ(author__profile__privacity='OF') &
-                                                                   SQ(
-                                                                       author__profile__in=following)) | (
-                                                                      SQ(author__profile__privacity='OFAF') &
-                                                                      (SQ(
-                                                                          author__profile__in=following) | SQ(
-                                                                          author__profile__in=followers))
-                                                                  ) | SQ(author__profile__privacity='A'))) | (
-                                                             SQ(author__profile__privacity='A') | (
-                                                                 (SQ(author__profile__privacity='OF') &
-                                                                  SQ(
-                                                                      author__profile__in=following)) | (
-                                                                     SQ(author__profile__privacity='OFAF') &
-                                                                     (SQ(
-                                                                         author__profile__in=following) | SQ(
-                                                                         author__profile__in=followers))
-                                                                 )) & ((SQ(board_owner__profile__privacity='OF') &
-                                                                        SQ(
-                                                                            board_owner__profile__in=following)) | (
-                                                                           SQ(board_owner__profile__privacity='OFAF') &
-                                                                           (SQ(
-                                                                               board_owner__profile__in=following) | SQ(
-                                                                               board_owner__profile__in=followers))
-                                                                       ) | SQ(board_owner__profile__privacity='A')))))) \
+                                                            (~SQ(
+                                                                board_owner__profile__in=users_not_blocked_me) & ~SQ(
+                                                                board_owner__profile__privacity='N') & ~SQ(
+                                                                author__profile__in=users_not_blocked_me)) &
+                                                            ((SQ(board_owner__profile__privacity='A') | (
+                                                                    (SQ(board_owner__profile__privacity='OF') &
+                                                                     SQ(
+                                                                         board_owner__profile__in=following)) | (
+                                                                            SQ(board_owner__profile__privacity='OFAF') &
+                                                                            (SQ(
+                                                                                board_owner__profile__in=following) | SQ(
+                                                                                board_owner__profile__in=followers))
+                                                                    )) & ((SQ(author__profile__privacity='OF') &
+                                                                           SQ(
+                                                                               author__profile__in=following)) | (
+                                                                                  SQ(
+                                                                                      author__profile__privacity='OFAF') &
+                                                                                  (SQ(
+                                                                                      author__profile__in=following) | SQ(
+                                                                                      author__profile__in=followers))
+                                                                          ) | SQ(author__profile__privacity='A'))) | (
+                                                                     SQ(author__profile__privacity='A') | (
+                                                                     (SQ(author__profile__privacity='OF') &
+                                                                      SQ(
+                                                                          author__profile__in=following)) | (
+                                                                             SQ(author__profile__privacity='OFAF') &
+                                                                             (SQ(
+                                                                                 author__profile__in=following) | SQ(
+                                                                                 author__profile__in=followers))
+                                                                     )) & ((SQ(board_owner__profile__privacity='OF') &
+                                                                            SQ(
+                                                                                board_owner__profile__in=following)) | (
+                                                                                   SQ(
+                                                                                       board_owner__profile__privacity='OFAF') &
+                                                                                   (SQ(
+                                                                                       board_owner__profile__in=following) | SQ(
+                                                                                       board_owner__profile__in=followers))
+                                                                           ) | SQ(
+                                                                 board_owner__profile__privacity='A')))))) \
                 .select_related('author',
                                 'board_owner', 'shared_publication',
                                 'parent', 'shared_group_publication').prefetch_related('extra_content', 'images',
@@ -1564,9 +1576,9 @@ class SearchUsuarioView(SearchView):
                                              SQ(owner__profile__in=following)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
-                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__privacity='OFAF') & (
                                                     SQ(owner__profile__in=following) | SQ(
-                                                        owner__profile__in=followers)))))) \
+                                                owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
             Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N'))) \
@@ -1578,9 +1590,9 @@ class SearchUsuarioView(SearchView):
                                              SQ(owner__profile__in=following)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
-                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__privacity='OFAF') & (
                                                     SQ(owner__profile__in=following) | SQ(
-                                                        owner__profile__in=followers)))))) \
+                                                owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ) \
             .load_all_queryset(
@@ -1796,9 +1808,9 @@ class CustomSignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin, Ses
     def get_success_url(self):
         # Explicitly passed ?next= URL takes precedence
         ret = (
-            get_next_redirect_url(
-                self.request,
-                self.redirect_field_name) or self.success_url)
+                get_next_redirect_url(
+                    self.request,
+                    self.redirect_field_name) or self.success_url)
         return ret
 
     def done(self, form_list, **kwargs):
