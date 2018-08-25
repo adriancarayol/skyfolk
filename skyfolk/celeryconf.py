@@ -29,5 +29,4 @@ result_persistent = True
 result_compression = 'gzip'
 broker_transport_options = {'visibility_timeout': 18000}
 task_track_started = True
-# beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
 timezone = 'Europe/Madrid'
