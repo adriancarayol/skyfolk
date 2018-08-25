@@ -48,6 +48,8 @@ class CustomLoginForm(LoginForm):
         else:
             ip = get_ip(request)
 
+        mail = Mailer()
+
         if auth_token_device and user_profile:
             try:
                 components = auth_token_device.split()
@@ -55,7 +57,6 @@ class CustomLoginForm(LoginForm):
                                                                     browser_token=components.pop(0))
                 if created:
                     device.save()
-                    mail = Mailer()
                     message = 'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(
                         components).replace(",", " ")
                     mail.send_messages('Skyfolk - Nuevo inicio de sesión..',
@@ -65,7 +66,11 @@ class CustomLoginForm(LoginForm):
             except IntegrityError:
                 pass
         else:
-            return ValidationError('Hubo un error al inciar sesion, intentalo de nuevo.')
+            message = 'Hemos detectado un nuevo inicio de sesión desde la IP: {}'.format(ip)
+            mail.send_messages('Skyfolk - Nuevo inicio de sesión..',
+                               template='emails/new_login.html',
+                               context={'to_user': self.user.username, 'message': message},
+                               to_emails=(self.user.email,))
 
         return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
 
