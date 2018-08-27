@@ -256,7 +256,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#personal-card-info').find('#bloq-user').on('click', function () {
+    $('.user-stats').find('#bloq-user').on('click', function () {
         var obj = document.getElementById('info-user-name-profile'),
             username = obj.getAttribute('data-id'),
             buttonBan = $(this);
@@ -277,17 +277,6 @@ $(document).ready(function () {
                 AJAX_bloq_user(buttonBan);
             }
         });
-    });
-
-    $(this).click(function (event) {
-        var _personal_card_info = $('#personal-card-info');
-        if (!$(event.target).closest('#personal-card-info').length) {
-            if (!$(event.target).closest('.menu-profile').length) {
-                if ($(_personal_card_info).is(":visible")) {
-                    $(_personal_card_info).hide();
-                }
-            }
-        }
     });
 
     /* LOAD MORE ON CLICK */

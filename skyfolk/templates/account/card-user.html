@@ -18,100 +18,84 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
         </div>
         <div class="row">
             <div class="col l8 m12 s12 user-stats z-depth-1-half">
-                <div class="caja">
-                    <div class="item">
-                        <div class="user-pic"
-                             style="{% if user_profile.profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
-                                 -moz-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
-                                 box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);{% else %}
-                                 -webkit-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
-                                 -moz-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
-                                 box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile class="user-pic" %}</div>
-                        <div class="informacion">
-                            {% if user.username == user_profile.username %}
-                            <!-- Si el usuario esta visitando su propio perfil -->
-                            <span id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
-                            <span onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
-                                                                                               class="material-icons group-profile"
-                                                                                               title="Grupos">group</span>
-                            <span id="publish3" class="material-icons write-profile" title="Escribir">send</span>
-                            {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                            {% if isFriend == True %}
-                            <span id="addfriend" class="material-icons unfollow-profile" title="Dejar de seguir"
-                                onclick="AJAX_requestfriend('noabort')" style="color: #29b203;" onclick="AJAX_requestfriend('abort');">remove</span>
-                            {% elif isBlocked == True %}
-                            <span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">block</span>
-                            {% elif existFollowRequest == True %}
-                            <span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">watch_later</span>
-                            {% else %}
-                            <span id="addfriend" class="material-icons follow-profile" title="Seguir"
-                                onclick="AJAX_requestfriend('noabort')";>add</span>
-                            {% endif %}
-                            <span id="ilike_profile" class="material-icons like-profile" title="¡Me gusta!"
-                                                                         onclick=AJAX_likeprofile('noabort');>favorite</span>
-                            <span id="publish" class="material-icons write-profile" title="Escribir">send</span>
-                            {% endif %}
-                        </div>
+                    <div class="col l1 s3">
+                        <div class="tooltipped" data-position="bottom" 
+                            data-tooltip="{% if user_profile.profile.online %} Online {%else%} Offline {% endif %}"
+                            style="{% if user_profile.profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);{% else %}
+                                -webkit-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile css_class="responsive-img" %}</div>
                     </div>
-                </div>
-                <div class="header">
-                    <p class="user-profile-name">@{{ user_profile.username }}</p>
+                    <div class="col s5">
+                        <ul>
+                            <li><b id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">@{{ user_profile.username }}</b> {% if user_profile.first_name or user_profile.last_name %}
+                                ({{ user_profile.first_name }} {{ user_profile.last_name }}) {% endif %}
+                                {% if isFollower %}
+                                <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
+                                {% if user_profile.profile.status %}
+                                    <li class="status">{{ user_profile.profile.status }}</li>
+                                {% endif %}
+                        </ul>
+                        <ul>
+                            <li>
+                                <a href="/followers/{{ user_profile.username }}"><strong
+                                id="followers-stats"> {{ followers|intword }}</strong><span>Seguidores</span></a>
+                            </li>
+                            <li>
+                                <a id="likes"
+                                href="{% url "user_profile:like_list" username=user_profile.username %}"><strong> {{ n_likes|intword }}</strong>
+                                <span title="me gusta">Me gusta</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="to_gallery"
+                                href="/multimedia/{{ user_profile.username }}/"><strong> {{ multimedia_count|intword }}</strong><span>Fotos y vídeos</span></a>
+                            </li>
+                        </ul>
+                        <ul>
+                                {% if user.username == user_profile.username %}
+                                <!-- Si el usuario esta visitando su propio perfil -->
+                                <li id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</li>
+                                <li onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
+                                                                                                   class="material-icons group-profile"
+                                                                                                   title="Grupos">group</li>
+                                <li id="publish3" class="material-icons write-profile" title="Escribir">send</li>
+                                {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
+                                {% if isFriend == True %}
+                                <li id="addfriend" class="material-icons unfollow-profile" title="Dejar de seguir"
+                                    onclick="AJAX_requestfriend('noabort')" style="color: #29b203;" onclick="AJAX_requestfriend('abort');">remove</li>
+                                {% elif isBlocked == True %}
+                                <li class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">block</li>
+                                {% elif existFollowRequest == True %}
+                                <li class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">watch_later</li>
+                                {% else %}
+                                <li id="addfriend" class="material-icons follow-profile" title="Seguir"
+                                    onclick="AJAX_requestfriend('noabort')";>add</li>
+                                {% endif %}
+                                <li id="ilike_profile" class="material-icons like-profile" title="¡Me gusta!"
+                                                                             onclick=AJAX_likeprofile('noabort');>favorite</li>
+                                <li id="publish" class="material-icons write-profile" title="Escribir">send</li>
+                                {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col s4">
+                        <ul>
+                            {% if user.username != user_profile.username %}
+                                <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
+                            {% endif %}
+                            <li class="info-groups" title="Grupos de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">group</i>
+                            </li>
+                            <li class="info-trof" title="Logros de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">save</i>
+                            </li>
+                            {% if user_profile == request.user %}
+                                <li title="Mi contenido" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
+                            {% endif %}
+                            <li class="info-workspaces" title="Workspaces de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">dashboard</i></li>
+                        </ul>
+                    </div>
                     <p id="profileId" hidden>{{ user_profile.id }}</p>
-                    {% if user_profile.profile.status != None and user_profile.profile.status|length != 0 %}
-                    <p class="status"> - {{ user_profile.profile.status }}</p>
-                    {% endif %}
-                    {% if not isFollower %}
-                    <span class="material-icons tooltipped menu-profile" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }}">more_horiz</span>
-                    {% else %}
-                    <span class="material-icons tooltipped menu-profile" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
-                                                                                    style="color: #1e88e5">more_horiz</span>
-                    {% endif %}
-                    <ul id="user-stats" class="stats">
-                        <li>
-                            <a href="/followers/{{ user_profile.username }}"><strong
-                               id="followers-stats">{{ followers|intword }}</strong><span>Seguidores</span></a>
-                        </li>
-                        <li>
-                            <a id="likes"
-                               href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes|intword }}</strong>
-                               <span title="me gusta">Me gusta</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="to_gallery"
-                               href="/multimedia/{{ user_profile.username }}/"><strong>{{ multimedia_count|intword }}</strong><span>Fotos y vídeos</span></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col s12"></div>
-        <div class="col l3 s12 info-paw" id="personal-card-info">
-            <div class="info-nav default-div">
-                <div class="info-wrapper-pic">
-                    <div class="info-user-pic">{% avatar user_profile 90 %}</div>
-                </div>
-                <div class="personal-info">
-                    <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">
-                        @{{ user_profile.username }}</h1>
-                    <h3 class="info-user-name_last">{{ user_profile.first_name }} {{ user_profile.last_name }}</h3>
-                    <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
-                </div>
-                <ul class="personal-card-controls">
-                    {% if user.username != user_profile.username %}
-                    <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
-                    {% endif %}
-                    <li class="info-groups" title="Grupos de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">group</i>
-                    </li>
-                    <li class="info-trof" title="Logros de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">save</i>
-                    </li>
-                    {% if user_profile == request.user %}
-                        <li title="Mi contenido" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
-                    {% endif %}
-                    <li class="info-workspaces" title="Workspaces de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">dashboard</i></li>
-                </ul>
             </div>
         </div>
         <div class="col s12 m12 l10 offset-l1 trofeos">

@@ -9,4 +9,4 @@ class EntryListView(AjaxListView):
     page_template = 'about/entry_list_page.html'
 
     def get_queryset(self):
-        return PublicationBlog.objects.all()
+        return PublicationBlog.objects.all().order_by('-created')

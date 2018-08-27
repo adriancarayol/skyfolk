@@ -34,7 +34,7 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
 
 @cache_result()
 @register.simple_tag
-def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
+def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, css_class=None, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
@@ -53,6 +53,7 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
         'url': url,
         'size': size,
         'kwargs': kwargs,
+        'class': css_class
     }
     return render_to_string('avatar/avatar_tag.html', context)
 
