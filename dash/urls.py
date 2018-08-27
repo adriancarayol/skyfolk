@@ -122,6 +122,9 @@ urlpatterns = [
         name='dash.plugin_widgets'),
     url(_(r'^plugin-widgets/(?P<placeholder_uid>[\w_]+)/$'),
         view=plugin_widgets,
+        name='dash.plugin_widgets'),
+    url(_(r'^plugin-widgets/(?P<placeholder_uid>[\w_]+)/$'),
+        view=plugin_widgets,
         name='dash.widgets'),
 
     # ***************************************************************
