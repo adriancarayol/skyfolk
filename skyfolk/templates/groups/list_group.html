@@ -82,17 +82,32 @@
 {% endblock %}
 <div class="container">
     <div class="row center">
+        {% if not object_list %}
+            <p class="flow-text">Actualmente no estás en ningún grupo.</p>
+        {% endif %}
+    </div>
+    <div class="row center">
         <div class="col s12">
             <button class="waves-effect waves-light btn blue white-text" id="new_group">Crear grupo</button>
+        </div>
+        <div class="row"></div>
+        <div class="col s12">
+            <b>ó</b>
+        </div>
+        <div class="col offset-l4 l4 s12">
+            <form method='get' action="{% url 'user_profile:category-search' option='groups' %}">
+                <div class="input-field col s12">
+                    <input name="q" placeholder="Buscar grupos" 
+                        pattern=".{1,}" required="" title="1 character minimum" autocomplete="off" type="text" />
+                </div>
+            </form>
         </div>
     </div>
     <div class="row">
         <div class="col s12 wrapper-groups">
-            <div class="row">
-                {% for group in object_list %}
-                    {% include "groups/item_group.html" %}
-                {% endfor %} 
-            </div>
+            {% for group in object_list %}
+                {% include "groups/item_group.html" %}
+            {% endfor %} 
         </div>
     </div>
 </div>

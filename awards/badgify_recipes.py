@@ -33,7 +33,7 @@ class TenPubsReachedRecipe(BaseRecipe):
     slug = '10-pubs-reached'
     description = 'Has obtenido este logro por realizar 10 publicaciones en Skyfolk.'
     points = 25
-    category = 'hero'
+    category = 'writer'
 
     @property
     def image(self):
@@ -52,7 +52,7 @@ class FirstPublicationRecipe(BaseRecipe):
     slug = 'first-publication'
     description = 'Has obtenido este logro por realizar tu primera publicación en Skyfolk.'
     points = 5
-    category = 'hero'
+    category = 'writer'
 
     @property
     def image(self):
