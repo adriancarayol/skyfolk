@@ -326,6 +326,13 @@ def profile_view(request, username,
     context['multimedia_count'] = multimedia_count
     context['existFollowRequest'] = True if friend_request else False
 
+    try:
+        profile_interests, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title LIMIT 10" % username)
+        context['profile_interests'] = [item for sublist in profile_interests for item in sublist]
+    except Exception:
+        context['profile_interests'] = ()
+
     if privacity == "followers" or privacity == "both":
         template = "account/privacity/need_confirmation_profile.html"
         return render(request, template, context)

@@ -256,7 +256,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.user-stats').find('#bloq-user').on('click', function () {
+    $('.profile-controls').on('click', '#bloq-user', function () {
         var obj = document.getElementById('info-user-name-profile'),
             username = obj.getAttribute('data-id'),
             buttonBan = $(this);
@@ -324,7 +324,7 @@ function AJAX_likeprofile(status) {
         },
         dataType: "json",
         success: function (response) {
-            var _likes = $('#likes').find('strong');
+            var _likes = $('#likes').find('.likes-number');
             if (response === "like") {
                 $("#ilike_profile").css('color', '#ec407a');
                 $(_likes).html(parseInt($(_likes).html()) + 1);
@@ -735,15 +735,17 @@ function AJAX_bloq_user(buttonBan) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
                 if (data.status === "none" || data.status === "isfollow") {
-                    $('#addfriend').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</li>');
+                    $(buttonBan).remove();
                 } else if (data.status === "inprogress") {
-                    $('#follow_request').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                    $('#follow_request').replaceWith('<li class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</li>');
+                    $(buttonBan).remove();
                 }
                 if (data.haslike === "liked") {
                     $("#ilike_profile").css('color', '#46494c');
                     var obj_likes = document.getElementById('likes');
-                    if ($(obj_likes).find("strong").html() > 0) {
-                        $(obj_likes).find("strong").html(parseInt($(obj_likes).find("strong").html()) - 1);
+                    if ($(obj_likes).find(".likes-number").html() > 0) {
+                        $(obj_likes).find(".likes-number").html(parseInt($(obj_likes).find(".likes-number").html()) - 1);
                     }
                 }
             } else {
@@ -772,8 +774,8 @@ function AJAX_remove_bloq() {
         dataType: "json",
         success: function (response) {
             if (response == true) {
-                $('#bloq-user-span').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
-                $('#bloq-user').css('color', '#555');
+                $('#bloq-user-span').replaceWith('<li id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
+                $('.profile-controls').append('<li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>');
             } else {
                 swal({
                     title: "Tenemos un problema...",
