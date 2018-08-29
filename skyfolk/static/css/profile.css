@@ -181,8 +181,7 @@
   width: 100%; }
 
 .user-card .user-stats {
-  position: absolute;
-  margin-top: -100px;
+  position: relative;
   background-color: #fff;
   border-radius: 3px;
   padding: 0 !important; }

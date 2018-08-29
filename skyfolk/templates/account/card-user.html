@@ -61,20 +61,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
         margin: 5px;
     }
 </style>
-<div class="row">
-    <div class="col l12 m12 s12">
+<div class="row z-depth-1-half">
+    <div class="col s12">
         <div class="user-card card">
-            <div class="row">
-                <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
+                <div class="col s12 user-avatar" style="background: {% if user_profile.profile.back_image %}
                     url({{ user_profile.profile.back_image.url }})
                     {% else %}
                     url({% static "dist/img/nuevo_back.png" %})
                     {% endif %} no-repeat center center; background-size: cover;">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col l8 m12 s12 user-stats z-depth-1-half">
-                    <div class="col l1 s3">
+                </div>
+            <div class="col s12 user-stats">
+                    <div class="col l1 s4">
                         <div class="tooltipped user-pic-wrapper" data-position="bottom" 
                             data-tooltip="{% if user_profile.profile.online %} Online {%else%} Offline {% endif %}"
                             style="{% if user_profile.profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
@@ -121,7 +118,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             {% endif %}
                     </div>
                     <div class="col s12 center">
-                            <div class="divider"></div>
                             <ul class="profile-controls">
                                     {% if user.username == user_profile.username %}
                                     <!-- Si el usuario esta visitando su propio perfil -->
@@ -158,12 +154,13 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                     <li title="Mi contenido" class="my-content" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
                                 {% endif %}
                                 <li class="info-workspaces" title="Workspaces de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">dashboard</i></li>
-                                <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
+                                {% if user_profile != user %}
+                                    <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
+                                {% endif %}
                             </ul>
                     </div>
                     <p id="profileId" hidden>{{ user_profile.id }}</p>
             </div>
-        </div>
         <div class="col s12 m12 l10 offset-l1 trofeos">
             <div class="row">
                 <span id="close-trofeos" class="material-icons right">close</span>

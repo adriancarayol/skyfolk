@@ -4,9 +4,6 @@
 {% load static %} 
 {% load humanize %}
 <style>
-        .user-stats {
-            margin-top: -160px !important;
-        }
         .profile-controls, .profile-items, .profile-info {
             padding: 5px;
         }
@@ -62,19 +59,16 @@
             margin: 5px;
         }
     </style>
-<div class="row">
-    <div class="col l12 m12 s12">
+<div class="row z-depth-1-half">
+    <div class="col s12">
         <div class="user-card card" id="group-profile" data-id="{{ group_profile.id }}">
-            <div class="row">
-                <div class="user-avatar" style="background: {% if group_profile.back_image %}
+                <div class="col s12 user-avatar" style="background: {% if group_profile.back_image %}
                     url({{ group_profile.back_image.url }})
                     {% else %}
                     url({% static "dist/img/nuevo_back.png" %})
                     {% endif %} no-repeat center center; background-size: cover;">
-                </div>
             </div>
-            <div class="row">
-                <div class="col l8 m12 s12 user-stats z-depth-1-half">
+                <div class="col s12 user-stats">
                     <div class="col l1 s3">
                         <div class="user-pic-wrapper" style="{% if follow_group or group_owner %}-webkit-box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);
                             -moz-box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);
@@ -175,5 +169,4 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
