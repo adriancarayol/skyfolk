@@ -9,6 +9,8 @@ from allauth.account.views import PasswordChangeView, EmailView, RedirectAuthent
 from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from formtools.wizard.views import SessionWizardView
+from rest_framework.response import Response
+
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
@@ -24,7 +26,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -57,6 +59,8 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
 from .utils import crop_image, make_pagination_html
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.views import APIView
+from rest_framework import authentication
 
 
 def load_profile_publications(request, page, profile):
@@ -333,6 +337,13 @@ def profile_view(request, username,
     except Exception:
         context['profile_interests'] = ()
 
+    try:
+        count_profile_interests, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN COUNT(*)" % username)
+        context['profile_interests_total'] = [item for sublist in count_profile_interests for item in sublist].pop()
+    except Exception:
+        context['profile_interests_total'] = 0
+
     if privacity == "followers" or privacity == "both":
         template = "account/privacity/need_confirmation_profile.html"
         return render(request, template, context)
@@ -354,6 +365,7 @@ def profile_view(request, username,
     return render(request, template, context)
 
 
+# TODO: End advanced search view.
 @login_required(login_url='/')
 def advanced_view(request):
     """
@@ -370,6 +382,7 @@ def advanced_view(request):
 
     elif http_method == 'POST':
         form = AdvancedSearchForm(request.POST)
+
         if form.is_valid():
             clean_all_words = form.cleaned_data['all_words']
             clean_exactly = form.cleaned_data['word_or_exactly_word']

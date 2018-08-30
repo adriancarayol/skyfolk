@@ -63,9 +63,10 @@ class ConfigurationGroupProfile(UpdateView):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        self.object = form.save()
+                        form.save()
                         if tags:
                             for tag in tags:
+                                self.object.tags.add(tag)
                                 interest = TagProfile.nodes.get_or_none(title=tag)
                                 if not interest:
                                     interest = TagProfile(title=tag).save()

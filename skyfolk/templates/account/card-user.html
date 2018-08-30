@@ -106,16 +106,21 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 <a class="to_gallery"
                                 href="/multimedia/{{ user_profile.username }}/"><b class="blue-text">{{ multimedia_count|intword }}</b> Fotos y vídeos</a>
                             </li>
-                        </ul>
-                    </div>
-                    <div class="col s12 center">
-                            {% if profile_interests%}
+                            <li>
+                                {% if profile_interests %}
                                 <div class="interests">
                                     {% for i in profile_interests %}
                                     <span class="chip">{{ i }}</span>
                                     {% endfor %}
+                                    {% with profile_interests|length as profile_interest_returned %}
+                                        {% if profile_interest_returned < profile_interests_total %}
+                                            +{% reduce profile_interests_total profile_interest_returned %}
+                                        {% endif %}
+                                    {% endwith %}
                                 </div>
                             {% endif %}
+                            </li>
+                        </ul>
                     </div>
                     <div class="col s12 center">
                             <ul class="profile-controls">
