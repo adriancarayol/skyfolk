@@ -110,7 +110,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 {% if profile_interests %}
                                 <div class="interests">
                                     {% for i in profile_interests %}
-                                    <span class="chip">{{ i }}</span>
+                                    <span class="blue-text"><b>{{ i }}</b></span>
                                     {% endfor %}
                                     {% with profile_interests|length as profile_interest_returned %}
                                         {% if profile_interest_returned < profile_interests_total %}

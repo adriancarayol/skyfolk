@@ -1,15 +1,15 @@
-version: '2'
 
+version: '3'
 services:    
-  # Redis
+  # redis
   redis:
     image: redis:4.0
     hostname: redis
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
   
-  #neo4j
+  # neo4j
   neo4j:
     image: neo4j:latest
     ports:
@@ -18,10 +18,10 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/1518
     volumes:
-      - ./db/dbms:/data/dbms
+      - ./run/db/dbms:/data/dbms
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - dbpostgres
 
@@ -29,7 +29,7 @@ services:
   dbpostgres:
     image: postgres:latest
     volumes:
-      - /private/var/lib/postgresql:/var/lib/postgresql
+      - ./run/postgresql:/var/lib/postgresql
     restart: always
     ports:
       - "5432:5432"
@@ -38,19 +38,19 @@ services:
       - POSTGRES_PASSWORD=skyfolk_password
       - POSTGRES_DB=skyfolk_db
     networks:
-      - webnet
+      - skyfolknetwork
 
   # elasticsearch
   elasticsearch:
     image: elasticsearch:2.4.6
-    container_name: elasticsearch1
+    container_name: elasticsearch
     ports:
       - "9200:9200"
     volumes:
-      - ./esdata/:/usr/share/elasticsearch/data/
+      - ./run/esdata/:/usr/share/elasticsearch/data/
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
 
   # kibana
   kibana:
@@ -59,13 +59,13 @@ services:
       - "5601:5601"
     restart: always
     volumes:
-      - ./kibana/config/:/usr/share/kibana/config
+      - ./run/kibana/config/:/usr/share/kibana/config
     depends_on:
       - elasticsearch
     networks:
-      - webnet
+      - skyfolknetwork
 
-  # RabbitMQ
+  # rabbitmq nodo 1
   rabbit:
     hostname: rabbit
     image: rabbitmq:latest
@@ -78,9 +78,9 @@ services:
       - "15672:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
       
-  # nodo 2
+  # rabbitmq nodo 2
   rabbit_2:
     hostname: rabbit_2
     image: rabbitmq:latest
@@ -93,15 +93,36 @@ services:
       - "15673:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
 
-  # Django web server
+  # daphne worker
+  webworker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: skyfolk/webworker
+    volumes:
+      - .:/code
+      - /tmp:/tmp
+    command: ./run_worker.sh
+    env_file:
+      - web-variables.env
+    networks:
+      - skyfolknetwork
+    depends_on:
+      - rabbit
+      - web
+      - neo4j
+    restart: always
+
+  # django app
   web:
     env_file:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+    image: skyfolk/web
     hostname: web
     command: ./run_web.sh
     volumes:
@@ -109,51 +130,50 @@ services:
       - /tmp:/tmp
     ports:
         - "8000:8000"
-    networks:
-      - webnet
     depends_on:
       - rabbit
       - neo4j
       - dbpostgres
     networks:
-      - webnet
+      - skyfolknetwork
     restart: always
 
-  # Celery worker
+  # celery worker
   celery_worker:
     env_file:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    image: celery_worker:tag
+      dockerfile: Dockerfile
+    image: skyfolk/celery-worker
     command: ./run_celery.sh
     volumes:
       - .:/code
       - /tmp:/tmp
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - web
     restart: always
 
+  # celery beat
   celery_beat:
     env_file:
       - web-variables.env
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    image: celery_beat:tag
+      dockerfile: Dockerfile
+    image: skyfolk/celery-beat
     command: ./run_beat.sh
     volumes:
       - .:/code
       - /tmp:/tmp
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - web
     restart: always
 
 networks:
-  webnet:
+  skyfolknetwork:
     driver: bridge 

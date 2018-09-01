@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   # nginx
@@ -10,29 +10,27 @@ services:
         - "80:80"
     volumes:
         - .:/code  # mount current directory inside container
-        - ./config:/etc/nginx/conf.d
+        - ./deployment/config:/etc/nginx/conf.d
         - ./skyfolk/static:/static
-        - /tmp:/tmp
-        - /var/www/skyfolk.net/run/static/static/:/var/www/skyfolk.net/run/static/static/
-        - /var/www/skyfolk.net/run/static/media/:/var/www/skyfolk.net/run/static/media/
+        - ./code/static/static/:/var/www/skyfolk.net/run/static/static/
+        - ./code/static/media/:/var/www/skyfolk.net/run/static/media/
     depends_on:
         - web
         - webworker
     networks:
-        - webnet
+        - skyfolknetwork
     extra_hosts:
         - "cluster:172.17.0.1"
 
-  # Redis
+  # redis
   redis:
     image: redis:4.0
     hostname: redis
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
 
-
-  # RabbitMQ
+  # rabbitmq
   rabbit:
     hostname: rabbit
     image: rabbitmq:latest
@@ -45,87 +43,96 @@ services:
       - "15672:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
-      - webnet
+      - skyfolknetwork
 
+  # daphne worker
   webworker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pre
+    image: skyfolk/webworker
     volumes:
       - .:/code
       - /tmp:/tmp
-      - /var/www/skyfolk.net/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - /var/www/skyfolk.net/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
     command: ./run_worker_pre.sh
     env_file:
       - web-pre-variables.env
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - rabbit
     restart: always
     extra_hosts:
         - "cluster:172.17.0.1"
-  # Django web server
+
+  # django app
   web:
     env_file:
       - web-pre-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pre
+    image: skyfolk/web
     hostname: web
     command: ./run_web_pre.sh
     volumes:
       - .:/code  # mount current directory inside container
       - /tmp:/tmp
       - ./skyfolk/static:/static
-      - /var/www/skyfolk.net/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - /var/www/skyfolk.net/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
     expose:
         - "8000"
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - rabbit
     networks:
-      - webnet
+      - skyfolknetwork
     restart: always
     extra_hosts:
         - "cluster:172.17.0.1"
-  # Celery worker
+
+  # celery worker
   celery_worker:
     env_file:
       - web-pre-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pre
+    image: skyfolk/celery-worker
     command: ./run_celery.sh
     volumes:
       - .:/code
       - /tmp:/tmp
-      - /var/www/skyfolk.net/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - /var/www/skyfolk.net/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - web
     restart: always
     extra_hosts:
         - "cluster:172.17.0.1"
+
+  # celery beat
   celery_beat:
     env_file:
       - web-pre-variables.env
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pre
+    image: skyfolk/celery-beat
     command: ./run_beat.sh
     volumes:
       - .:/code
       - /tmp:/tmp
-      - /var/www/skyfolk.net/run/static/static/:/var/www/skyfolk.net/run/static/static/
-      - /var/www/skyfolk.net/run/static/media/:/var/www/skyfolk.net/run/static/media/
+      - ./code/run/static/static/:/var/www/skyfolk.net/run/static/static/
+      - ./code/run/static/media/:/var/www/skyfolk.net/run/static/media/
     networks:
-      - webnet
+      - skyfolknetwork
     depends_on:
       - web
     restart: always
@@ -133,5 +140,5 @@ services:
         - "cluster:172.17.0.1"
 
 networks:
-  webnet:
+  skyfolknetwork:
     driver: bridge
