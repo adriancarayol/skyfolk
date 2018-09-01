@@ -396,7 +396,13 @@ def render_plugin_view(context, plugin):
         return 'Error al mostrar la información del widget'
     return plugin.render(request=request)
 
+
 @register.filter(name='simplify_plugin_name')
 def simplify_plugin_name(value):
     value = re.sub('\([0-9]x[0-9]\)', '', value)
     return value
+
+
+@register.filter(name='field_type')
+def field_type(field):
+    return field.field.widget.__class__.__name__

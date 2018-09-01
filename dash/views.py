@@ -24,6 +24,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db import transaction
+from django.template.loader import render_to_string
 from .base import (
     get_layout,
     plugin_registry,
@@ -1048,12 +1049,11 @@ def delete_dashboard_entry(request, entry_id):
     :param int entry_id: ID of the dashboard entry to delete.
     :return django.http.HttpResponse:
     """
-    from django.template.loader import render_to_string
-
     try:
         obj = DashboardEntry._default_manager \
             .select_related('workspace') \
             .get(pk=entry_id, user=request.user)
+
         plugin = obj.get_plugin()
         plugin.request = request
         plugin._delete_plugin_data()
@@ -1065,24 +1065,21 @@ def delete_dashboard_entry(request, entry_id):
                 layout_uid=obj.layout_uid,
                 as_instance=True
             )
+
             placeholder = layout.get_placeholder(obj.placeholder_uid)(layout)
             placeholder.request = request
             empty_cells = placeholder._generate_widget_cells()
-            cell_html_class = None
-
-            for cell_html in empty_cells:
-                if cell_html[1] == obj.position:
-                    cell_html_class = cell_html[0]
-                    break
 
             context = {
-                'position': obj.position,
                 'placeholder_uid': obj.placeholder_uid,
-                'cell_html_class': cell_html_class,
                 'workspace': workspace
             }
-            rendered = render_to_string('dash/layouts/placeholder_edit.html', context)
-            return HttpResponse(json.dumps({'success': 1, 'cell': rendered}))
+
+            if empty_cells:
+                rendered = render_to_string('dash/layouts/placeholder_edit.html', context)
+            else:
+                rendered = None
+            return HttpResponse(json.dumps({'success': 1, 'add_button': rendered}))
         else:
             # Redirect to dashboard view.
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -1179,6 +1176,17 @@ def plugin_widgets(request,
 
     # If clipboard data is not empty, check if the data is suitable for
     # being pasted into the position given.
+
+    if not position:
+        total_positions = placeholder.cols * placeholder.rows
+        try:
+            for free_position in range(1, total_positions + 1):
+                if free_position not in occupied_cells:
+                    position = free_position
+                    break
+        except IndexError:
+            position = None
+
     if clipboard_plugin_data:
         can_paste_from_clipboard = can_paste_entry_from_clipboard(
             request=request,

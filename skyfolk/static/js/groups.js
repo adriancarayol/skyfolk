@@ -752,11 +752,11 @@ function AJAX_like_group(_id) {
             var _numLikes = $("#likes");
             if (_response === "like") {
                 $("#like-group").css('color', '#ec407a');
-                $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) + 1);
+                $(_numLikes).find("b").html(parseInt($(_numLikes).find("b").html()) + 1);
             } else if (_response === "no_like") {
                 $("#like-group").css('color', '#46494c');
-                if ($(_numLikes).find("strong").html() > 0) {
-                    $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) - 1);
+                if ($(_numLikes).find("b").html() > 0) {
+                    $(_numLikes).find("b").html(parseInt($(_numLikes).find("b").html()) - 1);
                 }
             } else {
                 swal({

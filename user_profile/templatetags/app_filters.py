@@ -90,7 +90,7 @@ def check_follow(request, author):
 
     # Si sigo al autor de la publicacion o él me sigue a mi, y tiene la privacidad OFAF...
     if (isFriend and user_profile.profile.privacity == 'OFAF') or (
-                isFollower and user_profile.profile.privacity == 'OFAF'):
+            isFollower and user_profile.profile.privacity == 'OFAF'):
         return True
     # Si no cumple ningun caso...
     else:
@@ -192,3 +192,8 @@ def lookup(d, key):
         return d[key]
     except KeyError:
         return ''
+
+
+@register.simple_tag
+def reduce(a, b):
+    return a - b

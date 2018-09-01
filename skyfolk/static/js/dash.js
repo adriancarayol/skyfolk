@@ -30,7 +30,14 @@ $(document).ready(function () {
         var el = $(this);
         $.getJSON($(this).attr('href'), function (data) {
             if (data.success) {
-                el.closest('.plugin').replaceWith(data.cell);
+                if (data.add_button) {
+                    let placeholder = el.closest('.placeholder');
+                    let add_plugin = placeholder.find('.add-plugin');
+                    if (!add_plugin.length) {
+                        placeholder.prepend(data.add_button);
+                    }
+                    el.closest('.plugin').remove();
+                }
             }
         });
         return false;

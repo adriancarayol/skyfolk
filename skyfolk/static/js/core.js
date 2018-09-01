@@ -481,7 +481,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
-                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</li>');
                     if (data.friend_username)
                         if (typeof addItemToFriendList === "function")
                             addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
@@ -718,11 +718,14 @@ function AJAX_submit_group() {
         data: form,
         success: function (data) {
             var msg = data.msg;
+            var group_created = data.group_created;
             if (typeof(msg) !== 'undefined' && msg !== null) {
                 Materialize.toast(msg, 4000);
             }
             if (typeof data.pk !== 'undefined' && data.pk !== null) {
                 f.trigger("reset");
+                var wrapper_groups_row = $('.wrapper-groups').find('.row').first();
+                $(wrapper_groups_row).prepend(group_created);
                 $('#create_group').hide();
             }
         },
@@ -773,7 +776,7 @@ function AJAX_requestfriend(status) {
                             }
                         });
                 } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</li>');
                 } else if (response == "user_blocked") {
                     swal({
                         title: "Petición denegada.",
@@ -787,7 +790,7 @@ function AJAX_requestfriend(status) {
                 } else if (response == "added_friend") {
                     var currentValue = document.getElementById('followers-stats');
                     $(currentValue).html(parseInt($(currentValue).html()) + 1);
-                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</li>');
                 }
                 else {
 
@@ -817,7 +820,7 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
+                $(addFriendButton).replaceWith('<li id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -845,7 +848,7 @@ function AJAX_remove_request_friend() {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
+                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",

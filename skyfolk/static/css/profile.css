@@ -132,8 +132,9 @@
   box-shadow: 0 0 1px #1e88e5; }
 
 .user-pic {
-  width: 120px;
-  height: 120px; }
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover; }
   .user-pic img {
     max-width: 100%;
     max-height: 100%; }
@@ -180,8 +181,7 @@
   width: 100%; }
 
 .user-card .user-stats {
-  position: absolute;
-  margin-top: -40px;
+  position: relative;
   background-color: #fff;
   border-radius: 3px;
   padding: 0 !important; }
@@ -1599,7 +1599,8 @@ span[class*="group-profile"], span[class*="like-profile"] {
 .placeholder .material-placeholder {
   max-height: 350px; }
   .placeholder .material-placeholder > img {
-    margin: auto; }
+    margin: auto;
+    max-width: 100%; }
 
 .card.small .card-image {
   height: 60%; }

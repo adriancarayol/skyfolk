@@ -82,7 +82,7 @@
                                             <p>{{ item.shared_publication.extra_content.description }}.</p>
                                         </div>
                                         <div class="card-action">
-                                            <a class="white-text blue right btn right" href="{{ item.shared_publication.extra_content.url }}">Ver</a>
+                                            <a class="white-text blue right btn right" target="_blank" href="{{ item.shared_publication.extra_content.url }}">Ver</a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -90,6 +90,7 @@
                         </div>
                         <div class="card-action">
                             <a class="white-text blue right btn right"
+                               target="_blank"
                                href="/publication/{{ item.shared_publication.pk }}">Ver</a>
                         </div>
                     </div>
@@ -140,7 +141,7 @@
                         <div class="card-content">
                             <p>{{ item.extra_content.description }}</p>
                         </div>
-                        <div class="white-text blue right btn right" class="card-action">
+                        <div class="white-text blue right btn right card-action" target="_blank">
                             <a href="{{ item.extra_content.url }}">Ver</a>
                         </div>
                     </div>

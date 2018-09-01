@@ -69,20 +69,17 @@ class ServiceReddit(ServicesMgr):
         trigger = Reddit.objects.get(trigger_id=trigger_id)
         date_triggered = arrow.get(kwargs.get('date_triggered'))
         data = list()
-        submissions = self.reddit.subreddit(trigger.subreddit).new()
-
+        submissions = self.reddit.subreddit(trigger.subreddit).top('day')
         for submission in submissions:
             title = 'From Reddit ' + submission.title
             created = arrow.get(submission.created).to(settings.TIME_ZONE)
-
             if date_triggered is not None and created is not None \
-                    and created >= date_triggered and not submission.is_self:
+                    and created >= date_triggered and not submission.is_self and trigger.share_link:
                 body = submission.selftext if submission.selftext else submission.url
                 data.append({'title': title, 'content': body})
                 self.send_digest_event(trigger_id, title, '')
 
-        cache.set('th_services.th_reddit_' + str(trigger_id), data)
-
+        cache.set('th_reddit_' + str(trigger_id), data)
         return data
 
     def save_data(self, trigger_id, **data):
@@ -102,22 +99,15 @@ class ServiceReddit(ServicesMgr):
         if self.token:
             trigger = Reddit.objects.get(trigger_id=trigger_id)
             if trigger.share_link:
-                try:
-                    status = self.reddit.subreddit(trigger.subreddit).submit(title=title, url=content)
-                except Exception as e:
-                    logger.critical("Reddit ERR {}".format(e))
+                status = self.reddit.subreddit(trigger.subreddit).submit(title=title, url=content)
             else:
-                try:
-                    status = self.reddit.subreddit(trigger.subreddit).submit(title=title, selftext=content)
-                except Exception as e:
-                    logger.critical("Reddit ERR {}".format(e))
+                status = self.reddit.subreddit(trigger.subreddit).submit(title=title, selftext=content)
             sentence = str('reddit submission {} created').format(title)
             logger.debug(sentence)
         else:
             msg = "no token or link provided for trigger ID {} ".format(trigger_id)
             logger.critical(msg)
             update_result(trigger_id, msg=msg, status=False)
-
         return status
 
     def auth(self, request):
@@ -125,16 +115,13 @@ class ServiceReddit(ServicesMgr):
         :param request:
         :return:
         """
-        try:
-            redirect_uri = '%s://%s%s' % (request.scheme, request.get_host(), reverse("reddit_callback"))
-            reddit = RedditApi(client_id=self.consumer_key,
+        redirect_uri = '%s://%s%s' % (request.scheme, request.get_host(), reverse("reddit_callback"))
+        reddit = RedditApi(client_id=self.consumer_key,
                            client_secret=self.consumer_secret,
                            redirect_uri=redirect_uri,
                            user_agent=self.user_agent)
-            auth_url = reddit.auth.url(['identity', 'read', 'submit', 'save'], 'redirect_uri')
-            return auth_url
-        except Exception as e:
-            raise ValueError('Hubo un error al conectar tu cuenta de Reddit: {}'.format(e))
+        auth_url = reddit.auth.url(['identity', 'read', 'submit', 'save'], 'redirect_uri')
+        return auth_url
 
     def callback(self, request, **kwargs):
         """

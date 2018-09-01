@@ -1,81 +1,168 @@
-{% comment %}
-  Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.html)
-{% endcomment %}
+{% comment %} Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.html) {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
 {% load static %}
-<div class="row">
-    <div class="col l12 m12 s12">
-        <div id="group-profile" data-id="{{ group_profile.id }}" class="user-card card">
-            <div class="ventana-pin">
-                <a><i class="material-icons">remove</i></a>
-                <a><i class="material-icons">flip_to_front</i></a>
+{% load humanize %}
+<style>
+    .profile-controls, .profile-items, .profile-info {
+        padding: 5px;
+    }
+
+    .profile-controls > li {
+        display: inline;
+        margin: 10px;
+        -webkit-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+    }
+
+    .profile-controls .configure-profile:hover {
+        color: grey;
+    }
+
+    .profile-controls .group-comment:hover {
+        color: #1e88e5;
+    }
+
+
+    .profile-controls .group-like:hover {
+        color: rgb(236, 64, 122);
+    }
+
+    .profile-items > li {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 1.2em;
+    }
+
+    .profile-items > li > a {
+        color: #424242;
+    }
+
+    .user-stats .user-pic-wrapper {
+        margin: 5px;
+    }
+</style>
+<div class="row z-depth-1-half">
+    <div class="col s12">
+        <div class="user-card card" id="group-profile" data-id="{{ group_profile.id }}">
+            <div class="col s12 user-avatar" style="background: {% if group_profile.back_image %}
+                url({{ group_profile.back_image.url }})
+            {% else %}
+                url({% static "dist/img/nuevo_back.png" %})
+            {% endif %} no-repeat center center; background-size: cover;">
             </div>
-            <div class="user-avatar">
-                {% if group_profile.back_image %}
-                    <img src="{{ group_profile.back_image.url }}" class="user-bg">
-                {% else %}
-                    <img src="{% static "img/nuevo_back.png" %}" class="user-bg">
-                {% endif %}
-                <div class="group-tool">
-                    <div class="item">
-                        <div class="user-pic">
-                            {% if group_profile.avatar %}
-                                <img src="{{ group_profile.avatar.url }}" height="120" width="120">
-                            {% else %}
-                                <img src="{% static "img/nuevo.png" %}" height="120" width="120">
-                            {% endif %}
-                        </div>
-                        <span class="informacion">
-                        {% if group_owner %}
-                            <span data-url="{% url "user_groups:configuration_group:configuration_group" pk=group_profile.id %}" id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
-                        {% elif follow_group %}
-                            <span id="unfollow-group" class="material-icons group-follow" title="Dejar de seguir"
-                                  style="color: #29b203;">remove</span>
-                        {% elif friend_request %}
-                            <span class="material-icons cancel-request" id="cancel_group_request" title="En proceso">watch_later</span>
-                        {% else %}
-                            <span id="follow-group" class="material-icons group-follow" title="Seguir">add</span>
+            <div class="col s12 user-stats">
+                <div class="col l1 s3">
+                    <div class="user-pic-wrapper"
+                         style="{% if follow_group or group_owner %}-webkit-box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);
+                             -moz-box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);
+                             box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);{% else %}
+                             -webkit-box-shadow: 0 0 5px 0 rgba(30, 13, 229, 0.75);{% endif %}">
+                        {% if group_profile.avatar %}
+                            <img src="{{ group_profile.avatar.url }}" class="responsive-img"> {% else %}
+                            <img src="{% static "img/nuevo.png" %}" class="responsive-img"> {% endif %}</div>
+                </div>
+                <div class="col l11 s8">
+                    <ul class="profile-info">
+                        <p class="group-name">{% if not group_profile.is_public %}<i class="material-icons">lock</i>
+                        {% endif %}<b>{{ group_profile.name }}</b></p><br>
+                        {% if group_profile.description != None %}
+                            <p class="group-description">{{ group_profile.description }}</p><br><br> {% endif %}
+                        {% if user_profile.profile.status %}
+                            <li class="status">{{ user_profile.profile.status }}</li>
                         {% endif %}
-                            {% if user_like_group %}
-                                <span id="like-group" class="material-icons group-like" title="¡Me gusta!"
-                                      style="color: rgb(236, 64, 122);">favorite</span>
-                            {% else %}
-                                <span id="like-group" class="material-icons group-like" title="¡Me gusta!">favorite</span>
+                    </ul>
+                    <ul class="profile-items">
+                        <li>
+                            <a href="{% url "user_groups:users_group" groupname=group_profile.slug %}">
+                                <b id="followers-stats" class="blue-text">{{ users_in_group }}</b><span> Usuarios</span></a>
+                        </li>
+                        <li>
+                            <a id="likes" href="{% url "user_groups:likes_group" groupname=group_profile.slug %}"><b class="blue-text">
+                                {{ likes }}</b><span title="me gusta"> Me gusta</span></a>
+                        </li>
+                        <li>
+                            <a class="to_gallery"
+                               href="{% url "photologue_groups:photo-list" slug=group_profile.slug %}"><b class="blue-text">
+                                {{ group_profile.get_total_multimedia }}</b><span> Fotos y vídeos</span></a>
+                        </li>
+                        <li>
+                            {% if interests %}
+                                <div class="interests">
+                                    {% for i in interests %}
+                                        <span class="blue-text"><b>{{ i.name }}</b></span>
+                                    {% endfor %}
+                                    {% with interests|length as interest_returned %}
+                                        {% if interest_returned < total_interests %}
+                                            +{% reduce total_interests interest_returned %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
                             {% endif %}
-                            <span id="publish_group" class="material-icons group-comment" title="Escribir">send</span>
-                        </span>
-                    </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col s12 center">
+                    <div class="divider"></div>
+                    <ul class="profile-controls">
+                        {% if group_owner %}
+                            <li data-url="{% url "user_groups:configuration_group:configuration_group" pk=group_profile.id %}"
+                                id="configurationOnProfile"
+                                class="material-icons configure-profile" title="Configuracion">settings
+                            </li>
+                        {% elif follow_group %}
+                            <li id="unfollow-group" class="material-icons group-follow" title="Dejar de seguir"
+                                style="color: #29b203;">remove
+                            </li>
+                        {% elif friend_request %}
+                            <li class="material-icons cancel-request" id="cancel_group_request" title="En proceso">
+                                watch_later
+                            </li>
+                        {% else %}
+                            <li id="follow-group" class="material-icons group-follow" title="Seguir">add</li>
+                        {% endif %} {% if user_like_group %}
+                        <li id="like-group" class="material-icons group-like" title="¡Me gusta!"
+                            style="color: rgb(236, 64, 122);">favorite
+                        </li>
+                    {% else %}
+                        <li id="like-group" class="material-icons group-like" title="¡Me gusta!">favorite</li>
+                    {% endif %}
+                        <li id="publish_group" class="material-icons group-comment" title="Escribir">send</li>
+                        </li>
+                    </ul>
+                </div>
+                <p id="profileId" hidden>{{ user_profile.id }}</p>
+            </div>
+        </div>
+        <div class="col s12 m12 l10 offset-l1 trofeos">
+            <div class="row">
+                <span id="close-trofeos" class="material-icons right">close</span>
+                <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12 wrapper-trofeos">
                 </div>
             </div>
-            <div class="group-info center">
-                <br>
-                <p class="group-name">{% if not group_profile.is_public %}<i class="material-icons">lock</i> {% endif %}<b>{{ group_profile.name }}</b></p><br>
-                {% if group_profile.description != None %}
-                    <p class="group-description">{{ group_profile.description }}</p><br><br>
-                {% endif %}
-                {% if interests %}
-                <div class="interests">
-                    {% for i in interests %}
-                        <span class="chip">{{ i.name }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
+        </div>
+        <div class="col s12 m12 l10 offset-l1 grupos">
+            <div class="row">
+                <span id="close-grupos" class="material-icons right">close</span>
+                <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
             </div>
-            <ul id="user-stats" class="stats">
-                <li>
-                    <a href="{% url "user_groups:users_group" groupname=group_profile.slug  %}"><strong
-                            id="followers-stats">{{ users_in_group }}</strong><span>Usuarios</span></a>
-                </li>
-                <li>
-                    <a id="likes" href="{% url "user_groups:likes_group" groupname=group_profile.slug  %}"><strong>{{ likes }}</strong><span
-                            title="me gusta">Me gusta</span></a>
-                </li>
-                <li>
-                    <a class="to_gallery"
-                       href="{% url "photologue_groups:photo-list" slug=group_profile.slug %}"><strong>{{ group_profile.get_total_multimedia }}</strong><span>Fotos y vídeos</span></a>
-                </li>
-            </ul>
+            <div class="row">
+                <div class="col l12 m12 s12 wrapper-groups">
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m12 l10 offset-l1 workspaces">
+            <div class="row">
+                <span id="close-workspaces" class="material-icons right">close</span>
+                <h3 class="workspaces-title">Workspaces de {{ user_profile.username }}</h3>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12 wrapper-workspaces">
+                </div>
+            </div>
         </div>
     </div>
 </div>
