@@ -87,7 +87,10 @@ class Pub(object):
         instance = getattr(service_consumer, 'save_data')
         # 2) for each one
         for d in data:
-            d['userservice_id'] = service.consumer.id
+            try:
+                d['userservice_id'] = service.consumer.id
+            except Exception as e:
+                logger.warning(e)
             # the consumer will save the data and return if success or not
             status = instance(service.id, **d)
             to_update = True

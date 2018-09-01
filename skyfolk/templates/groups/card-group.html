@@ -90,7 +90,7 @@
                             {% if interests %}
                                 <div class="interests">
                                     {% for i in interests %}
-                                        <span class="chip">{{ i.name }}</span>
+                                        <span class="blue-text"><b>{{ i.name }}</b></span>
                                     {% endfor %}
                                     {% with interests|length as interest_returned %}
                                         {% if interest_returned < total_interests %}

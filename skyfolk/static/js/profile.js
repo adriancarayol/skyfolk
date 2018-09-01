@@ -8,6 +8,9 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_amigos = $('#tab-amigos');
     var wrapper_shared_pub = $('#share-publication-wrapper');
+    var add_pin = $('.add-plugin');
+
+    $(add_pin).hide();
 
     /* Show more - Show less */
     $(tab_comentarios).find('.wrapper').each(function () {
@@ -102,8 +105,10 @@ $(document).ready(function () {
         if ($(_ventana_pin).is(':visible')) {
             $('html, body').removeClass('body-inConf');
             $(_ventana_pin).fadeOut("fast");
+            $(add_pin).hide();
         } else {
             $('html, body').addClass('body-inConf');
+            $(add_pin).show();
             $(_ventana_pin).fadeIn("fast");
         }
     });
