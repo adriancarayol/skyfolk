@@ -110,7 +110,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 {% if profile_interests %}
                                 <div class="interests">
                                     {% for i in profile_interests %}
-                                    <span class="chip">{{ i }}</span>
+                                    <span class="blue-text"><b>{{ i }}</b></span>
                                     {% endfor %}
                                     {% with profile_interests|length as profile_interest_returned %}
                                         {% if profile_interest_returned < profile_interests_total %}
@@ -126,7 +126,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             <ul class="profile-controls">
                                     {% if user.username == user_profile.username %}
                                     <!-- Si el usuario esta visitando su propio perfil -->
-                                    <li id="publish3" class="material-icons write-profile" title="Escribir">send</li>
                                     <li id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</li>
                                     <li onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
                                                                                                        class="material-icons group-profile"

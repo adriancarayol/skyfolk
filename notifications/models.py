@@ -336,7 +336,7 @@ def notify_handler(verb, **kwargs):
         if len(kwargs) and EXTRA_DATA:
             newnotify.data = kwargs
 
-        soup = BeautifulSoup(description)
+        soup = BeautifulSoup(description, "html5lib")
         a_description = soup.find('a')
 
         current_site = Site.objects.get_current().domain

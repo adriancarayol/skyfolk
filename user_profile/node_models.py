@@ -44,8 +44,6 @@ class NodeProfile(DjangoNode):
     )
     privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
 
-
-
     class Meta:
         app_label = 'node_profile'
 

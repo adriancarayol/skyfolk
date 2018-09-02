@@ -66,6 +66,7 @@ class ConfigurationGroupProfile(UpdateView):
                         form.save()
                         if tags:
                             for tag in tags:
+                                tag = tag.lower()
                                 self.object.tags.add(tag)
                                 interest = TagProfile.nodes.get_or_none(title=tag)
                                 if not interest:

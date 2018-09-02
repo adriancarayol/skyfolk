@@ -1,10 +1,10 @@
-from ..views import remove_relationship
+from user_profile.views import remove_relationship
 from django.test import TestCase
 from neomodel import db, clear_neo4j_database
-from ..models import RelationShipProfile, LikeProfile
+from user_profile.models import RelationShipProfile, LikeProfile
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from ..node_models import NodeProfile
+from user_profile.node_models import NodeProfile
 from unittest import mock
 from django.test.client import RequestFactory
 

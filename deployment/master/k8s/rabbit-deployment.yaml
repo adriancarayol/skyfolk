@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f deployment/master/docker-compose.yml -o deployment/master/k8s/
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbit
+  name: rabbit
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rabbit
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_DEFAULT_PASS
+          value: guest
+        - name: RABBITMQ_DEFAULT_USER
+          value: guest
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: '''secret_cookie'''
+        image: rabbitmq:latest
+        name: rabbit
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources: {}
+      hostname: rabbit
+      restartPolicy: Always
+status: {}

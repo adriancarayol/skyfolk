@@ -560,6 +560,7 @@ class InterestsView(FormView):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
+            tag = tag.lower()
             interest = TagProfile.nodes.get_or_none(title=tag)
             if not interest and tag:
                 interest = TagProfile(title=tag).save()
@@ -575,6 +576,7 @@ class InterestsView(FormView):
             return HttpResponse(json.dumps(response), content_type='application/json')
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
+            value = value.lower()
             interest = TagProfile.nodes.get_or_none(title=value)
             if not interest and value:
                 interest = TagProfile(title=value).save()
@@ -1369,23 +1371,32 @@ def welcome_step_1(request):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
+
+            tag = tag.lower()
             interest = TagProfile.nodes.get_or_none(title=tag)
+
             if not interest and tag:
                 interest = TagProfile(title=tag).save()
             if interest:
                 interest.user.connect(user_node)
+
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
         if not tags and not choices:
             response = "empty"
             return HttpResponse(json.dumps(response), content_type='application/json')
+
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
+            value = value.lower()
+
             interest = TagProfile.nodes.get_or_none(title=value)
+
             if not interest and value:
                 interest = TagProfile(title=value).save()
             if interest:
                 interest.user.connect(user_node)
+
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         results, meta = db.cypher_query(

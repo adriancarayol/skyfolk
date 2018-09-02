@@ -5,19 +5,8 @@ from .base import *
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-
-# Cargamos SECRET_KEY
-def get_env_variable(var_name):
-    '''Intenta leer una variable de entorno'''
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = "Set the %s environment variable" % var_name
-        raise ImproperlyConfigured(error_msg)
-
-
 ALLOWED_HOSTS += ['127.0.0.1']
-SECRET_KEY = get_env_variable('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY','NO-SECRET')
 SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 # S3 + CDN
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
