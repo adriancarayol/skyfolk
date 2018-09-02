@@ -33,3 +33,4 @@ db/
 kibana/
 tmp/
 config/config
+.pytest_cache
