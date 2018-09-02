@@ -48,7 +48,7 @@ def theme_publication_handler(sender, instance, created, **kwargs):
 
 
 def add_hashtags(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     hashtags = set([x.string for x in soup.find_all('a', {'class': 'hashtag'})])
     for tag in hashtags:
         tag = tag[1:]
@@ -62,7 +62,7 @@ def add_extra_content(instance):
     if not instance.content:
         return
 
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
@@ -90,7 +90,7 @@ def add_extra_content(instance):
             response = requests.get(url)
         except MissingSchema:
             return
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html5lib")
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
             'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
         title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
@@ -111,7 +111,7 @@ def add_extra_content(instance):
 
 
 def notify_mentions(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     menciones = set([a.string[1:] for a in soup.find_all('a', {'class': 'mention'})])
 
     users = User.objects.only('username', 'id').filter(username__in=menciones)

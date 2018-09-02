@@ -126,7 +126,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
         try:
             emitter = Profile.objects.get(user_id=self.request.user.id)
-            board_owner = Profile.objects.get(user_id=request.POST['board_owner'])
+            board_owner = Profile.objects.get(user_id=int(request.POST['board_owner']))
         except Profile.DoesNotExist as e:
             form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
             return self.form_invalid(form=form)
@@ -141,12 +141,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication = form.save(commit=False)
                 parent = publication.parent
 
-                if parent:
-                    parent_owner = parent.author_id
-                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
-                                                              from_profile=parent.author.profile):
-                        form.add_error('board_owner', 'El autor de la publicación te ha bloqueado.')
-                        return self.form_invalid(form=form)
+                if not parent and emitter != board_owner:
+                    form.add_error('board_owner', 'No puedes publicar en este Skyline.')
+                    return self.form_invalid(form=form)
 
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id

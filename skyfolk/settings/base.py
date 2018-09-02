@@ -157,8 +157,19 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 ACCOUNT_USERNAME_MAX_LENGTH = 15
-
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
+# Avatar settings
+AVATAR_DEFAULT_SIZE = 140
+AVATAR_PROVIDERS = (
+    'avatar.providers.PrimaryAvatarProvider',
+    'avatar.providers.GravatarAvatarProvider',
+    'avatar.providers.DefaultAvatarProvider',
+)
+AVATAR_GRAVATAR_FORCEDEFAULT = False
+AVATAR_GRAVATAR_FIELD = 'email'
+AVATAR_GRAVATAR_BASE_URL = 'https://www.gravatar.com/avatar/'
+AVATAR_CACHE_TIMEOUT = 60 * 60
+
 EXTERNAL_LOGIN_URL = None
 EXTERNAL_SIGNUP_URL = None
 EXTERNAL_LOGOUT_URL = None
@@ -204,7 +215,6 @@ GRAPHENE = {
 
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
-
 
 REDIS_PORT = 6379
 REDIS_DB = 0
