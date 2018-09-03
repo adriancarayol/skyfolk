@@ -220,7 +220,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
@@ -254,7 +254,7 @@ Template para las busquedas
                                         <img class="lazyload" data-src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
-                                            <source src="/media/{{ item.video }}" type="video/mp4">
+                                            <source src="{{ item.video }}" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     {% endif %}
@@ -579,7 +579,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                             </div>
                             <div class="col s12 legend-content">
                                 <div class="legend-user-image">
@@ -614,12 +614,12 @@ Template para las busquedas
                                     </div>
                                 {% endif %}
                                 {% if item.thumbnail %}
-                                    <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
+                                    <img class="lazyload" data-src="{{ item.thumbnail }}"
                                          alt="{{ item.name }}" title="{{ item.name }}"
                                          onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                 {% else %}
                                     <video controls style="width: 100%; height: 100%; outline: none;">
-                                        <source src="/media/{{ item.video }}" type="video/mp4">
+                                        <source src="{{ item.video }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 {% endif %}

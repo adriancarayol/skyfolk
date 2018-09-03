@@ -29,6 +29,12 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
 
+    def prepare_thumbnail(self, obj):
+        return obj.thumbnail.url
+
+    def prepare_url_image(self, obj):
+        return obj.image.url
+
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(date_added__lte=timezone.now())
 
@@ -56,6 +62,12 @@ class VideoIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
+
+    def prepare_thumbnail(self, obj):
+        return obj.thumbnail.url
+
+    def prepare_video(self, obj):
+        return obj.video.url
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(date_added__lte=timezone.now())
