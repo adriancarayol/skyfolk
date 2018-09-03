@@ -499,4 +499,7 @@ ul#vertical-menu .userView .background {
 .endless_loading {
   text-align: center; }
 
+.draggable--over {
+  opacity: 0.5; }
+
 /*# sourceMappingURL=core.css.map */

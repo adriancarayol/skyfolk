@@ -42,7 +42,7 @@ Template para el perfil de cada usuario
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const containers = document.querySelectorAll('#id_main');
-            const swappable = new window.Draggable.Sortable(containers, {
+            const swappable = new window.Draggable.Swappable(containers, {
                 draggable: '.plugin',
                 mirror: {
                     constrainDimensions: true,
@@ -65,7 +65,7 @@ Template para el perfil de cada usuario
                 source = event.data.originalSource;
             });
 
-            swappable.on('sortable:sorted', (event) => {
+            swappable.on('swappable:swapped', (event) => {
                 target = event.data.dragEvent.data.over;
                 if (lastOverContainer === event.dragEvent.overContainer) {
                     return;
@@ -73,7 +73,7 @@ Template para el perfil de cada usuario
                 lastOverContainer = event.dragEvent.overContainer;
             });
 
-            swappable.on('sortable:stop', (event) => {
+            swappable.on('swappable:stop', (event) => {
                 let source_id = source.dataset.id;
                 source.dataset.id = target.dataset.id;
                 target.dataset.id = source_id;
