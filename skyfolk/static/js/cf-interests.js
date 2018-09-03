@@ -152,7 +152,7 @@
 
                 // comma
                 //NOTE: modified
-                if (188 === e.which) {
+                if (13 === e.which) {
                     e.preventDefault();
                     self.addChip(chipsIndex, {tag: $target.val()}, $chips);
                     $target.val('');

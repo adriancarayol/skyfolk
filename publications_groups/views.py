@@ -49,8 +49,9 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
         group = get_object_or_404(UserGroups, id=request.POST.get('board_group', None))
         emitter = request.user
 
+        is_member = group.users.filter(id=emitter.id).exists()
         if group.owner.id != emitter.id:
-            if not group.is_public and not group.users.filter(id=emitter.id):
+            if not group.is_public and not is_member:
                 return self.form_invalid(form=form)
 
         if form.is_valid():
@@ -59,10 +60,15 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.author_id = emitter.id
                 publication.board_group_id = group.id
                 parent = publication.parent
+
                 if parent:
                     if RelationShipProfile.objects.is_blocked(to_profile=emitter.profile,
                                                               from_profile=parent.author.profile):
                         raise PermissionDenied('El autor de la publicación te ha bloqueado')
+
+                if not parent and group.owner.id != emitter.id and not is_member:
+                    form.add_error('content', 'No puedes publicar en este grupo.')
+                    return self.form_invalid(form=form)
 
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions

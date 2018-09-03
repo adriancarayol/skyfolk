@@ -127,8 +127,9 @@
                     {% else %}
                         <li id="like-group" class="material-icons group-like" title="¡Me gusta!">favorite</li>
                     {% endif %}
+                    {% if follow_group or group_owner %}
                         <li id="publish_group" class="material-icons group-comment" title="Escribir">send</li>
-                        </li>
+                    {% endif %}
                     </ul>
                 </div>
                 <p id="profileId" hidden>{{ user_profile.id }}</p>

@@ -525,7 +525,7 @@ class RespondGroupRequest(View):
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
                                         description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
-                                            user.username, group.name
+                                            user.username, group.slug
                                         ),
                                         verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (
                                             group.name, group.name),
@@ -656,19 +656,19 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
         instance = form.save(commit=False)
         instance.owner = self.request.user
         board_group = form.cleaned_data['board_group']
+
         try:
             group = UserGroups.objects.get(id=board_group.id)
         except ObjectDoesNotExist:
             raise Http404
 
-        if not group.is_public:
-            is_member = self.request.user.user_groups.filter(id=board_group.id).exists()
-            if not is_member:
-                return super(CreateGroupThemeView, self).form_invalid(form)
-            else:
-                return super(CreateGroupThemeView, self).form_valid(form)
-        else:
-            return super(CreateGroupThemeView, self).form_valid(form)
+        is_member = self.request.user.user_groups.filter(id=board_group.id).exists()
+
+        if not is_member:
+            form.add_error('board_group', 'Debes ser miembro del grupo para crear temas')
+            return super(CreateGroupThemeView, self).form_invalid(form)
+
+        return super(CreateGroupThemeView, self).form_valid(form)
 
 
 class AddLikeTheme(View):

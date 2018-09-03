@@ -38,7 +38,7 @@ def handle_new_group(sender, instance, created, **kwargs):
         g = NodeGroup.nodes.get(group_id=instance.id)
 
         for tag in instance.tags.all():
-            tag = tag.lower()
+            tag = tag.name.lower()
             interest = TagProfile.nodes.get_or_none(title=tag)
             if not interest:
                 interest = TagProfile(title=tag).save()
