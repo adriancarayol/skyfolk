@@ -35,7 +35,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_ENV_DB', 'skyfolk_db'),
         'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'skyfolk'),
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', 'G·$_-)(G45g45g'),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', '35.198.141.4'),
+        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'localhost'),
         'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5432'),
     }
 }
