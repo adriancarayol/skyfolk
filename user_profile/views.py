@@ -1,6 +1,7 @@
 import json
 import logging
 import random
+import uuid
 from elasticsearch.exceptions import RequestError
 import numpy as np
 from allauth.account import app_settings
@@ -9,8 +10,6 @@ from allauth.account.views import PasswordChangeView, EmailView, RedirectAuthent
 from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from formtools.wizard.views import SessionWizardView
-from rest_framework.response import Response
-
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
@@ -26,7 +25,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -59,8 +58,6 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
 from .utils import crop_image, make_pagination_html
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from rest_framework.views import APIView
-from rest_framework import authentication
 
 
 def load_profile_publications(request, page, profile):
@@ -485,7 +482,8 @@ def config_profile(request):
                 with transaction.atomic(using='default'):
                     data = perfil_form.clean_backImage()
                     if data:
-                        file = crop_image(data, "cover-%s.jpge" % request.user.username, request)
+                        user_profile.back_image.delete()
+                        file = crop_image(data, "cover-%s-%s.jpge" % (request.user.username, uuid.uuid4()), request)
                         user_profile.back_image = file
                     user_profile.status = perfil_form.clean_status()
                     user_profile.save()

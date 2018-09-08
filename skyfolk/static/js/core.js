@@ -505,23 +505,23 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
             } else if (response === 'its_blocked') {
                 swal({
                     title: "Espera un momento!",
-                    text: "Tienes bloqueado este perfil!",
+                    text: "¡Tienes bloqueado este perfil!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'no_added_friend') {
                 swal({
-                    title: "We have a problem",
-                    text: "Friend no added",
+                    title: "Tenemos un problema...",
+                    text: "La petición ha fallado",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'in_progress') {
                 swal({
-                    title: "Request in progress",
-                    text: "Your request is to confirm!.",
+                    title: "Petición en progreso",
+                    text: "¡Tu petición está a la espera de ser aceptada!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
@@ -746,7 +746,7 @@ function AJAX_submit_group() {
 /*PETICION AJAX PARA AGREGAR AMIGO*/
 function AJAX_requestfriend(status) {
     var slug = $("#profileId").html();
-    if (status == "noabort") {
+    if (status === "noabort") {
         $.ajax({
             type: "POST",
             url: "/request_friend/",
@@ -757,7 +757,7 @@ function AJAX_requestfriend(status) {
             //data: {'slug': $("#profileId").html()},
             dataType: "json",
             success: function (response) {
-                if (response == "isfriend") {
+                if (response === "isfriend") {
                     swal({
                             title: "¡Ya es tu amigo!",
                             type: "warning",
@@ -766,8 +766,8 @@ function AJAX_requestfriend(status) {
                             showConfirmButton: true,
                             showCancelButton: true,
                             confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Unfollow",
-                            cancelButtonText: "Ok, fine!",
+                            confirmButtonText: "Dejar de seguir",
+                            cancelButtonText: "¡Ah, vale!",
                             closeOnConfirm: true
                         },
                         function (isConfirm) {
@@ -775,9 +775,9 @@ function AJAX_requestfriend(status) {
                                 AJAX_remove_relationship(slug);
                             }
                         });
-                } else if (response == "inprogress") {
+                } else if (response === "inprogress") {
                     $('#addfriend').replaceWith('<li class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</li>');
-                } else if (response == "user_blocked") {
+                } else if (response === "user_blocked") {
                     swal({
                         title: "Petición denegada.",
                         text: "El usuario te ha bloqueado.",
@@ -787,7 +787,7 @@ function AJAX_requestfriend(status) {
                         animation: "slide-from-top",
                         showConfirmButton: false
                     });
-                } else if (response == "added_friend") {
+                } else if (response === "added_friend") {
                     var currentValue = document.getElementById('followers-stats');
                     $(currentValue).html(parseInt($(currentValue).html()) + 1);
                     $('#addfriend').replaceWith('<li class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</li>');
@@ -800,7 +800,7 @@ function AJAX_requestfriend(status) {
                 alert(rs.responseText + " " + e);
             }
         });
-    } else if (status == "anonymous") {
+    } else if (status === "anonymous") {
         alert("Debe estar registrado");
     }
 }
