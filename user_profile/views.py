@@ -1,14 +1,21 @@
 import json
 import logging
+import random
+import uuid
+from elasticsearch.exceptions import RequestError
 import numpy as np
-from allauth.account.views import PasswordChangeView, EmailView
+from allauth.account import app_settings
+from allauth.account.views import PasswordChangeView, EmailView, RedirectAuthenticatedUserMixin, CloseableSignupMixin, \
+    sensitive_post_parameters_m
+from allauth.account.utils import get_next_redirect_url, complete_signup
+from allauth.exceptions import ImmediateHttpResponse
+from formtools.wizard.views import SessionWizardView
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
 from itertools import chain, zip_longest
 from dash.base import get_layout
-
-from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url, \
+from dash.utils import get_user_plugins, get_workspaces, get_public_dashboard_url, \
     get_dashboard_settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -18,7 +25,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -41,7 +48,7 @@ from publications.forms import PublicationForm, PublicationEdit, SharedPublicati
 from publications.models import Publication
 from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
-from user_profile.forms import AdvancedSearchForm
+from user_profile.forms import AdvancedSearchForm, EmailForm, UsernameForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import Request, Profile, \
@@ -82,7 +89,7 @@ def load_profile_publications(request, page, profile):
                                              'shared_group_publication__images',
                                              'shared_group_publication__author',
                                              'shared_group_publication__videos',
-                                             'shared_group_publication__group_extra_content',
+                                             'shared_group_publication__extra_content',
                                              'shared_publication__videos', 'shared_publication__extra_content') \
         .select_related('author',
                         'board_owner', 'shared_publication',
@@ -238,7 +245,6 @@ def profile_view(request, username,
 
     # Recuperamos si el perfil es gustado.
 
-
     if user.username != username:
         try:
             liked = LikeProfile.objects.filter(to_profile__user__username=username, from_profile__user=user).exists()
@@ -250,7 +256,7 @@ def profile_view(request, username,
     # Recuperamos el numero total de likes
     total_likes = 0
     try:
-        total_likes = LikeProfile.objects.filter(to_profile__user__username=user.username).count()
+        total_likes = LikeProfile.objects.filter(to_profile__user__username=username).count()
     except Exception as e:
         logging.info(e)
 
@@ -303,12 +309,6 @@ def profile_view(request, username,
     except Exception as e:
         num_followers = 0
 
-    # Recuperamos el numero de seguidos y la lista de seguidos
-    try:
-        num_follows = RelationShipProfile.objects.get_total_following(n.id)
-    except Exception as e:
-        num_follows = 0
-
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
         if user.username == username:
@@ -321,12 +321,25 @@ def profile_view(request, username,
     context['liked'] = liked
     context['n_likes'] = total_likes
     context['followers'] = num_followers
-    context['following'] = num_follows
     context['isBlocked'] = isBlocked
     context['isFollower'] = isFollower
     context['isFriend'] = isFollow
     context['multimedia_count'] = multimedia_count
     context['existFollowRequest'] = True if friend_request else False
+
+    try:
+        profile_interests, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title LIMIT 10" % username)
+        context['profile_interests'] = [item for sublist in profile_interests for item in sublist]
+    except Exception:
+        context['profile_interests'] = ()
+
+    try:
+        count_profile_interests, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN COUNT(*)" % username)
+        context['profile_interests_total'] = [item for sublist in count_profile_interests for item in sublist].pop()
+    except Exception:
+        context['profile_interests_total'] = 0
 
     if privacity == "followers" or privacity == "both":
         template = "account/privacity/need_confirmation_profile.html"
@@ -349,6 +362,7 @@ def profile_view(request, username,
     return render(request, template, context)
 
 
+# TODO: End advanced search view.
 @login_required(login_url='/')
 def advanced_view(request):
     """
@@ -365,6 +379,7 @@ def advanced_view(request):
 
     elif http_method == 'POST':
         form = AdvancedSearchForm(request.POST)
+
         if form.is_valid():
             clean_all_words = form.cleaned_data['all_words']
             clean_exactly = form.cleaned_data['word_or_exactly_word']
@@ -411,7 +426,7 @@ def advanced_view(request):
 def config_privacity(request):
     user = request.user
     try:
-        user_profile = NodeProfile.nodes.get(user_id=user.id)
+        user_profile = NodeProfile.nodes.get(title=user.username)
         profile = Profile.objects.get(user_id=user.id)
     except ObjectDoesNotExist:
         raise Http404
@@ -467,7 +482,8 @@ def config_profile(request):
                 with transaction.atomic(using='default'):
                     data = perfil_form.clean_backImage()
                     if data:
-                        file = crop_image(data, "cover-%s.jpge" % request.user.username, request)
+                        user_profile.back_image.delete()
+                        file = crop_image(data, "cover-%s-%s.jpge" % (request.user.username, uuid.uuid4()), request)
                         user_profile.back_image = file
                     user_profile.status = perfil_form.clean_status()
                     user_profile.save()
@@ -509,13 +525,132 @@ def config_profile(request):
 @login_required(login_url='/')
 def config_blocked(request):
     user = request.user
-    n = NodeProfile.nodes.get(user_id=user.id)
+    n = NodeProfile.nodes.get(title=user.username)
     id_users = [u.user_id for u in n.bloq.match()]
     list_blocked = User.objects.filter(id__in=id_users).select_related('profile')
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
                                                        'blocked': list_blocked,
                                                        })
+
+
+class InterestsView(FormView):
+    template_name = "account/cf-interests.html"
+    form_class = ThemesForm
+    success_url = "/config/interests/"
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(self.request.POST or None)
+
+        if not form.is_valid():
+            return super().post(request, *args, **kwargs)
+
+        user = request.user
+        user_node = NodeProfile.nodes.get(title=user.username)
+        response = "success"
+
+        tags = request.POST.getlist('tags[]')
+        for tag in tags:
+            if tag.isspace():
+                response = "with_spaces"
+                return HttpResponse(json.dumps(response), content_type='application/json')
+            tag = tag.lower()
+            interest = TagProfile.nodes.get_or_none(title=tag)
+            if not interest and tag:
+                interest = TagProfile(title=tag).save()
+            if interest:
+                if interest.user.is_connected(user_node):
+                    interest.user.disconnect(user_node)
+                else:
+                    interest.user.connect(user_node)
+        # Procesar temas por defecto
+        choices = request.POST.getlist('choices[]')
+        if not tags and not choices:
+            response = "empty"
+            return HttpResponse(json.dumps(response), content_type='application/json')
+        for choice in choices:
+            value = dict(ThemesForm.CHOICES).get(choice)
+            value = value.lower()
+            interest = TagProfile.nodes.get_or_none(title=value)
+            if not interest and value:
+                interest = TagProfile(title=value).save()
+            if interest:
+                if interest.user.is_connected(user_node):
+                    interest.user.disconnect(user_node)
+                else:
+                    interest.user.connect(user_node)
+        return HttpResponse(json.dumps(response), content_type='application/json')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        results, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
+        my_interests, meta_2 = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title" % self.request.user.username)
+        context['my_interests'] = [item for sublist in my_interests for item in sublist]
+        context['top_tags'] = results
+        context['form'] = ThemesForm
+        return context
+
+
+class AffinityView(TemplateView):
+    template_name = "account/cf-affinity.html"
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Get follows of user
+        query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
+        follows, meta = db.cypher_query(query=query)
+        dict_results = [item for sublist in follows for item in sublist]
+        print(dict_results)
+        # Get followers of user
+        query = "MATCH (a)<-[follow:FOLLOW]-(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
+        followers, meta = db.cypher_query(query=query)
+        followers = [item for sublist in followers for item in sublist]
+
+        for dict_result in followers:
+            if not any(dict_result['label'] == d['label'] for d in dict_results):
+                dict_results.append(dict_result)
+
+        nodes = [
+            {
+                "id": "n" + str(self.request.user.username),
+                "label": self.request.user.username,
+                "x": 0,
+                "y": 0,
+                "size": 8,
+                "color": "#ccc"
+            }
+        ]
+
+        edges = [
+
+        ]
+
+        for index, node in enumerate(dict_results):
+            r = lambda: random.randint(0, 255)
+            nodes.append(
+                {"id": "n" + str(node['label']), "label": node['label'] + ' (' + str(node['weight']) + ')',
+                 "x": random.uniform(0, 0.1), "y": random.uniform(0, 0.1),
+                 "size": node['weight'], "color": '#%02X%02X%02X' % (r(), r(), r())})
+            edges.append({"id": "e" + str(node['label']), "source": "n" + str(node['label']),
+                          "target": "n" + str(self.request.user.username)})
+
+        data = {
+            "nodes": nodes,
+            "edges": edges
+        }
+
+        context['data'] = json.dumps(data)
+        return context
 
 
 @login_required(login_url='accounts/login')
@@ -551,19 +686,19 @@ def add_friend_by_username_or_pin(request):
 
             if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'its_your_friend'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             if RelationShipProfile.objects.is_blocked(from_profile=friend, to_profile=user_profile):
                 data['response'] = 'user_blocked'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             if RelationShipProfile.objects.is_blocked(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'blocked_profile'
-                data['friend'] = friend.username
+                data['friend'] = friend.user.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
@@ -629,10 +764,16 @@ def like_profile(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
+        if slug is not None and slug.isnumeric():
+            slug = int(slug)
+
+        if slug == user.id:
+            return HttpResponseBadRequest()
+
         try:
             n = Profile.objects.get(user_id=user.id)
             m = Profile.objects.get(user_id=slug)
-        except Profile.DoesNotExist:
+        except (Profile.DoesNotExist, ValueError) as e:
             raise Http404
 
         if LikeProfile.objects.filter(to_profile=m, from_profile=n).exists():
@@ -670,6 +811,12 @@ def request_friend(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
+        if slug is not None and slug.isnumeric():
+            slug = int(slug)
+
+        if slug == user.id:
+            return HttpResponseBadRequest()
+
         try:
             n = Profile.objects.get(user_id=user.id)
             m = Profile.objects.get(user_id=slug)
@@ -702,6 +849,7 @@ def request_friend(request):
                             # enviamos notificacion informando del evento
                             notify.send(user, actor=n.user.username,
                                         recipient=m.user,
+                                        action_object=user,
                                         description="@{0} ahora es tu seguidor.".format(user.username),
                                         verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (
                                             n.user.username, n.user.username),
@@ -759,6 +907,12 @@ def respond_friend_request(request):
         profile_user_id = request.POST.get('slug', None)
         request_status = request.POST.get('status', None)
 
+        if profile_user_id is not None and profile_user_id.isnumeric():
+            profile_user_id = int(profile_user_id)
+
+        if user.id == profile_user_id:
+            return HttpResponseBadRequest()
+
         try:
             recipient = User.objects.select_related('profile').get(id=profile_user_id)
             emitter = Profile.objects.get(user_id=user.id)
@@ -773,6 +927,7 @@ def respond_friend_request(request):
                                                            from_profile=recipient.profile, type=FOLLOWING)
                         notify.send(user, actor=user.username,
                                     recipient=recipient,
+                                    action_object=user,
                                     description="@{0} ha aceptado tu solicitud de seguimiento.".format(user.username),
                                     verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
                                         user.username, user.username),
@@ -812,6 +967,12 @@ def remove_relationship(request):
     user = request.user
     slug = request.POST.get('slug', None)
 
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
+
     if request.method == 'POST':
         try:
             profile_user = Profile.objects.get(user_id=slug)
@@ -841,6 +1002,12 @@ def remove_blocked(request):
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
+
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
 
     if request.method == 'POST':
         try:
@@ -877,6 +1044,12 @@ def remove_request_follow(request):
     slug = request.POST.get('slug', None)
     status = request.POST.get('status', None)
 
+    if slug is not None and slug.isnumeric():
+        slug = int(slug)
+
+    if user.id == slug:
+        return HttpResponseBadRequest()
+
     logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))
     if request.method == 'POST':
         if status == 'cancel':
@@ -896,7 +1069,7 @@ class FollowersListView(ListView):
     """
     Lista de seguidores del usuario
     """
-    context_object_name = "friends_top4"
+    context_object_name = "followers"
     template_name = "account/relations.html"
     paginate_by = 25
 
@@ -905,11 +1078,9 @@ class FollowersListView(ListView):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        followers_list = RelationShipProfile.objects.filter(
+        return RelationShipProfile.objects.filter(
             to_profile__user__username=self.kwargs.get('username', None),
-            type=FOLLOWING).values('from_profile_id')
-        return User.objects.filter(profile__in=followers_list).select_related(
-            'profile')
+            type=FOLLOWING).select_related('from_profile', 'from_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
@@ -926,7 +1097,7 @@ class FollowingListView(ListView):
     """
     Lista de seguidos del usuario
     """
-    context_object_name = "friends_top4"
+    context_object_name = "following"
     template_name = "account/relations.html"
     paginate_by = 25
 
@@ -935,11 +1106,10 @@ class FollowingListView(ListView):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        following_list = RelationShipProfile.objects.filter(
-            from_profile__user__username=self.kwargs.get('username', None),
-            type=FOLLOWING).values('to_profile_id')
-        return User.objects.filter(profile__in=following_list).select_related(
-            'profile')
+        username = self.kwargs.get('username', None)
+        return RelationShipProfile.objects.filter(
+            from_profile__user__username=username,
+            type=FOLLOWING).select_related('to_profile', 'to_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
@@ -1023,7 +1193,7 @@ class DeactivateAccount(FormView):
         if user.is_authenticated():
             if form.is_valid():
                 try:
-                    node_profile = NodeProfile.nodes.get(user_id=user.id)
+                    node_profile = NodeProfile.nodes.get(title=user.username)
                 except NodeProfile.DoesNotExist:
                     raise ObjectDoesNotExist
 
@@ -1072,6 +1242,9 @@ def bloq_user(request):
 
     if request.method == 'POST':
         id_user = request.POST.get('id_user', None)
+
+        if id_user is not None and id_user.isnumeric():
+            id_user = int(id_user)
 
         if id_user == user.id:
             data = {'response': False, 'haslike': haslike}
@@ -1184,7 +1357,7 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
-    user_node = NodeProfile.nodes.get(user_id=user.id)
+    user_node = NodeProfile.nodes.get(title=user.username)
 
     context = {'user_profile': user}
 
@@ -1196,23 +1369,32 @@ def welcome_step_1(request):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
+
+            tag = tag.lower()
             interest = TagProfile.nodes.get_or_none(title=tag)
+
             if not interest and tag:
                 interest = TagProfile(title=tag).save()
             if interest:
                 interest.user.connect(user_node)
+
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
         if not tags and not choices:
             response = "empty"
             return HttpResponse(json.dumps(response), content_type='application/json')
+
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
+            value = value.lower()
+
             interest = TagProfile.nodes.get_or_none(title=value)
+
             if not interest and value:
                 interest = TagProfile(title=value).save()
             if interest:
                 interest.user.connect(user_node)
+
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         results, meta = db.cypher_query(
@@ -1257,14 +1439,14 @@ class RecommendationUsers(ListView):
         offset = limit - 25
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' "
             "AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
-            (user.id, offset, 25))
+            (user.username, offset, 25))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
 
         if not users:
-            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:25]
+            users = NodeProfile.nodes.filter(privacity__ne='N', title__ne=user.username).order_by('?')[offset:25]
 
         total_users = len(NodeProfile.nodes.all())
         total_pages = int(total_users / 25)
@@ -1272,8 +1454,8 @@ class RecommendationUsers(ListView):
             total_pages += 1
         self.pagination = make_pagination_html(current_page, total_pages)
 
-        user_ids = [u.user_id for u in users]
-        return User.objects.filter(id__in=user_ids).select_related('profile')
+        usernames = [u.title for u in users]
+        return User.objects.filter(username__in=usernames).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)
@@ -1285,13 +1467,14 @@ class RecommendationUsers(ListView):
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
 
 
-class LikeListUsers(AjaxListView):
+class LikeListUsers(ListView):
     """
     Lista de usuarios que han dado like a un perfil
     """
     model = User
     template_name = "account/like_list.html"
     context_object_name = "object_list"
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(LikeListUsers, self).__init__(*args, **kwargs)
@@ -1304,24 +1487,12 @@ class LikeListUsers(AjaxListView):
     def get_queryset(self):
         username = self.kwargs['username']
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        n = NodeProfile.nodes.get(title=username)
-        id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=25)]
-
-        total_users = n.count_likes()
-        total_pages = int(total_users / 25)
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-
-        return User.objects.filter(id__in=id_users).select_related('profile')
+        profile = Profile.objects.get(user__username=username)
+        return LikeProfile.objects.filter(to_profile=profile).select_related('from_profile', 'from_profile__user')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
-        context['pagination'] = self.pagination
         user = self.request.user
 
         return context
@@ -1336,12 +1507,20 @@ def autocomplete(request):
     """
     user = request.user
     q = request.GET.get('q', '')
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-    suggestions = [{'username': result.username, 'first_name': result.firstname,
-                    'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
-    the_data = json.dumps({
-        'results': suggestions
-    })
+
+    try:
+        sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
+        suggestions = [{'username': result.username, 'first_name': result.firstname,
+                        'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
+        the_data = json.dumps({
+            'results': suggestions
+        })
+    except RequestError as e:
+        the_data = json.dumps({
+            'results': []
+        })
+        logging.info('Error al buscar q: {} - ERROR: {}'.format(q, e))
+
     return HttpResponse(the_data, content_type='application/json')
 
 
@@ -1365,43 +1544,59 @@ class SearchUsuarioView(SearchView):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                                                      | SQ(author_id=self.request.user.id)) | (
-                                                        (~SQ(
-                                                            board_owner__profile__in=users_not_blocked_me) & ~SQ(
-                                                            board_owner__profile__privacity='N') & ~SQ(
-                                                            author__profile__in=users_not_blocked_me)) &
-                                                        ((SQ(board_owner__profile__privacity='A') | (
-                                                            (SQ(board_owner__profile__privacity='OF') &
-                                                             SQ(
-                                                                 board_owner__profile__in=following)) | (
-                                                                SQ(board_owner__profile__privacity='OFAF') &
-                                                                (SQ(
-                                                                    board_owner__profile__in=following) | SQ(
-                                                                    board_owner__profile__in=followers))
-                                                            )) & ((SQ(author__profile__privacity='OF') &
-                                                                   SQ(
-                                                                       author__profile__in=following)) | (
-                                                                      SQ(author__profile__privacity='OFAF') &
-                                                                      (SQ(
-                                                                          author__profile__in=following) | SQ(
-                                                                          author__profile__in=followers))
-                                                                  ) | SQ(author__profile__privacity='A'))) | (
-                                                             SQ(author__profile__privacity='A') | (
-                                                                 (SQ(author__profile__privacity='OF') &
-                                                                  SQ(
-                                                                      author__profile__in=following)) | (
-                                                                     SQ(author__profile__privacity='OFAF') &
-                                                                     (SQ(
-                                                                         author__profile__in=following) | SQ(
-                                                                         author__profile__in=followers))
-                                                                 )) & ((SQ(board_owner__profile__privacity='OF') &
-                                                                        SQ(
-                                                                            board_owner__profile__in=following)) | (
-                                                                           SQ(board_owner__profile__privacity='OFAF') &
-                                                                           (SQ(
-                                                                               board_owner__profile__in=following) | SQ(
-                                                                               board_owner__profile__in=followers))
-                                                                       ) | SQ(board_owner__profile__privacity='A')))))) \
-                .select_related('author').prefetch_related('images').filter(deleted=False)
+                                                            (~SQ(
+                                                                board_owner__profile__in=users_not_blocked_me) & ~SQ(
+                                                                board_owner__profile__privacity='N') & ~SQ(
+                                                                author__profile__in=users_not_blocked_me)) &
+                                                            ((SQ(board_owner__profile__privacity='A') | (
+                                                                    (SQ(board_owner__profile__privacity='OF') &
+                                                                     SQ(
+                                                                         board_owner__profile__in=following)) | (
+                                                                            SQ(board_owner__profile__privacity='OFAF') &
+                                                                            (SQ(
+                                                                                board_owner__profile__in=following) | SQ(
+                                                                                board_owner__profile__in=followers))
+                                                                    )) & ((SQ(author__profile__privacity='OF') &
+                                                                           SQ(
+                                                                               author__profile__in=following)) | (
+                                                                                  SQ(
+                                                                                      author__profile__privacity='OFAF') &
+                                                                                  (SQ(
+                                                                                      author__profile__in=following) | SQ(
+                                                                                      author__profile__in=followers))
+                                                                          ) | SQ(author__profile__privacity='A'))) | (
+                                                                     SQ(author__profile__privacity='A') | (
+                                                                     (SQ(author__profile__privacity='OF') &
+                                                                      SQ(
+                                                                          author__profile__in=following)) | (
+                                                                             SQ(author__profile__privacity='OFAF') &
+                                                                             (SQ(
+                                                                                 author__profile__in=following) | SQ(
+                                                                                 author__profile__in=followers))
+                                                                     )) & ((SQ(board_owner__profile__privacity='OF') &
+                                                                            SQ(
+                                                                                board_owner__profile__in=following)) | (
+                                                                                   SQ(
+                                                                                       board_owner__profile__privacity='OFAF') &
+                                                                                   (SQ(
+                                                                                       board_owner__profile__in=following) | SQ(
+                                                                                       board_owner__profile__in=followers))
+                                                                           ) | SQ(
+                                                                 board_owner__profile__privacity='A')))))) \
+                .select_related('author',
+                                'board_owner', 'shared_publication',
+                                'parent', 'shared_group_publication').prefetch_related('extra_content', 'images',
+                                                                                       'videos',
+                                                                                       'shared_publication__images',
+                                                                                       'tags',
+                                                                                       'shared_publication__author',
+                                                                                       'shared_group_publication__images',
+                                                                                       'shared_group_publication__author',
+                                                                                       'shared_group_publication__videos',
+                                                                                       'shared_group_publication__extra_content',
+                                                                                       'shared_publication__videos',
+                                                                                       'shared_publication__extra_content').filter(
+                deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
@@ -1410,9 +1605,9 @@ class SearchUsuarioView(SearchView):
                                              SQ(owner__profile__in=following)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
-                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__privacity='OFAF') & (
                                                     SQ(owner__profile__in=following) | SQ(
-                                                        owner__profile__in=followers)))))) \
+                                                owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
             Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N'))) \
@@ -1424,9 +1619,9 @@ class SearchUsuarioView(SearchView):
                                              SQ(owner__profile__in=following)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
-                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__privacity='OFAF') & (
                                                     SQ(owner__profile__in=following) | SQ(
-                                                        owner__profile__in=followers)))))) \
+                                                owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ) \
             .load_all_queryset(
@@ -1487,35 +1682,37 @@ def recommendation_real_time(request):
         except Exception:
             return JsonResponse({'response': None})
 
-        if ids:
-            exclude_ids = ','.join(str(e) for e in ids)
-        else:
-            exclude_ids = []
+        if len(ids) > 100:
+            ids = []
 
-        if len(exclude_ids) > 100:
-            exclude_ids = []
+        usernames = User.objects.filter(id__in=ids).values_list('username', flat=True)
+
+        if len(usernames) > 0:
+            exclude_usernames = ','.join("'" + str(e) + "'" for e in usernames)
+        else:
+            exclude_usernames = []
 
         user = request.user
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
-            "AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY "
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' "
+            "AND NOT u2.privacity='N' AND NOT (u2.title IN [%s]) RETURN u2.title, COUNT(tag) AS score ORDER BY "
             "score DESC LIMIT 50" % (
-                user.id, exclude_ids))
-        users = []
+                user.username, exclude_usernames))
 
         if not results:
-            ids.append(user.id)
-            results = NodeProfile.nodes.exclude(privacity='N', user_id__in=ids).order_by('?')[:50]
-            [users.append(x.user_id) for x in results]
+            usernames = list(usernames)
+            usernames.append(user.username)
+            results = NodeProfile.nodes.exclude(privacity='N', title__in=usernames).order_by(
+                '?')[:50]
+            users = [x.title for x in results]
         else:
-            [users.append(x[0]) for x in results]
+            users = [x[0] for x in results]
 
-        sql_result = User.objects.filter(id__in=users)
-        sql_users = []
-        [sql_users.append({'id': u.id, 'username': u.username,
-                           'first_name': u.first_name, 'last_name': u.last_name,
-                           'avatar': avatar_url(u)}) for u in sql_result]
+        sql_result = User.objects.filter(username__in=users)
+        sql_users = [{'id': u.id, 'username': u.username,
+                      'first_name': u.first_name, 'last_name': u.last_name,
+                      'avatar': avatar_url(u)} for u in sql_result]
         return JsonResponse(sql_users, safe=False)
 
     return JsonResponse({'response': None})
@@ -1526,11 +1723,11 @@ class FollowingByAffinityList(generics.ListAPIView):
     renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        n = NodeProfile.nodes.get(user_id=user_id)
-        pk_list = [u.user_id for u in n.get_favs_users()]
-        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-        return User.objects.filter(id__in=pk_list).order_by(preserved)
+        user = self.request.user
+        n = NodeProfile.nodes.get(title=user.username)
+        usernames = [u.title for u in n.get_favs_users()]
+        preserved = Case(*[When(username=username, then=pos) for pos, username in enumerate(usernames)])
+        return User.objects.filter(username__in=usernames).order_by(preserved)
 
 
 class FollowersByAffinityList(generics.ListAPIView):
@@ -1538,11 +1735,11 @@ class FollowersByAffinityList(generics.ListAPIView):
     renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
-        user_id = self.request.user.id
-        n = NodeProfile.nodes.get(user_id=user_id)
-        pk_list = [u.user_id for u in n.get_favs_followers_users()]
-        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
-        return User.objects.filter(id__in=pk_list).order_by(preserved)
+        user = self.request.user
+        n = NodeProfile.nodes.get(title=user.username)
+        usernames = [u.title for u in n.get_favs_followers_users()]
+        preserved = Case(*[When(username=username, then=pos) for pos, username in enumerate(usernames)])
+        return User.objects.filter(username__in=usernames).order_by(preserved)
 
 
 class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
@@ -1563,6 +1760,7 @@ class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
         instance = form.save(commit=False)
         instance.user = self.request.user
         return super(NotificationSettingsView, self).form_valid(form)
+
 
 class UserLikeContent(TemplateView):
     """
@@ -1585,8 +1783,8 @@ class UserLikeContent(TemplateView):
 
         user = self.request.user
         publications = Publication.objects.filter(user_give_me_like__id__exact=user.id) \
-                                            .select_related('author') \
-                                            .prefetch_related('images')[offset:limit]
+                           .select_related('author') \
+                           .prefetch_related('images')[offset:limit]
         users = LikeProfile.objects.filter(from_profile__user=user).select_related('to_profile__user')[offset:limit]
         groups = LikeGroup.objects.filter(from_like=user).select_related('to_like')[offset:limit]
 
@@ -1610,3 +1808,86 @@ class UserLikeContent(TemplateView):
         context['mixed'] = self.get_like_content()
         context['pagination'] = self.pagination
         return context
+
+
+FORMS = [
+    ("user", UsernameForm),
+    ("email", EmailForm)
+]
+
+TEMPLATES = {
+    "user": "account/username_form.html",
+    "email": "account/email_signup.html"
+}
+
+
+class CustomSignupView(RedirectAuthenticatedUserMixin, CloseableSignupMixin, SessionWizardView):
+    form_list = FORMS
+    template_name = "account/signup.html"
+    redirect_field_name = "next"
+    success_url = None
+
+    @sensitive_post_parameters_m
+    def dispatch(self, request, *args, **kwargs):
+        return super(CustomSignupView, self).dispatch(request, *args, **kwargs)
+
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+
+    def get_success_url(self):
+        # Explicitly passed ?next= URL takes precedence
+        ret = (
+                get_next_redirect_url(
+                    self.request,
+                    self.redirect_field_name) or self.success_url)
+        return ret
+
+    def done(self, form_list, **kwargs):
+        i = 0
+
+        user_fields = {}
+        for form in form_list:
+            data = form.cleaned_data
+            if i == 0:
+                user_fields['username'] = data['username']
+                user_fields['password'] = data['password1']
+            elif i == 1:
+                user_fields['email'] = data['email']
+
+            i += 1
+
+        user = User.objects.create_user(username=user_fields['username'], email=user_fields['email'],
+                                        password=user_fields['password'])
+        try:
+            return complete_signup(
+                self.request, user,
+                app_settings.EMAIL_VERIFICATION,
+                self.get_success_url())
+        except ImmediateHttpResponse as e:
+            return e.response
+
+
+signup = CustomSignupView.as_view()
+
+
+def page_not_found(request, exception, template_name='account/404.html'):
+    context = {
+        'error_code': 404
+    }
+    return render(request, template_name, context, status=404)
+
+
+def server_error(request, template_name='account/500.html'):
+    return render(request, template_name, status=500)
+
+
+def permission_denied(request, exception, template_name='account/403.html'):
+    return render(request, template_name, status=403)
+
+
+def bad_request(request, exception, template_name='account/400.html'):
+    return render(request, template_name, status=400)
+
+
+def csrf_failure(request, reason="", template_name='account/403_csrf.html'):
+    return render(request, template_name, status=403)

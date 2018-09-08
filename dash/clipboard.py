@@ -1,6 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 
+from user_profile.models import Profile
 from .base import validate_placeholder_uid
 from .helpers import (
     clone_plugin_data,
@@ -185,7 +187,7 @@ def paste_entry_from_clipboard(request,
         if workspace:
             try:
                 workspace_obj = DashboardWorkspace._default_manager \
-                                                  .get(slug=workspace)
+                    .get(slug=workspace)
             except ObjectDoesNotExist as e:
                 workspace_obj = None
         else:
@@ -212,6 +214,7 @@ def paste_entry_from_clipboard(request,
         return (_("You're not allowed to "
                   "use the {0} plugin.".format(safe_text(plugin.name))), False)
 
+
     # Getting occupied cells
     placeholder = layout.get_placeholder(placeholder_uid)
     occupied_cells = build_cells_matrix(
@@ -231,7 +234,7 @@ def paste_entry_from_clipboard(request,
     )
 
     if widget_occupied_cells is not False \
-       and not lists_overlap(widget_occupied_cells, occupied_cells):
+            and not lists_overlap(widget_occupied_cells, occupied_cells):
 
         try:
             if not check_only:

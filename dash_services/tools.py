@@ -5,7 +5,7 @@ import datetime
 from django.conf import settings
 from django.core.mail import send_mail, mail_admins
 from django.utils import html
-
+from notifications.signals import notify
 import importlib
 import time
 
@@ -55,7 +55,7 @@ def get_service(service, model_form='models', form_name=''):
     """
     service_name = str(service).split('Service')[1]
 
-    class_name = 'th_' + service_name.lower() + '.' + model_form
+    class_name = 'th_services.th_' + service_name.lower() + '.' + model_form
 
     if model_form == 'forms':
         return class_for_name(class_name, service_name + form_name)
@@ -86,12 +86,16 @@ def to_datetime(data):
 
 def warn_user_and_admin(consumer_provider, service):
 
-    from_mail = settings.DEFAULT_FROM_EMAIL
-
     if consumer_provider == 'provider':
         service_name = service.provider.name.name.split('Service')[1]
     else:
         service_name = service.consumer.name.name.split('Service')[1]
+
+    from_mail = settings.DEFAULT_FROM_EMAIL
+    notify.send(service.user, actor=service.user.username,
+                recipient=service.user,
+                description='El servicio {} está fallando, comprueba que tus datos son correctos.'.format(service_name),
+                verb=u'¡{} está fallando!'.format(service_name), level='warn_service')
 
     title = 'Trigger "{}" disabled'.format(service.description)
 

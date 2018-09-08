@@ -141,7 +141,7 @@ IMAGE_TRANSPOSE_CHOICES = (
     ('FLIP_TOP_BOTTOM', _('Flip top to bottom')),
     ('ROTATE_90', _('Rotate 90 degrees counter-clockwise')),
     ('ROTATE_270', _('Rotate 90 degrees clockwise')),
-    ('ROTATE_180', _('Rotate 180 degrees')),
+    ('ROTATE_180', _('i 180 degrees')),
 )
 
 WATERMARK_STYLE_CHOICES = (
@@ -494,7 +494,10 @@ class Photo(ImageModel):
         return "photos-%s" % self.pk
 
     def save(self, *args, **kwargs):
-        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        if self.is_public:
+            self.slug = orig = slugify(str(self.owner_id) + self.title)
+        else:
+            self.slug = orig = slugify(str(self.owner_id) + self.title + str(uuid.uuid4()))
 
         for x in itertools.count(1):
             if not Photo.objects.filter(slug=self.slug).exclude(id=self.id).exists():
@@ -543,7 +546,7 @@ class Photo(ImageModel):
                 self.image.save(filename, django_file)
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-photo', args=[self.slug])
+        return reverse('photologue:pl-photo', args=[self.owner.username, self.slug])
 
     def public_galleries(self):
         """Return the public galleries to which this photo belongs."""
@@ -675,20 +678,24 @@ class Video(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-video', args=[self.slug])
+        return reverse('photologue:pl-video', args=[self.owner.username, self.slug])
 
     def save(self, created=True, *args, **kwargs):
-        if created:
+        if self.is_public:
             self.slug = orig = slugify(str(self.owner_id) + self.name)
-            for x in itertools.count(1):
-                if not Video.objects.filter(slug=self.slug).exists():
-                    try:
-                        super(Video, self).save(*args, **kwargs)
-                        break
-                    except IntegrityError:
-                        if x > 50:
-                            raise Exception('Cant save video: {}'.format(self.name))
-                self.slug = '%s-%d' % (orig, x)
+        else:
+            self.slug = orig = slugify(str(self.owner_id) + self.name + str(uuid.uuid4()))
+
+        for x in itertools.count(1):
+            if not Video.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+                try:
+                    super(Video, self).save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save video: {}'.format(self.name))
+            self.slug = '%s-%d' % (orig, x)
+
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -1078,18 +1085,5 @@ def generate_thumb(instance, created, **kwargs):
         transaction.on_commit(lambda: generate_thumbnails.delay(instance=instance.pk))
 
 
-def generate_video_thumb(instance, created, **kwargs):
-    """
-    Generamos thumbnail para video
-    :param instance: Video
-    :param created: Si es creado o actualizado
-    :param kwargs:
-    :return:
-    """
-    if created:
-        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
-
-
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)
-post_save.connect(generate_video_thumb, sender=Video)

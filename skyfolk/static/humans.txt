@@ -4,6 +4,7 @@
 # TEAM
 
     <lostcitizen> -- <founder> -- <lostcitizen@gmail.com>
+    <adrian> -- <founder> -- <adriancarayol@gmail.com>
 
 # THANKS
 
@@ -12,4 +13,4 @@
 # TECHNOLOGY COLOPHON
 
     CSS3, HTML5
-    Nginx, Python 3, Postgresql
+    Django, Postgresql, Neo4j, Redis, ElasticSearch, RabbitMQ

@@ -22,7 +22,8 @@ def upload_image_group_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('group_publications/images', filename)
+    final_path = os.path.join('group_publications/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_group_publication(instance, filename):
@@ -33,7 +34,8 @@ def upload_video_group_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('group_publications/videos', filename)
+    final_path = os.path.join('group_publications/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationGroupVideo(models.Model):
@@ -56,7 +58,7 @@ class ExtraGroupContent(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationGroup', related_name='group_extra_content', on_delete=models.CASCADE)
+    publication = models.OneToOneField('PublicationGroup', related_name='extra_content', on_delete=models.CASCADE)
 
 
 class PublicationGroup(PublicationBase):
@@ -83,7 +85,7 @@ class PublicationGroup(PublicationBase):
         return "group-publication-%d" % self.id
 
     def has_extra_content(self):
-        return hasattr(self, 'group_extra_content')
+        return hasattr(self, 'extra_content')
 
     def send_notification(self, request, type="pub", is_edited=False):
         """
@@ -122,8 +124,9 @@ class PublicationGroup(PublicationBase):
         if self.author_id != self.board_group.owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_group.owner,
-                        description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}.".format(
-                            self.author.username, self.board_group.name),
+                        action_object=self,
+                        description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}. <a href='/group/publication/detail/{2}/'>Ver</a>".format(
+                            self.author.username, self.board_group.name, self.id),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
                              (self.author.username, self.author.username, self.board_group.name),
                         level='notification_board_group')

@@ -42,13 +42,13 @@ def theme_publication_handler(sender, instance, created, **kwargs):
 
         if instance.has_extra_content():  # Para publicaciones editadas
             ExtraThemeContent.objects.filter(publication=instance.id).exclude(
-                url=instance.group_extra_content.url).delete()
+                url=instance.extra_content.url).delete()
         else:
             ExtraThemeContent.objects.filter(publication=instance.id).delete()
 
 
 def add_hashtags(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     hashtags = set([x.string for x in soup.find_all('a', {'class': 'hashtag'})])
     for tag in hashtags:
         tag = tag[1:]
@@ -62,7 +62,7 @@ def add_extra_content(instance):
     if not instance.content:
         return
 
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
@@ -90,7 +90,7 @@ def add_extra_content(instance):
             response = requests.get(url)
         except MissingSchema:
             return
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html5lib")
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
             'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
         title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
@@ -99,7 +99,7 @@ def add_extra_content(instance):
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
         if description:
-            description = description.get('content', None)[:265]
+            description = description.get('content', None)[:256]
         if title:
             title = title.get('content', None)[:63]
         if image:
@@ -111,7 +111,7 @@ def add_extra_content(instance):
 
 
 def notify_mentions(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     menciones = set([a.string[1:] for a in soup.find_all('a', {'class': 'mention'})])
 
     users = User.objects.only('username', 'id').filter(username__in=menciones)
@@ -120,6 +120,7 @@ def notify_mentions(instance):
         if instance.author.id != user.id:
             notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
+                        action_object=instance.board_theme,
                         verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
                         description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(
@@ -129,10 +130,10 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_theme.owner_id)
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_theme.owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1
@@ -140,9 +141,9 @@ def increase_affinity(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_theme.owner_id)
-    if n.user_id != m.user_id:
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_theme.owner.username)
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1

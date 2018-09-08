@@ -14,6 +14,7 @@ postgresql:latest
 neo4j:latest
 tidy:latest
 pandoc:latest
+npm -g install yuglify
 ```
 Tras esto, podemos instalar los requerimentos de la siguiente forma:
 ```
@@ -45,6 +46,7 @@ python manage.py migrate
 python manage.py badgify_sync badges
 python manage.py badgify_sync badges --update
 python manage.py rebuild_index --noinput
+python manage.py create_initial_services
 python manage.py runserver 0.0.0.0:8000
 daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:channel_layer
 ```
@@ -52,7 +54,7 @@ daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:channel_layer
 Para lanzar celery debemos lanzar los siguientes comandos:
 ```
 celery -A skyfolk worker -l info
-celery -A skyfolk beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+celery -A skyfolk beat -l info
 ```
 ### Lanzar con Docker
 Antes de nada, debemos desactivar los servicios de rabbitmq-server, redis-server y elasticsearch con el comando:
@@ -84,3 +86,6 @@ Reiniciamos el servidor postfix con:
 systemctl restart postfix
 ```
 Y listo.
+
+### Problemas con ASCII
+Instalar es_ES-UTF-8 y setearlo por defecto.

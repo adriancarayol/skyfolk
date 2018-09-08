@@ -1,10 +1,11 @@
 {% extends "account/base_cf.html" %}
 {% load i18n avatar_tags %}
+{% load static %}
 
-{% block title %} <title>Configuración - {{ request.user.username }} - Imágenes de perfil.</title> {% endblock %}
+{% block title %}Configuración - {{ request.user.username }} - Imágenes de perfil{% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/avatar.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/avatar.css" %}"/>
 {% endblock %}
 
 {% block cf-title %}
@@ -36,7 +37,7 @@
                 <div class="file-field input-field">
                     {{ upload_avatar_form.avatar.errors }}
                     <div class="btn blue darken-1 waves-effect waves-light">
-                        <span>Imágen</span>
+                        <span>Imagen</span>
                         {{ upload_avatar_form.avatar }}
                     </div>
                     <div class="file-path-wrapper">
@@ -51,7 +52,7 @@
                     <label for="id_url_image" class="avatar_from_url">{{ upload_avatar_form.url_image.label }}</label>
                 </div>
             </div>
-            {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit"
+            {% csrf_token %}<input class="btn blue waves-effect waves-light right" type="submit"
                                    value="{% trans "Upload New Image" %}"/>
         </form>
     </div>

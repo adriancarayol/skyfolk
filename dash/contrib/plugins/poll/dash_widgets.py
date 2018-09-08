@@ -50,4 +50,4 @@ class BasePollWidget(BaseDashboardPluginWidget):
 class Poll1x1Widget(BasePollWidget):
     """Video plugin 1x1 widget."""
 
-    plugin_uid = 'poll_1x1'
+    plugin_uid = 'encuesta_1x1'

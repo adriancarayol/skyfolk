@@ -1,4 +1,6 @@
-from badgify.models import Award
+import numpy as np
+import math
+from badgify.models import Award, Badge
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.http import HttpResponseForbidden
@@ -11,6 +13,35 @@ from user_profile.models import Profile
 class UserAwards(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "awards/my-awards.html"
+
+    def percentage(self, part, total):
+        return math.trunc((part * 100.0) / total)
+
+    def calculate_exp(self, profile):
+        badges = Badge.objects.filter(users=profile.user).values('points', 'category')
+        all_badges = Badge.objects.all().values('points', 'category')
+        points = np.sum([x['points'] for x in badges])
+        exp = {}
+        total_exp = {}
+
+        for badge in all_badges:
+            if badge['category'] in total_exp:
+                total_exp[badge['category']] += badge['points']
+            else:
+                total_exp[badge['category']] = badge['points']
+
+        for badge in badges:
+            if badge['category'] in exp:
+                exp[badge['category']] += badge['points']
+            else:
+                exp[badge['category']] = badge['points']
+
+        percentages = {}
+
+        for key, value in exp.items():
+            percentages[key] = self.percentage(value, total_exp[key])
+
+        return percentages, points
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.pop('user_id', None)
@@ -41,4 +72,6 @@ class UserAwards(APIView):
         except EmptyPage:
             awards = paginator.page(paginator.num_pages)
 
-        return Response({'awards': awards, 'user_id': user_id})
+        percentages, points = self.calculate_exp(profile)
+
+        return Response({'awards': awards, 'user_id': user_id, 'total_points': points, 'type_of_user': percentages})

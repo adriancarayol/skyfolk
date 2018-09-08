@@ -21,13 +21,16 @@ def send_email(subject, recipient_list, context, html):
 
 @app.task(name='tasks.send_recommendation_via_email')
 def send_recommendation_via_email():
+    """
+    Envia recomendaciones de usuarios a los usuarios
+    registrados en la web
+    """
     nodes = User.objects.filter(notification_settings__email_when_recommendations=True).order_by('?')[:1000]
-
+    
     for user in nodes:
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
-            "AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT %d" %
-            (user.id, 25))
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE NOT (u1:NodeProfile)-[:FOLLOW]->(u2:NodeProfile) AND NOT (u2:NodeProfile)-[:BLOCK]->(u1:NodeProfile) AND NOT (u1:NodeProfile)-[:BLOCK]->(u2:NodeProfile) AND u1.title='%s' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT %d" %
+            (user.username, 25))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
 

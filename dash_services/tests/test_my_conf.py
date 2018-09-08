@@ -36,22 +36,22 @@ class TriggerSettingsTestCase(unittest.TestCase):
 
     def test_get_services_list(self):
         th_service = (
-            'th_evernote.my_evernote.ServiceEvernote',
-            'th_github.my_github.ServiceGithub',
-            'th_instapush.my_instapush.ServiceInstapush',
-            'th_mastodon.my_mastodon.ServiceMastodon',
-            'th_pelican.my_pelican.ServicePelican',
-            'th_pocket.my_pocket.ServicePocket',
+            'th_services.th_evernote.my_evernote.ServiceEvernote',
+            'th_services.th_github.my_github.ServiceGithub',
+            'th_services.th_instapush.my_instapush.ServiceInstapush',
+            'th_services.th_mastodon.my_mastodon.ServiceMastodon',
+            'th_services.th_pelican.my_pelican.ServicePelican',
+            'th_services.th_pocket.my_pocket.ServicePocket',
             'th_pushbullet.my_pushbullet.ServicePushbullet',
-            'th_rss.my_rss.ServiceRss',
-            'th_reddit.my_reddit.ServiceReddit',
-            'th_slack.my_slack.ServiceSlack',
-            'th_taiga.my_taiga.ServiceTaiga',
-            'th_todoist.my_todoist.ServiceTodoist',
-            'th_trello.my_trello.ServiceTrello',
-            'th_tumblr.my_tumblr.ServiceTumblr',
-            'th_twitter.my_twitter.ServiceTwitter',
-            'th_wallabag.my_wallabag.ServiceWallabag',
+            'th_services.th_services.th_rss.my_rss.ServiceRss',
+            'th_services.th_reddit.my_reddit.ServiceReddit',
+            'th_services.th_slack.my_slack.ServiceSlack',
+            'th_services.th_taiga.my_taiga.ServiceTaiga',
+            'th_services.th_todoist.my_todoist.ServiceTodoist',
+            'th_services.th_trello.my_trello.ServiceTrello',
+            'th_services.th_tumblr.my_tumblr.ServiceTumblr',
+            'th_services.th_twitter.my_twitter.ServiceTwitter',
+            'th_services.th_wallabag.my_wallabag.ServiceWallabag',
         )
         for service in th_service:
             self.assertIn(service, settings.TH_SERVICES)

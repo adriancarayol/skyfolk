@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue_groups.models import PhotoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
@@ -20,7 +22,6 @@ from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery_groups.utils import optimize_publication_media, check_num_images, check_image_property
 
@@ -47,8 +48,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             if not self.request.user.user_groups.filter(id=photo.group_id).exists():
                 return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_photo_owner = Profile.objects.get(user=photo.owner)
 
         privacity = board_photo_owner.is_visible(emitter)
 
@@ -61,12 +62,10 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
@@ -158,6 +157,8 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
 
+
+
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
@@ -173,7 +174,7 @@ def publication_detail(request, publication_id):
                               'videos', 'tags') \
             .select_related('author',
                             'board_photo',
-                            'parent')
+                            'parent').order_by('created')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 
@@ -207,7 +208,7 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationGroupMediaPhoto.objects.select_related('board_video', 'board_photo__group').get(
+            publication = PublicationGroupMediaPhoto.objects.select_related('board_photo', 'board_photo__group').get(
                 id=publication_id)
         except PublicationGroupMediaPhoto.DoesNotExist:
             response = False
@@ -218,7 +219,8 @@ def delete_publication(request):
             publication.author.username, publication.board_photo, user.username))
 
         # Borramos publicacion
-        if user.id == publication.author.id or user.id == publication.board_photo.owner_id or user.has_perm('delete_publication', publication.board_video.group):
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id or user.has_perm(
+                'delete_publication', publication.board_video.group):
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -501,13 +503,8 @@ def load_more_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(level__lte=1)
-                                                        & Q(deleted=False))
-        else:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False))
+        pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(

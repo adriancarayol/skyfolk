@@ -1,0 +1,40 @@
+<div class="django-user-guide">
+    {{ csrf_node }}
+    <link rel="stylesheet" href="{{ css_href }}">
+
+    {% if custom_css_href %}
+    <link rel="stylesheet" href="{{ custom_css_href }}">
+    {% endif %}
+
+    <div class="django-user-guide-mask">
+        <div class="django-user-guide-window row">
+            <div class="django-user-guide-close-div"><i class="material-icons">close</i></div>
+
+            <div class="col s12 django-user-guide-html-wrapper flow-text">
+                {{ html|safe }}
+            </div>
+
+            <div class="col s12 django-user-guide-counter right">
+                <span>Consejo 1 de 1</span>
+                <div class="django-user-guide-window-nav">
+                    <button class="waves-effect waves-light btn blue django-user-guide-btn django-user-guide-back-btn">&larr; Atrás</button>
+                    <button class="waves-effect waves-light btn blue django-user-guide-btn django-user-guide-next-btn">Siguiente &rarr;</button>
+                    <button class="waves-effect waves-light btn blue django-user-guide-btn django-user-guide-done-btn">Hecho</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ js_src }}"></script>
+
+    {% if custom_js_src %}
+    <script src="{{ custom_js_src }}"></script>
+    {% endif %}
+
+    <script>
+        (new window.DjangoUserGuide({
+            csrfCookieName: '{{ csrf_cookie_name }}',
+            useCookies: {{ use_cookies }}
+        })).run();
+    </script>
+</div>

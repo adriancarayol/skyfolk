@@ -1,3 +1,4 @@
+import datetime
 import io
 import json
 import logging
@@ -6,7 +7,6 @@ import tempfile
 
 import magic
 from PIL import Image
-from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import naturaltime, intword
@@ -24,15 +24,14 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.edit import CreateView
 from mptt.templatetags.mptt_tags import cache_tree_children
-
+from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
-from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
-from user_profile.node_models import NodeProfile
+from .models import Publication, PublicationImage, PublicationVideo
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
+from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported
 from .tasks import process_video_publication, process_gif_publication
 from latest_news.tasks import send_to_stream
 
@@ -86,15 +85,17 @@ def _optimize_publication_media(instance, image_upload, exts):
 
                 else:  # es una imagen normal
                     try:
-                        image = Image.open(media)
+                        image = Image.open(media).convert('RGBA')
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
 
                     fill_color = (255, 255, 255, 0)
+
                     if image.mode in ('RGBA', 'LA'):
                         background = Image.new(image.mode[:-1], image.size, fill_color)
                         background.paste(image, image.split()[-1])
                         image = background
+
                     image.thumbnail((800, 600), Image.ANTIALIAS)
                     output = io.BytesIO()
                     image.save(output, format='JPEG', optimize=True, quality=70)
@@ -124,9 +125,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form = self.get_form(form_class)
 
         try:
-            emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-            board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
-        except NodeProfile.DoesNotExist as e:
+            emitter = Profile.objects.get(user_id=self.request.user.id)
+            board_owner = Profile.objects.get(user_id=int(request.POST['board_owner']))
+        except Profile.DoesNotExist as e:
             form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
             return self.form_invalid(form=form)
 
@@ -135,21 +136,14 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
-        logger.info('tipo emitter: {}'.format(type(emitter.title)))
-        logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
-
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
                 parent = publication.parent
 
-                if parent:
-                    parent_owner = parent.author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
-                        form.add_error('board_owner', 'El autor de la publicación te ha bloqueado.')
-                        return self.form_invalid(form=form)
+                if not parent and emitter != board_owner:
+                    form.add_error('board_owner', 'No puedes publicar en este Skyline.')
+                    return self.form_invalid(form=form)
 
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id
@@ -275,12 +269,13 @@ def publication_detail(request, publication_id):
                               'shared_group_publication__images',
                               'shared_group_publication__author',
                               'shared_group_publication__videos',
-                              'shared_group_publication__group_extra_content',) \
+                              'shared_group_publication__extra_content', ) \
             .select_related('author',
                             'board_owner', 'shared_publication',
                             'parent', 'shared_group_publication').annotate(
             total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).order_by('created')
+
     except Exception as e:
         logger.info(e)
         raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
@@ -320,7 +315,7 @@ def delete_publication(request):
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
             publication = Publication.objects.prefetch_related('extra_content').select_related(
-                'shared_publication').defer('content').get(id=publication_id)
+                'shared_publication').get(id=publication_id)
         except ObjectDoesNotExist:
             return HttpResponse(json.dumps(data),
                                 content_type='application/json'
@@ -544,6 +539,7 @@ def add_hate(request):
     return HttpResponse(data, content_type='application/json')
 
 
+@login_required()
 def edit_publication(request):
     """
     Permite al creador de la publicacion
@@ -614,16 +610,10 @@ def load_more_comments(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            publications = publication.get_descendants() \
-                .filter(~Q(author__profile__in=users_not_blocked_me)
-                        & Q(level__lte=1) & Q(deleted=False))
-
-        else:
-            publications = publication.get_descendants() \
-                .filter(
-                ~Q(author__profile__in=users_not_blocked_me)
-                & Q(deleted=False))
+        publications = publication.get_descendants() \
+            .filter(
+            ~Q(author__profile__in=users_not_blocked_me)
+            & Q(deleted=False)).order_by('created')
 
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(
@@ -671,7 +661,6 @@ def load_more_comments(request):
 
 
 @login_required(login_url='/')
-@transaction.atomic
 def share_publication(request):
     """
     Copia la publicacion de otro skyline
@@ -679,11 +668,11 @@ def share_publication(request):
     """
     response = False
     status = 0
-    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
+
     if request.POST:
         user = request.user
         form = SharedPublicationForm(request.POST or None)
-        print(request.POST)
+
         if form.is_valid():
             obj_pub = form.cleaned_data['pk']
             try:
@@ -703,32 +692,29 @@ def share_publication(request):
             if privacity and privacity != 'all':
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
-            shared = Publication.objects.filter(shared_publication_id=obj_pub, author_id=user.id,
-                                                deleted=False).exists()
+            pub = form.save(commit=False)
+            pub.parse_content()
+            pub.add_hashtag()
+            pub.parse_mentions()
 
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
+            try:
+                obj = Publication.objects.get(shared_publication=pub_to_add, author=user, board_owner=user)
+            except Publication.DoesNotExist:
+                obj = Publication.objects.create(shared_publication=pub_to_add, author=user, board_owner=user)
 
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
+            obj.content = Emoji.replace(pub.content)
+            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
+                          'href="/profile/%s">@%s</a><br>%s' % (
+                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
+            obj.created = timezone.now()
+            obj.event_type = 6
+            obj.deleted = False
 
-                pub.shared_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 6
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    response = True
-                except IntegrityError as e:
-                    logger.info(e)
-                logger.info('Compartido el comentario %d' % pub_to_add.id)
+            with transaction.atomic(using='default'):
+                obj.save()
+                transaction.on_commit(lambda: obj.send_notification(request))
+
+            response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')
 

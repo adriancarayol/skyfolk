@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block page-title %}{% if current_workspace %}{{ current_workspace.name }} - {% endif %}
+{% block title %}{% if current_workspace %}{{ current_workspace.name }} - {% endif %}
     {% trans 'Dashboard' %}{% endblock %}
 {% block content %}
     <div class="container">
@@ -14,4 +14,5 @@
             {% endfor %}
         </div>
     </div>
+     {% include "dash/wrapper_add_plugin.html" %}
 {% endblock content %}

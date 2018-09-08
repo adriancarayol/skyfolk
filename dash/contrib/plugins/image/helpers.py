@@ -29,8 +29,10 @@ __all__ = (
 
 logger = logging.getLogger(__file__)
 
+
 IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_ROOT,
                                                IMAGES_UPLOAD_DIR)
+
 if not os.path.exists(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH):
     os.makedirs(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH)
 
@@ -72,14 +74,6 @@ def handle_uploaded_file(image_file):
                 destination.write(chunk)
         return os.path.join(IMAGES_UPLOAD_DIR, image_filename)
     return image_file
-
-
-def get_crop_filter(fit_method):
-    """Get crop filter."""
-    if fit_method in (FIT_METHOD_CROP_SMART,
-                      FIT_METHOD_CROP_CENTER,
-                      FIT_METHOD_CROP_SCALE):
-        return fit_method
 
 
 def delete_file(image_file):

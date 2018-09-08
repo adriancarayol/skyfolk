@@ -2,6 +2,7 @@ import os
 import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.http import Http404, HttpResponse, HttpResponseForbidden
@@ -18,6 +19,12 @@ from dash_services.forms.wizard import ConsumerForm
 from dash_services.models import UserService, TriggerService
 from dash_services.tools import class_for_name, get_service
 from user_profile.models import Profile
+from django.contrib.auth.models import User
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.db import transaction
+from django.template.loader import render_to_string
 from .base import (
     get_layout,
     plugin_registry,
@@ -64,8 +71,8 @@ else:
     from django.core.urlresolvers import reverse
     from django.shortcuts import render_to_response
 
-
 logger = logging.getLogger(__name__)
+
 
 # ***************************************************************************
 # ***************************************************************************
@@ -292,7 +299,9 @@ class AddDashboardEntry(SessionWizardView):
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
         plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
 
-        if plugin is not None and plugin.name != 'Trigger':
+        plugin_name = plugin.uid.split('_')[0]
+
+        if plugin is not None and plugin_name != 'trigger':
             return False
 
         return True
@@ -330,7 +339,7 @@ class AddDashboardEntry(SessionWizardView):
         if step == '1':
             prev_data = self.get_cleaned_data_for_step('0')
             service_name = str(prev_data.get('provider')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ProviderForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -341,7 +350,7 @@ class AddDashboardEntry(SessionWizardView):
         elif step == '3':
             prev_data = self.get_cleaned_data_for_step('2')
             service_name = str(prev_data.get('consumer')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ConsumerForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -386,6 +395,12 @@ class AddDashboardEntry(SessionWizardView):
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
+        plugin.request = self.request
+
+        context['plugin'] = plugin
         context['layout'] = layout
         context['dashboard_settings'] = dashboard_settings
 
@@ -474,6 +489,37 @@ class AddDashboardEntry(SessionWizardView):
             layout_uid = dashboard_settings.layout_uid
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+        if not validate_placeholder_uid(layout, placeholder_uid):
+            raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder_uid))
+
+        if not validate_plugin_uid(plugin_uid):
+            raise Http404(ugettext("Invalid plugin name: {0}").format(plugin_uid))
+
+        placeholder = layout.get_placeholder(placeholder_uid)
+
+        # Cell that would be occupied by the plugin upon addition.
+        widget_occupied_cells = get_occupied_cells(
+            layout,
+            placeholder,
+            plugin_uid,
+            position,
+            check_boundaries=True,
+            fail_silently=True
+        )
+
+        # Cells currently occupied in the workspace given.
+        occupied_cells = build_cells_matrix(
+            self.request.user,
+            layout,
+            placeholder,
+            workspace
+        )
+
+        # Checking if it's still possible to insert a widget.
+        if widget_occupied_cells is False \
+                or lists_overlap(widget_occupied_cells, occupied_cells):
+            raise Http404(ugettext("Collisions detected"))
 
         for index, form in enumerate(form_list):
             data = form.cleaned_data
@@ -723,8 +769,9 @@ class EditDashboardEntry(SessionWizardView):
 
     def check_if_service(self):
         plugin = self.obj.get_plugin(fetch_related_data=True)
+        plugin_name = plugin.uid.split('_')[0]
 
-        if plugin is not None and plugin.name != 'Trigger':
+        if plugin is not None and plugin_name != 'trigger':
             return False
 
         return True
@@ -758,7 +805,7 @@ class EditDashboardEntry(SessionWizardView):
         if step == '1':
             prev_data = self.get_cleaned_data_for_step('0')
             service_name = str(prev_data.get('provider')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ProviderForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -769,7 +816,7 @@ class EditDashboardEntry(SessionWizardView):
         elif step == '3':
             prev_data = self.get_cleaned_data_for_step('2')
             service_name = str(prev_data.get('consumer')).split('Service')[1]
-            class_name = 'th_' + service_name.lower() + '.forms'
+            class_name = 'th_services.th_' + service_name.lower() + '.forms'
             form_name = service_name + 'ConsumerForm'
             form_class = class_for_name(class_name, form_name)
             form = form_class(data)
@@ -1006,18 +1053,33 @@ def delete_dashboard_entry(request, entry_id):
         obj = DashboardEntry._default_manager \
             .select_related('workspace') \
             .get(pk=entry_id, user=request.user)
+
         plugin = obj.get_plugin()
         plugin.request = request
         plugin._delete_plugin_data()
         workspace = getattr(obj.workspace, 'slug', None)
         obj.delete()
 
-        if not request.is_ajax():
-            messages.info(request, _('The dashboard widget "{0}" was deleted '
-                                     'successfully.').format(plugin.name))
-
         if request.is_ajax():
-            return HttpResponse(json.dumps({'success': 1}))
+            layout = get_layout(
+                layout_uid=obj.layout_uid,
+                as_instance=True
+            )
+
+            placeholder = layout.get_placeholder(obj.placeholder_uid)(layout)
+            placeholder.request = request
+            empty_cells = placeholder._generate_widget_cells()
+
+            context = {
+                'placeholder_uid': obj.placeholder_uid,
+                'workspace': workspace
+            }
+
+            if empty_cells:
+                rendered = render_to_string('dash/layouts/placeholder_edit.html', context)
+            else:
+                rendered = None
+            return HttpResponse(json.dumps({'success': 1, 'add_button': rendered}))
         else:
             # Redirect to dashboard view.
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -1114,6 +1176,17 @@ def plugin_widgets(request,
 
     # If clipboard data is not empty, check if the data is suitable for
     # being pasted into the position given.
+
+    if not position:
+        total_positions = placeholder.cols * placeholder.rows
+        try:
+            for free_position in range(1, total_positions + 1):
+                if free_position not in occupied_cells:
+                    position = free_position
+                    break
+        except IndexError:
+            position = None
+
     if clipboard_plugin_data:
         can_paste_from_clipboard = can_paste_entry_from_clipboard(
             request=request,
@@ -1520,6 +1593,18 @@ def clone_dashboard_workspace(request, workspace_id):
         else:
             return redirect('user_profile:profile', username=request.user.username)
 
+    try:
+        n = Profile.objects.get(user=workspace.user)
+        m = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        raise Http404
+
+    # Privacidad del usuario
+    privacity = n.is_visible(m)
+
+    if privacity != ('all' or None):
+        return HttpResponseForbidden("No tienes permiso para visitar este workspace.")
+
     if not (workspace.is_clonable or request.user.pk == workspace.user.pk):
         messages.info(request, _("You are not allowed to clone the given "
                                  "workspace."))
@@ -1619,9 +1704,22 @@ def copy_dashboard_entry(request, entry_id):
 
     dashboard_entry = DashboardEntry._default_manager \
         .select_related('workspace') \
-        .get(pk=entry_id, user=request.user)
+        .get(pk=entry_id)
+
     workspace = dashboard_entry.workspace
     plugin = dashboard_entry.get_plugin()
+
+    try:
+        n = Profile.objects.get(user=dashboard_entry.user)
+        m = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        raise Http404
+
+    # Privacidad del usuario
+    privacity = n.is_visible(m)
+
+    if privacity != ('all' or None):
+        return HttpResponseForbidden("No tienes permiso para visitar este workspace.")
 
     copy_entry_to_clipboard(request, dashboard_entry)
 
@@ -1660,6 +1758,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
             })
         try:
             workspace = DashboardWorkspace._default_manager.get(**filters)
+
         except ObjectDoesNotExist as e:
             if dashboard_settings.allow_different_layouts:
                 message = _('The workspace with slug "{0}" was not found.'
@@ -1689,7 +1788,6 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
         )
     except Exception as err:
         plugin_uid, success = str(err), False
-
 
     if plugin_uid and success:
         plugin = plugin_registry.get(plugin_uid)
@@ -1728,6 +1826,7 @@ def update_entry_info(request):
             'plugin_uid': '0000'
         }
         return JsonResponse(data)
+
 
 def public_dashboard(request,
                      username,
@@ -1809,9 +1908,9 @@ def public_dashboard(request,
         entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
 
     dashboard_entries = DashboardEntry._default_manager \
-        .filter(entries_q) \
-        .select_related('workspace', 'user') \
-        .order_by('placeholder_uid', 'position')[:]
+                            .filter(entries_q) \
+                            .select_related('workspace', 'user') \
+                            .order_by('placeholder_uid', 'position')[:]
 
     # logger.debug(dashboard_entries)
 
@@ -1857,3 +1956,44 @@ def public_dashboard(request,
         return render_to_response(
             template_name, context, context_instance=RequestContext(request)
         )
+
+
+class PublicWorkspacesAJAX(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "dash/public_workspaces_ajax.html"
+    pagination_class = 'rest_framework.pagination.CursorPagination'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PublicWorkspacesAJAX, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs.pop('user_id'))
+
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+            request_user = Profile.objects.get(user_id=request.user.id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        privacity = profile.is_visible(request_user)
+
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden()
+
+        queryset = DashboardWorkspace._default_manager.filter(user=user, is_public=True)
+
+        paginator = Paginator(queryset, 12)
+
+        page = request.GET.get('page', 1)
+
+        try:
+            workspaces = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            workspaces = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            workspaces = paginator.page(paginator.num_pages)
+
+        return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id})

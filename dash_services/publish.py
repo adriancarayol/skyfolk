@@ -67,7 +67,7 @@ class Pub(object):
         service_provider = default_provider.get_service(str(service.provider.name.name))
 
         # 1) get the data from the provider service
-        module_name = 'th_' + service.provider.name.name.split('Service')[1].lower()
+        module_name = 'th_services.th_' + service.provider.name.name.split('Service')[1].lower()
         kwargs = {'trigger_id': str(service.id), 'cache_stack': module_name}
         return getattr(service_provider, 'process_data')(**kwargs)
 
@@ -87,7 +87,10 @@ class Pub(object):
         instance = getattr(service_consumer, 'save_data')
         # 2) for each one
         for d in data:
-            d['userservice_id'] = service.consumer.id
+            try:
+                d['userservice_id'] = service.consumer.id
+            except Exception as e:
+                logger.warning(e)
             # the consumer will save the data and return if success or not
             status = instance(service.id, **d)
             to_update = True

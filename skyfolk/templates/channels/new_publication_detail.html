@@ -8,23 +8,11 @@
     <div class="col s12">
         <div class="row">
         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
-               <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons md-18" href="/publication/{{ node.id }}/">open_in_new</a></span>
-               {% if user.id == node.author.id %}
-                   {% if node.event_type == 1 or node.event_type == 3 %}
-               <span data-id="{{ node.pk }}"
-                                      class="top-options edit-comment tooltipped"
-                                      data-position="bottom"
-                                      data-delay="50"
-                                      data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                       {% endif %}
-               {% endif %}
                <div class="row">
                 <div class="image col l1 m2 s2">
                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
                 </div>
-                <div class="col articulo l9 s8">
+                <div class="col articulo l11 s10">
                     <h2 class="author-header"><a
                         href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                         {% if node.parent %}
@@ -58,9 +46,11 @@
                                 {% if images %}<br>
                                 <div class="row">
                                     {% for image in images %}
+                                        {% if image.image %}
                                     <div class="col s4">
                                         <img class="responsive-img z-depth-2 lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                     </div>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                                 {% endif %}
@@ -69,11 +59,13 @@
                                 {% if videos %}<br>
                                 <div class="row">
                                    {% for video in videos %}
+                                        {% if video.video %}
                                    <div class="col s4">
                                        <video class="responsive-video" controls loop>
                                            <source src="{{ video.video.url }}" type="video/mp4">
                                            </video>
                                        </div>
+                                       {% endif %}
                                        {% endfor %}
                                    </div>
                                    {% endif %}
@@ -82,7 +74,7 @@
                                    {% comment %} Para publicaciones con URL {% endcomment %}
                                    {% if node.shared_publication.extra_content.video %}
                                    {% video node.shared_publication.extra_content.video as my_video %}
-                                   {% video my_video "medium" %}
+                                   {% video my_video "100% x 100%" %}
 
                                    {% endvideo %}
                                    {% else %}
@@ -96,14 +88,15 @@
                                         <p>{{ node.shared_publication.extra_content.description }}.</p>
                                     </div>
                                     <div class="card-action">
-                                        <a href="{{ node.shared_publication.extra_content.url }}">Ver</a>
+                                        <a class="white-text blue right btn right" target="_blank" href="{{ node.shared_publication.extra_content.url }}">Ver</a>
                                     </div>
                                 </div>
                                 {% endif %}
                                 {% endif %}
                             </div>
                             <div class="card-action">
-                                <a class="blue-text text-darken-2"
+                                <a class="white-text blue right btn right"
+                                   target="_blank"
                                 href="/publication/{{ node.shared_publication.pk }}">Ver</a>
                             </div>
                         </div>
@@ -112,9 +105,11 @@
                             {% if images %}
                             <div class="row">
                                 {% for image in images %}
+                                    {% if image.image %}
                                 <div class="col s4 z-depth-2">
-                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                    <img class="materialboxed responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                 </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                             {% endif %}
@@ -123,11 +118,13 @@
                             {% if videos %}
                             <div class="row">
                                {% for video in videos %}
+                                    {% if video.video %}
                                <div class="col s4 z-depth-2 center">
                                 <video class="responsive-video" controls loop>
                                     <source src="{{ video.video.url }}" type="video/mp4">
                                     </video>
                                 </div>
+                                   {% endif %}
                                 {% endfor %}
                             </div>
                             {% endif %}
@@ -136,7 +133,7 @@
                             {% comment %} Para publicaciones con URL {% endcomment %}
                             {% if node.extra_content.video %}
                             {% video node.extra_content.video as my_video %}
-                            {% video my_video "medium" %}
+                            {% video my_video "100% x 100%" %}
                             {% endvideo %}
                             {% else %}
                             <div class="card small">
@@ -149,7 +146,7 @@
                                     <p>{{ node.extra_content.description }}</p>
                                 </div>
                                 <div class="card-action">
-                                    <a href="{{ node.extra_content.url }}">Ver</a>
+                                    <a class="white-text blue right btn right" target="_blank" href="{{ node.extra_content.url }}">Ver</a>
                                 </div>
                             </div>
                             {% endif %}
@@ -158,43 +155,16 @@
                     </div>
                     <div class="row">
                         <div class="divider"></div>
-                        <div class="options_comentarios col s12">
-                            <ul class="opciones">
-                                    {% if user.id == node.author.id or user.id == user_profile.id %}
-                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                        <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
-                                        </li>
-                                    {% endif %}
-                                        {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        {% with node.user_give_me_hate.all as hates %}
-                                        <li title="No me gusta" class="hate-comment">
-                                            <i class="material-icons md-18">keyboard_arrow_down</i>
-                                            <i class="hate-value"></i>
-                                        </li>
-                                        {% endwith %}
-                                        {% with node.user_give_me_like.all as likes %}
-                                        <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                            <i class="material-icons md-18">keyboard_arrow_up</i>
-                                            <i class="like-value"></i>
-                                        </li>
-                                        {% endwith %}
-                                        <li id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline" title="Añadir a mi skyline"
-                                        >
-                                        <i class="material-icons md-18">format_quote</i>
-                                        <i class="share-values"></i>
-                                        </li>
-                                    <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}">
-                                    <i class="material-icons md-18">reply</i>
-                                    </li>
-                                </ul>
-             </div>
-         </div>
+                        {% with node.board_owner as user_profile %}
+                        {% include "publications_base/publication_options.html" %}
+                        {% endwith %}
+                        </div>
          {% if user.id == node.author.id %}
          <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                                  class="author-controls">
                                 <div class="row">
                                     <div class="col s12">
-                                        <form method="post" accept-charset="utf-8">{% csrf_token %}
+                                        <form method="post" accept-charset="utf-8">
                                             <div class="row">
                                                 <div class="input-field col s12">
                                                     <input type="number" name="pk" required value="{{ node.pk }}"
@@ -204,13 +174,13 @@
                                                               placeholder="Escribe el contenido del nuevo mensaje"
                                                               id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 11px;"></textarea>
+                                                              style="height: 11px;">{{ node.content }}</textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">
                                                     <button
                                                             class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                            type="button">Editar
+                                                            type="submit">Editar
                                                         <i class="material-icons right">mode_edit</i>
                                                     </button>
                                                 </div>
@@ -228,3 +198,8 @@
 </div>
 
 </div>
+<script>
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+    });
+</script>

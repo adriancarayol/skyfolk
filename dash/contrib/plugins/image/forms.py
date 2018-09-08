@@ -1,9 +1,12 @@
+import uuid
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.six import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
-
+from .models import DashImageModel
 from .helpers import handle_uploaded_file
 from .settings import FIT_METHODS_CHOICES, DEFAULT_FIT_METHOD
 
@@ -21,24 +24,30 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
     plugin_data_fields = [
         ("title", ""),
         ("image", ""),
-        ("fit_method", DEFAULT_FIT_METHOD),
-        ("show_link", True)
     ]
 
     title = forms.CharField(label=_("Title"), required=True)
     image = forms.ImageField(label=_("Image"), required=True)
-    fit_method = forms.ChoiceField(label=_("Fit method"),
-                                   required=False,
-                                   initial=DEFAULT_FIT_METHOD,
-                                   choices=FIT_METHODS_CHOICES)
-    show_link = forms.BooleanField(label=_("Show link?"),
-                                   required=False,
-                                   initial=True,
-                                   )
 
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""
+        maxsize = (600, 350)
         image = self.cleaned_data.get('image', None)
-        if image:
-            saved_image = handle_uploaded_file(image)
-            self.cleaned_data['image'] = saved_image
+
+        img = Image.open(image)
+        fill_color = (255, 255, 255)
+        if img.mode in ('RGBA', 'LA'):
+            background = Image.new(img.mode[:-1], img.size, fill_color)
+            background.paste(img, img.split()[-1])
+            img = background
+            
+        img.thumbnail(maxsize)
+        tempfile_io = BytesIO()
+        img.save(tempfile_io, "JPEG")
+        tempfile_io.seek(0)
+
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+
+        if image_file:
+            im = DashImageModel.objects.create(image=image_file, user_id=request.user.id)
+            self.cleaned_data['image'] = im.id

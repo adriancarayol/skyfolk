@@ -2,8 +2,7 @@
 Nueva respuesta a una publicacion
 {% endcomment %}
 <div class="hidden" id="caja-comentario-{{ node.pk }}">
-    <form class="reply-form" method="post">{% csrf_token %}
-        <input name="author" type="hidden" value="{{ request.user.id }}">
+    <form class="reply-form" method="post">
         <input name="board_group" type="hidden" value="{{ group_profile.id }}">
         <input name="parent" type="hidden" value="{{ node.id }}">
         <div class="row">
@@ -16,7 +15,7 @@ Nueva respuesta a una publicacion
                         <label for="message-reply-{{ node.pk }}">Escribe tu mensaje aqui...</label>
                     </div>
                     <div class="file-field input-field col s12">
-                        <div class="btn">
+                        <div class="btn white-text blue">
                             <span>Imágenes</span>
                             <input name="image" type="file" multiple>
                         </div>
@@ -28,7 +27,7 @@ Nueva respuesta a una publicacion
             </div>
         </div>
         <div class="row">
-            <button type="button" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue group_reply">
+            <button type="submit" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue group_reply">
                 Enviar<i
                     class="material-icons right">send</i></button>
         </div>

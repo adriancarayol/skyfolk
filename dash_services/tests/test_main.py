@@ -2,7 +2,7 @@
 from dash_services.models import TriggerService, UserService, ServicesActivated
 from django.contrib.auth.models import User
 from django.test import TestCase
-from th_wallabag.models import Wallabag
+from th_services.th_wallabag.models import Wallabag
 
 
 class MainTest(TestCase):

@@ -177,7 +177,7 @@ class DashCoreTest(TestCase):
 
         res = []
 
-        if 'android' == layout.uid:
+        if 'skyspace' == layout.uid:
             # *********** First test
             # 2 x 2 widget
             r = get_occupied_cells(layout, placeholder, 'memo_2x2', 3)

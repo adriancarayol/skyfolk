@@ -2,73 +2,113 @@
 {% load app_filters %}
 {% load avatar_tags %}
 {% load static %}
-{% block title %} <title>Skyfolk - Grupos</title> {% endblock %}
+{% block title %}Grupos{% endblock %}
 
 {% block extra-css %}
 <link rel="stylesheet" type="text/css" href="{% static "css/groups.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}
-<div class="container">
+{% block create-group %}
     <div class="row">
-        <div class="col s12 wrapper-groups">
-            <div class="row">
-                {% for group in object_list %}
-                <div class="col l3 m10 s12 offset-m1">
-                    <div class="personal-card">
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="header">
-                                    {% if group.back_image  %}
-                                    <img class="back-profile-user"
-                                    src="{{ MEDIA_URL }}{{ group.back_image }}">
-                                    {% else %}
-                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
-                                    {% endif %}
-                                    <i class="material-icons md-24 group-icon"
-                                        title="{{ group.users.all|length }}">group</i>
-                                    <div class="bg-user">
-                                        <div onclick="location.href='/group/{{ group.slug }}'"
-                                            class="profile-user-bg">
-                                            {% if group.avatar %}
-                                            <img src="{{ MEDIA_URL }}{{ group.avatar }}"
-                                            alt="avatar_group">
-                                            {% else %}
-                                            <img src="{% static "img/nuevo.png" %}"
-                                            alt="avatar_group">
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
+            <form id="from_new_group" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="row">
+                    {{ groupForm.name.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">title</i>
+                        {{ groupForm.name }}
+                        <label for="id_name">Escribe un nombre para el grupo.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.description.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">description</i>
+                        {{ groupForm.description }}
+                        <label for="id_description">Escribe una descripcion para el grupo.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.tags.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">bookmark</i>
+                        {{ groupForm.tags }}
+                        <label for="id_tags">Introduce una "," para añadir un nuevo tema. (Música, Deporte)</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ groupForm.is_public.errors }}
+                    <div class="col s12">
+                        <i class="material-icons prefix"></i>
+                        {{ groupForm.is_public }}
+                        <label for="id_is_public">Active esta casilla para hacer el grupo privado.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="file-field input-field col l6 s12">
+                        <div class="btn blue lighten-2">
+                            <span>Avatar</span>
+                            {{ groupForm.avatar }}
                         </div>
-                        <div class="row">
-                            <div class="row">
-                                <div class="col s12">
-                                    <div class="name-friend">
-                                        <a class="truncate"
-                                            href="{% url "user_groups:group-profile" groupname=group.slug %}">
-                                            {% if not group.is_public %}<i title="Este grupo es privado" class="material-icons md-18">lock</i>{% endif %}
-                                            {{ group.name }}</a>
-                                        <p class="truncate">{{ group.description|truncatechars:100 }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col s12 group-data">
-                                    {% for tag in group.tags.most_common|slice:":5" %}
-                                    <span class="chip">
-                                        {{ tag.name|truncatechars:9 }}
-                                    </span>
-                                    {% endfor %}
-                                </div>
-                            </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Imagen de perfil para tu grupo">
+                        </div>
+                    </div>
+                    <div class="file-field input-field col l6 s12">
+                        <div class="btn blue lighten-2">
+                            <span>Cabecera</span>
+                            {{ groupForm.back_image }}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Imagen de fondo para tu grupo">
                         </div>
                     </div>
                 </div>
-                {% endfor %} 
+                <div class="row">
+                    <div class="col s12">
+                        <button type="submit" id="btn_new_group"
+                        class="waves-effect waves-light btn right blue">
+                        Crear grupo<i class="material-icons right">people</i></button>
+                        <button type="submit" id="btn_close_group"
+                        class="waves-effect waves-light btn right transparent black-text">
+                        Cerrar<i class="material-icons right">close</i>
+                    </button>
+                </div>
             </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+<div class="container">
+    <div class="row center">
+        {% if not object_list %}
+            <p class="flow-text">Actualmente no estás en ningún grupo.</p>
+        {% endif %}
+    </div>
+    <div class="row center">
+        <div class="col s12">
+            <button class="waves-effect waves-light btn blue white-text" id="new_group">Crear grupo</button>
+        </div>
+        <div class="row"></div>
+        <div class="col s12">
+            <b>ó</b>
+        </div>
+        <div class="col offset-l4 l4 s12">
+            <form method='get' action="{% url 'user_profile:category-search' option='groups' %}">
+                <div class="input-field col s12">
+                    <input name="q" placeholder="Buscar grupos" 
+                        pattern=".{1,}" required="" title="1 character minimum" autocomplete="off" type="text" />
+                    <button type="submit" class="btn blue">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 wrapper-groups">
+            {% for group in object_list %}
+                {% include "groups/item_group.html" %}
+            {% endfor %} 
         </div>
     </div>
 </div>

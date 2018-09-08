@@ -1,14 +1,15 @@
-<div class="col s12">
-    <div class="stock card">
-        <div class="wrapper">
-            <div class="widget-wr">
-                <div class="row widget-title blue white-text">
-                    <div class="col s12">
-                        <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
-                    </div>
+<div class="stock card">
+    <div class="wrapper">
+        <div class="widget-wr">
+            <div class="row widget-title blue white-text">
+                <div class="col s12">
+                    <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
                 </div>
-                <p>{{ plugin.data.text }}</p>
+            </div>
+            <div class="row center">
+                <p class="flow-text">{{ plugin.data.text }}</p>
             </div>
         </div>
     </div>
 </div>
+

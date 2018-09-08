@@ -11,16 +11,13 @@ socket.onmessage = function (message) {
     // Create the inner content of the post div
     if (data.type === "pub") {
         // See if there's a div to replace it in, or if we should add a new one
-        var existing = $('#pub-' + data.id);
+        var existing = $('.theme-publications').find('#pub-' + data.id).first();
 
         /* Comprobamos si el elemento existe, si es asi lo modificamos */
         if (existing.length) {
             existing.replaceWith(data.content);
         } else {
-            var parent = $('#pub-' + data.parent_id);
-            if (parent.length) {
-                parent.after(data.content);
-            } else $(".theme-publications").prepend(data.content);
+             $(".theme-publications").append(data.content);
         }
     } else if (data.type === "video") {
         var existing_pub = $('#pub-' + data.id);
@@ -28,16 +25,17 @@ socket.onmessage = function (message) {
             var card_content = $(existing_pub).find('.comment').next();
             var videos = $(existing_pub).find('.videos');
             if (videos.length) {
-                $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/' + data.video + '" type="video/mp4"></video></div>');
+                $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="' + data.video + '" type="video/mp4"></video></div>');
             } else {
                 var images = $(existing_pub).find('.images');
                 if (images.length) {
-                    $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/' + data.video + '" type="video/mp4"></video></div></div>');
+                    $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="' + data.video + '" type="video/mp4"></video></div></div>');
                 }
-                $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/' + data.video + '" type="video/mp4"></video></div></div>');
+                $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="' + data.video + '" type="video/mp4"></video></div></div>');
             }
         }
     }
+    $('.dropdown-button').dropdown();
 };
 
 // Helpful debugging

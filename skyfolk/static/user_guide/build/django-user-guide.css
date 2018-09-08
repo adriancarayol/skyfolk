@@ -1,0 +1,72 @@
+.django-user-guide {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 99999;
+}
+
+.django-user-guide-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.django-user-guide-item {
+    position: absolute;
+    top: 20px;
+    display: none;
+}
+
+.django-user-guide-window {
+    border-radius: 5px;
+    background-color: #fff;
+    position: absolute;
+    height: 350px;
+    width: 350px;
+    margin: auto;
+    top: 100px;
+    left: 0;
+    right: 0;
+    padding: 20px;
+}
+
+.django-user-guide-close-div {
+    border-radius: 5px;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-family: sans-serif;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.django-user-guide-window-nav {
+    padding-top: 20px;
+    width: 100%;
+}
+
+.django-user-guide-html-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.django-user-guide-btn {
+    display: none;
+}
+
+.django-user-guide-counter {
+    font-style: italic;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}

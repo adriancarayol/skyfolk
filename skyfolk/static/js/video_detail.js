@@ -40,7 +40,7 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/video/publication/detail/' + id_pub;
+        window.location.href = '/video/publication/' + id_pub;
     }
 
     $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
@@ -53,6 +53,7 @@ $(document).ready(function () {
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
         var content = $(this).serialize();
+        content += "&csrfmiddlewaretoken=" + csrftoken;
         var pub_id = wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_video_to_timeline_gallery(pub_id, tag, content);
@@ -129,12 +130,13 @@ $(document).ready(function () {
     /* Editar comentario */
     $(tab_messages).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
-        $("#p_author-controls-" + id).slideToggle("fast");
+        $("#author-controls-" + id).slideToggle("fast");
     });
 
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += "&csrfmiddlewaretoken=" + csrftoken;
         AJAX_edit_publication_video_gallery(edit);
     });
 
@@ -456,7 +458,8 @@ function AJAX_remove_timeline_video_gallery(pub_id, tag) {
         type: 'POST',
         dataType: 'json',
         data: {
-            'pk': pub_id
+            'pk': pub_id,
+            'csrfmiddlewaretoken': csrftoken
         },
         success: function (data) {
             var response = data.response;
@@ -520,13 +523,18 @@ function AJAX_load_descendants_video_gallery(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#tab-messages').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-                $children_list = $existing.find('.children').first();
-            }
-            
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
@@ -537,6 +545,7 @@ function AJAX_load_descendants_video_gallery(pub, loader, page, btn) {
         },
         complete: function () {
             $(loader).fadeOut();
+            $('.dropdown-button').dropdown();
         },
         error: function (rs, e) {
         }

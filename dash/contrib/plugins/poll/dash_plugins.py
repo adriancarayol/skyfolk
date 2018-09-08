@@ -12,8 +12,8 @@ from .forms import PollForm
 class BasePollPlugin(BaseDashboardPlugin):
     """Base Video plugin."""
 
-    name = _("Poll")
-    group = _("Polls")
+    name = _("Encuesta")
+    group = _("Encuestas")
     form = PollForm
     html_classes = []
 

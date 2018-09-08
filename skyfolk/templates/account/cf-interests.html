@@ -1,0 +1,79 @@
+{% extends "account/base_cf.html" %}
+{% load static %}
+{% load app_filters humanize %}
+{% comment %}
+	Template para cambiar de contraseña
+{% endcomment %}
+{% block extra-css %}
+  
+    <style>
+        .delete {
+            background-color: tomato;
+        }
+    </style>
+{% endblock %}
+{% block extra-js %}
+    <script src="{% static "js/cf-interests.js" %}"></script>
+{% endblock %}
+{% block cf-title %}
+    <div class="hgroup">
+        <h4 class="cn"> Intereses </h4>
+        <h6 class="ch"> Controla tus intereses en Skyfolk</h6>
+    </div>
+{% endblock %}
+{% block cf-form %}
+    <div class="col s12 title center">
+        <h3 class="grey-text darken-1 center-align">Elige tus intereses</h3>
+        <h5>Añade aquellos intereses que deseas seguir o bien añade aquellos que deseas eliminar</h5>
+    </div>
+    <div class="row"></div>
+    <div class="col s12">
+        <span>Tus intereses actuales: </span>
+            {% for interest in my_interests %}
+                <div class="chip top-theme interest">
+                    {{ interest }}
+                </div>
+            {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="chips chips-placeholder"></div>
+            <p>Presiona intro para añadir un nuevo interés.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <p class="flow-text">Los usuarios han mostrado interés por... </p>
+            {% for theme in top_tags %}
+                <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0|intword }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="divider"></div>
+    <form id="submit-themes" action="" method="post">{% csrf_token %}
+        <div class="row">
+            {% for choice in form.choices %}
+                <div class="col s12 m12 l4">
+                    <div class="card white">
+                        <div class="card-content">
+                            <span class="card-title grey-text darken-1">{{ choice.data.value|interest_to_icon|safe }} {{ choice.choice_label }}</span>
+                        </div>
+                        <div class="card-action">
+                            <p>
+                                {{ choice.tag }}
+                                <label for="{{ choice.id_for_label }}"></label>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect waves-light btn right blue darken-1">He acabado
+            </button>
+        </div>
+    </form>
+    <script>
+        $('.menu-config').find('li:nth-child(7)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
+{% endblock %}

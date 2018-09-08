@@ -6,9 +6,11 @@
         {#<script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}"></script>#}
     {% endif %}
     {{ form.media }}{# for ajax_selects (v1.3.6 at least) #}
+    <link rel="stylesheet" href="{% static "css/awesomplete.css" %}"/>
+
 {% endblock %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/mensajes_privados.css" %}"/>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -35,21 +37,21 @@
                                     class="material-icons right">account_circle</i>({{ item.title }})
                             </li>
                         {% endfor %}
-                        <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
                     </ul>
                 </div>
             {% endblock %}
             <div id="postman" class="col offset-l1 l8 m12 s12 body-wrapper">
                 <div class="row">
                     {% block pm_write_title %}{% endblock %}
-                    <form class="col s12 z-depth-2" action="{% if next_url %}?next={{ next_url|urlencode }}{% endif %}"
+                    <form class="col s12 z-depth-2 write-message"
+                          action="{% if next_url %}?next={{ next_url|urlencode }}{% endif %}"
                           method="post">{% csrf_token %}
                         {% block pm_write_recipient %}{% endblock %}
                         <div class="row">
                             {{ form.recipients.errors }}
                             <div class="input-field col s12">
                                 {{ form.recipients }}
-                                <label for="id_recipients">{{ form.recipients.label }}</label>
+                                <label for="id_recipients" class="active">{{ form.recipients.label }}</label>
                             </div>
                         </div>
                         <div class="row">
@@ -76,5 +78,45 @@
     </div>
     <script>
         $('#postman_menu').find('li:nth-child(2)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
+    <script src="{% static "js/awesomplete.min.js" %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.querySelector('input[name=recipients]');
+            const awesomplete = new Awesomplete(input, {
+                filter: function (text, input) {
+                    return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
+                },
+
+                item: function (text, input) {
+                    return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
+                },
+
+                replace: function (text) {
+                    var before = this.input.value.match(/^.+,\s*|/)[0];
+                    this.input.value = before + text + ", ";
+                }
+            });
+            input.addEventListener("awesomplete-selectcomplete", (ev) => console.log(ev.text));
+            input.addEventListener('keyup', (e) => {
+                var code = (e.keyCode || e.which);
+                if (code === 37 || code === 38 || code === 39 || code === 40 || code === 27 || code === 13) {
+                    return;
+                } else {
+                    var n = input.value.split(",");
+                    const murl = '/search/autocomplete/?q=' + n[n.length - 1];
+                    fetch(murl).then(r => r.json()).then(d => {
+                        awesomplete.list = d.results.map(user =>
+                            (
+                                {
+                                    value: user.username,
+                                    label: user.username,
+                                }
+                            )
+                        );
+                    });
+                }
+            });
+        });
     </script>
 {% endblock %}

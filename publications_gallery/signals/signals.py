@@ -12,7 +12,7 @@ from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
-from publications_gallery.models import PublicationPhoto, ExtraContentPubPhoto, ExtraContentPubVideo
+from publications_gallery.models import PublicationPhoto, ExtraContentPubPhoto
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def photo_publication_handler(sender, instance, created, **kwargs):
         return
 
     if not instance.deleted:
-        logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
+        logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
         # Parse extra content
         add_extra_content(instance)
         # add hashtags
@@ -49,7 +49,7 @@ def photo_publication_handler(sender, instance, created, **kwargs):
 
 
 def add_hashtags(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     hashtags = set([x.string for x in soup.find_all('a', {'class': 'hashtag'})])
     for tag in hashtags:
         tag = tag[1:]
@@ -63,7 +63,7 @@ def add_extra_content(instance):
     if not instance.content:
         return
 
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
@@ -91,7 +91,7 @@ def add_extra_content(instance):
             response = requests.get(url)
         except MissingSchema:
             return
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html5lib")
 
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
             'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
@@ -101,7 +101,7 @@ def add_extra_content(instance):
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
         if description:
-            description = description.get('content', None)[:265]
+            description = description.get('content', None)[:256]
         if title:
             title = title.get('content', None)[:63]
         if image:
@@ -113,9 +113,9 @@ def add_extra_content(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
-    if n.user_id != m.user_id:
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1
@@ -123,17 +123,18 @@ def decrease_affinity(instance):
 
 
 def notify_mentions(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     menciones = set([a.string[1:] for a in soup.find_all('a', {'class': 'mention'})])
 
     users = User.objects.only('username', 'id').filter(username__in=menciones)
     for user in users:
 
-        if instance.p_author.pk != user.id:
-            notify.send(instance.p_author, actor=instance.p_author.username,
+        if instance.author.pk != user.id:
+            notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
-                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
-                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.p_author.username,
+                        action_object=instance,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
+                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(
                                                                                                 'publications_gallery:publication_photo_detail',
                                                                                                 kwargs={
@@ -142,10 +143,10 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_photo.owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1

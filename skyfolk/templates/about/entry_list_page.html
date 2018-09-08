@@ -7,6 +7,7 @@
         <div class="col s12">
           <div class="card">
             <div class="card-content blue lighten-2 clearfix">
+              <p class="flow-text">{{ pub.content|safe }}</p>
               <span class="card-title">
                   {% for tag in pub.tags.all %}
                   <span class="chip">
@@ -14,13 +15,12 @@
                   </span>
                   {% endfor %}
               </span><br><br>
-              <p class="flow-text">{{ pub.content|safe }}</p>
                 {% if pub.image %}
                     <img src="{{ pub.image.url }}" width="300" height="300">
                 {% endif %}
             </div>
             <div class="card-action">
-              <a href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a>
+              <a class="white-text blue btn" href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a>
                 <b class="right">{{ pub.created }}</b>
             </div>
           </div>

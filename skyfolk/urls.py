@@ -3,18 +3,16 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
-
+from django_js_reverse.views import urls_js
 from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
-
-from dash_services.views import TriggerListView
+from user_profile.views import signup
 from dash_services.views_fbv import logout_view
 from dash_services.views_fbv import service_related_triggers_switch_to
-
 from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
 from dash_services.views_userservices import UserServiceDeleteView, renew_service
 from dash_services.views_wizard import UserServiceWizard, finalcallback
-
-from django_js_reverse.views import urls_js
+from allauth.account import views as allauth_views
+from graphene_django.views import GraphQLView
 
 admin.autodiscover()
 
@@ -23,10 +21,17 @@ admin.autodiscover()
 # router.register(r'api/users', views.UserViewSet)
 # router.register(r'api/groups', views.GroupViewSet)
 
+handler404 = 'user_profile.views.page_not_found'
+handler500 = 'user_profile.views.server_error'
+handler403 = 'user_profile.views.permission_denied'
+handler400 = 'user_profile.views.bad_request'
+CSRF_FAILURE_VIEW = 'user_profile.views.csrf_failure'
+
 urlpatterns = [
+    url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
-    url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r"^accounts/signup/$", signup, name="account_signup"),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls support
     url(r'^', include('support.urls', namespace="support"), name="support"),
@@ -39,7 +44,7 @@ urlpatterns = [
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
-    url(r'^', include('publications_groups.urls', namespace="publications_groups"),
+    url(r'^group/', include('publications_groups.urls', namespace="publications_groups"),
         name="publications_groups"),
     url(r'^group/multimedia/', include('publications_gallery_groups.urls', namespace="publications_gallery_groups"),
         name="publications_gallery_groups"),
@@ -74,8 +79,6 @@ urlpatterns = [
     # url(r'^dashboard/', include('dash.urls')),
     # url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
     # url(r'^contrib/', include('dash.contrib.apps.public_dashboard.urls')),
-    # feedback
-    url(r'^tellme/', include("tellme.urls")),
     # logros
     url(r'^badges/', include('badgify.urls')),
     url(r'^awards/', include('awards.urls')),
@@ -137,27 +140,31 @@ urlpatterns = [
     # every service will use django_th.views.finalcallback
     # and give the service_name value to use to
     # trigger the real callback
-    url(r"^th/callbackevernote/$", finalcallback, {'service_name': 'ServiceEvernote', }, name="evernote_callback",),
-    url(r"^th/callbackgithub/$", finalcallback, {'service_name': 'ServiceGithub', }, name="github_callback",),
-    url(r"^th/callbackpocket/$", finalcallback, {'service_name': 'ServicePocket', }, name="pocket_callback",),
+    url(r"^th/callbackevernote/$", finalcallback, {'service_name': 'ServiceEvernote', }, name="evernote_callback", ),
+    url(r"^th/callbackgithub/$", finalcallback, {'service_name': 'ServiceGithub', }, name="github_callback", ),
+    url(r"^th/callbackpocket/$", finalcallback, {'service_name': 'ServicePocket', }, name="pocket_callback", ),
     url(r"^th/callbackpushbullet/$", finalcallback, {'service_name': 'ServicePushbullet', },
-        name="pushbullet_callback",),
-    url(r"^th/callbackreddit/$", finalcallback, {'service_name': 'ServiceReddit', }, name="reddit_callback",),
-    url(r"^th/callbacktodoist/$", finalcallback, {'service_name': 'ServiceTodoist', }, name="todoist_callback",),
-    url(r"^th/callbacktrello/$", finalcallback, {'service_name': 'ServiceTrello', }, name="trello_callback",),
-    url(r"^th/callbacktumblr/$", finalcallback, {'service_name': 'ServiceTumblr', }, name="tumblr_callback",),
-    url(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback",),
-    url(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback",),
-    url(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback",),
-    # url(r'^th/myfeeds/', include('th_rss.urls')),
+        name="pushbullet_callback", ),
+    url(r"^th/callbackreddit/$", finalcallback, {'service_name': 'ServiceReddit', }, name="reddit_callback", ),
+    url(r"^th/callbacktodoist/$", finalcallback, {'service_name': 'ServiceTodoist', }, name="todoist_callback", ),
+    url(r"^th/callbacktrello/$", finalcallback, {'service_name': 'ServiceTrello', }, name="trello_callback", ),
+    url(r"^th/callbacktumblr/$", finalcallback, {'service_name': 'ServiceTumblr', }, name="tumblr_callback", ),
+    url(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback", ),
+    url(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback", ),
+    url(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback", ),
+    # url(r'^th/myfeeds/', include('th_services.th_rss.urls')),
 
-    url(r'^th/api/taiga/webhook/', include('th_taiga.urls')),
-    url(r'^th/api/slack/webhook/', include('th_slack.urls')),
+    url(r'^th/api/taiga/webhook/', include('th_services.th_taiga.urls')),
+    url(r'^th/api/slack/webhook/', include('th_services.th_slack.urls')),
     # dash
     url(r'^dashboard/', include('dash.urls')),
-    url(r'^dash/contrib/plugins/rss-feed/',
-                include('dash.contrib.plugins.rss_feed.urls')),
-    # url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
+    # API_REST
+    url(r'^api/', include('api.urls')),
+    url(r'^graphql', GraphQLView.as_view(graphiql=False)),
+    # user guide
+    url(r'^user-guide/', include('user_guide.urls')),
+    # Feedback contact
+    url(r'^feedback/', include('feedback.urls', namespace='feedback')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

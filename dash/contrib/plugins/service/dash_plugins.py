@@ -19,8 +19,8 @@ class BaseTriggerPlugin(BaseDashboardPlugin):
                                                 workspace=workspace,
                                                 user=user, position=position)
 
-    name = _("Trigger")
-    group = _("Internet")
+    name = _(u"Trigger")
+    group = _(u"Internet")
     form = TriggerForm
 
     @property

@@ -3,7 +3,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'rest_framework',  # REST framework
     'emoji',
     'avatar',  # Avatares para usuarios.
@@ -54,24 +55,27 @@ THIRD_PARTY_APPS = (
     'notifications',  # notificaciones
     'django_celery_results',
     'formtools',
+    'collectfast',
     'django_js_reverse',
-    'th_rss',
-    'th_evernote',
-    'th_github',
-    'th_instapush',
-    'th_mastodon',
-    'th_pocket',
-    'th_pushbullet',
-    'th_reddit',
-    'th_slack',
-    'th_taiga',
-    'th_todoist',
-    'th_trello',
-    'th_tumblr',
-    'th_twitter',
-    'th_wallabag',
+    'th_services',
+    'th_services.th_rss',
+    'th_services.th_evernote',
+    'th_services.th_github',
+    'th_services.th_instapush',
+    'th_services.th_mastodon',
+    'th_services.th_pocket',
+    'th_services.th_pushbullet',
+    'th_services.th_reddit',
+    'th_services.th_slack',
+    'th_services.th_taiga',
+    'th_services.th_todoist',
+    'th_services.th_trello',
+    'th_services.th_tumblr',
+    'th_services.th_twitter',
+    'th_services.th_wallabag',
+    'th_services.th_skyfolk',
     'dash',
-    'dash.contrib.layouts.android',
+    'dash.contrib.layouts.skyspace',
     'dash.contrib.layouts.profile',
     'dash.contrib.plugins.dummy',
     'dash.contrib.plugins.service',
@@ -79,29 +83,30 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.memo',
     'dash.contrib.plugins.rss_feed',
     'dash.contrib.plugins.url',
+    'dash.contrib.plugins.statistics',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
     'dash.contrib.plugins.poll',
+    'dash.contrib.plugins.twitch',
     'mptt',
     'tasks_server',
     'postman',
     'django_neomodel',
     'easy_thumbnails',
-    'compressor',
     'storages',
     'corsheaders',
     'guardian',
     'embed_video',
-    'tellme',
     'haystack',
     'badgify',
-    'django_celery_beat',
+    # 'django_celery_beat', Wait for stable version
     'invitations',
     'webpack_loader',
+    'user_guide',
+    'graphene_django',
 )
 
 FIRST_PARTY_APPS = (
-    'landing',  # p�gina de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
@@ -114,6 +119,9 @@ FIRST_PARTY_APPS = (
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
     'awards',  # logros
+    'api',
+    'api.user_profile_api',
+    'feedback',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -142,21 +150,32 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
-ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
-ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
-
+ACCOUNT_USERNAME_MAX_LENGTH = 15
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
+# Avatar settings
+AVATAR_DEFAULT_SIZE = 140
+AVATAR_PROVIDERS = (
+    'avatar.providers.PrimaryAvatarProvider',
+    'avatar.providers.GravatarAvatarProvider',
+    'avatar.providers.DefaultAvatarProvider',
+)
+AVATAR_GRAVATAR_FORCEDEFAULT = False
+AVATAR_GRAVATAR_FIELD = 'email'
+AVATAR_GRAVATAR_BASE_URL = 'https://www.gravatar.com/avatar/'
+AVATAR_CACHE_TIMEOUT = 60 * 60
+
 EXTERNAL_LOGIN_URL = None
 EXTERNAL_SIGNUP_URL = None
 EXTERNAL_LOGOUT_URL = None
 
 # AVATAR CONFIGURATION
-AVATAR_GRAVATAR_DEFAULT = 'http://skyfolk.net/static/img/nuevo.png'
+AVATAR_GRAVATAR_DEFAULT = 'http://d32rim3h420riw.cloudfront.net/img/nuevo.png'
 
 # / DJANGO ALL AUTH CONFIG
 
@@ -177,7 +196,10 @@ SESSION_UPDATE_SECONDS = 10 * 60
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
     # hace la api solo accesible para admins
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -185,11 +207,14 @@ REST_FRAMEWORK = {
 }
 # /REST FRAMEWORK
 
+# GRAPHQL
+
+GRAPHENE = {
+    'SCHEMA': 'skyfolk.schema.schema'
+}
+
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
-
-# NOTIFICATION
-NOTIFICATIONS_USE_JSONFIELD = True
 
 REDIS_PORT = 6379
 REDIS_DB = 0
@@ -224,6 +249,16 @@ CACHES = {
                 "MAX_ENTRIES": 5000,
             }
         },
+    'collectfast':
+        {
+            'TIMEOUT': 3600,
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://{redis_host}:6379/2".format(redis_host=REDIS_HOST),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "MAX_ENTRIES": 5000,
+            }
+        },
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -234,7 +269,7 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
 # CACHE BACK_IMAGE
 BACK_IMAGE_CACHE_TIMEOUT = 300
-BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 5
+BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 30
 VIDEO_EXTENTIONS = ["avi", "mp4"]
 
 MIDDLEWARE_CLASSES = (
@@ -347,14 +382,15 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "skyfolk/static"),
 )
 
-COMPRESS_ENABLED = True
-# COMPRESS_OFFLINE = True
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    'compressor.finders.CompressorFinder',
 )
+
+# collecfast == (collecstatic)
+
+COLLECTFAST_CACHE = 'collectfast'
+COLLECTFAST_THREADS = 4
 
 # Media (uploads, ...)
 # MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
@@ -383,6 +419,7 @@ POSTMAN_DISABLE_USER_EMAILING = True
 
 # HAYSTACK REALTIME SIGNAL
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None
@@ -431,7 +468,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR + '/trigger_happy.log',
+            'filename': BASE_DIR + '/skyfolk.log',
             'maxBytes': 61280,
             'backupCount': 3,
             'formatter': 'verbose',

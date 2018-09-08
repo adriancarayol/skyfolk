@@ -1,4 +1,4 @@
-<div class="col s12">
+
     <div class="stock card">
         <div class="wrapper">
             <div class="widget-wr">
@@ -7,14 +7,16 @@
                         <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
                     </div>
                 </div>
-                <a href="{{ plugin.data.url }}" title="{{ plugin.data.title }}"{% if plugin.data.external %}
-                   target="_blank"{% endif %}>
-                    {% if plugin.data.image %}
+                <div class="row center">
+                    <a href="{{ plugin.data.url }}" title="{{ plugin.data.title }}"{% if plugin.data.external %}
+                        target="_blank"{% endif %}>
+                        {% if plugin.data.image %}
                         <i class="material-icons">{{ plugin.data.image }}</i>
-                    {% endif %}
-                    {{ plugin.data.title }}
-                </a>
+                        {% endif %}
+                        {{ plugin.data.title }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+

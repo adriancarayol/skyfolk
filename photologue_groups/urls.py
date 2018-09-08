@@ -65,7 +65,7 @@ urlpatterns = [
     url(r'^multimedia/collection/by(?P<slug>[\w-]+)/(?P<tag_slug>[\w-]+)/$',
         collection_list, name='collection-list'),
 
-    url(r'^multimedia/(?P<slug>[\w-]+)/$',
+    url(r'^(?P<slug>[\w-]+)/multimedia/$',
         photo_list,
         name='photo-list'),
 ]

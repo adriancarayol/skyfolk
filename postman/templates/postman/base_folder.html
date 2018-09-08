@@ -1,4 +1,5 @@
 {% extends "postman/base.html" %}
+{% load static %}
 {% load i18n postman_tags %}{% load pagination_tags %}{% load avatar_tags %}{% comment %}
 WARNING: 'pagination_tags' is a name from the django-pagination application.
 For convenience, the design of this template is done with the use of that application.
@@ -8,7 +9,7 @@ If the real implementation is to be used, just make sure that 'pagination' is de
 in the INSTALLED_APPS setting.
 {% endcomment %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/mensajes_privados.css" %}"/>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -51,23 +52,33 @@ in the INSTALLED_APPS setting.
                     </div>{% endblock pm_by_modes %}
                 <br><div class="divider"></div><br>
                 <form action="{% block pm_form_action %}{% endblock %}" method="post">{% csrf_token %}
-                    {% block pm_form_buttons %}<div class="row"><span id="pm_buttons">
+                    {% block pm_form_buttons %}<div class="row center">
+                        <div class="col l3 m2 s12">
                     {% block pm_delete_button %}
                     <button class="waves-effect waves-light btn red" type="submit"
                         onclick="this.form.action='{% url 'postman:delete' %}'">{% trans "Delete" %}</button>{% endblock %}
+                    </div>
+                    <div class="col l3 m2 s12">
                         {% block pm_archive_button %}
                             <button class="waves-effect waves-light btn blue darken-1" type="submit"
                                     onclick="this.form.action='{% url 'postman:archive' %}'">{% trans "Archive" %}</button>{% endblock %}
+                                </div>
+                                <div class="col l3 m2 s12">
                         {% block pm_undelete_button %}
                             <button class="waves-effect waves-light btn blue darken-1" type="submit"
                                     onclick="this.form.action='{% url 'postman:undelete' %}'">{% trans "Undelete" %}</button>{% endblock %}
+                                </div>
+                                <div class="col l3 m2 s12">
                         {% block pm_read_button %}
                             <button class="waves-effect waves-light btn blue darken-1" type="submit"
                                     onclick="this.form.action='{% url 'postman:mark-read' %}'">{% trans "Mark as read" %}</button>{% endblock %}
+                                </div>
+                                <div class="col l3 m2 s12">
                         {% block pm_unread_button %}
                             <button class="waves-effect waves-light btn blue darken-1" type="submit"
                                     onclick="this.form.action='{% url 'postman:mark-unread' %}'">{% trans "Mark as unread" %}</button>{% endblock %}
-                    </span></div>{% endblock %}
+                                </div>
+                    </div>{% endblock %}
                     <div id="pm_messages">
                         <div class="divider"></div><br>
                         <div class="row"> Ordenar por:

@@ -23,7 +23,8 @@ def upload_image_theme_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('theme_publications/images', filename)
+    final_path = os.path.join('theme_publications/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_theme_publication(instance, filename):
@@ -34,7 +35,8 @@ def upload_video_theme_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('theme_publications/videos', filename)
+    final_path = os.path.join('theme_publications/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationThemeVideo(models.Model):
@@ -102,7 +104,8 @@ class PublicationTheme(PublicationBase):
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request, template_name='groups/board_theme_publications.html',
-                                        context={'publications': [self, ], 'object': self.board_theme, 'group_owner_id': group_owner_id})
+                                        context={'publications': [self, ], 'object': self.board_theme,
+                                                 'group_owner_id': group_owner_id})
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
@@ -111,10 +114,13 @@ class PublicationTheme(PublicationBase):
         })
 
         # Notificamos al board_owner de la publicacion
-        notify.send(self.author, actor=self.author.username,
-                    recipient=self.board_theme.owner,
-                    description="Te avisamos de que @{0} ha publicado en el tema {1}.".format(
-                        self.author.username, self.board_theme.title),
-                    verb=u'<a href="/profile/{0}">@{0}</a> ha publicado en el tema {1}.'.format(self.author.username,
-                                                                                                self.board_theme.title),
-                    level='notification_board_theme')
+        if self.author_id != group_owner_id:
+            notify.send(self.author, actor=self.author.username,
+                        recipient=self.board_theme.owner,
+                        action_object=self.board_theme,
+                        description="Te avisamos de que @{0} ha publicado en el tema {1}. <a href='/groups/theme/{2}/'>Ver</a>".format(
+                            self.author.username, self.board_theme.title, self.board_theme.slug),
+                        verb=u'<a href="/profile/{0}">@{0}</a> ha publicado en el tema {1}.'.format(
+                            self.author.username,
+                            self.board_theme.title),
+                        level='notification_board_theme')

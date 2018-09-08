@@ -1,11 +1,10 @@
 import logging
-import re
 
 import requests
 from badgify.models import Award, Badge
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
@@ -14,12 +13,33 @@ from requests.exceptions import MissingSchema
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
 from .models import Publication, ExtraContent
+from django.db.models import Sum, Count, When, Case, Value, IntegerField, Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=Publication, dispatch_uid='publication_save')
+@receiver(m2m_changed, sender=Publication.user_give_me_like.through)
+def publication_received_like(sender, **kwargs):
+    action = kwargs.pop('action', None)
+
+    if action == "post_add":
+        instance = kwargs.pop('instance', None)
+
+        qs = Publication.objects.filter(author_id=instance.author_id).aggregate(
+            likes=Count(Case(When(~Q(user_give_me_like=instance.author) & ~Q(user_give_me_like=None), then=Value(1)))))
+
+        if not qs or not qs['likes']:
+            return
+
+        print(qs)
+        if qs['likes'] >= 100:
+            Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='editor-recipe'))
+        elif qs['likes'] >= 5000:
+            Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='pulitzer-recipe'))
+
+
+@receiver(post_save, sender=Publication)
 def publication_handler(sender, instance, created, **kwargs):
     # foo is following faa
     if instance.event_type == 2:
@@ -31,8 +51,11 @@ def publication_handler(sender, instance, created, **kwargs):
         return
 
     total_pubs = Publication.objects.filter(author__id=instance.author_id).count()
-    if total_pubs == 10:
-        Award.objects.create(user=instance.author, badge=Badge.objects.get(slug='10-pubs-reached'))
+
+    if total_pubs >= 10:
+        Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='10-pubs-reached'))
+    elif total_pubs >= 1:
+        Award.objects.get_or_create(user=instance.author, badge=Badge.objects.get(slug='first-publication'))
 
     if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
@@ -51,13 +74,13 @@ def publication_handler(sender, instance, created, **kwargs):
         decrease_affinity(instance)
 
         if instance.has_extra_content():  # Para publicaciones editadas
-            ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
+            ExtraContent.objects.filter(publication=instance).exclude(url=instance.extra_content.url).delete()
         else:
-            ExtraContent.objects.filter(publication=instance.id).delete()
+            ExtraContent.objects.filter(publication=instance).delete()
 
 
 def add_hashtags(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     hashtags = set([x.string for x in soup.find_all('a', {'class': 'hashtag'})])
     for tag in hashtags:
         tag = tag[1:]
@@ -71,7 +94,7 @@ def add_extra_content(instance):
     if not instance.content:
         return
 
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
@@ -101,7 +124,7 @@ def add_extra_content(instance):
             response = requests.get(url)
         except MissingSchema:
             return
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html5lib")
 
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
             'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
@@ -111,7 +134,7 @@ def add_extra_content(instance):
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
         if description:
-            description = description.get('content', None)[:265]
+            description = description.get('content', None)[:256]
         if title:
             title = title.get('content', None)[:63]
         if image:
@@ -128,7 +151,7 @@ def extra_content_handler(sender, instance, **kwargs):
 
 
 def notify_mentions(instance):
-    soup = BeautifulSoup(instance.content)
+    soup = BeautifulSoup(instance.content, "html5lib")
     menciones = set([a.string[1:] for a in soup.find_all('a', {'class': 'mention'})])
 
     users = User.objects.only('username', 'id').filter(username__in=menciones)
@@ -137,6 +160,7 @@ def notify_mentions(instance):
         if instance.author.pk != user.id:
             notify.send(instance.author, actor=instance.author.username,
                         recipient=user,
+                        action_object=instance,
                         verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
                         description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(
@@ -146,10 +170,10 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_owner.id)
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_owner.username)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1
@@ -157,9 +181,9 @@ def increase_affinity(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_owner.id)
-    if n.user_id != m.user_id:
+    n = NodeProfile.nodes.get(title=instance.author.username)
+    m = NodeProfile.nodes.get(title=instance.board_owner.username)
+    if n.title != m.title:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1

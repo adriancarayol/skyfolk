@@ -18,7 +18,7 @@
 
 .field > form input[type=text] {
     position: relative;
-    width: 300px;
+    max-width: 100%;
     border: none;
     height: 46px;
     line-height: 46px;
@@ -30,20 +30,45 @@
     transition: all .3s ease-in;
     -webkit-transition: all .3s ease-in;
     -moz-transition: all .3s ease-in;
-    background: #f0f0f0 url('/static/img/search-icon.png') no-repeat 95%;
+    background: #f0f0f0 url('http://d32rim3h420riw.cloudfront.net/img/search-icon.png') no-repeat 95%;
     background-size: 13px;
     padding: 0 20px;
     color: black !important;
+    box-sizing: inherit !important;
 }
 
 .field > form input[type=text]:focus {
-    background: #fefefe url(/static/img/search-icon.png) no-repeat 1%;
+    background: #fefefe url('http://d32rim3h420riw.cloudfront.net/img/search-icon.png') no-repeat 1%;
     background-size: 13px;
     border-bottom: 0;
 }
 
 .field > form input[type="text"] {
     transition: all .3s ease-in;
+}
+
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+  .field {
+      width: 391px;
+  }
+
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .field {
+        width: 391px;
+    }
 }
 
 #search-noelements {
@@ -117,22 +142,12 @@
 }
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
-    .field {
-        width: 831px;
+    .small-search {
+        width: 100% !important;
     }
 }
 
 @media only screen and (max-width: 640px) {
-    .field {
-        width: 631px;
-    }
-}
-
-@media only screen and (max-width: 640px) {
-    .field {
-        width: 600px;
-    }
-
     .notification-bell, .fa-comment {
         right: -255px;
     }
@@ -267,12 +282,12 @@
     -webkit-transition: all 0.3s linear;
     -moz-transition: all 0.3s linear;
     transition: all 0.3s linear;
-    background: #eeeeee url("/static/img/search-icon.png") no-repeat 95%;
+    background: #eeeeee url("http://d32rim3h420riw.cloudfront.net/img/search-icon.png") no-repeat 95%;
     background-size: 13px;
 }
 
 #tab-amigos .search:focus {
-    background: #fefefe url("/static/img/search-icon.png") no-repeat 1%;
+    background: #fefefe url("http://d32rim3h420riw.cloudfront.net/img/search-icon.png") no-repeat 1%;
     background-size: 13px;
 }
 

@@ -24,7 +24,6 @@ class FollowRel(StructuredRel):
 
 
 class NodeProfile(DjangoNode):
-    user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
     follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
     like = RelationshipTo('NodeProfile', 'LIKE')  # like user
@@ -45,28 +44,6 @@ class NodeProfile(DjangoNode):
     )
     privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
 
-    @property
-    def group_name(self):
-        """
-        Devuelve el nombre del canal para enviar las notificaciones
-        """
-        return "users-%s" % self.user_id
-
-    @property
-    def notification_channel(self):
-        """
-        Devuelve el nombre del canal notification para cada usuario
-        """
-        return "notification-%s" % self.user_id
-
-    @property
-    def news_channel(self):
-        """
-        Devuelve el nombre del canal para enviar actualizaciones
-        al tablon de inicio
-        """
-        return "news-%s" % self.user_id
-
     class Meta:
         app_label = 'node_profile'
 
@@ -74,7 +51,7 @@ class NodeProfile(DjangoNode):
         if limit is not None and offset is not None:
 
             results, columns = self.cypher(
-                "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
+                "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.title SKIP %d LIMIT %d" % (
                     offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
@@ -89,7 +66,7 @@ class NodeProfile(DjangoNode):
     def get_follows(self, offset=None, limit=None):
         if limit is not None and offset is not None:
             results, columns = self.cypher(
-                "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
+                "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.title SKIP %d LIMIT %d" % (
                     offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
@@ -102,7 +79,7 @@ class NodeProfile(DjangoNode):
 
     def has_like(self, to_like):
         results, columns = self.cypher(
-            "MATCH (a)-[like:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN like" % to_like)
+            "MATCH (a)-[like:LIKE]->(b) WHERE id(a)={self} AND b.title='%s' RETURN like" % to_like)
         return True if len(results) > 0 else False
 
     def count_likes(self):
@@ -113,7 +90,7 @@ class NodeProfile(DjangoNode):
     def get_like_to_me(self, offset=None, limit=None):
         if offset and limit:
             results, columns = self.cypher(
-                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m ORDER BY m.user_id SKIP %d LIMIT %d" % (
+                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m ORDER BY m.title SKIP %d LIMIT %d" % (
                     offset, limit))
         else:
             results, columns = self.cypher(

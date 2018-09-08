@@ -12,8 +12,8 @@ from emoji import Emoji
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications_groups.forms import PublicationThemeForm, ThemePublicationEdit
 from publications_groups.themes.models import PublicationTheme
-from publications_groups.themes.utils import optimize_publication_media, check_image_property
-from publications_groups.utils import check_num_images
+from publications_groups.themes.utils import optimize_publication_media
+from publications_groups.utils import check_num_images, check_image_property
 from user_groups.models import GroupTheme, UserGroups
 from user_profile.models import RelationShipProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -229,15 +229,17 @@ class DeletePublicationTheme(UpdateView):
             return JsonResponse({'response': False})
 
         user = request.user
+
         group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
             id=self.object.board_theme.board_group_id)
 
-        if self.object.author_id != user.id and user.id != group_owner_id:
+        if self.object.author_id != user.id and user.id != group_owner_id and self.object.board_theme.owner_id != user.id:
             return HttpResponseForbidden()
 
         self.object.deleted = True
         try:
             self.object.save(update_fields=['deleted'])
+            self.object.get_descendants().update(deleted=True)
             response = True
         except IntegrityError:
             pass

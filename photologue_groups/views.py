@@ -1,8 +1,10 @@
 import json
+import uuid
 
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
@@ -18,7 +20,7 @@ from django.utils.six import BytesIO
 from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-
+from django.db import transaction
 from itertools import chain
 
 
@@ -33,7 +35,7 @@ from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import PhotoGroup, VideoGroup
 from user_groups.models import UserGroups
-
+from .tasks import generate_video_thumbnail
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -209,16 +211,33 @@ def upload_video(request):
             obj.owner = user
             obj.group_id = pk
 
-            obj.save()
-            form.save_m2m()  # Para guardar los tags de la foto
+            file = form.cleaned_data['video']
 
-            data = {
-                'result': True,
-                'state': 200,
-                'message': 'Success',
-                'content': render_to_string(request=request, template_name='channels/new_video_gallery.html',
+            try:
+                if isinstance(file, str):
+                    with open(file, 'rb') as f:
+                        obj.video = File(f)
+                        with transaction.atomic():
+                            obj.save()
+                            transaction.on_commit(lambda:generate_video_thumbnail.delay(instance=obj.pk))
+                else:
+                    with transaction.atomic():
+                        obj.save()
+                        transaction.on_commit(lambda:generate_video_thumbnail.delay(instance=obj.pk))
+                form.save_m2m()  # Para guardar los tags del video
+                data = {
+                    'result': True,
+                    'state': 200,
+                    'message': 'Success',
+                    'content': render_to_string(request=request, template_name='channels/new_video_group_gallery.html',
                                             context={'photo': obj})
-            }
+                }
+            except Exception as e:
+                data = {
+                    'result': False,
+                    'state': 500,
+                    'message': get_form_errors(form),
+                }
         else:
             data = {
                 'result': False,
@@ -275,6 +294,9 @@ def crop_image(obj, request):
         return
 
     im.seek(0)
+
+    im = im.convert('RGBA')
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])
@@ -286,13 +308,13 @@ def crop_image(obj, request):
         tempfile_io = BytesIO()
         tempfile.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
     else:  # no la recorta, optimizamos la imagen
         im.thumbnail((1200, 630), Image.ANTIALIAS)
         tempfile_io = BytesIO()
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
 
     obj.image = image_file
 

@@ -1,11 +1,11 @@
-{% load i18n %}
+{% load i18n dash_tags %}
+
 <div class="container">
     <div class="row">
         <div class="col l4 s12 offset-l4">
             <div class="wrapper-bg"></div>
             <div class="hero-unit-small center">
-                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to
-                    Dashboard{% endblocktrans %}</h2>
+                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to Dashboard{% endblocktrans %}</h2>
             </div>
         </div>
         <div class="col l4 s12 offset-l4">
@@ -27,8 +27,20 @@
                                 {% if field.help_text %}
                                 <small>{{ field.help_text }}</small>
                                 {% endif %}
-                                {{ field }}
-                                {{ field.label_tag }}
+                                {% if 'FileInput' in field|field_type %}
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>{{ field.label }}</span>
+                                            {{ field }}
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                    {{ field.label_tag }}
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}

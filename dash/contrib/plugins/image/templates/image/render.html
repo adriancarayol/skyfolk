@@ -1,5 +1,4 @@
 {% load i18n thumbnail %}
-<div class="col s12">
     <div class="stock card">
         <div class="wrapper">
             <div class="widget-wr">
@@ -8,23 +7,13 @@
                         <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
                     </div>
                 </div>
-                {% if plugin.data.show_link %}
-                <a href="{{ MEDIA_URL }}{{ plugin.data.image }}" title="{{ plugin.data.title }}">
-                {% endif %}
-                    {% if plugin.data.image %}
-                        {% if crop %}
-                            {% thumbnail plugin.data.image thumb_size crop=crop as im %}
-                        {% else %}
-                            {% thumbnail plugin.data.image thumb_size as im %}
-                        {% endif %}
-                        <img src="{{ im.url }}" alt="{{ plugin.data.title }}"/>
-                    {% else %}
-                        {% trans "No image provided!" %}
-                    {% endif %}
-                {% if plugin.data.show_link %}
-                </a>
+            </div>
+            <div class="center">
+                {% if image.image  %}
+                        <img src="{{ image.image.url }}" alt="{{ plugin.data.title }}" class="materialboxed lazyloaded" />
+                {% else %}
+                    {% trans "No image provided!" %}
                 {% endif %}
             </div>
         </div>
     </div>
-</div>

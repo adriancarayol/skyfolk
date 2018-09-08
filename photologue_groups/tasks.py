@@ -1,12 +1,15 @@
 import os
+import uuid
 from io import BytesIO
 
 from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
+from django.core.files.storage import default_storage
+from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 import photologue_groups
-from photologue.utils.utils import generate_thumbnail_path_video
 from skyfolk.celery import app
 from utils.media import create_thumbnail_video
 
@@ -73,13 +76,15 @@ def generate_thumbnails(instance):
         thumb.save(tempfile_io, format='PNG')
         tempfile_io.seek(0, os.SEEK_END)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'thumb.png', 'image/png', tempfile_io.tell(), None)
-        photo_to_crop.thumbnail.save('thumb.png', image_file)
+        photo_to_crop.thumbnail.save(str(uuid.uuid4) + 'thumb.png', image_file)
         photo_to_crop.save()
 
 
 @app.task(name='tasks.generate_gallery_video_thumbnail')
 def generate_video_thumbnail(instance):
+    import shutil
     exist_video = True
+
     try:
         video = photologue_groups.models.VideoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
@@ -87,17 +92,11 @@ def generate_video_thumbnail(instance):
         video = None
 
     if exist_video and video.video:
+        thumb_tmp = NamedTemporaryFile()
+        local_video = default_storage.open(File(video.video).name, 'rb')
+        tmp_video = NamedTemporaryFile()
+        shutil.copyfileobj(local_video, tmp_video, 1024)
+        tmp_video.seek(0)
 
-        absolut_path, media_path = generate_thumbnail_path_video()
-
-        if not os.path.exists(os.path.dirname(absolut_path)):
-            os.makedirs(os.path.dirname(absolut_path))
-
-        video_path = video.video.url[1:] if video.video.url.startswith('/') else video.video.url
-
-        create_thumbnail_video(os.path.join(os.path.join(settings.BASE_DIR, 'skyfolk'), video_path),
-                               os.path.join(settings.BASE_DIR, absolut_path))
-
-        video.thumbnail = media_path
-
-        video.save(update_fields=["thumbnail"])
+        create_thumbnail_video(tmp_video.name, thumb_tmp.name)
+        video.thumbnail.save(str(uuid.uuid4()) + 'thumbnail.jpg', thumb_tmp, True)

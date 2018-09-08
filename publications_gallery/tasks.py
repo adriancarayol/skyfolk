@@ -6,9 +6,9 @@ from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from celery import shared_task
 import publications_gallery
 from notifications.models import Notification
 from publications.utils import convert_video_to_mp4
@@ -19,30 +19,34 @@ from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
 
-generate_path_video = lambda filename, ext: (
-[os.path.join('skyfolk/media/photo_publications/videos', str(filename) + ext),
- os.path.join('photo_publications/videos', str(filename) + ext)])
-
 get_channel_video_name = lambda id: "video-pub-{}".format(id)
 
 
 @app.task(ignore_result=True, name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
+    user = User.objects.get(id=user_id)
+
     try:
         publication = PublicationPhoto.objects.get(id=publication_id)
         photo = publication.board_photo
     except ObjectDoesNotExist:
         return
 
-    video_file, media_path = generate_path_video(uuid.uuid4(), ".mp4")
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    convert_video_to_mp4(file, video_file)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
-    os.remove(file)
-    logger.info('VIDEO CONVERTED')
-    if user_id:
-        user = User.objects.get(id=user_id)
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    convert_video_to_mp4(file, mp4_path)
+
+    pub = PublicationPhotoVideo.objects.create(publication_id=publication_id)
+
+    try:
+
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        logger.info('VIDEO CONVERTED')
+
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
@@ -58,7 +62,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
         data = {
             'type': "video",
-            'video': media_path,
+            'video': pub.video.url,
             'id': publication_id
         }
 
@@ -74,25 +78,39 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             "text": json.dumps(data)
         }, immediately=True)
 
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 @app.task(ignore_result=True, name='tasks.process_photo_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
     try:
         publication = PublicationPhoto.objects.get(id=publication_id)
         photo = publication.board_photo
     except ObjectDoesNotExist:
         return
+
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video(uuid.uuid4(), ".mp4")
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    clip.write_videofile(video_file, threads=2)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
-    os.remove(file)
-    logger.info('GIF CONVERTED')
-    if user_id:
+
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    clip.write_videofile(mp4_path, threads=2)
+
+    pub = PublicationPhotoVideo.objects.create(publication_id=publication_id)
+
+    try:
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        logger.info('GIF CONVERTED')
+
         user = User.objects.get(id=user_id)
+
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
@@ -108,7 +126,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
         data = {
             'type': "video",
-            'video': media_path,
+            'video': pub.video.url,
             'id': publication_id
         }
 
@@ -123,27 +141,38 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         Channel_group(photo.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 # Video tasks
 
 @app.task(ignore_result=True, name='tasks.process_video_pub_video')
 def process_video_video_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
+    user = User.objects.get(id=user_id)
+
     try:
         publication = PublicationVideo.objects.get(id=publication_id)
         video = publication.board_video
     except ObjectDoesNotExist:
         return
 
-    video_file, media_path = generate_path_video(uuid.uuid4(), ".mp4")
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    convert_video_to_mp4(file, video_file)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=media_path)
-    os.remove(file)
-    logger.info('VIDEO CONVERTED')
-    if user_id:
-        user = User.objects.get(id=user_id)
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    convert_video_to_mp4(file, mp4_path)
+    pub = PublicationVideoVideo.objects.create(publication_id=publication_id)
+
+    try:
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        logger.info('VIDEO CONVERTED')
+
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
@@ -160,7 +189,7 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
 
         data = {
             'type': "video",
-            'video': media_path,
+            'video': pub.video.url,
             'id': publication_id
         }
 
@@ -175,26 +204,38 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
         Channel_group(video.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
-
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)
 
 
 @app.task(ignore_result=True, name='tasks.process_video_pub_gif')
 def process_gif_video_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
+    user = User.objects.get(id=user_id)
+
     try:
         publication = PublicationVideo.objects.get(id=publication_id)
         video = publication.board_video
     except ObjectDoesNotExist:
         return
+
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video(uuid.uuid4(), ".mp4")
-    if not os.path.exists(os.path.dirname(video_file)):
-        os.makedirs(os.path.dirname(video_file))
-    clip.write_videofile(video_file, threads=2)
-    PublicationVideoVideo.objects.create(publication_id=publication_id, video=media_path)
-    os.remove(file)
-    logger.info('GIF CONVERTED')
-    if user_id:
-        user = User.objects.get(id=user_id)
+    mp4_path = "{0}{1}".format(file, '.mp4')
+    clip.write_videofile(mp4_path, threads=2)
+
+    pub = PublicationVideoVideo.objects.create(publication_id=publication_id)
+
+    try:
+        with open(mp4_path, 'rb') as f:
+            pub.video.save("video.mp4", File(f), True)
+
+        logger.info('GIF CONVERTED')
+
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
@@ -211,7 +252,7 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
 
         data = {
             'type': "video",
-            'video': media_path,
+            'video': pub.video.url,
             'id': publication_id
         }
 
@@ -226,3 +267,9 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
         Channel_group(video.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
+
+    except Exception as e:
+        logger.info('ERROR: {}'.format(e))
+        pub.delete()
+    finally:
+        os.remove(file)

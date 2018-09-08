@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue_groups.models import VideoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
@@ -23,7 +25,8 @@ from publications_gallery_groups.models import PublicationGroupMediaVideo
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery_groups.media_processor import optimize_publication_media, check_num_images, check_image_property
+from publications_gallery_groups.media_processor import optimize_publication_media, check_num_images, \
+    check_image_property
 
 
 class PublicationVideoView(AjaxableResponseMixin, CreateView):
@@ -44,8 +47,8 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         video = get_object_or_404(VideoGroup.objects.select_related('group'), id=request.POST.get('board_video', None))
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_video_owner = NodeProfile.nodes.get(user_id=video.owner_id)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_video_owner = Profile.objects.get(user=video.owner)
 
         privacity = board_video_owner.is_visible(emitter)
 
@@ -65,9 +68,8 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_video', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
@@ -138,6 +140,7 @@ def video_publication_detail(request, publication_id):
     """
     user = request.user
     page = request.GET.get('page', 1)
+
     try:
         request_pub = PublicationGroupMediaVideo.objects.select_related('board_video').get(id=publication_id,
                                                                                            deleted=False)
@@ -160,6 +163,8 @@ def video_publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
 
+
+
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
@@ -174,7 +179,7 @@ def video_publication_detail(request, publication_id):
                               'videos', 'tags') \
             .select_related('author',
                             'board_video',
-                            'parent')
+                            'parent').order_by('created')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 
@@ -502,13 +507,8 @@ def load_more_video_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(level__lte=1)
-                                                        & Q(deleted=False))
-        else:
-            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False))
+        pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -535,7 +535,7 @@ def load_more_video_descendants(request):
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'video': publication.board_video
+            'object': publication.board_video
         }
         return render(request, 'photologue_groups/videos/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

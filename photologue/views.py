@@ -1,13 +1,17 @@
 import json
+import uuid
 import warnings
 
+import os
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q, Case, When, Value, IntegerField
+from django.db import transaction
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
@@ -32,7 +36,7 @@ from user_profile.models import RelationShipProfile, BLOCK, Profile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import Photo, Video
-
+from .tasks import generate_video_thumbnail
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -193,6 +197,7 @@ def upload_photo(request):
             'state': 405,
             'message': 'Método no permitido',
         }
+
     return JsonResponse(data)
 
 
@@ -204,21 +209,40 @@ def upload_video(request):
 
     if request.method == 'POST':
         form = UploadFormVideo(request.POST, request.FILES or None)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user
+
             obj.is_public = not form.cleaned_data['is_public']
 
-            obj.save()
-            form.save_m2m()  # Para guardar los tags de la foto
+            file = form.cleaned_data['video']
 
-            data = {
-                'result': True,
-                'state': 200,
-                'message': 'Success',
-                'content': render_to_string(request=request, template_name='channels/new_video_gallery.html',
+            try:
+                if isinstance(file, str):
+                    with open(file, 'rb') as f:
+                        obj.video = File(f)
+                        with transaction.atomic():
+                            obj.save()
+                            transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=obj.pk))
+                else:
+                    with transaction.atomic():
+                        obj.save()
+                        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=obj.pk))
+                form.save_m2m()  # Para guardar los tags de la foto
+                data = {
+                    'result': True,
+                    'state': 200,
+                    'message': 'Success',
+                    'content': render_to_string(request=request, template_name='channels/new_video_gallery.html',
                                             context={'photo': obj})
-            }
+                }
+            except Exception as e:
+                data = {
+                    'result': False,
+                    'state': 500,
+                    'message': get_form_errors(form),
+                }
         else:
             data = {
                 'result': False,
@@ -277,6 +301,8 @@ def crop_image(obj, request):
 
     im.seek(0)
 
+    im = im.convert('RGBA')
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])
@@ -288,13 +314,13 @@ def crop_image(obj, request):
         tempfile_io = BytesIO()
         tempfile.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
     else:  # no la recorta, optimizamos la imagen
         im.thumbnail((1200, 630), Image.ANTIALIAS)
         tempfile_io = BytesIO()
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        image_file = InMemoryUploadedFile(tempfile_io, None, str(uuid.uuid4()) + 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
 
     obj.image = image_file
 
@@ -443,11 +469,11 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(p_author__profile__in=users_not_blocked_me)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
-                .select_related('p_author',
+                .select_related('author',
                                 'board_photo', 'parent'), 10)
 
         try:
@@ -463,7 +489,7 @@ class PhotoDetailView(DetailView):
             self.template_name = 'photologue/publications_entries.html'
             return context
 
-        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
+        initial_photo = {'author': user.pk, 'board_photo': self.photo}
 
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)

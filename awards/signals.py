@@ -14,5 +14,5 @@ def awards_handler(sender, instance, created, **kwargs):
 	notify.send(instance.user, actor=instance.user.username,
 		recipient=instance.user,
 		verb=u'¡Nuevo logro conseguido!',
-		description=u'Has obtenido el logro: {}'.format(instance.badge.name))
+		description=u'Has obtenido el logro: {} (+{} puntos)'.format(instance.badge.name, instance.badge.points))
 	logger.info('User: {} ha logrado un nuevo logro: {}'.format(instance.user, instance.badge))

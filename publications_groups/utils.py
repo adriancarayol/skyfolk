@@ -51,7 +51,7 @@ def optimize_publication_media(instance, image_upload, exts):
                     process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
                 else:  # es una imagen normal
                     try:
-                        image = Image.open(media)
+                        image = Image.open(media).convert('RGBA')
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
 
@@ -71,12 +71,14 @@ def optimize_publication_media(instance, image_upload, exts):
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
 
 
-def generate_path_video(ext='mp4'):
+def generate_path_video(username, ext='mp4'):
     """
     Funcion para calcular la ruta
     donde se almacenaran las imagenes
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/group_publications/videos', filename),
-            os.path.join('group_publications/videos', filename)]
+    path = os.path.join(settings.MEDIA_URL, 'group_publications/videos')
+    full_path = os.path.join(path, username)
+
+    return os.path.join(full_path, filename)

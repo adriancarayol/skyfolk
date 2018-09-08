@@ -11,9 +11,11 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
 
     $('select').material_select();
-
+    $('.materialboxed').materialbox();
     $('textarea#message2, textarea#message3').characterCounter();
-    var Autocomplete = function (options) {
+
+    var Autocomplete = function (options
+    ) {
         this.form_selector = options.form_selector;
         this.url = options.url || '/search/autocomplete/';
         this.delay = parseInt(options.delay || 300);
@@ -90,13 +92,13 @@ $(document).ready(function () {
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
         menuWidth: 300,
-        draggable: true
+        draggable: false
     });
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
         menuWidth: 340,
-        dragable: true
+        dragable: false
     });
 
     /* Mensaje flotante (perfil ajeno) */
@@ -141,7 +143,6 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
-        $('.button-menu-left').sideNav('hide');
     });
 
     /* Close nuevo grupo */
@@ -190,6 +191,7 @@ $(document).ready(function () {
         event.preventDefault();
         AJAX_submit_group();
     });
+
     /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
@@ -197,22 +199,15 @@ $(document).ready(function () {
         $('#atajos-keyboard-profile').hide();
     });
 
-    /* Atajo para enviar comentarios mas rapido */
-    $(page_wrapper).find('#message3').keypress(function (e) {
-        //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
-            $('#sendformpubli').click();
-            $(this).val(''); // CLEAR TEXTAREA
-            $(this).blur(); // OFF FOCUS
-        }
-    });
-    /* Atajo para enviar comentarios mas rapido a mi perfil. */
-    $(self_page_wrapper).find('#message2').keypress(function (e) {
-        //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
-            $('#sendselfformpubli').click();
-            $(this).val(''); // CLEAR TEXTAREA
-            $(this).blur(); // OFF FOCUS
+    /* Submit new message */
+    $(this).on('keypress', function (e) {
+        var activeElement = document.activeElement;
+        var form = $(activeElement).closest('form').first();
+        if (form) {
+            if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+                var submit = $(form).find(':submit');
+                submit.click();
+            }
         }
     });
 
@@ -305,16 +300,16 @@ $(document).ready(function () {
     /* Agregar Amigo por medio de PIN */
     $('#agregar-amigo, #agregar-amigo2').on('click', function () {
         swal({
-            title: "Add new friend!",
+            title: "¡Empieza una nueva relación!",
             customClass: "default-div",
-            text: "Insert the friend's username",
+            text: "Introduce su nombre de usuario",
             type: "input",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Add it!",
-            cancelButtonText: "Cancel!",
+            confirmButtonText: "¡Seguir!",
+            cancelButtonText: "Cancelar",
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         }, function (inputValue) {
@@ -476,7 +471,6 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
         },
         dataType: "json",
         success: function (data) {
-            console.log(data);
             var response = data.response;
 
             if (response === "added_friend") {
@@ -487,23 +481,23 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
-                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</li>');
                     if (data.friend_username)
                         if (typeof addItemToFriendList === "function")
                             addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
             } else if (response === 'your_own_username') {
                 swal({
-                    title: "Wait a moment!",
-                    text: "It's your own username!",
+                    title: "¡Espera un momento!",
+                    text: "¿Estás intentando seguirte a ti mismo?",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'its_your_friend') {
                 swal({
-                    title: "Wait a moment!",
-                    text: "It's already your friend!",
+                    title: "¡Espera un momento!",
+                    text: "¡Ya lo sigues!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
@@ -511,39 +505,39 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
             } else if (response === 'its_blocked') {
                 swal({
                     title: "Espera un momento!",
-                    text: "Tienes bloqueado este perfil!",
+                    text: "¡Tienes bloqueado este perfil!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'no_added_friend') {
                 swal({
-                    title: "We have a problem",
-                    text: "Friend no added",
+                    title: "Tenemos un problema...",
+                    text: "La petición ha fallado",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'in_progress') {
                 swal({
-                    title: "Request in progress",
-                    text: "Your request is to confirm!.",
+                    title: "Petición en progreso",
+                    text: "¡Tu petición está a la espera de ser aceptada!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'new_petition') {
                 swal({
-                    title: "New petition sent!",
-                    text: "Wait to confirm!.",
+                    title: "¡Petición enviada!",
+                    text: "¡Ahora espera a que te acepte la invitación!",
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response === 'user_blocked') {
                 swal({
-                    title: "Petición denegada.",
-                    text: "El usuario te ha bloqueado.",
+                    title: "Petición denegada",
+                    text: "El usuario te ha bloqueado",
                     customClass: 'default-div',
                     type: "error",
                     timer: 4000,
@@ -552,13 +546,21 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                 });
             } else if (response === 'blocked_profile') {
                 swal({
-                    title: "Petición denegada.",
-                    text: "Tienes bloqueado a este perfil.",
+                    title: "Petición denegada",
+                    text: "Tienes bloqueado a este perfil",
                     customClass: 'default-div',
                     type: "error",
                     timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
+                });
+            } else {
+                swal({
+                    title: "Tenemos un problema...",
+                    text: "Parece que no existe ningún usuario con ese nombre",
+                    customClass: 'default-div',
+                    timer: 4000,
+                    showConfirmButton: true
                 });
             }
         },
@@ -716,11 +718,14 @@ function AJAX_submit_group() {
         data: form,
         success: function (data) {
             var msg = data.msg;
+            var group_created = data.group_created;
             if (typeof(msg) !== 'undefined' && msg !== null) {
                 Materialize.toast(msg, 4000);
             }
             if (typeof data.pk !== 'undefined' && data.pk !== null) {
                 f.trigger("reset");
+                var wrapper_groups_row = $('.wrapper-groups').find('.row').first();
+                $(wrapper_groups_row).prepend(group_created);
                 $('#create_group').hide();
             }
         },
@@ -741,7 +746,7 @@ function AJAX_submit_group() {
 /*PETICION AJAX PARA AGREGAR AMIGO*/
 function AJAX_requestfriend(status) {
     var slug = $("#profileId").html();
-    if (status == "noabort") {
+    if (status === "noabort") {
         $.ajax({
             type: "POST",
             url: "/request_friend/",
@@ -752,7 +757,7 @@ function AJAX_requestfriend(status) {
             //data: {'slug': $("#profileId").html()},
             dataType: "json",
             success: function (response) {
-                if (response == "isfriend") {
+                if (response === "isfriend") {
                     swal({
                             title: "¡Ya es tu amigo!",
                             type: "warning",
@@ -761,8 +766,8 @@ function AJAX_requestfriend(status) {
                             showConfirmButton: true,
                             showCancelButton: true,
                             confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Unfollow",
-                            cancelButtonText: "Ok, fine!",
+                            confirmButtonText: "Dejar de seguir",
+                            cancelButtonText: "¡Ah, vale!",
                             closeOnConfirm: true
                         },
                         function (isConfirm) {
@@ -770,9 +775,9 @@ function AJAX_requestfriend(status) {
                                 AJAX_remove_relationship(slug);
                             }
                         });
-                } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</span>');
-                } else if (response == "user_blocked") {
+                } else if (response === "inprogress") {
+                    $('#addfriend').replaceWith('<li class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</li>');
+                } else if (response === "user_blocked") {
                     swal({
                         title: "Petición denegada.",
                         text: "El usuario te ha bloqueado.",
@@ -782,10 +787,10 @@ function AJAX_requestfriend(status) {
                         animation: "slide-from-top",
                         showConfirmButton: false
                     });
-                } else if (response == "added_friend") {
+                } else if (response === "added_friend") {
                     var currentValue = document.getElementById('followers-stats');
                     $(currentValue).html(parseInt($(currentValue).html()) + 1);
-                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</li>');
                 }
                 else {
 
@@ -795,7 +800,7 @@ function AJAX_requestfriend(status) {
                 alert(rs.responseText + " " + e);
             }
         });
-    } else if (status == "anonymous") {
+    } else if (status === "anonymous") {
         alert("Debe estar registrado");
     }
 }
@@ -815,7 +820,7 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
+                $(addFriendButton).replaceWith('<li id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -843,7 +848,7 @@ function AJAX_remove_request_friend() {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
+                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",

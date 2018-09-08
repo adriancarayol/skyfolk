@@ -6,8 +6,9 @@ Template para las busquedas
 {% load avatar_tags %}
 {% load humanize %}
 {% load highlight %}
+{% load embed_video_tags %}
 {% load static %}
-{% block title %} <title>Skyfolk / Busqueda {{ q }}</title> {% endblock %}
+{% block title %}Búsqueda {{ q }}{% endblock %}
 {% block include_files %}
     <!-- Estilos para la galeria de fotos -->
     <style>
@@ -16,9 +17,10 @@ Template para las busquedas
         }
 
         .grid-item {
-            width: 350px;
+            width: 300px;
             margin-bottom: 10px;
             float: left;
+            background-color: #fff;
         }
 
         .photo-date {
@@ -126,10 +128,7 @@ Template para las busquedas
                                     <i class="material-icons like-him">group</i>
                                     <div class="bg-user">
                                         <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                             class="profile-user-bg"><img src="
-                                                {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                                          alt="Imagen de {{ item.name }}"
-                                                                          title="Imagen de {{ item.name }}"/></div>
+                                             class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}" alt="Imagen de {{ item.name }}" title="Imagen de {{ item.name }}"/></div>
                                     </div>
                                 </div>
                                 <div class="col s12">
@@ -157,13 +156,53 @@ Template para las busquedas
                                     </div>
                                     <div class="row" style="word-wrap: break-word;">
                                         <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
-                                        <br>
+                                        {% with item.object.shared_publication as shared_publication %}
+                                            {% include "account/shared_publication.html" %}
+                                        {% endwith %}
+                                        {% with item.object.shared_group_publication as shared_publication %}
+                                            {% include "account/shared_publication.html" %}
+                                        {% endwith %}
                                         {% for i in item.object.images.all %}
                                             <div class="col s12">
-                                                <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
+                                                <img class="materialboxed" src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
                                                      height="100%"/>
                                             </div>
                                         {% endfor %}
+                                         {% with item.object.videos.all as videos %}
+                                            {% if videos %}
+                                                <div class="row videos">
+                                                    {% for video in videos %}
+                                                        <div class="col s12 z-depth-2 center">
+                                                            <video class="responsive-video" controls loop>
+                                                                <source src="{{ video.video.url }}" type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% if item.object.extra_content %}
+                                            {% if item.object.extra_content.video %}
+                                                {% video item.object.extra_content.video as my_video %}
+                                                    {% video my_video "100% x 100%" %}
+                                                {% endvideo %}
+                                            {% else %}
+                                                {% comment %} Para publicaciones con URL {% endcomment %}
+                                                <div class="card small">
+                                                    <div class="card-image">
+                                                        <img class="lazyload" data-src="
+                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <p>{{ item.object.extra_content.description }}</p>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="white-text blue right btn right" target="_blank" href="{{ item.object.extra_content.url }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -181,10 +220,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/
-                                        {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
-                                         alt="{{ item.title }}" title="{{ item.title }}"
-                                         onclick="location.href='/photo/{{ item.slug }}'">
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
@@ -192,7 +228,7 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-photo" slug=item.slug %}"
+                                        <a href="{% url "photologue:pl-photo" username=item.author slug=item.slug %}"
                                            class="photo-title truncate">{{ item.title }}</a>
                                         <i class="truncate photo-date"><i
                                                 class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
@@ -215,12 +251,10 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
-                                             alt="{{ item.name }}" title="{{ item.name }}"
-                                             onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                        <img class="lazyload" data-src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
-                                            <source src="/media/{{ item.video }}" type="video/mp4">
+                                            <source src="{{ item.video }}" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     {% endif %}
@@ -231,7 +265,7 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                        <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
                                            class="photo-title truncate">
                                             {{ item.name }}</a>
                                         <i class="truncate photo-date"><i
@@ -287,10 +321,7 @@ Template para las busquedas
                                 <i class="material-icons like-him">group</i>
                                 <div class="bg-user">
                                     <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                         class="profile-user-bg"><img src="
-                                            {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                                      alt="Imagen de {{ item.name }}"
-                                                                      title="Imagen de {{ item.name }}"/></div>
+                                         class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}" alt="Imagen de {{ item.name }}" title="Imagen de {{ item.name }}"/></div>
                                 </div>
                             </div>
                             <div class="col s12">
@@ -323,12 +354,209 @@ Template para las busquedas
                                 <div class="row" style="word-wrap: break-word;">
                                     <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                                     <br>
+                                    {% if node.shared_publication %}
+                                            {% if node.shared_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar node.shared_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ node.shared_publication.content|safe }}</p>
+                                                        {% with node.shared_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        {% if image.image %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with node.shared_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if node.shared_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  node.shared_publication.extra_content.video %}
+                                                                {% video node.shared_publication.extra_content.video as my_video %}
+                                                                {% video my_video "100% x 100%" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ node.shared_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a class="white-text blue right btn right" target="_blank" href="{{ node.shared_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="white-text blue right btn right"
+                                                           target="_blank"
+                                                           href="/publication/{{ node.shared_publication.pk }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if item.object.shared_group_publication %}
+                                            {% if item.object.shared_group_publication.deleted %}
+                                                <div class="row">
+                                                    <div class="col s12 m5">
+                                                        <div class="card-panel blue">
+                                                            <span class="white-text">Esta publicación no está disponible.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                                <div class="card grey lighten-5">
+                                                    <div class="card-content black-text">
+                                                        {% avatar item.object.shared_group_publication.author %}<br>
+                                                        <p class="card-title-md-18"><a
+                                                                href="{% url 'user_profile:profile' item.object.shared_group_publication.author %}">@{{ item.object.shared_group_publication.author }}</a>
+                                                            <i class="blue-textº text-darken-2"> {{ item.object.shared_group_publication.created|naturaltime }}</i>
+                                                        </p>
+                                                        <p>{{ item.object.shared_group_publication.content|safe }}</p>
+                                                        {% with item.object.shared_group_publication.images.all as images %}
+                                                            {% if images %}<br>
+                                                                <div class="row">
+                                                                    {% for image in images %}
+                                                                        {% if image.image %}
+                                                                        <div class="col l4 s12">
+                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
+                                                                                 data-src="{{ image.image.url }}"
+                                                                                 alt="Imagen de: {{ node.author }}"
+                                                                                 title="Imagen de: {{ node.author }}">
+                                                                        </div>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% with item.object.shared_group_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                                    {% for video in videos %}
+                                                                        <div class="col s4">
+                                                                            <video class="responsive-video" controls
+                                                                                   loop>
+                                                                                <source src="{{ video.video.url }}"
+                                                                                        type="video/mp4">
+                                                                            </video>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                        {% if item.object.shared_group_publication.extra_content %}
+                                                            {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            {% if  item.object.shared_group_publication.extra_content.video %}
+                                                                {% video item.object.shared_group_publication.extra_content.video as my_video %}
+                                                                {% video my_video "100% x 100%" %}
+                                                                {% endvideo %}
+                                                            {% else %}
+                                                                <div class="card small">
+                                                                    <div class="card-image">
+                                                                        <img class="lazyload" data-src="
+                                                                                {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                                        <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
+                                                                    </div>
+                                                                    <div class="card-content">
+                                                                        <p>{{ item.object.shared_group_publication.extra_content.description }}.</p>
+                                                                    </div>
+                                                                    <div class="card-action">
+                                                                        <a class="white-text blue right btn right" target="_blank" href="{{ item.object.shared_group_publication.extra_content.url }}">Ver</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="white-text blue right btn right"
+                                                           target="_blank"
+                                                           href="{% url "publications_groups:detail_group_publication" pk=item.object.shared_group_publication.pk %}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     {% for i in item.object.images.all %}
                                         <div class="col s12">
-                                            <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
+                                            <img class="materialboxed" src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
                                                  height="100%"/>
                                         </div>
                                     {% endfor %}
+                                    {% with item.object.videos.all as videos %}
+                                            {% if videos %}
+                                                <div class="row videos">
+                                                    {% for video in videos %}
+                                                        <div class="col s12 z-depth-2 center">
+                                                            <video class="responsive-video" controls loop>
+                                                                <source src="{{ video.video.url }}" type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% if item.object.extra_content %}
+                                            {% if item.object.extra_content.video %}
+                                                {% video item.object.extra_content.video as my_video %}
+                                                    {% video my_video "100% x 100%" %}
+                                                {% endvideo %}
+                                            {% else %}
+                                                {% comment %} Para publicaciones con URL {% endcomment %}
+                                                <div class="card small">
+                                                    <div class="card-image">
+                                                        <img class="lazyload" data-src="
+                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <p>{{ item.object.extra_content.description }}</p>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a class="white-text blue right btn right" target="_blank" href="{{ item.object.extra_content.url }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -351,10 +579,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/
-                                    {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
-                                     alt="{{ item.title }}" title="{{ item.title }}"
-                                     onclick="location.href='/photo/{{ item.slug }}'">
+                                <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                             </div>
                             <div class="col s12 legend-content">
                                 <div class="legend-user-image">
@@ -389,12 +614,12 @@ Template para las busquedas
                                     </div>
                                 {% endif %}
                                 {% if item.thumbnail %}
-                                    <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
+                                    <img class="lazyload" data-src="{{ item.thumbnail }}"
                                          alt="{{ item.name }}" title="{{ item.name }}"
-                                         onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                         onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                 {% else %}
                                     <video controls style="width: 100%; height: 100%; outline: none;">
-                                        <source src="/media/{{ item.video }}" type="video/mp4">
+                                        <source src="{{ item.video }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 {% endif %}
@@ -405,7 +630,7 @@ Template para las busquedas
                                 </div>
                                 <div class="col l8 m8 s8 legend-user-data">
                                     <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                    <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                    <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
                                        class="photo-title truncate">
                                         {{ item.name }}</a>
                                     <i class="truncate photo-date"><i
@@ -420,8 +645,8 @@ Template para las busquedas
         {% endif %}
         <div class="row">
             {% if page_obj.has_next %}
-                <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
-                   href="?page={{ page_obj.next_page_number }}&q={{ q }}">More</a>
+                <a class="infinite-more-link hidden"
+                   href="?page={{ page_obj.next_page_number }}&q={{ q }}"></a>
             {% endif %}
             <div class="progress loading_search" style="display: none">
                 <div class="indeterminate blue darken-1"></div>
@@ -430,7 +655,7 @@ Template para las busquedas
     </div>
     <script src="{% static "js/search.js" %}"></script>
     <script src="{% static "js/photo_gallery.js" %}" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/imagesloaded.pkgd.min.js"></script>
+    <script src="{% static "js/imagesloaded.pkgd.min.js" %}"></script>
     <script>
         var infinite = new Waypoint.Infinite({
             element: $('.grid'),
@@ -449,7 +674,7 @@ Template para las busquedas
 
         var $grid = $('.grid').masonry({
             itemSelector: '.grid-item',
-            columnWidth: 350,
+            columnWidth: 300,
             gutter: 20,
             fitWidth: true,
             initLayout: false,

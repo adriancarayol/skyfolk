@@ -282,11 +282,9 @@
                     this.$avatarForm.trigger("reset");
 
                     if (data.content) {
-                        console.log(data.content);
-                        $('.container-gallery > .row').prepend(data.content);
+                        $('.container-gallery .row').first().prepend(data.content);
                     }
                 } else {
-                    console.log(data.message);
                     swal({
                         title: "Tenemos un problema...",
                         customClass: 'default-div',

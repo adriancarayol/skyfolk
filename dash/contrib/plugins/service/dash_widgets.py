@@ -23,7 +23,8 @@ class BaseTriggerWidget(BaseDashboardPluginWidget):
         trigger = TriggerService.objects.get(pk=self.plugin.data.trigger)
         provider = trigger.provider.name.name.split('Service')[1].lower()
         cache = caches['django_th']
-        pattern = 'th_{provider}_{id}'.format(provider=provider,
+
+        pattern = 'th_services.th_{provider}_{id}'.format(provider=provider,
                                               id=trigger.id)
 
         context = {'plugin': self.plugin, 'results': cache.get(pattern), 'trigger': trigger}

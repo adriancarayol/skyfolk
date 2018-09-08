@@ -1,3 +1,6 @@
+{% extends "emails/base_email.html" %}
+{% block content %}
+
 <p>
     ¡Hola <b>{{ to_user }}</b>!.
 </p>
@@ -11,3 +14,4 @@
         </li>
     {% endfor %}
 </ul>
+{% endblock %}

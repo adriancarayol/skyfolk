@@ -3,18 +3,21 @@ $(document).ready(function () {
 
    /* Borrar publicacion */
     $thread.on('click', '.trash-comment', function () {
-        var id = $(this).closest('.options_comentarios').data('id');
-        var board_group = $(this).closest('.options_comentarios').data('board');
+        var publication_wrapper = $(this).closest('.infinite-item');
+        var id = $(publication_wrapper).attr('id').split('-')[1];
+        var board_group = $(publication_wrapper).data('id');
+        console.log(id);
+        console.log(board_group);
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {

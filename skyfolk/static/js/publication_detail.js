@@ -33,6 +33,7 @@ $(document).ready(function () {
         var content = $(this).serialize();
         var pub_id = $wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         AJAX_add_timeline_detail(pub_id, tag, content);
     });
 
@@ -66,15 +67,15 @@ $(document).ready(function () {
     $(thread).on('click', '.trash-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -92,6 +93,7 @@ $(document).ready(function () {
     $(thread).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += "&csrfmiddlewaretoken=" + csrftoken;
         AJAX_edit_publication_detail(edit);
     });
 }); // END DOCUMENT
@@ -103,7 +105,7 @@ function AJAX_delete_publication_detail(caja_publicacion) {
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
-        'csrfmiddlewaretoken': csrftoken
+        "csrfmiddlewaretoken": csrftoken
     };
 
     $.ajax({
@@ -343,7 +345,8 @@ function AJAX_remove_timeline_detail(pub_id, tag) {
         type: 'POST',
         dataType: 'json',
         data: {
-            'pk': pub_id
+            'pk': pub_id,
+            'csrfmiddlewaretoken' : csrftoken
         },
         success: function (data) {
             var response = data.response;

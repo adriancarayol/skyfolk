@@ -2,6 +2,7 @@ import json
 
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
@@ -15,6 +16,7 @@ from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from photologue.models import Photo
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
@@ -23,7 +25,6 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery.utils import optimize_publication_media, check_num_images, check_image_property
 
@@ -46,8 +47,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         photo = get_object_or_404(Photo, id=request.POST.get('board_photo', None))
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        emitter = Profile.objects.get(user=self.request.user)
+        board_photo_owner = Profile.objects.get(user=photo.owner)
 
         privacity = board_photo_owner.is_visible(emitter)
 
@@ -63,13 +64,12 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.p_author_id
-                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
-                    if parent_node.bloq.is_connected(emitter):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter,
+                                                              from_profile=parent.author.profile):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
-                publication.p_author_id = emitter.user_id
+                publication.author_id = emitter.user_id
                 publication.board_photo_id = photo.id
 
                 publication.parse_content()  # parse publication content
@@ -144,7 +144,7 @@ def publication_detail(request, publication_id):
         raise Http404
 
     try:
-        author = Profile.objects.get(user_id=request_pub.p_author_id)
+        author = Profile.objects.get(user_id=request_pub.author_id)
         m = Profile.objects.get(user_id=user.id)
     except Profile.DoesNotExist:
         return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
@@ -167,9 +167,9 @@ def publication_detail(request, publication_id):
             .filter(deleted=False) \
             .prefetch_related('publication_photo_extra_content', 'images',
                               'videos', 'tags') \
-            .select_related('p_author',
+            .select_related('author',
                             'board_photo',
-                            'parent')
+                            'parent').order_by('created')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 
@@ -211,10 +211,10 @@ def delete_publication(request):
                                 content_type='application/json'
                                 )
         logger.info('publication_author: {} publication_board_photo: {} request.user: {}'.format(
-            publication.p_author.username, publication.board_photo, user.username))
+            publication.author.username, publication.board_photo, user.username))
 
         # Borramos publicacion
-        if user.id == publication.p_author.id or user.id == publication.board_photo.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -244,7 +244,7 @@ def add_like(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = Profile.objects.get(user_id=publication.p_author_id)
+            author = Profile.objects.get(user_id=publication.author_id)
             m = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -260,7 +260,7 @@ def add_like(request):
         logger.info("USUARIO DA LIKE")
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info(
-            "(PERFIL DE USUARIO): " + publication.p_author.username + " PK_ID -> " + str(publication.p_author_id))
+            "(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author_id))
 
         in_like = False
         in_hate = False
@@ -344,7 +344,7 @@ def add_hate(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = Profile.objects.get(user_id=publication.p_author_id)
+            author = Profile.objects.get(user_id=publication.author_id)
             m = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -359,7 +359,7 @@ def add_hate(request):
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA HATE")
         logger.info("(USUARIO PETICIÓN): " + user.username)
-        logger.info("(PERFIL DE USUARIO): " + publication.p_author.username)
+        logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
         in_like = False
         in_hate = False
@@ -441,7 +441,7 @@ def edit_publication(request):
 
             publication = get_object_or_404(PublicationPhoto, id=pk)
 
-            if publication.p_author_id != user.id:
+            if publication.author_id != user.id:
                 return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
             if publication.event_type != 1 and publication.event_type != 3:
@@ -497,13 +497,8 @@ def load_more_descendants(request):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__in=users_not_blocked_me)
-                                                        & Q(level__lte=1)
-                                                        & Q(deleted=False))
-        else:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__in=users_not_blocked_me)
-                                                        & Q(deleted=False))
+        pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
+                                                    & Q(deleted=False)).order_by('created')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -514,8 +509,8 @@ def load_more_descendants(request):
                 output_field=IntegerField()
             ))).prefetch_related(
             'publication_photo_extra_content', 'images',
-            'videos', 'parent__p_author') \
-            .select_related('p_author',
+            'videos', 'parent__author') \
+            .select_related('author',
                             'board_photo', 'parent')
 
         paginator = Paginator(pubs, 10)

@@ -920,7 +920,7 @@ msgstr ""
 msgid "Add dashboard entry"
 msgstr "Añadir a tablero"
 
-#: templates/dash/add_dashboard_entry_ajax.html:5
+#: templates/dash/add_dashboard_entry_ajax.html:7
 #: templates/dash/add_dashboard_widget_ajax.html:7
 #, python-format
 msgid "Add %(plugin_name)s to Dashboard"
@@ -931,6 +931,7 @@ msgstr "Añadir %(plugin_name)s al tablero"
 #: templates/dash/create_dashboard_workspace_ajax.html:15
 msgid "Add"
 msgstr "Añadir"
+
 
 #: templates/dash/create_dashboard_workspace.html:6
 #: templates/dash/create_dashboard_workspace_ajax.html:5
@@ -946,7 +947,7 @@ msgstr "Borrar espacio de trabajo %(workspace_name)s "
 msgid "Delete dashboard workspace"
 msgstr "Borrar espacio de trabajo"
 
-#: templates/dash/delete_dashboard_workspace_ajax.html:13
+#: templates/dash/delete_dashboard_workspace_ajax.html:9
 #, python-format
 msgid "Are you sure you want to delete the dashboard workspace %(workspace_name)s?"
 msgstr "¿Estás seguro de que quieres eliminar el espacio de trabajo %(workspace_name)s?"
@@ -1009,3 +1010,22 @@ msgstr ""
 msgid "Submit changes"
 msgstr "Guardar cambios"
 
+#: contrib/plugins/service/dash_plugins.py:22
+msgid "Trigger"
+msgstr "Disparador"
+
+#: contrib/plugins/twitch/forms.py:16
+msgid "Channel"
+msgstr "Canal"
+
+#: contrib/plugins/twitch/forms.py:17
+msgid "Description"
+msgstr "Descripción"
+
+#: dash/plugin_widgets_ajax.html:16
+msgid "Paste from clipboard"
+msgstr "Pegar desde portapapeles"
+
+#: templates/dash/edit_dashboard_widget_ajax.html:7
+msgid "Edit %(plugin_name)s on Dashboard"
+msgstr "Editar %(plugin_name)s en tablero"

@@ -1,5 +1,6 @@
 import magic
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -9,12 +10,14 @@ from django.db.models import Count, Q, Case, When, Value, IntegerField, Subquery
 from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from emoji.models import Emoji
+from notifications.models import Notification
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.forms import SharedPublicationForm
 from publications.models import Publication
@@ -46,8 +49,9 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
         group = get_object_or_404(UserGroups, id=request.POST.get('board_group', None))
         emitter = request.user
 
+        is_member = group.users.filter(id=emitter.id).exists()
         if group.owner.id != emitter.id:
-            if not group.is_public and not group.users.filter(id=emitter.id):
+            if not group.is_public and not is_member:
                 return self.form_invalid(form=form)
 
         if form.is_valid():
@@ -56,10 +60,15 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.author_id = emitter.id
                 publication.board_group_id = group.id
                 parent = publication.parent
+
                 if parent:
                     if RelationShipProfile.objects.is_blocked(to_profile=emitter.profile,
                                                               from_profile=parent.author.profile):
                         raise PermissionDenied('El autor de la publicación te ha bloqueado')
+
+                if not parent and group.owner.id != emitter.id and not is_member:
+                    form.add_error('content', 'No puedes publicar en este grupo.')
+                    return self.form_invalid(form=form)
 
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
@@ -413,6 +422,12 @@ class PublicationGroupDetail(ListView):
                 id=user.id).exists():
             return HttpResponseForbidden()
 
+        try:
+            Notification.objects.filter(
+                action_object_content_type=ContentType.objects.get_for_model(self.publication)).update(unread=False)
+        except Notification.DoesNotExist:
+            pass
+
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(
             'shared_group_publication__id')
@@ -434,11 +449,11 @@ class PublicationGroupDetail(ListView):
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
-            .prefetch_related('group_extra_content', 'images',
+            .prefetch_related('extra_content', 'images',
                               'videos', 'tags') \
             .select_related('author',
                             'board_group',
-                            'parent')
+                            'parent').order_by('created')
 
         paginator = Paginator(publications, 10)
 
@@ -454,7 +469,7 @@ class PublicationGroupDetail(ListView):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
         if not self.request.is_ajax():
             context['publication_id'] = self.kwargs.get('pk', None)
-            context['share_publication'] = SharedPublicationForm()
+            context['asdasdadaddr'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
         context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(
             id=self.publication.board_group_id))
@@ -493,16 +508,10 @@ class LoadRepliesForPublicationGroup(View):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
-        if not publication.parent:
-            pubs = publication.get_descendants() \
-                .filter(~Q(author__profile__in=users_not_blocked_me)
-                        & Q(level__lte=1) & Q(deleted=False))
-
-        else:
-            pubs = publication.get_descendants() \
-                .filter(
-                ~Q(author__profile__in=users_not_blocked_me)
-                & Q(deleted=False))
+        pubs = publication.get_descendants() \
+            .filter(
+            ~Q(author__profile__in=users_not_blocked_me)
+            & Q(deleted=False)).order_by('created')
 
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(
@@ -522,7 +531,7 @@ class LoadRepliesForPublicationGroup(View):
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related('group_extra_content',
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related('extra_content',
                                                                                                'images',
                                                                                                'videos', 'tags') \
             .select_related('author',
@@ -562,7 +571,9 @@ class ShareGroupPublication(View):
         form = SharedPublicationForm(request.POST or None)
 
         if form.is_valid():
-            data = {}
+            data = {
+                'response': False
+            }
             user = request.user
             pub_id = form.cleaned_data['pk']
             try:
@@ -581,29 +592,29 @@ class ShareGroupPublication(View):
             if privacity and privacity != 'all':
                 return HttpResponseForbidden()
 
-            shared = Publication.objects.filter(shared_group_publication=pub_id, author_id=user.id,
-                                                deleted=False).exists()
+            pub = form.save(commit=False)
+            pub.parse_content()
+            pub.add_hashtag()
+            pub.parse_mentions()
 
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.author.username, pub_to_add.author.username, xstr(pub.content))
-                pub.shared_group_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 8
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    data['response'] = True
-                except IntegrityError as e:
-                    logger.info(e)
+            try:
+                obj = Publication.objects.get(shared_group_publication=pub_to_add, author=user, board_owner=user)
+            except Publication.DoesNotExist:
+                obj = Publication.objects.create(shared_group_publication=pub_to_add, author=user, board_owner=user)
+
+            obj.content = Emoji.replace(pub.content)
+            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
+                          'href="/profile/%s">@%s</a><br>%s' % (
+                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
+            obj.created = timezone.now()
+            obj.event_type = 6
+            obj.deleted = False
+
+            with transaction.atomic(using='default'):
+                obj.save()
+                transaction.on_commit(lambda: obj.send_notification(request))
+
+            data['response'] = True
 
             return JsonResponse(data)
 

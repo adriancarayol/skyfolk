@@ -8,6 +8,9 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_amigos = $('#tab-amigos');
     var wrapper_shared_pub = $('#share-publication-wrapper');
+    var add_pin = $('.add-plugin');
+
+    $(add_pin).hide();
 
     /* Show more - Show less */
     $(tab_comentarios).find('.wrapper').each(function () {
@@ -60,6 +63,20 @@ $(document).ready(function () {
         });
     });
 
+
+    $('.info-workspaces').on('click', function () {
+        var id = $(this).data('id');
+        $(".workspaces").toggle(0, function () {
+            if ($(this).is(":visible")) {
+                $('.wrapper-workspaces').load('/dashboard/public/workspaces/' + id + '/');
+            }
+        });
+    });
+
+    $('#close-workspaces').on('click', function () {
+        $(".workspaces").hide();
+    });
+
     $('#close-trofeos').on('click', function () {
         $(".trofeos").hide();
     });
@@ -78,13 +95,20 @@ $(document).ready(function () {
         $('.wrapper-groups').load($(this).attr('href'));
     });
 
+    $('.workspaces').on('click', '.wrapper-workspaces .pagination a', function (e) {
+        e.preventDefault()
+        $('.wrapper-workspaces').load($(this).attr('href'));
+    });
+
     $('#configurationOnProfile').on('click', function () {
         var _ventana_pin = $('.ventana-pin');
         if ($(_ventana_pin).is(':visible')) {
             $('html, body').removeClass('body-inConf');
             $(_ventana_pin).fadeOut("fast");
+            $(add_pin).hide();
         } else {
             $('html, body').addClass('body-inConf');
+            $(add_pin).show();
             $(_ventana_pin).fadeIn("fast");
         }
     });
@@ -104,6 +128,7 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += '&csrfmiddlewaretoken=' + csrftoken;
         AJAX_edit_publication(edit);
     });
 
@@ -157,15 +182,15 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this publication!",
+            title: "¿Estás seguro?",
+            text: "¡No podrás recuperar esta publicación!",
             type: "warning",
             animation: "slide-from-top",
             showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
+            confirmButtonText: "Sí",
+            cancelButtonText: "¡No!",
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -185,6 +210,7 @@ $(document).ready(function () {
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
         var content = $(this).serialize();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         var pub_id = $(wrapper_shared_pub).find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_timeline(pub_id, tag, content);
@@ -203,8 +229,8 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $(this).on('click', '.like-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+    $(document).on('click', '.like-comment', function () {
+        var caja_publicacion = $(this).closest('.infinite-item');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
@@ -235,7 +261,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#personal-card-info').find('#bloq-user').on('click', function () {
+    $('.profile-controls').on('click', '#bloq-user', function () {
         var obj = document.getElementById('info-user-name-profile'),
             username = obj.getAttribute('data-id'),
             buttonBan = $(this);
@@ -256,17 +282,6 @@ $(document).ready(function () {
                 AJAX_bloq_user(buttonBan);
             }
         });
-    });
-
-    $(this).click(function (event) {
-        var _personal_card_info = $('#personal-card-info');
-        if (!$(event.target).closest('#personal-card-info').length) {
-            if (!$(event.target).closest('.menu-profile').length) {
-                if ($(_personal_card_info).is(":visible")) {
-                    $(_personal_card_info).hide();
-                }
-            }
-        }
     });
 
     /* LOAD MORE ON CLICK */
@@ -296,7 +311,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.widget-controls').on('click', '.update-plugin', function(e) {
+    $('.widget-controls').on('click', '.update-plugin', function (e) {
         e.preventDefault();
         var plugin_uid = $(this).data('id');
         AJAX_update_entry_info(plugin_uid);
@@ -314,7 +329,7 @@ function AJAX_likeprofile(status) {
         },
         dataType: "json",
         success: function (response) {
-            var _likes = $('#likes').find('strong');
+            var _likes = $('#likes').find('.likes-number');
             if (response === "like") {
                 $("#ilike_profile").css('color', '#ec407a');
                 $(_likes).html(parseInt($(_likes).html()) + 1);
@@ -358,21 +373,30 @@ function AJAX_load_publications(pub, loader, page, btn) {
             $(loader).fadeIn();
         },
         success: function (data) {
-            var $existing = $('#pub-' + pub);
+            var $existing = $('#list-publications').find('#pub-' + pub).first();
             var $children_list = $existing.find('.children').first();
-            if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
-            }
+
+            $(data).find('[id^="pub-"]').each(function () {
+                var pub_id = $(this).attr('id');
+                var element = $('#' + pub_id);
+                if (element.length) {
+                    element.remove();
+                }
+            });
+
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
-            if ($result_child_count > 0)
+            if ($result_child_count > 0) {
                 $($child_count).html($result_child_count);
-            else
+            }
+            else {
                 $(btn).remove();
+            }
         },
         complete: function () {
             $(loader).fadeOut();
+            $('.dropdown-button').dropdown();
         },
         error: function (rs, e) {
             console.log(e);
@@ -716,15 +740,17 @@ function AJAX_bloq_user(buttonBan) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
                 if (data.status === "none" || data.status === "isfollow") {
-                    $('#addfriend').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                    $('#addfriend').replaceWith('<li class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</li>');
+                    $(buttonBan).remove();
                 } else if (data.status === "inprogress") {
-                    $('#follow_request').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                    $('#follow_request').replaceWith('<li class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</li>');
+                    $(buttonBan).remove();
                 }
                 if (data.haslike === "liked") {
                     $("#ilike_profile").css('color', '#46494c');
                     var obj_likes = document.getElementById('likes');
-                    if ($(obj_likes).find("strong").html() > 0) {
-                        $(obj_likes).find("strong").html(parseInt($(obj_likes).find("strong").html()) - 1);
+                    if ($(obj_likes).find(".likes-number").html() > 0) {
+                        $(obj_likes).find(".likes-number").html(parseInt($(obj_likes).find(".likes-number").html()) - 1);
                     }
                 }
             } else {
@@ -753,8 +779,8 @@ function AJAX_remove_bloq() {
         dataType: "json",
         success: function (response) {
             if (response == true) {
-                $('#bloq-user-span').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
-                $('#bloq-user').css('color', '#555');
+                $('#bloq-user-span').replaceWith('<li id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</li>');
+                $('.profile-controls').append('<li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>');
             } else {
                 swal({
                     title: "Tenemos un problema...",
@@ -781,7 +807,7 @@ function AJAX_update_entry_info(plugin_uid) {
         dataType: 'json',
         success: function (data) {
             alert(data.plugin_uid);
-        }, error: function(rs , e) {
+        }, error: function (rs, e) {
             alert('ERROR');
         }
     })

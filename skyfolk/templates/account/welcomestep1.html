@@ -15,14 +15,14 @@
         <div class="row">
             <div class="col s12">
                 <div class="chips chips-placeholder"></div>
-                <p>Introduce una "," para añadir un nuevo interés.</p>
+                <p>Presiona intro para añadir un nuevo interés.</p>
             </div>
         </div>
         <div class="row">
             <div class="col s12">
                 <p class="flow-text">Los usuarios han mostrado interés por... </p>
                 {% for theme in top_tags %}
-                    <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0 }}</div>
+                    <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0|intword }}</div>
                 {% endfor %}
             </div>
         </div>
@@ -49,14 +49,10 @@
                 <div class="col s12">
                     <div class="divider"></div>
                     <br>
-                    <div class="col l6 m5 s12 right">
                         <button type="submit" class="waves-effect waves-light btn right blue darken-1">He acabado
                         </button>
-                    </div>
-                    <div class="col l6 m5 s12 left">
                         <a href="{% url 'user_profile:profile' username=user_profile %}"
-                           class="waves-effect waves-light btn left blue darken-1">Omitir</a>
-                    </div>
+                           class="waves-effect waves-light btn right blue darken-1">Omitir</a>
                 </div>
             </div>
         </form>

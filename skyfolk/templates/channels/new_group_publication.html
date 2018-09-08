@@ -3,21 +3,9 @@
 {% load embed_video_tags %}
 {% load app_filters %}
 {% load static %}
-<div class="row" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
-    <div class="col s12">
-        <div class="col s12 wrapper"
-             {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
+<div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}">
+        <div class="wrapper">
             <div class="box">
-            <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa" data-url="{% url "publications_groups:detail_group_publication" pk=node.id %}"><i class="material-icons md-18">open_in_new</i></span>
-                {% if user.id == node.author.id %}
-                    <span data-id="{{ node.pk }}"
-                          class="top-options edit-comment tooltipped"
-                          data-position="bottom"
-                          data-delay="50"
-                          data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                {% endif %}
                 <div class="row">
                     <div class="articulo col s12">
                         <div class="row">
@@ -26,7 +14,7 @@
                                  style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                                 <div class="usr-img img-responsive">{% avatar node.author %}</div>
                             </div>
-                            <div class="col l10 m12 s9">
+                            <div class="col l11 s10">
                                 <h2 class="h22"><a
                                         href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                     {% if node.parent %}
@@ -49,12 +37,14 @@
                                     {% if images %}
                                         <div class="row images">
                                             {% for image in images %}
+                                                {% if image.image %}
                                                 <div class="col s4 z-depth-2 center">
-                                                    <img class="lazyload responsive-img"
+                                                    <img class="lazyload materialboxed responsive-img"
                                                          data-src="{{ image.image.url }}"
                                                          alt="Imagen de: {{ node.author }}"
                                                          title="Imagen de: {{ node.author }}">
                                                 </div>
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -63,33 +53,35 @@
                                     {% if videos %}
                                         <div class="row videos">
                                             {% for video in videos %}
+                                                 {% if video.video %}
                                                 <div class="col s4 z-depth-2 center">
                                                     <video class="responsive-video" controls loop>
                                                         <source src="{{ video.video.url }}" type="video/mp4">
                                                     </video>
                                                 </div>
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 {% endwith %}
-                                {% if node.group_extra_content %}
-                                    {% if node.group_extra_content.video %}
-                                        {% video node.group_extra_content.video as my_video %}
-                                        {% video my_video "medium" %}
+                                {% if node.extra_content %}
+                                    {% if node.extra_content.video %}
+                                        {% video node.extra_content.video as my_video %}
+                                        {% video my_video "100% x 100%" %}
                                         {% endvideo %}
                                     {% else %}
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img class="lazyload" data-src="
-                                                        {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
-                                                <span class="card-title white-text">{{ node.group_extra_content.title }}</span>
+                                                        {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                             </div>
                                             <div class="card-content">
-                                                <p>{{ node.group_extra_content.description }}</p>
+                                                <p>{{ node.extra_content.description }}</p>
                                             </div>
                                             <div class="card-action">
-                                                <a href="{{ node.group_extra_content.url }}">Ver</a>
+                                                <a class="white-text blue right btn right" target="_blank" href="{{ node.extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -101,43 +93,9 @@
                 <div class="row">
                     <div class="divider"></div>
                     <!-- OPCIONES DE COMENTARIOS -->
-                    <div class="options_comentarios" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
-                        <ul class="opciones">
-                            {% if user.id == node.author.id or user.id == group_profile.owner_id %}
-                                {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
-                                </li>
-                            {% endif %}
-                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                            {% with node.user_give_me_hate.all as hates %}
-                                <li title="No me gusta" class="hate-comment" {% if user in hates %}
-                                    style="color: rgb(186, 104, 200);"{% endif %}>
-                                    <i class="material-icons md-18">keyboard_arrow_down</i>
-                                    <i class="hate-value">{% if hates|length > 0 %}
-                                        {{ hates|length|intword }}{% endif %}</i>
-                                </li>
-                            {% endwith %}
-                            {% with node.user_give_me_like.all as likes %}
-                                <li title="¡Me gusta!" class="like-comment"
-                                    {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                    <i class="material-icons md-18">keyboard_arrow_up</i>
-                                    <i class="like-value">{% if likes|length > 0 %}
-                                        {{ likes|length|intword }}{% endif %}</i>
-                                </li>
-                            {% endwith %}
-                            <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
-                                class={% if node.id in pubs_shared_with_me %}"remove-timeline"
-                                title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi
-                                    skyline" {% endif %}
-                            >
-                            <i class="material-icons md-18">format_quote</i>
-                            <i class="share-values"> </i>
-                            </li>
-                            <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}">
-                                <i class="material-icons md-18">reply</i>
-                            </li>
-                        </ul>
-                    </div>
+                     {% with group_profile.owner as user_profile %}
+                         {% include "publications_base/publication_options.html" %}
+                     {% endwith %}
                 </div>
             </div>
             {% if user.id == node.author.id %}
@@ -145,7 +103,7 @@
                              class="author-controls">
                             <div class="row">
                                 <div class="col s12">
-                                    <form method="post" accept-charset="utf-8">{% csrf_token %}
+                                    <form method="post" accept-charset="utf-8">
                                         <div class="row">
                                             <div class="input-field col s12">
                                                 <input type="number" name="pk" required value="{{ node.pk }}" hidden>
@@ -154,13 +112,13 @@
                                                           placeholder="Escribe el contenido del nuevo mensaje"
                                                           id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                           name="content" rows="10" required="required"
-                                                          style="height: 11px;"></textarea>
+                                                          style="height: 11px;">{{ node.content }}</textarea>
                                                 <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                             </div>
                                             <div class="row">
                                                 <button
                                                         class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                        type="button">Editar
+                                                        type="submit">Editar
                                                     <i class="material-icons right">mode_edit</i>
                                                 </button>
                                             </div>
@@ -173,6 +131,34 @@
             <div class="wrapper-reply">
                 {% include "groups/new_reply.html" %}
             </div>
+            {% if node.level == 0 %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                        <div class="row">
+                            <div class="col s12">
+                                {% with node.get_children_count as descendants %}
+                                    {% if descendants > 0 %}
+                                        <a class="waves-effect waves-light btn blue darken-1 white-text center load_more_publications"
+                                           href="/publication/group/load/replies/?page=1&pubid={{ node.id }}"
+                                           data-id="{{ node.id }}" data-created="{{ node.created|date:"U" }}"><i
+                                                class=" material-icons left">expand_more</i>Cargar
+                                            comentarios (<span
+                                                    class="child_count">{{ descendants }}</span>)</a>
+                                    {% endif %}
+                                {% endwith %}
+                                <div>
+                                    <div class="progress load_publications_descendants" style="display: none">
+                                        <div class="indeterminate blue darken-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
         </div>
     </div>
-</div>
+<script>
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+    });
+</script>

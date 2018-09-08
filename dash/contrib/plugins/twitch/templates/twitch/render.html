@@ -1,0 +1,31 @@
+
+    <div class="stock card">
+        <div class="wrapper">
+            <div class="widget-wr">
+                <div class="row widget-title blue white-text">
+                        <div class="col s12">
+                    <h4 class="flow-text">Twitch de {{ plugin.data.channel }} // <a class="white-text"
+                                                                                    href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a>
+                    </h4>
+                    </div>
+                </div>
+            </div>
+            <div id="twitch-embed"></div>
+        </div>
+    </div>
+
+<!-- Load the Twitch embed script -->
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+<!-- Create a Twitch.Embed object that will render within the "twitch-embed" root element. -->
+<script type="text/javascript">
+    var channel = "{{ plugin.data.channel }}";
+    new Twitch.Embed("twitch-embed", {
+        width: "100%",
+        height: 400,
+        channel: channel,
+        autoplay: false,
+        layout: "video",
+
+    });
+</script>

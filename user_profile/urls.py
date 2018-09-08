@@ -48,7 +48,7 @@ urlpatterns = [
         user_profile_views.remove_request_follow),
     url(r'^add_friend_by_pin/$',
         user_profile_views.add_friend_by_username_or_pin),
-    url(r'^bloq_user/$', user_profile_views.bloq_user),
+    url(r'^bloq_user/$', user_profile_views.bloq_user, name='bloq_user'),
     url(r'^accounts/password/change/confirmation',
         user_profile_views.changepass_confirmation),
     # URL CHANGE PASSWORD
@@ -61,6 +61,10 @@ urlpatterns = [
         name="account_done_password"),
     url(r"^config/notifications/$", user_profile_views.NotificationSettingsView.as_view(),
         name="account_notifications"),
+    url(r'^config/interests/$', user_profile_views.InterestsView.as_view(),
+        name='account_interests'),
+    url(r'^config/affinity/$', user_profile_views.AffinityView.as_view(),
+        name='account_affinity'),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', user_profile_views.welcome_view,
         name='welcome'),

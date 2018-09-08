@@ -1,0 +1,13 @@
+{% extends "account/base.html" %}
+{% block head_title %}Prohibido{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row center">
+		{% block menu %}
+		{% endblock %}
+		<h4>No tienes permisos para realizar ver esta página.</h4>
+		<p>Si crees que tienes deberías ver esta página, vuelve a iniciar sesión</p>
+		<a href="/" class="waves-effect waves-light btn blue lighten-2">¡Sácame de aquí!</a>
+	</div>
+</div>
+{% endblock %}

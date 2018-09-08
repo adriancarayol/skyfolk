@@ -1,46 +1,51 @@
-{% load humanize %}
+{% load humanize i18n %}
+<div class="row center">
+    <p class="flow-text">¡{{ total_points }} puntos de experiencia!</p>
+    <div class="row">
+        <div class="divider"></div>
+    </div>
+    <div class="row">
+        {% for category, points in type_of_user.items %}
+        <div class="col l3 m6 s12">
+            {% trans category %}
+            <div class="progress">
+                <div class="determinate" style="width: {{ points }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 <div class="row">
-<ul>
-    {% for award in awards %}
-    	<li>
-    		<div class="col l3 m6 s12">
-    			<div class="user-award z-depth-2">
-	    			<div class="row">
-	    				<div class="col s2">
-	    					<img src="{{ award.badge.image }}">
-	    				</div>
-	    				<div class="col s10">
-	    					<b>{{ award.badge.name }}</b>
-	    				</div>
-	    			</div>
-	    			<div class="row">
-	    				<p>{{ award.badge.description }}</p>
-	    			</div>
-	    			<div class="row center">
-	    				<a class="btn-large disabled"><i class="material-icons left">person</i>{{ award.badge.users_count|intword }}</a>
-	    			</div>
-    			</div>
-    		</div>
-    	</li>
-    {% endfor %}
-</ul>
+    <ul class="collection">
+        {% for award in awards %}
+        <li class="collection-item avatar">
+            <img src="{{ award.badge.image }}" alt="" class="circle">
+            <span class="title">{{ award.badge.name }} (+{{ award.badge.points }} puntos)</span>
+            <p>{{ award.badge.description }}
+           </p>
+           <span class="secondary-content"><i class="material-icons">person</i>{{ award.badge.users_count|intword }}</span>
+       </li>
+       {% endfor %}
+   </ul>
 </div>
 <div class="row">
     <ul class="pagination center">
         {% if awards.has_previous %}
-	        <li><a href="/awards/user/{{ user_id }}/?page={{ awards.previous_page_number }}" class="prev-awards"><i class="material-icons">chevron_left</i></a></li>
-	        {% else %}
-	        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
-        {% endif %}
-        <li class="active blue darken-1 white-text"><span>{{ awards.number }} de {{ awards.paginator.num_pages }} </span></li>
-        {% if awards.has_next %}
-	        <li><a href="/awards/user/{{ user_id }}/?page={{ awards.next_page_number }}" class="next-awards">
-	                <i class="material-icons">chevron_right</i>
-	        </a></li>
-        {% else %}
-	        <li class="disabled"><span>
-	                <i class="material-icons">chevron_right</i>
-	        </span></li>
-        {% endif %}
-    </ul>
-</div>
+        <li><a href="/awards/user/{{ user_id }}/?page={{ awards.previous_page_number }}" class="prev-awards"><i
+            class="material-icons">chevron_left</i></a></li>
+            {% else %}
+            <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+            {% endif %}
+            <li class="active blue darken-1 white-text">
+                <span>{{ awards.number }} de {{ awards.paginator.num_pages }} </span></li>
+                {% if awards.has_next %}
+                <li><a href="/awards/user/{{ user_id }}/?page={{ awards.next_page_number }}" class="next-awards">
+                    <i class="material-icons">chevron_right</i>
+                </a></li>
+                {% else %}
+                <li class="disabled"><span>
+                   <i class="material-icons">chevron_right</i>
+               </span></li>
+               {% endif %}
+           </ul>
+       </div>

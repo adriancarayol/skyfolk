@@ -6,11 +6,17 @@ RUN mkdir /code
 
 WORKDIR /code
 
-ADD requirements/pre.txt /code/
+ADD requirements/develop.txt /code/
 
-RUN pip install -r pre.txt
+RUN pip install -r develop.txt
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
+# Install PSQL
+
+RUN pip install psycopg2
+RUN apt-get update
+RUN apt-get install -y postgresql-client
 
 # Install numpy using system package manager
 RUN apt-get -y update && apt-get -y install libav-tools imagemagick libopencv-dev python-opencv
@@ -36,26 +42,15 @@ RUN pip install scikit-image sklearn
 RUN python -c "import imageio; imageio.plugins.ffmpeg.download()"
 
 #add soft link so that ffmpeg can executed (like usual) from command line
-RUN ln -s /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
-
-RUN adduser --disabled-password --gecos '' skyfolk
-
-# set ffmpeg owner to skyfolk group
-RUN chgrp skyfolk /usr/bin/ffmpeg
-# set root owner to skyfolk group
-RUN chgrp -R skyfolk /root/
+RUN ln -sf /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
 
 RUN mkdir -p /var/www/skyfolk.net/run/static/static
 RUN mkdir -p /var/www/skyfolk.net/run/static/media
-RUN chgrp -R skyfolk /var/www
 
 RUN chmod -R g+w /var/www
 RUN chmod -R 777 /var/www
 
-RUN chmod 770 /usr/bin/ffmpeg
 RUN chmod -R 770 /root/
-
-RUN usermod -a -G skyfolk root
 
 # modify ImageMagick policy file so that Textclips work correctly.
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml

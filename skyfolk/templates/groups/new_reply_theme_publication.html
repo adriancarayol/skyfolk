@@ -2,8 +2,7 @@
 Nueva respuesta a una publicacion
 {% endcomment %}
 <div class="hidden" id="caja-comentario-{{ pub.pk }}" style="display: none;">
-    <form class="reply-form" method="post" enctype="multipart/form-data">{% csrf_token %}
-        <input name="author" type="hidden" value="{{ request.user.id }}">
+    <form class="reply-form" method="post" enctype="multipart/form-data">
         <input name="board_theme" type="hidden" value="{{ object.id }}">
         <input name="parent" type="hidden" value="{{ pub.id }}">
         <div class="row">
@@ -16,7 +15,7 @@ Nueva respuesta a una publicacion
                         <label for="message-reply-{{ pub.author }}">Escribe tu mensaje aqui...</label>
                     </div>
                     <div class="file-field input-field col s12">
-                        <div class="btn">
+                        <div class="btn white-text blue">
                             <span>Imágenes</span>
                             <input name="image" type="file" multiple>
                         </div>

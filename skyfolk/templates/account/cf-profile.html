@@ -58,24 +58,26 @@ Template para la configuracion del perfil de usuario
                         </div>
                     </div>
                     <div class="row">
-                        <div class="backimage-usr file-field input-field avatar-upload">
-                            <p>{{ perfil_form.backImage.errors }}</p>
-                            <div class="btn blue darken-1 waves-effect wavesl-light">
-                                <span>Imagen de fondo</span>
-                                <input id="id_backImage" name="image" type="file" class="avatar-input">
+                        <div class="col l6 s12">
+                            <div class="file-field">
+                                <p>{{ perfil_form.backImage.errors }}</p>
+                                <div class="btn blue waves-effect waves-light">
+                                    <span>Imagen de fondo</span>
+                                    <input id="id_backImage" name="image" type="file" class="avatar-input">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate avatar-input" name="image" type="text">
+                                </div>
+                                <input type="hidden" class="avatar-src" name="avatar_src">
+                                <input type="hidden" class="avatar-data" name="avatar_data">
+                                <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
                             </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate avatar-input" name="image" type="text">
-                            </div>
-                            <input type="hidden" class="avatar-src" name="avatar_src">
-                            <input type="hidden" class="avatar-data" name="avatar_data">
-                            <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
                         </div>
-                    </div>
-                    <div class="row">
-                        <a id="crop-image" class="waves-effect waves-light btn blue darken-1 right">Recortar
-                            <i class="material-icons right">crop</i>
-                        </a>
+                        <div class="col l6 s12">
+                            <a id="crop-image" class="waves-effect waves-light btn blue right">Recortar
+                                <i class="material-icons right">crop</i>
+                            </a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="row">
@@ -89,7 +91,7 @@ Template para la configuracion del perfil de usuario
                     </div>
                 </div>
             </div>
-            <button class="btn btn-info right blue darken-1"id="boton-perfil" type="submit">Salvar cambios</button>
+            <button class="btn right blue"id="boton-perfil" type="submit">Salvar cambios</button>
         </div>
     </form>
 {% comment %}

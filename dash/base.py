@@ -918,7 +918,7 @@ class BaseDashboardPlugin(object):
             middle_size = MAX_SIZE_COLS / size_col if MAX_SIZE_COLS > size_col else MAX_SIZE_COLS / 2
             middle_size = int(middle_size)
 
-            html_class.append('col s{0} m{1} l{2}'.format(MAX_SIZE_COLS, middle_sizeno, size_col))
+            html_class.append('col s{0} m{1} l{2}'.format(MAX_SIZE_COLS, middle_size, size_col))
 
             return ' '.join(html_class)
         except Exception as err:

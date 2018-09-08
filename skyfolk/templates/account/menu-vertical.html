@@ -4,6 +4,7 @@
 {% load avatar_tags %}
 {% load app_filters %}
 {% load static %}
+
 <ul id="vertical-menu" class="side-nav">
     <li>
         <div class="userView">
@@ -17,8 +18,14 @@
             <a><span class="white-text email">{{ request.user.first_name }}</span></a>
         </div>
     </li>
+    <li class="hide-on-large-only"><a href="/following/{{ request.user.username }}"><i
+                    class="material-icons">person</i>Seguidos</a></li>
+    <li class="hide-on-large-only"><a id="agregar-amigo2"><i class="material-icons">person_add</i>Seguir</a></li>
     <li class="hide-on-large-only">
-        <div class="field" id="searchform">
+        <div class="divider"></div>
+    </li>
+    <li class="hide-on-large-only">
+        <div class="field small-search" id="searchform">
             <form class="autocomplete-me" method='get' action='{% url 'user_profile:general-search' %}'>
                 {{ searchForm }}
             </form>
@@ -28,11 +35,10 @@
     <li><a href="/messages/inbox/"><i class="material-icons">email</i>Mensajes privados</a></li>
     <li><a href="{% url "dash.dashboard_workspaces" %}"><i class="material-icons">dashboard</i>Workspaces</a></li>
     <li><a href="{% url "user_services" %}"><i class="material-icons">room_service</i>Servicios</a></li>
-    <li><a id="new_group"><i class="material-icons">people</i>Crear grupo</a></li>
     <li>
         <div class="divider"></div>
     </li>
     <li><a href="{% url 'account_logout' %}" class="subheader"><i class="material-icons">exit_to_app</i>Salir</a></li>
     <li><a class="waves-effect shortcut-keyboard"><i class="material-icons">keyboard</i>Atajos</a></li>
-    <li><a href="/about/home/" class="waves-effect"><i class="material-icons">help</i>Ayuda</a></li>
+    <li><a href="/blog/" class="waves-effect"><i class="material-icons">help</i>Ayuda</a></li>
 </ul>

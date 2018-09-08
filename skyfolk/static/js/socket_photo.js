@@ -30,16 +30,15 @@ var UTILS = UTILS || (function () {
                     } else {
                         var $parent = $('#pub-' + data.parent_id);
                         if ($parent.length) {
-                            if (data.level == 1 || data.level == 2) {
+                            if (data.level === 1) {
                                 var $children_list = $parent.find('.children').first();
-                                if (!$children_list.length) {
-                                    $children_list = $parent.find('.wrapper-reply').after('<ul class="children"></ul>');
-                                }
-                                $children_list.prepend(data.content);
                             } else {
-                                $parent.closest('.row').after(data.content);
+                                var $children_list = $parent.closest('.children').first();
                             }
-                        } else $("#messages-wrapper").prepend(data.content);
+                            $children_list.append(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#messages-wrapper").prepend(data.content);
+                        }
                     }
 
                 }   else if (data.type === "video") {
@@ -48,13 +47,13 @@ var UTILS = UTILS || (function () {
                         var card_content = $(existing_pub).find('.publication-content');
                         var videos = $(existing_pub).find('.videos');
                         if (videos.length) {
-                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
+                            $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div>');
                         } else {
                             var images = $(existing_pub).find('.images');
                             if (images.length) {
-                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                                $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                             }
-                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                            $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="'+data.video+'" type="video/mp4"></video></div></div>');
                         }
                     }
                 } else {
@@ -63,9 +62,9 @@ var UTILS = UTILS || (function () {
                     content += "";
                     content += "";
                     content += "                <div class=\"comment-reply\">";
-                    content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.p_author_username + '" width="120" height="120"><\/div>';
+                    content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
                     content += "                    <div class=\"author-reply\">";
-                    content += '                      <a href="/profile/' + data.p_author_username + '">' + data.p_author_username + '</a>';
+                    content += '                      <a href="/profile/' + data.author_username + '">' + data.author_username + '</a>';
                     content += '                      <i class="reply-created">' + data.created + '<\/i>';
                     content += "                    </div>";
                     content += '                      <div class="content-reply">' + data.content + '</div>';
@@ -77,6 +76,7 @@ var UTILS = UTILS || (function () {
                     var pub = $('#pub-' + data.parent);
                     $(pub).append(content);
                 }
+                $('.dropdown-button').dropdown();
             };
 
             // Helpful debugging

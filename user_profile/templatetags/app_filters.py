@@ -5,7 +5,7 @@ from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from neomodel import db
 
-from user_profile.models import Request
+from user_profile.models import Request, Profile, RelationShipProfile
 from user_profile.node_models import NodeProfile, TagProfile
 
 register = template.Library()
@@ -50,7 +50,7 @@ def url_exists(value):
 def check_follow(request, author):
     # obtenemos el model del autor del comentario
     try:
-        user_profile = NodeProfile.nodes.get(user_id=author)
+        user_profile = NodeProfile.nodes.get(title=author)
     except NodeProfile.DoesNotExist:
         return False
 
@@ -62,12 +62,12 @@ def check_follow(request, author):
         return True
 
     try:
-        me = NodeProfile.nodes.get(user_id=request)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
     # saber si sigo al perfil que visito
-    if me.user_id != user_profile.user_id:
+    if me.title != user_profile.title:
         try:
             isFriend = me.follow.is_connected(user_profile)
         except Exception:
@@ -80,7 +80,7 @@ def check_follow(request, author):
         return True
 
     # saber si el perfil me sigue
-    if me.user_id != me.user_id:
+    if me.title != me.title:
         try:
             isFollower = user_profile.follow.is_connected(me)
         except ObjectDoesNotExist:
@@ -90,7 +90,7 @@ def check_follow(request, author):
 
     # Si sigo al autor de la publicacion o él me sigue a mi, y tiene la privacidad OFAF...
     if (isFriend and user_profile.profile.privacity == 'OFAF') or (
-                isFollower and user_profile.profile.privacity == 'OFAF'):
+            isFollower and user_profile.profile.privacity == 'OFAF'):
         return True
     # Si no cumple ningun caso...
     else:
@@ -100,8 +100,8 @@ def check_follow(request, author):
 @register.filter(name='check_blocked')
 def check_blocked(request, author):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=author)
-        me = NodeProfile.nodes.get(user_id=request)
+        user_profile = NodeProfile.nodes.get(title=author)
+        me = NodeProfile.nodes.get(title=request)
     except NodeProfile.DoesNotExist:
         return False
 
@@ -116,15 +116,15 @@ def check_blocked(request, author):
 @register.filter(name='is_follow')
 def is_follow(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=profile)
-        me = NodeProfile.nodes.get(user_id=request)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(id=profile)
+        me = Profile.objects.get(id=request)
+    except Profile.DoesNotExist:
         return False
 
-    if me.user_id != user_profile.user_id:
+    if me != user_profile:
         try:
-            return me.follow.is_connected(user_profile)
-        except Exception:
+            return RelationShipProfile.objects.is_follow(user_profile, me)
+        except ObjectDoesNotExist:
             pass
     return False
 
@@ -132,14 +132,14 @@ def is_follow(request, profile):
 @register.filter(name='exist_request')
 def exist_request(request, profile):
     try:
-        m = NodeProfile.nodes.get(user_id=profile)
-        n = NodeProfile.nodes.get(user_id=request)
-    except NodeProfile.DoesNotExist:
+        m = Profile.objects.get(user_id=profile)
+        n = Profile.objects.get(user_id=request)
+    except Profile.DoesNotExist:
         return False
 
-    if n.user_id != m.user_id:
+    if n != m:
         try:
-            return Request.objects.get_follow_request(from_profile=n.user_id, to_profile=m.user_id)
+            return Request.objects.get_follow_request(from_profile=n.user, to_profile=m.user)
         except ObjectDoesNotExist:
             pass
     return False
@@ -148,15 +148,15 @@ def exist_request(request, profile):
 @register.filter(name='is_blocked')
 def is_blocked(request, profile):
     try:
-        user_profile = NodeProfile.nodes.get(user_id=profile)
-        me = NodeProfile.nodes.get(user_id=request)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(user_id=profile)
+        me = Profile.objects.get(user_id=request)
+    except ObjectDoesNotExist:
         return False
 
-    if me.user_id != user_profile.user_id:
+    if me != user_profile:
         try:
-            return me.bloq.is_connected(user_profile)
-        except Exception:
+            return RelationShipProfile.objects.is_blocked(user_profile, me)
+        except ObjectDoesNotExist:
             pass
 
     return False
@@ -170,7 +170,7 @@ def get_tags(request):
     :return Lista de intereses del usuario:
     """
     r, m = db.cypher_query(
-        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.user_id=%s RETURN tag" % request
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.title='%s' RETURN tag" % request
     )
     results = [TagProfile.inflate(row[0]) for row in r]
     return results
@@ -192,3 +192,8 @@ def lookup(d, key):
         return d[key]
     except KeyError:
         return ''
+
+
+@register.simple_tag
+def reduce(a, b):
+    return a - b

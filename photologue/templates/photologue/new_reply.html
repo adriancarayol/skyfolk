@@ -1,7 +1,6 @@
 <div class="hidden" id="caja-comentario-{{ node.pk }}">
     <!-- REPLY FORM -->
-    <form class="reply-form" method="post">{% csrf_token %}
-        <input name="p_author" type="hidden" value="{{ request.user.id }}">
+    <form class="reply-form" method="post">
         <input name="board_photo" type="hidden" value="{{ photo.id }}">
         <input name="parent" type="hidden" value="{{ node.id }}">
         <div class="row">
@@ -10,11 +9,11 @@
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea message-reply" id="message-reply-{{ node.pk }}" cols="40"
                                   maxlength="500" name="content"
-                                  placeholder="Responder a @{{ node.p_author }}" rows="10" required=""></textarea>
+                                  placeholder="Responder a @{{ node.author }}" rows="10" required=""></textarea>
                         <label for="message-reply-{{ node.pk }}">Escribe tu mensaje aqui...</label>
                     </div>
                     <div class="file-field input-field col s12">
-                        <div class="btn">
+                        <div class="btn white-text blue">
                             <span>Imágenes</span>
                             <input name="image" type="file" multiple>
                         </div>
@@ -25,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
+        <button type="submit" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
                 class="material-icons right">send</i></button>
     </form>
 </div>

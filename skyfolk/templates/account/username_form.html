@@ -1,0 +1,53 @@
+{% extends "account/signup.html" %}
+{% load i18n %}
+
+{% block custom_form %}
+    <div class="row">
+        <div class="block-form block-formregister">
+            <a class="reco-passwd" title="Consejos para una buena contraseña." href="/tips/password/"><i
+                    class="material-icons">lock</i></a>
+            <p class="center">Paso {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+            <form class="signup form-3" method="post"
+                  action="">{% csrf_token %}
+                <div class="form-group">
+                    <div class="row">
+                        {{ form.username.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">account_circle</i>
+                            {{ form.username }}
+                            <label for="id_user-username">{% trans "Username" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.password1.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">vpn_key</i>
+                            {{ form.password1 }}
+                            <label for="id_user-password1">{% trans "Password" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.password2.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">vpn_key</i>
+                            {{ form.password2 }}
+                            <label for="id_user-password2">{% trans "Password (again)" %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row center">
+                    {% if wizard.steps.prev %}
+                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step"
+                                type="submit"
+                                value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step"
+                                type="submit"
+                                value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                    {% endif %}
+                    <input class="waves-effect waves-light btn blue lighten-2" type="submit"
+                           value="{% trans "submit" %}"/>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

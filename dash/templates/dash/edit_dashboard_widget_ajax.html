@@ -1,22 +1,40 @@
 {% load i18n %}
-<div class="generic-content-wrapper">
-    <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
+<div class="container">
+<div class="row">
+    <div class="col l4 s12 offset-l4">
+        <div class="wrapper-bg"></div>
+            <div class="hero-unit-small center">
+                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Edit {{ plugin_name }} on Dashboard{% endblocktrans %}</h2>
+            </div>
     </div>
-    <div class="content-body">
-        <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
-            {% csrf_token %}
-            <ul class="content-listing generic-form">
-                {% include layout.form_snippet_template_name %}
-                <li class="buttons control-group">
-                    <div class="controls">
-                        <button type="submit" class="submit default-button btn btn-primary">{% trans "Save" %}</button>
+        <div class="col l4 s12 offset-l4">
+            <div class="card">
+                <form method="post" action="{{ request.path }}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <ul>
+                        {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ field.errors }}
+                                {% if field.help_text %}
+                                <p>{{ field.help_text }}</p>
+                                {% endif %}
+                                {{ field }}
+                                {{ field.label_tag }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                    {% include "dash/snippets/plugin_help_text.html" %}
+                    <div class="row">
+                        <button type="submit" class="btn blue right">{% trans "Save" %}</button>
                     </div>
-                </li>
-
-                {% include "dash/snippets/plugin_help_text.html" %}
-            </ul>
-        </form>
-    </div>
+                </form>
+            </div>
+        </div>
+</div>
 </div>

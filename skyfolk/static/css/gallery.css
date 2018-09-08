@@ -1,11 +1,11 @@
 .container .upload_form {
-  width: 55%;
+  width: 95%;
   background: #fff;
   padding: 1em;
   border-radius: 7px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
   position: fixed;
+  overflow: hidden;
   margin: -100px auto 0 auto;
   top: 20%;
   right: 0;

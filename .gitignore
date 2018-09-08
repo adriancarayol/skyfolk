@@ -7,7 +7,6 @@ avatars
 whoosh_index/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
-build/
 .settings/
 .idea
 Thumbs.db
@@ -18,6 +17,10 @@ db.sqlite3
 .vscode
 Web.config
 *.log
+*.log.*
+.sass-cache/
+node_modules/
+run/
 
 # vi temp files
 *~
@@ -30,7 +33,5 @@ esdata/
 db/
 kibana/
 tmp/
-static/
-*.log
-publications/tests/tests.py
 config/config
+.pytest_cache

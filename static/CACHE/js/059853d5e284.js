@@ -1,1 +1,0 @@
-$('.chips').material_chip();

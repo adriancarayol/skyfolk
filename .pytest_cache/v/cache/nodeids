@@ -1,0 +1,5 @@
+[
+  "publications/tests/integration/test_publications.py::test_create_new_publication",
+  "publications/tests/integration/test_publications.py::test_create_new_publication_other_user",
+  "publications/tests/integration/test_publications.py::test_create_new_reply_other_user"
+]

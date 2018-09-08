@@ -8,28 +8,18 @@
     <div class="col s12">
         <div class="row">
         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" id="pub-{{ node.pk }}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
-               <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-                  data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons" href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
-               {% if user.id == node.p_author.id %}
-               <span data-id="{{ node.pk }}"
-                                      class="top-options edit-comment tooltipped"
-                                      data-position="bottom"
-                                      data-delay="50"
-                                      data-tooltip="Editar comentario"><i class="material-icons">mode_edit</i></span>
-               {% endif %}
                <div class="row">
                 <div class="image col l1 m2 s2">
-                    <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
                 </div>
-                <div class="articulo col l9 s8">
+                <div class="articulo col l11 s10">
                     <h2 class="author-header"><a
-                        href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                        href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                         {% if node.parent %}
                         <span class="chip">
-                            {% avatar node.parent.p_author %}
+                            {% avatar node.parent.author %}
                            <a
-                            href="/publication_pdetail/{{ node.parent.id }}">@{{node.parent.p_author}}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                            href="/publication_pdetail/{{ node.parent.id }}">@{{node.parent.author}}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                         </span>
                         {% endif %}
                     </h2>
@@ -47,9 +37,11 @@
                             {% if images %}
                             <div class="row">
                                 {% for image in images %}
+                                    {% if image.image %}
                                 <div class="col s4 z-depth-2">
-                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                                    <img class="materialboxed responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                 </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                             {% endif %}
@@ -58,11 +50,13 @@
                             {% if videos %}
                             <div class="row">
                                {% for video in videos %}
+                                    {% if video.video %}
                                <div class="col s4 z-depth-2 center">
                                 <video class="responsive-video" controls loop>
                                     <source src="{{ video.video.url }}" type="video/mp4">
                                     </video>
                                 </div>
+                                   {% endif %}
                                 {% endfor %}
                             </div>
                             {% endif %}
@@ -71,20 +65,20 @@
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         {% if node.publication_photo_extra_content.video %}
                                             {% video node.publication_photo_extra_content.video as my_video %}
-                                               {% video my_video "medium" %}
+                                               {% video my_video "100% x 100%" %}
                                             {% endvideo %}
                                         {% else %}
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img class="lazyload" data-src="
-                                                        {% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                        {% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                 <span class="card-title white-text">{{ node.publication_photo_extra_content.title }}</span>
                                             </div>
                                             <div class="card-content">
                                                 <p>{{ node.publication_photo_extra_content.description }}</p>
                                             </div>
                                             <div class="card-action">
-                                                <a href="{{ node.publication_photo_extra_content.url }}">Ver</a>
+                                                <a class="white-text blue right btn right" target="_blank" href="{{ node.publication_photo_extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
                                         {% endif %}
@@ -93,34 +87,13 @@
                     </div>
                     <div class="row">
                         <div class="divider"></div>
-                        <div class="options_comentarios col s12">
-                            <ul class="opciones">
-                                        {% if user.id == node.p_author.username or user.id == photo.owner_id %}
-                                            <li class="trash-comment" title="Borrar comentario"><i
-                                                    class="material-icons">delete_forever</i>
-                                            </li>
-                                        {% endif %}
-                                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        
-                                            <li title="No me gusta" class="hate-comment" 
-                                                >
-                                                <i class="material-icons md-18">keyboard_arrow_down</i>
-                                                <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
-                                            </li>
-                                        
-                                       
-                                            <li title="¡Me gusta!" class="like-comment">
-                                                <i class="material-icons md-18">keyboard_arrow_up</i>
-                                                <i class="like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
-                                            </li>
-                                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
-                                        </li>
-                                    </ul>
-             </div>
+                        {% with photo.owner as user_profile %}
+                {% include "publications_base/publication_options.html" %}
+            {% endwith %}
          </div>
-         {% if user.id == node.p_author.id %}
-         <div id="p_author-controls-{{ node.pk }}"
-                                 class="p_author-controls">
+         {% if user.id == node.author.id %}
+         <div id="author-controls-{{ node.pk }}"
+                                 class="author-controls">
                                 <div class="row">
                                     <div class="col s12">
                                         <form method="post" accept-charset="utf-8">{% csrf_token %}
@@ -132,13 +105,13 @@
                                                               placeholder="Escribe el contenido del nuevo mensaje"
                                                               id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 10.9969px;"></textarea>
+                                                              style="height: 10.9969px;">{{ node.content }}</textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">
                                                     <button
                                                             class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                            type="button">Editar
+                                                            type="submit">Editar
                                                         <i class="material-icons right">mode_edit</i>
                                                     </button>
                                                 </div>
@@ -154,3 +127,8 @@
 </div>
 
 </div>
+<script>
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+    });
+</script>
