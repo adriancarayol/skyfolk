@@ -97,7 +97,7 @@ $(document).ready(function () {
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
-        menuWidth: 340,
+        menuWidth: 300,
         dragable: false
     });
 

@@ -145,10 +145,9 @@ class PublicationGroupMediaPhoto(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_photo.owner,
                         action_object=self,
-                        description="Te avisamos de que @{0} ha publicado en una foto. <a href='/group/multimedia/publication/detail/{1}/'>Ver</a>".format(
+                        description="@{0} ha publicado en una foto. <a href='/group/multimedia/publication/detail/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en una foto.' %
-                             (self.author.username, self.author.username), level='notification_board_owner')
+                        verb=u'Nuevos comentarios en imagen', level='notification_board_owner')
 
 
 # Video publications
@@ -273,7 +272,6 @@ class PublicationGroupMediaVideo(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_video.owner,
                         action_object=self,
-                        description="Te avisamos de que @{0} ha publicado en un vídeo. <a href='/group/multimedia/video/publication/detail/{1}/'>Ver</a>".format(
+                        description="@{0} ha publicado en un vídeo. <a href='/group/multimedia/video/publication/detail/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en un vídeo.' %
-                             (self.author.username, self.author.username), level='notification_board_owner')
+                        verb=u'Nuevos comentarios en vídeo', level='notification_board_owner')

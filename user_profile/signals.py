@@ -172,9 +172,8 @@ def handle_new_like(sender, instance, created, **kwargs):
 
     notify.send(instance.from_profile.user, actor=instance.from_profile.user.username,
                 recipient=instance.to_profile.user,
-                description="@{0} ha dado like a tu perfil.".format(instance.from_profile.user.username),
-                verb=u'¡<a href="/profile/%s">@%s</a> ha dado me gusta a tu perfil!.' % (
-                    instance.from_profile.user.username, instance.from_profile.user.username), level='like_profile')
+                description="<a href='/profile/{0}/'>@{0}</a> ha dado me gusta a tu perfil.".format(instance.from_profile.user.username),
+                verb=u'Nuevo me gusta', level='like_profile')
 
 
 @receiver(post_delete, sender=LikeProfile)

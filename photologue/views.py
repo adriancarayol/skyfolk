@@ -170,6 +170,7 @@ def upload_photo(request):
 
     if request.method == 'POST':
         form = UploadFormPhoto(request.POST, request.FILES or None)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user

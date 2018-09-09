@@ -736,8 +736,9 @@ def add_friend_by_username_or_pin(request):
                 # Enviamos nueva notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=friend.user,
-                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
-                                               user_request.username), level='friendrequest')
+                                           description=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
+                                               user_request.username),
+                                           verb=u'Nueva petición de seguimiento', level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
                     Request.objects.add_follow_request(user_profile.user_id, friend.user_id, notification[0][1])
@@ -850,9 +851,8 @@ def request_friend(request):
                             notify.send(user, actor=n.user.username,
                                         recipient=m.user,
                                         action_object=user,
-                                        description="@{0} ahora es tu seguidor.".format(user.username),
-                                        verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (
-                                            n.user.username, n.user.username),
+                                        description="<a href='/profile/{0}/'>@{0}</a> ahora es tu seguidor.".format(user.username),
+                                        verb=u'Nuevo seguidor',
                                         level='new_follow')
                     response = "added_friend"
                 except Exception as e:
@@ -877,8 +877,7 @@ def request_friend(request):
                 notification = notify.send(user, actor=n.user.username,
                                            recipient=m.user,
                                            description="@{0} quiere seguirte.".format(n.user.username),
-                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
-                                               n.user.username),
+                                           verb=u'Nueva solicitud de seguimiento',
                                            level='friendrequest')
 
                 # Enlazamos notificacion con peticion de amistad
@@ -929,8 +928,7 @@ def respond_friend_request(request):
                                     recipient=recipient,
                                     action_object=user,
                                     description="@{0} ha aceptado tu solicitud de seguimiento.".format(user.username),
-                                    verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
-                                        user.username, user.username),
+                                    verb=u'Petición aceptada',
                                     level='new_follow')
 
                         Request.objects.remove_received_follow_request(from_profile=recipient.id,

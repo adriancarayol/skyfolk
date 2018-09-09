@@ -76,6 +76,7 @@ $(document).ready(function () {
             processData: false,
             success: function (data) {
                 if (data.result === true) {
+                    $('#upload_photo').hide();
                     $('.container-gallery > .row').prepend(data.content);
                 } else {
                     swal({

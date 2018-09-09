@@ -219,10 +219,9 @@ class Publication(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
                         action_object=self,
-                        description="Te avisamos de que @{0} ha publicado en tu skyline. <a href='/publication/{1}/'>Ver</a>".format(
+                        description="@{0} ha publicado en tu skyline. <a href='/publication/{1}/'>Ver</a>".format(
                             self.author.username, self.id),
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu skyline.' %
-                             (self.author.username, self.author.username), level='notification_board_owner')
+                        verb=u'Skyline', level='notification_board_owner')
 
 
 class PublicationVideo(models.Model):

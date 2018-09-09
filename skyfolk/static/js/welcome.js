@@ -204,6 +204,7 @@
 
         this.renderChip = function (elem) {
             if (!elem.tag) return;
+            var tag = elem.tag.toLowerCase();
             var html = '<div class="chip">' + elem.tag;
             if (elem.image) {
                 html += ' <img src="' + elem.image + '"> ';
@@ -226,7 +227,7 @@
             var chips = $chips.data('chips');
             var exists = false;
             for (var i = 0; i < chips.length; i++) {
-                if (chips[i].tag === elem.tag) {
+                if (chips[i].tag.toLowerCase() === elem.tag.toLowerCase()) {
                     exists = true;
                     return;
                 }

@@ -36,7 +36,7 @@ class BaseInvitationsAdapter(object):
         Renders an e-mail to `email`.  `template_prefix` identifies the
         e-mail that is to be sent, e.g. "account/email/email_confirmation"
         """
-        subject = render_to_string('{0}_subject.txt'.format(template_prefix),
+        subject = render_to_string('{0}_subject.html'.format(template_prefix),
                                    context)
         # remove superfluous line breaks
         subject = " ".join(subject.splitlines()).strip()

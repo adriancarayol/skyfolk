@@ -12,7 +12,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.CharField(model_attr='owner')
     avatar = indexes.CharField()
     title = indexes.CharField(model_attr='title')
-    thumbnail = indexes.CharField(model_attr='thumbnail')
+    thumbnail = indexes.CharField()
     url_image = indexes.CharField(model_attr='image')
     pub_date = indexes.DateTimeField(model_attr='date_added')
     external_image = indexes.CharField(model_attr='url_image')
@@ -30,7 +30,10 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
         return avatar_url(obj.owner)
 
     def prepare_thumbnail(self, obj):
-        return obj.thumbnail.url
+        thumbnail = None
+        if obj.thumbnail:
+            thumbnail = obj.thumbnail.url
+        return thumbnail
 
     def prepare_url_image(self, obj):
         return obj.image.url
@@ -47,7 +50,7 @@ class VideoIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.CharField(model_attr='owner')
     avatar = indexes.CharField()
     name = indexes.CharField(model_attr='name')
-    thumbnail = indexes.CharField(model_attr='thumbnail')
+    thumbnail = indexes.CharField()
     video = indexes.CharField(model_attr='video')
     pub_date = indexes.DateTimeField(model_attr='date_added')
     tags = indexes.MultiValueField()
@@ -64,7 +67,10 @@ class VideoIndex(indexes.SearchIndex, indexes.Indexable):
         return avatar_url(obj.owner)
 
     def prepare_thumbnail(self, obj):
-        return obj.thumbnail.url
+        thumbnail = None
+        if obj.thumbnail:
+            thumbnail = obj.thumbnail.url
+        return thumbnail
 
     def prepare_video(self, obj):
         return obj.video.url

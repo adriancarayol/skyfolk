@@ -1,4 +1,6 @@
+{% extends "emails/base_email.html" %}
 {% load i18n %}
+{% block content %}
 {% autoescape off %}
 {% blocktrans %}
 
@@ -10,3 +12,4 @@ If you'd like to join, please go to {{ invite_url }}
 
 {% endblocktrans %}
 {% endautoescape %}
+{% endblock %}
