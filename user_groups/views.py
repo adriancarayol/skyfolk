@@ -364,8 +364,7 @@ def follow_group(request):
                                             recipient=group.owner,
                                             description="@{0} solicita unirse al grupo {1}.".format(user.username,
                                                                                                     group.name),
-                                            verb=u'<a href="/profile/{0}/">@{0}</a> solicita unirse al grupo {1}'.format(
-                                                user.username, group.name),
+                                            verb=u'Solicitud para unirse a grupo',
                                             level='grouprequest', action_object=request_group)
 
                         except IntegrityError:
@@ -527,8 +526,7 @@ class RespondGroupRequest(View):
                                         description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
                                             user.username, group.slug
                                         ),
-                                        verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (
-                                            group.name, group.name),
+                                        verb=u'Petición aceptada',
                                         level='new_member_group')
                 except Exception as e:
                     return JsonResponse({'response': 'error'})

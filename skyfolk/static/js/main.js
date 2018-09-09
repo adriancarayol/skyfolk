@@ -272,15 +272,12 @@
 
                     if (this.support.datauri || this.uploaded) {
                         this.uploaded = false;
-                        //this.cropDone();
                     } else {
                         this.uploaded = true;
                         this.$avatarSrc.val(this.url);
                         this.startCropper();
                     }
-
-                    this.$avatarForm.trigger("reset");
-
+                    $('#upload_photo').hide();
                     if (data.content) {
                         $('.container-gallery .row').first().prepend(data.content);
                     }
@@ -294,7 +291,6 @@
                     });
                 }
             } else {
-                console.log(data.message);
                 swal({
                     title: "Tenemos un problema...",
                     customClass: 'default-div',

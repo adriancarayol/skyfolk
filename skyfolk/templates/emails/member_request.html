@@ -1,6 +1,6 @@
 {% extends "emails/base_email.html" %}
 {% block content %}
 <p>
-    ¡Hola <b>{{ to_user }}</b>! - Te avisamos de que {{ from_user }} quiere unirse al grupo {{ to_group }}.
+    ¡Hola <b>{{ to_user }}</b>! - {{ from_user }} quiere unirse al grupo {{ to_group }}.
 </p>
 {% endblock %}
