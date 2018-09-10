@@ -153,7 +153,9 @@ def upload_photo(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if not group.is_public and user.id != group.owner_id and not user.user_groups.filter(pk=pk).exists():
+            is_member = user.user_groups.filter(pk=pk).exists()
+
+            if user.id != group.owner_id and not is_member:
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
@@ -204,7 +206,9 @@ def upload_video(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if not group.is_public and user.id != group.owner_id and not user.user_groups.filter(pk=pk).exists():
+            is_member = user.user_groups.filter(pk=pk).exists()
+            
+            if user.id != group.owner_id and not is_member:
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
