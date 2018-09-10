@@ -316,6 +316,13 @@ $(document).ready(function () {
         var plugin_uid = $(this).data('id');
         AJAX_update_entry_info(plugin_uid);
     });
+
+    $('.interests').mouseenter(function() {
+        var interests = $(this);
+        $.get("/profile/adrian/interests/", function(data) {
+            interests.attr('data-tooltip', data.join());
+        });
+    });
 }); // END DOCUMENT READY */
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/

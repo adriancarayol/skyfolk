@@ -2,6 +2,8 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from user_profile import views as user_profile_views
+from user_profile import interests as interests_views
+
 
 urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', user_profile_views.profile_view,
@@ -85,7 +87,7 @@ urlpatterns = [
     url(r'^search/autocomplete/$', user_profile_views.autocomplete,
         name='autocomplete'),
 
-    # url(r'^prueba-search/$', login_required(
-    #     user_profile_views.SearchUsuarioView.as_view()),
-    #     name='busqueda-prueba'),
+    # Interest VIEWS
+    url(r'^profile/(?P<username>[\w-]+)/interests/$', interests_views.ProfileInterests.as_view(),
+        name='json_profile_interests'),
 ]

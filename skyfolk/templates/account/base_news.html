@@ -155,7 +155,7 @@
                             {% for tag in item.tags.all %}
                             {% if tag %}
                             <blockquote
-                            onclick="location.href='{% url 'photologue:collection-list' item.owner tag.slug %}'">{{ tag.slug }}</blockquote>
+                            onclick="location.href='{% url 'photologue:collection-list' item.owner tag.slug %}">{{ tag.slug }}</blockquote>
                             {% endif %}
                             {% endfor %}
                         </div>
@@ -163,7 +163,7 @@
                         <img class="lazyload" data-src="
                         {% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                         alt="{{ item.title }}" title="{{ item.title }}"
-                        onclick="location.href='/photo/{{ item.slug }}'">
+                        onclick="location.href='{{ item.get_absolute_url }}'">
                     </div>
                     <div class="col s12 legend-content">
                         <div class="legend-user-image">
@@ -171,7 +171,7 @@
                         </div>
                         <div class="col l8 m8 s8 legend-user-data">
                             <a href="/profile/{{ item.owner }}">@{{ item.owner }}</a>
-                            <i class="photo-title truncate">{{ item.title }}</i>
+                            <a href="{{ item.get_absolute_url }}" class="photo-title truncate">{{ item.title }}</a>
                             <i class="truncate photo-date"><i class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}</i>
                         </div>
                     </div>
