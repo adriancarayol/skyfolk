@@ -165,6 +165,8 @@ urlpatterns = [
     url(r'^user-guide/', include('user_guide.urls')),
     # Feedback contact
     url(r'^feedback/', include('feedback.urls', namespace='feedback')),
+    # Privacy policy
+    url(r'^information/', include('information.urls', namespace='information'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

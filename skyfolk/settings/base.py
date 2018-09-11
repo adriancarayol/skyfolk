@@ -122,6 +122,7 @@ FIRST_PARTY_APPS = (
     'api',
     'api.user_profile_api',
     'feedback',
+    'information'
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
