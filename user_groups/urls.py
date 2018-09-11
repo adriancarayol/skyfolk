@@ -1,7 +1,9 @@
 from django.conf.urls import url, include
 
-import user_groups.views
+
 from user_groups import views as user_groups_views
+from user_groups import interests as user_groups_interests
+
 
 urlpatterns = [
     # url(r'^group/(?P<group_name>[\w-]+)/$', 'user_groups.views.user_group_create', name='group'),
@@ -45,8 +47,13 @@ urlpatterns = [
         name='group_theme'),
     url(r'^groups/delete/theme/$', user_groups_views.DeleteGroupTheme.as_view(),
         name='delete_group_theme'),
-    url(r'^groups/edit/theme/$', user_groups.views.EditPublicationTheme.as_view(),
+    url(r'^groups/edit/theme/$', user_groups_views.EditPublicationTheme.as_view(),
         name='edit_group_theme'),
     # configuration
     url(r'^group/', include('user_groups.configuration.urls', namespace="configuration_group"), name="config_group"),
+
+
+    # Interests
+    url(r'^group/(?P<group_slug>[\w-]+)/interests/$', user_groups_interests.GroupInterests.as_view(),
+        name='group_profile_interests'),
 ]

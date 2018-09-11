@@ -502,4 +502,7 @@ ul#vertical-menu .userView .background {
 .draggable--over {
   opacity: 0.5; }
 
+.draggable-mirror {
+  z-index: 9999; }
+
 /*# sourceMappingURL=core.css.map */

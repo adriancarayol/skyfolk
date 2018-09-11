@@ -88,7 +88,9 @@
                         </li>
                         <li>
                             {% if interests %}
-                                <div class="interests">
+                            <div class="interests tooltipped" data-position="bottom"
+                                data-slug="{{ group_profile.slug }}"
+                                data-tooltip="">
                                     {% for i in interests %}
                                         <span class="blue-text"><b>{{ i.name }}</b></span>
                                     {% endfor %}

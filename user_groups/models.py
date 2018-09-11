@@ -44,7 +44,7 @@ class UserGroups(models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name="user_groups")
     owner = models.ForeignKey(User, related_name='owner_group')
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=256, unique=True)
     description = models.CharField(max_length=500)
     is_public = models.BooleanField(default=True)
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)

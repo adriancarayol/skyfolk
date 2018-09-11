@@ -319,7 +319,8 @@ $(document).ready(function () {
 
     $('.interests').mouseenter(function() {
         var interests = $(this);
-        $.get("/profile/adrian/interests/", function(data) {
+        var username = interests.attr('data-username');
+        $.get("/profile/" + username + "/interests/", function(data) {
             interests.attr('data-tooltip', data.join());
         });
     });

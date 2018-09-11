@@ -109,6 +109,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             <li>
                                 {% if profile_interests %}
                                 <div class="interests tooltipped" data-position="bottom"
+                                data-username="{{ user_profile.username }}"
                                 data-tooltip="">
                                     {% for i in profile_interests %}
                                     <span class="blue-text"><b>{{ i }}</b></span>
