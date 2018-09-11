@@ -99,11 +99,12 @@ def create_user_guides(user):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
+    accept_policy = True
+    if created:  # Creatte Profile Notifications settings and NodeProfile for User.
         try:
             with transaction.atomic(using="default"):
                 with db.transaction:
-                    Profile.objects.create(user=instance)
+                    p = Profile.objects.create(user=instance, accept_policy=accept_policy)
                     NotificationSettings.objects.create(user=instance)
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
                                                      is_public=True)

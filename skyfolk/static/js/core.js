@@ -300,7 +300,7 @@ $(document).ready(function () {
     /* Agregar Amigo por medio de PIN */
     $('#agregar-amigo, #agregar-amigo2').on('click', function () {
         swal({
-            title: "¡Empieza una nueva relación!",
+            title: "¡Sigue a un nuevo usuario!",
             customClass: "default-div",
             text: "Introduce su nombre de usuario",
             type: "input",
