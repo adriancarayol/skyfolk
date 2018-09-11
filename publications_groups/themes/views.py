@@ -1,4 +1,5 @@
 import magic
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError
@@ -284,6 +285,7 @@ class EditThemePublication(UpdateView):
             publication.add_hashtag()
             publication.parse_mentions()
             publication.content = Emoji.replace(publication.content)
+            publication.edition_date = datetime.datetime.now()
             publication._edited = True
             with transaction.atomic(using="default"):
                 publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores

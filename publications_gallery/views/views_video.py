@@ -1,5 +1,5 @@
 import json
-
+import datetime
 import magic
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -453,6 +453,7 @@ def edit_video_publication(request):
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()
                 publication.content = Emoji.replace(publication.content)
+                publication.edition_date = datetime.datetime.now()
                 publication._edited = True
                 with transaction.atomic(using="default"):
                     publication.save()  # Guardamos la publicacion si no hay errores
