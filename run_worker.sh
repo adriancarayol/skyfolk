@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export PGPASSWORD="$DB_ENV_POSTGRES_PASSWORD"
 

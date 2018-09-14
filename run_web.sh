@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export PGPASSWORD="$DB_ENV_POSTGRES_PASSWORD"
 
@@ -26,4 +26,3 @@ python manage.py install_labels
 python manage.py rebuild_index --noinput
 python manage.py create_initial_services
 python manage.py runserver 0.0.0.0:8000
-

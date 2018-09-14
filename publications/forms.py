@@ -17,7 +17,7 @@ class PublicationForm(forms.ModelForm):
         # Excluir atributos en el formulario.
         exclude = ['created', 'likes', 'user_give_me_like', 'hates', 'author',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
-                   'event_type', 'liked', 'hated', 'shared', 'extra_content', ]
+                   'event_type', 'liked', 'hated', 'shared', 'extra_content', 'edition_date']
 
     def clean_content(self):
         content = self.cleaned_data['content']
