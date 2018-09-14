@@ -25,7 +25,7 @@
                 <a href="{% url 'user_profile:profile' shared_publication.author %}">@{{ shared_publication.author }}</a>
             </div>
             <br><br>
-            <p class="blue-text">{{ shared_publication.created|naturaltime }}</p>
+            <p class="blue-text">{{ shared_publication.created|naturaltime }}{% if shared_publication.edition_date %}<i> - Editado</i>{% endif %}</p>
         </div>
     </div>
     <br/>

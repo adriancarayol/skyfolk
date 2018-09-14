@@ -131,6 +131,7 @@ $(document).ready(function () {
             success: function (data) {
                 $('#load-comments').remove();
                 $('.loading_publications').before(data);
+                $('.dropdown-button').dropdown();
             }
         });
     });

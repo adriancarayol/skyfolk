@@ -77,6 +77,7 @@ var UTILS = UTILS || (function () {
                     $(pub).append(content);
                 }
                 $('.dropdown-button').dropdown();
+                 $('.materialboxed').materialbox();
             };
 
             // Helpful debugging
