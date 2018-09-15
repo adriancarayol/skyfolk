@@ -167,12 +167,24 @@ class EmailForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(
         attrs={'type': 'email',
                'placeholder': _('E-mail address')}))
+    policy = forms.BooleanField(help_text=_('Acepto la politica de privacidad y condiciones de uso.'))
 
     def clean_email(self):
         data = self.cleaned_data['email']
+
         if User.objects.filter(email=data).exists():
             error = _("A user is already registered with this e-mail address.")
             raise forms.ValidationError(error)
+
+        return data
+
+    def clean_policy(self):
+        data = self.cleaned_data['policy']
+
+        if not data:
+            error = _("Debes aceptar la politica de privacidad para poder registrarte.")
+            raise forms.ValidationError(error)
+        return data
 
 
 class UserForm(forms.ModelForm):

@@ -16,7 +16,7 @@
         {% csrf_token %}
         <div class="row">
             <div class="col l12 m12 s12 profilex"
-                 style="{% if object.back_image %}background: url('{{ object.back_image.url }}'){% else %}background: url('{% static "dist/img/nuevo_back.png" %}'){% endif %} no-repeat center center; background-size: cover;">
+                 style="{% if object.back_image %}background: url('{{ object.back_image.url }}'){% else %}background: url('{% static "dist/img/nuevo_back.jpg" %}'){% endif %} no-repeat center center; background-size: cover;">
 
                 <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
                 <div id="avatar-profile" title="Imágen de perfil" class="img-profile"

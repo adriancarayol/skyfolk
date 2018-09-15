@@ -11,7 +11,7 @@ class PublicationPhotoForm(forms.ModelForm):
     class Meta:
         model = PublicationPhoto
         exclude = ['image', 'created', 'user_give_me_like', 'author',
-                   'user_give_me_hate', 'tags', 'deleted', 'event_type']
+                   'user_give_me_hate', 'tags', 'deleted', 'event_type', 'edition_date']
 
     def __init__(self, *args, **kwargs):
         super(PublicationPhotoForm, self).__init__(*args, **kwargs)
@@ -75,7 +75,7 @@ class PublicationVideoForm(forms.ModelForm):
     class Meta:
         model = PublicationVideo
         exclude = ['image', 'created', 'user_give_me_like', 'author',
-                   'user_give_me_hate', 'tags', 'deleted', 'event_type']
+                   'user_give_me_hate', 'tags', 'deleted', 'event_type', 'edition_date']
 
     def __init__(self, *args, **kwargs):
         super(PublicationVideoForm, self).__init__(*args, **kwargs)

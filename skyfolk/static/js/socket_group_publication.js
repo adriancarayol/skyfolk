@@ -41,6 +41,7 @@ socket.onmessage = function (message) {
         }
     }
     $('.dropdown-button').dropdown();
+    $('.materialboxed').materialbox();
 };
 
 // Helpful debugging

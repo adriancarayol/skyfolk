@@ -101,16 +101,9 @@ $(document).ready(function () {
     });
 
     $('#configurationOnProfile').on('click', function () {
-        var _ventana_pin = $('.ventana-pin');
-        if ($(_ventana_pin).is(':visible')) {
-            $('html, body').removeClass('body-inConf');
-            $(_ventana_pin).fadeOut("fast");
-            $(add_pin).hide();
-        } else {
-            $('html, body').addClass('body-inConf');
-            $(add_pin).show();
-            $(_ventana_pin).fadeIn("fast");
-        }
+        $('html, body').toggleClass('body-inConf');
+        $('.ventana-pin').fadeToggle();
+        $(add_pin).toggle();
     });
 
     /* Abrir respuesta a comentario */
@@ -319,7 +312,8 @@ $(document).ready(function () {
 
     $('.interests').mouseenter(function() {
         var interests = $(this);
-        $.get("/profile/adrian/interests/", function(data) {
+        var username = interests.attr('data-username');
+        $.get("/profile/" + username + "/interests/", function(data) {
             interests.attr('data-tooltip', data.join());
         });
     });

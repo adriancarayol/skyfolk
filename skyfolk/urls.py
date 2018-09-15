@@ -30,7 +30,7 @@ CSRF_FAILURE_VIEW = 'user_profile.views.csrf_failure'
 urlpatterns = [
     url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^4r2k1otg2zztkigzrtu6/', include(admin.site.urls)),
     url(r"^accounts/signup/$", signup, name="account_signup"),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls support
@@ -165,6 +165,8 @@ urlpatterns = [
     url(r'^user-guide/', include('user_guide.urls')),
     # Feedback contact
     url(r'^feedback/', include('feedback.urls', namespace='feedback')),
+    # Privacy policy
+    url(r'^information/', include('information.urls', namespace='information'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

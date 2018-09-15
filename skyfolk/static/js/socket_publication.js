@@ -63,4 +63,5 @@ var UTILS = UTILS || (function () {
 
 function recallDropDownEvent() {
     $('.dropdown-button').dropdown();
+     $('.materialboxed').materialbox();
 }

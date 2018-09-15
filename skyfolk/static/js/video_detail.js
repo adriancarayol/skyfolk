@@ -159,6 +159,7 @@ $(document).ready(function () {
             {
                 $('#load-comments').remove();
                 $('.loading_publications').before(data);
+                $('.dropdown-button').dropdown();
             }
         });
     });

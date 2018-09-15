@@ -12,9 +12,13 @@ class ProfileIndex(indexes.SearchIndex, indexes.Indexable):
     firstname = indexes.EdgeNgramField(model_attr='user__first_name')
     lastname = indexes.EdgeNgramField(model_attr='user__last_name')
     pub_date = indexes.DateTimeField(model_attr='user__date_joined')
+    tag = indexes.MultiValueField(indexed=True, stored=True)
 
     def get_model(self):
         return Profile
 
     def index_queryset(self, using=None):
         return self.get_model().objects.filter(user__date_joined__lte=timezone.now())
+
+    def prepare_tags(self, obj):
+        return [tag.name for tag in obj.tags.all()]

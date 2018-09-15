@@ -61,8 +61,9 @@ class PublicationBase(MPTTModel):
         (6, _("shared")),
     )
 
-    content = models.TextField(max_length=500)
+    content = models.TextField(max_length=10000)
     created = models.DateTimeField(auto_now_add=True)
+    edition_date = models.DateTimeField(null=True, blank=True)
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)

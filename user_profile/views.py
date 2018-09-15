@@ -55,6 +55,7 @@ from user_profile.models import Request, Profile, \
     RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK, LikeProfile
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from utils.lists import union_without_duplicates
 from .serializers import UserSerializer
 from .utils import crop_image, make_pagination_html
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -224,21 +225,20 @@ def profile_view(request, username,
                                      username__iexact=username)
 
     try:
-        n = Profile.objects.get(user_id=user_profile.id)
         m = Profile.objects.get(user_id=user.id)
     except Profile.DoesNotExist:
         raise Http404
 
     context = {}
     # Privacidad del usuario
-    privacity = n.is_visible(m)
+    privacity = user_profile.profile.is_visible(m)
 
     # Si es una peticion AJAX (cargar skyline, seguidos...)
     if request.is_ajax():
         if privacity and privacity != 'all':
             pass
         else:
-            return profile_view_ajax(request, user_profile, node_profile=n)
+            return profile_view_ajax(request, user_profile, node_profile=user_profile.profile)
 
     context['user_profile'] = user_profile
     context['privacity'] = privacity
@@ -264,7 +264,7 @@ def profile_view(request, username,
     isBlocked = False
     if user.username != username:
         try:
-            isBlocked = RelationShipProfile.objects.filter(from_profile=m, to_profile=n, type=BLOCK).exists()
+            isBlocked = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile, type=BLOCK).exists()
         except Exception as e:
             pass
 
@@ -272,14 +272,14 @@ def profile_view(request, username,
     isFollower = False
     if user.username != username:
         try:
-            isFollower = RelationShipProfile.objects.filter(from_profile=n, to_profile=m, type=FOLLOWING).exists()
+            isFollower = RelationShipProfile.objects.filter(from_profile=user_profile.profile, to_profile=m, type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si el perfil es seguido
     isFollow = False
     if user.username != username:
         try:
-            isFollow = RelationShipProfile.objects.filter(from_profile=m, to_profile=n, type=FOLLOWING).exists()
+            isFollow = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile, type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si existe una peticion de seguimiento
@@ -297,7 +297,7 @@ def profile_view(request, username,
         context['existFollowRequest'] = True if friend_request else False
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
-    elif RelationShipProfile.objects.filter(from_profile=n, to_profile=m, type=BLOCK):
+    elif RelationShipProfile.objects.filter(from_profile=user_profile.profile, to_profile=m, type=BLOCK):
         template = "account/privacity/block_profile.html"
         context['isBlocked'] = isBlocked
         context['liked'] = liked
@@ -305,7 +305,7 @@ def profile_view(request, username,
 
     # Recuperamos el numero de seguidores
     try:
-        num_followers = RelationShipProfile.objects.get_total_followers(n.id)
+        num_followers = RelationShipProfile.objects.get_total_followers(user_profile.profile.id)
     except Exception as e:
         num_followers = 0
 
@@ -327,19 +327,9 @@ def profile_view(request, username,
     context['multimedia_count'] = multimedia_count
     context['existFollowRequest'] = True if friend_request else False
 
-    try:
-        profile_interests, meta = db.cypher_query(
-            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title LIMIT 10" % username)
-        context['profile_interests'] = [item for sublist in profile_interests for item in sublist]
-    except Exception:
-        context['profile_interests'] = ()
 
-    try:
-        count_profile_interests, meta = db.cypher_query(
-            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN COUNT(*)" % username)
-        context['profile_interests_total'] = [item for sublist in count_profile_interests for item in sublist].pop()
-    except Exception:
-        context['profile_interests_total'] = 0
+    context['profile_interests'] = user_profile.profile.tags.names()[:10]
+    context['profile_interests_total'] = user_profile.profile.tags.all().count()
 
     if privacity == "followers" or privacity == "both":
         template = "account/privacity/need_confirmation_profile.html"
@@ -554,44 +544,34 @@ class InterestsView(FormView):
         response = "success"
 
         tags = request.POST.getlist('tags[]')
-        for tag in tags:
+        choices = request.POST.getlist('choices[]')
+        choices = [dict(ThemesForm.CHOICES).get(choice, '').lower() for choice in choices]
+        interests = union_without_duplicates(tags, choices)
+
+        for tag in interests:
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
+
             tag = tag.lower()
-            interest = TagProfile.nodes.get_or_none(title=tag)
-            if not interest and tag:
-                interest = TagProfile(title=tag).save()
-            if interest:
-                if interest.user.is_connected(user_node):
-                    interest.user.disconnect(user_node)
-                else:
-                    interest.user.connect(user_node)
-        # Procesar temas por defecto
-        choices = request.POST.getlist('choices[]')
-        if not tags and not choices:
-            response = "empty"
-            return HttpResponse(json.dumps(response), content_type='application/json')
-        for choice in choices:
-            value = dict(ThemesForm.CHOICES).get(choice)
-            value = value.lower()
-            interest = TagProfile.nodes.get_or_none(title=value)
-            if not interest and value:
-                interest = TagProfile(title=value).save()
-            if interest:
-                if interest.user.is_connected(user_node):
-                    interest.user.disconnect(user_node)
-                else:
-                    interest.user.connect(user_node)
+            interest_exists = user_profile.tags.filter(name__iexact=tag).exists()
+
+            if not interest_exists and tag:
+                with transaction.atomic():
+                    with db.transaction:
+                        user_profile.tags.add(tag)
+                        interest = TagProfile.nodes.get_or_none(title=tag)
+                        if not interest:
+                            interest = TagProfile(title=tag).save()
+                        interest.user.connect(user_node)
+
         return HttpResponse(json.dumps(response), content_type='application/json')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         results, meta = db.cypher_query(
             "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
-        my_interests, meta_2 = db.cypher_query(
-            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) WHERE n.title='%s' RETURN interest.title" % self.request.user.username)
-        context['my_interests'] = [item for sublist in my_interests for item in sublist]
+        context['my_interests'] = self.request.user.profile.tags.all().values_list('name')
         context['top_tags'] = results
         context['form'] = ThemesForm
         return context
@@ -1356,42 +1336,37 @@ def welcome_step_1(request):
     """
     user = request.user
     user_node = NodeProfile.nodes.get(title=user.username)
+    user_profile = user.profile
 
     context = {'user_profile': user}
 
     if request.method == 'POST':
         response = "success"
-        # Procesar temas escritos por el usuario
+
         tags = request.POST.getlist('tags[]')
-        for tag in tags:
+        choices = request.POST.getlist('choices[]')
+        choices = [dict(ThemesForm.CHOICES).get(choice, '').lower() for choice in choices]
+        interests = union_without_duplicates(tags, choices)
+
+        for tag in interests:
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
             tag = tag.lower()
-            interest = TagProfile.nodes.get_or_none(title=tag)
 
-            if not interest and tag:
-                interest = TagProfile(title=tag).save()
-            if interest:
-                interest.user.connect(user_node)
+            interest_exists = user_profile.tags.filter(name__iexact=tag).exists()
 
-        # Procesar temas por defecto
-        choices = request.POST.getlist('choices[]')
-        if not tags and not choices:
-            response = "empty"
-            return HttpResponse(json.dumps(response), content_type='application/json')
+            if not interest_exists and tag:
+                with transaction.atomic():
+                    with db.transaction:
+                        user_profile.tags.add(tag)
+                        interest = TagProfile.nodes.get_or_none(title=tag)
 
-        for choice in choices:
-            value = dict(ThemesForm.CHOICES).get(choice)
-            value = value.lower()
+                        if not interest:
+                            interest = TagProfile(title=tag).save()
 
-            interest = TagProfile.nodes.get_or_none(title=value)
-
-            if not interest and value:
-                interest = TagProfile(title=value).save()
-            if interest:
-                interest.user.connect(user_node)
+                        interest.user.connect(user_node)
 
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:

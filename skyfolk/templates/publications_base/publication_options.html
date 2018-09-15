@@ -19,7 +19,7 @@
             <li title="¡Me gusta!" class="like-comment"
                     {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
                 <i class="material-icons md-18">keyboard_arrow_up</i>
-                <i class="like-value">{{ node.likes|zero_to_empty }}</i>
+                <i class="like- value">{{ node.likes|zero_to_empty }}</i>
             </li>
         {% if node|classname == 'Publication' or node|classname == 'PublicationGroup' %}
             <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"

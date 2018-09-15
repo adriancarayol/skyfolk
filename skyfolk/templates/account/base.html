@@ -30,8 +30,9 @@
         </div>
 
     </div>
-    <div class="row">
-        {% block menu %}
+
+    {% block menu %}
+        <div class="row">
             <div class="col l4 offset-l4 col s12">
                 <div class="menu">
                     <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
@@ -51,8 +52,8 @@
                     </ul>
                 </div>
             </div>
-            </div>
-        {% endblock %}
+        </div>
+    {% endblock %}
     {% block content %}
     {% endblock %}
 {% endblock %}

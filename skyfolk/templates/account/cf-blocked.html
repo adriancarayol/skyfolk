@@ -27,7 +27,7 @@
                             {% if item.profile.back_image %}
                                 <img class="back-profile-user lazyload" data-src="{{ item.profile.back_image.url }}">
                             {% else %}
-                                <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.png" %}">
+                                <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.jpg" %}">
                             {% endif %}
                             <div class="bg-user">
                                 <div onclick="location.href='/profile/{{ item.username }}'"

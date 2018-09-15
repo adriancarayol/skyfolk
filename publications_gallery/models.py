@@ -11,7 +11,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
-
+from django.urls import reverse
 from notifications.signals import notify
 from photologue.models import Photo, Video
 from publications.models import Publication
@@ -145,8 +145,10 @@ class PublicationPhoto(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_photo.owner,
                         action_object=self,
-                        description="@{0} ha publicado en una foto. <a href='/publication_pdetail/{1}/'>Ver</a>".format(
-                            self.author.username, self.id),
+                        description="@{0} ha publicado en una foto. <a href='{1}'>Ver</a>".format(
+                            self.author.username,
+                            reverse("publications_gallery:publication_photo_detail",
+                                    kwargs={'publication_id': self.id})),
                         verb=u'Nuevos comentarios en imagen', level='notification_board_owner')
 
 
@@ -270,6 +272,7 @@ class PublicationVideo(PublicationBase):
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_video.owner,
                         action_object=self,
-                        description="@{0} ha publicado en un vídeo. <a href='/video/publication/detail/{1}/'>Ver</a>".format(
-                            self.author.username, self.id),
+                        description="@{0} ha publicado en un vídeo. <a href='{1}'>Ver</a>".format(
+                            self.author.username, reverse("publications_gallery:publication_video_detail",
+                                                          kwargs={"publication_id": self.id})),
                         verb=u'Nuevos comentarios en vídeo', level='notification_board_owner')

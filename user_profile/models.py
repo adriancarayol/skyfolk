@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db import transaction
 from django.utils.http import urlencode
-
+from taggit.managers import TaggableManager
 from notifications.models import Notification
 from photologue.models import Photo, Video
 
@@ -104,7 +104,8 @@ class LikeProfile(models.Model):
     def save(self, *args, **kwargs):
         if self.to_profile == self.from_profile:
             raise Exception('to_profile != from_profile')
-        super().save(*args, **kwargs) 
+        super().save(*args, **kwargs)
+
 
 class Profile(models.Model):
     """
@@ -128,7 +129,8 @@ class Profile(models.Model):
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
     relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
                                            related_name="profile_relationships")
-
+    accepted_policy = models.BooleanField(default=False)
+    tags = TaggableManager(blank=True)
     reindex_related = ('user',)
 
     class Meta:

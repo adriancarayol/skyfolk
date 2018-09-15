@@ -13,7 +13,7 @@
                     href="/profile/{{ item.author.username }}">@{{ item.author.username }}</a><i>{{ item.author.first_name }} {{ item.author.last_name }}</i><span>
                 <span><a href="/publication/{{ item.id }}" title="Ver publicación"><i
                         class="material-icons md-18 right">open_in_new</i></a></span>
-                <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
+                <p><i class="pub-date">{{ item.created|naturaltime }}{% if item.edition_date %}<i> - Editado</i>{% endif %}</i></p>
         </div>
         <div class="col l9 m10 s9 contenido">
             <p>{{ item.content|safe }}</p>
@@ -33,7 +33,7 @@
                             {% avatar item.shared_publication.author 60 %}<br>
                             <span class="card-title"><a
                                     href="{% url 'user_profile:profile' item.shared_publication.author %}">@{{ item.shared_publication.author }}</a>
-                            <i class="blue-textº text-darken-2"> {{ item.shared_publication.created|naturaltime }}</i></span>
+                            <i class="blue-text text-darken-2"> {{ item.shared_publication.created|naturaltime }}</i>{% if item.shared_publication.edition_date %}<i> - Editado</i>{% endif %}</span>
                             <p>{{ item.shared_publication.content|safe }}</p>
                             {% with item.shared_publication.images.all as images %}
                                 {% if images %}<br>
@@ -75,7 +75,7 @@
                                     <div class="card small">
                                         <div class="card-image">
                                             <img class="lazyload" data-src="
-                                                    {% if item.shared_publication.extra_content.image %}{{ item.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                    {% if item.shared_publication.extra_content.image %}{{ item.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                             <span class="card-title white-text">{{ item.shared_publication.extra_content.title }}</span>
                                         </div>
                                         <div class="card-content">
@@ -135,7 +135,7 @@
                     <div class="card small">
                         <div class="card-image">
                             <img class="lazyload" data-src="
-                                    {% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                    {% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                             <span class="card-title white-text">{{ item.extra_content.title }}</span>
                         </div>
                         <div class="card-content">
@@ -150,8 +150,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $('.materialboxed').materialbox();
-    });
-</script>

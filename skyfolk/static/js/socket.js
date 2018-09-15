@@ -19,7 +19,8 @@ var UTILS = UTILS || (function () {
                 // Create the inner content of the post div
                 if (data.type === "pub") {
                     // See if there's a div to replace it in, or if we should add a new one
-                    var existing = $('#list-publications').find('#pub-' + data.id).first();
+                    var existing = $('#tab-comentarios').find('#pub-' + data.id).first();
+                    console.log(existing);
                     var no_comments = $('#without-comments');
 
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
@@ -39,8 +40,6 @@ var UTILS = UTILS || (function () {
                             $("#tab-comentarios .btn-filters").after(data.content);
                         }
                     }
-
-
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
                     if ($(no_comments).is(':visible')) {
                         $(no_comments).fadeOut(function () {
@@ -63,9 +62,8 @@ var UTILS = UTILS || (function () {
                         }
                     }
                 }
+                recallDropDownEvent();
             };
-            
-            recallDropDownEvent();
             // Helpful debugging
             if (socket.readyState == WebSocket.OPEN) socket.onopen();
             socket.onclose = function () {
@@ -77,4 +75,5 @@ var UTILS = UTILS || (function () {
 
 function recallDropDownEvent() {
     $('.dropdown-button').dropdown();
+    $('.materialboxed').materialbox();
 }

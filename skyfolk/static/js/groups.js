@@ -663,6 +663,15 @@ $(function () {
             }
         });
     });
+
+    $('.interests').mouseenter(function() {
+        var interests = $(this);
+        var slug = interests.attr('data-slug');
+        $.get("/group/" + slug + "/interests/", function(data) {
+            interests.attr('data-tooltip', data.join());
+        });
+    });
+
 });// end document ready
 
 var loadDescendantsRunning = false;

@@ -67,7 +67,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <div class="col s12 user-avatar" style="background: {% if user_profile.profile.back_image %}
                     url({{ user_profile.profile.back_image.url }})
                     {% else %}
-                    url({% static "dist/img/nuevo_back.png" %})
+                    url({% static "dist/img/nuevo_back.jpg" %})
                     {% endif %} no-repeat center center; background-size: cover;">
                 </div>
             <div class="col s12 user-stats">
@@ -109,9 +109,10 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             <li>
                                 {% if profile_interests %}
                                 <div class="interests tooltipped" data-position="bottom"
+                                data-username="{{ user_profile.username }}"
                                 data-tooltip="">
                                     {% for i in profile_interests %}
-                                    <span class="blue-text"><b>{{ i }}</b></span>
+                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>{{ i }}</b></a>
                                     {% endfor %}
                                     {% with profile_interests|length as profile_interest_returned %}
                                         {% if profile_interest_returned < profile_interests_total %}

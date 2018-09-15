@@ -70,6 +70,7 @@ var UTILS = UTILS || (function () {
                     }
                 }
                 $('.dropdown-button').dropdown();
+                 $('.materialboxed').materialbox();
             };
             // Helpful debugging
             if (socket.readyState == WebSocket.OPEN) socket.onopen();

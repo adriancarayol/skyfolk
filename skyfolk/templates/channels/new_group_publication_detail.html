@@ -28,7 +28,7 @@
                                     <div class="row">
                                         <div class="parrafo comment">
                                             <p
-                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
+                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}{% if node.edition_date %}<i> - Editado</i>{% endif %}</p>
                                             <div class="wrp-comment">{{ node.content|safe }}</div>
                                         </div>
                                         <div class="show-more" id="show-comment-{{ node.pk }}">
@@ -73,7 +73,7 @@
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img class="lazyload" data-src="
-                                                        {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                 <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                             </div>
                                             <div class="card-content">
@@ -127,8 +127,4 @@
                     </div>
                 </div>
             </div>
-<script>
-    $(document).ready(function () {
-        $('.materialboxed').materialbox();
-    });
-</script>
+            </div>

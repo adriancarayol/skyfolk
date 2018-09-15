@@ -1,23 +1,20 @@
 import json
-
+import datetime
 import magic
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Count, When, Value, Case, IntegerField, OuterRef, Subquery
+from django.db.models import Count, When, Value, Case, IntegerField
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
-from notifications.models import Notification
 from photologue_groups.models import PhotoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
-from publications.models import Publication
 from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
@@ -459,6 +456,7 @@ def edit_publication(request):
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()
                 publication.content = Emoji.replace(publication.content)
+                publication.edition_date = datetime.datetime.now()
                 publication._edited = True
                 with transaction.atomic(using="default"):
                     publication.save()  # Guardamos la publicacion si no hay errores

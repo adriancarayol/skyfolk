@@ -9,21 +9,29 @@
             <p class="center">Paso {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
             <form class="signup form-3" method="post"
                   action="">{% csrf_token %}
-                <div class="form-group">
-                    <div class="row">
-                        {{ form.email.errors }}
-                        <div class="input-field col s11">
-                            <i class="material-icons prefix">email</i>
-                            {{ form.email }}
-                            <label for="id_user-email">{% trans "Email" %}</label>
-                        </div>
+                <div class="form-group row">
+                    {{ form.email.errors }}
+                    {{ form.policy.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">email</i>
+                        {{ form.email }}
+                        <label for="id_email-email">{% trans "Email" %}</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <p>
+                            {{ form.policy }}
+                            <label for="{{ form.policy.id_for_label }}"><span>{{ form.policy.help_text }}</span></label>
+                        </p>
                     </div>
                 </div>
+                <div class="row"></div>
                 <div class="row center">
                     {% if wizard.steps.prev %}
-                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step" type="submit"
+                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step"
+                                type="submit"
                                 value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step" type="submit"
+                        <button class="waves-effect waves-light btn white black-text" name="wizard_goto_step"
+                                type="submit"
                                 value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
                     {% endif %}
                     <input class="waves-effect waves-light btn blue lighten-2" type="submit"

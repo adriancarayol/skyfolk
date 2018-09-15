@@ -12,9 +12,9 @@
 {% block cf-form %}
     <div class="wrapper disable-account-wrapper">
         <form action="." method="POST">{% csrf_token %}
-            <p>¿Estás seguro que quieres eliminar el grupo <b>{{ object }}</b>?</p>
+            <p>¿Estás seguro que quieres eliminar el grupo <b>{{ object.name }}</b>?</p>
             {{ form }}
-            <button class="btn btn-primary right blue lighten-2" type="submit" name="action">Confirmar</button>
+            <button class="btn btn-primary right red" type="submit" name="action">Confirmar</button>
         </form>
     </div>
     <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
