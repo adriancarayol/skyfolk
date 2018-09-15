@@ -104,6 +104,7 @@ THIRD_PARTY_APPS = (
     'webpack_loader',
     'user_guide',
     'graphene_django',
+    'celery_haystack',
 )
 
 FIRST_PARTY_APPS = (
@@ -419,7 +420,7 @@ POSTMAN_AUTO_MODERATE_AS = True
 POSTMAN_DISABLE_USER_EMAILING = True
 
 # HAYSTACK REALTIME SIGNAL
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
 
 # LOGROS
