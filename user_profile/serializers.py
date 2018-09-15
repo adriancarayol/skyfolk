@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         return avatar_url(obj)
 
     def get_back_image_user(self, obj):
-        default_back = static('dist/img/nuevo_back.png')
+        default_back = static('dist/img/nuevo_back.jpg')
         return obj.profile.back_image.url if obj.profile.back_image else default_back
 
     class Meta:

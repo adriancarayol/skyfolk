@@ -80,7 +80,7 @@
                                <div class="col s12 m4 l2">
                                     <div class="service tooltipped" data-position="bottom" data-tooltip="{{ service.name.description }}">
                                         <div class="service-thumbnail">
-                                            <img src="{% if service.name.thumbnail %}{{ service.name.thumbnail.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
+                                            <img src="{% if service.name.thumbnail %}{{ service.name.thumbnail.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
                                                  title="{{ service.name|service_readable|safe|escape }}" alt="{{ service.name|service_readable|safe|escape }}" />
                                         </div>
                                         <div class="service-description">
@@ -133,7 +133,7 @@
                                 <div class="col s12 m4 l2">
                                     <div class="service tooltipped" data-position="bottom" data-tooltip="{{ service.description }}">
                                         <div class="service-thumbnail">
-                                            <img src="{% if service.thumbnail %}{{ service.thumbnail.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
+                                            <img src="{% if service.thumbnail %}{{ service.thumbnail.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
                                                  title="{{ service|service_readable|safe|escape }}" alt="{{ service|service_readable|safe|escape }}" />
                                         </div>
                                         <div class="service-description">

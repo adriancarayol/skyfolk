@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db import transaction
 from django.utils.http import urlencode
-
+from taggit.managers import TaggableManager
 from notifications.models import Notification
 from photologue.models import Photo, Video
 
@@ -130,6 +130,7 @@ class Profile(models.Model):
     relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
                                            related_name="profile_relationships")
     accepted_policy = models.BooleanField(default=False)
+    tags = TaggableManager(blank=True)
     reindex_related = ('user',)
 
     class Meta:

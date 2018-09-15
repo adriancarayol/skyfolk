@@ -48,7 +48,7 @@
             <div class="col s12 user-avatar" style="background: {% if group_profile.back_image %}
                 url({{ group_profile.back_image.url }})
             {% else %}
-                url({% static "dist/img/nuevo_back.png" %})
+                url({% static "dist/img/nuevo_back.jpg" %})
             {% endif %} no-repeat center center; background-size: cover;">
             </div>
             <div class="col s12 user-stats">
@@ -92,7 +92,7 @@
                                 data-slug="{{ group_profile.slug }}"
                                 data-tooltip="">
                                     {% for i in interests %}
-                                        <span class="blue-text"><b>{{ i.name }}</b></span>
+                                        <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>{{ i.name }}</b></a>
                                     {% endfor %}
                                     {% with interests|length as interest_returned %}
                                         {% if interest_returned < total_interests %}
