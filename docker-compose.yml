@@ -18,44 +18,44 @@ services:
       - NEO4J_AUTH=neo4j/1518
     volumes:
       - ./run/db/dbms:/data/dbms
-      - ./neo4j:/var/lib/neo4j/plugins
+#      - ./neo4j:/var/lib/neo4j/plugins
     restart: always
     networks:
       - skyfolknetwork
     depends_on:
       - dbpostgres
 
-  zookeeper:
-      image: debezium/zookeeper:latest
-      ports:
-       - "2181:2181"
-       - "2888:2888"
-       - "3888:3888"
-      networks:
-         - skyfolknetwork
-  kafka:
-    image: debezium/kafka:latest
-    ports:
-      - "9092:9092"
-    environment:
-      - ZOOKEEPER_CONNECT=zookeeper:2181
-    networks:
-      - skyfolknetwork
-
-  connect:
-    image: debezium/connect-jdbc-es:latest
-    build:
-      context: debezium-jdbc-es
-    ports:
-      - "8083:8083"
-      - "5005:5005"
-    networks:
-      - skyfolknetwork
-    environment:
-      - BOOTSTRAP_SERVERS=kafka:9092
-      - GROUP_ID=1
-      - CONFIG_STORAGE_TOPIC=my_connect_configs
-      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+#  zookeeper:
+#      image: debezium/zookeeper:latest
+#      ports:
+#       - "2181:2181"
+#       - "2888:2888"
+#       - "3888:3888"
+#      networks:
+#         - skyfolknetwork
+#  kafka:
+#    image: debezium/kafka:latest
+#    ports:
+#      - "9092:9092"
+#    environment:
+#      - ZOOKEEPER_CONNECT=zookeeper:2181
+#    networks:
+#      - skyfolknetwork
+#
+#  connect:
+#    image: debezium/connect-jdbc-es:latest
+#    build:
+#      context: debezium-jdbc-es
+#    ports:
+#      - "8083:8083"
+#      - "5005:5005"
+#    networks:
+#      - skyfolknetwork
+#    environment:
+#      - BOOTSTRAP_SERVERS=kafka:9092
+#      - GROUP_ID=1
+#      - CONFIG_STORAGE_TOPIC=my_connect_configs
+#      - OFFSET_STORAGE_TOPIC=my_connect_offsets
 
   # postgresql
   dbpostgres:

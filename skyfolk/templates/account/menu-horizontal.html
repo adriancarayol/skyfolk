@@ -7,6 +7,10 @@
             class="material-icons">person</i></a></li>
     <li title="Seguir usuario" id="agregar-amigo"><a class="blue-text text-darken-1"><i
             class="material-icons">person_add</i></a></li>
+    <li title="Mis grupos"><a class="blue-text text-darken-1" href="{% url "user_groups:list-group" %}"><i
+            class="material-icons">group</i></a></li>
+    <li title="Galería"><a class="blue-text text-darken-1" href="{% url "photologue:photo-list" user.username %}"><i
+            class="material-icons">camera_alt</i></a></li>
     <li title="Salir"><a href="{% url 'account_logout' %}" class="blue-text text-darken-1"><i
         class="material-icons">exit_to_app</i></a></li>
 </ul>

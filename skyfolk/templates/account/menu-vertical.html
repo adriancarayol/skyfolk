@@ -21,6 +21,8 @@
     <li class="hide-on-large-only"><a href="/following/{{ request.user.username }}"><i
                     class="material-icons">person</i>Seguidos</a></li>
     <li class="hide-on-large-only"><a id="agregar-amigo2"><i class="material-icons">person_add</i>Seguir</a></li>
+    <li class="hide-on-large-only"><a href="{% url "user_groups:list-group" %}"><i class="material-icons">group</i>Mis grupos</a></li>
+    <li class="hide-on-large-only"><a href="{% url "photologue:photo-list" user.username %}"><i class="material-icons">camera_alt</i>Galería</a></li>
     <li class="hide-on-large-only">
         <div class="divider"></div>
     </li>
@@ -38,7 +40,13 @@
     <li>
         <div class="divider"></div>
     </li>
-    <li><a href="{% url 'account_logout' %}" class="subheader"><i class="material-icons">exit_to_app</i>Salir</a></li>
     <li><a class="waves-effect shortcut-keyboard"><i class="material-icons">keyboard</i>Atajos</a></li>
     <li><a href="/blog/" class="waves-effect"><i class="material-icons">comment</i>Blog</a></li>
+    <li><a href="{% url 'account_logout' %}" class="subheader"><i class="material-icons">exit_to_app</i>Salir</a></li>
+    <li>
+        <div class="divider"></div>
+    </li>
+    {% if user.is_superuser  %}
+        <li><a href="{% url 'admin:index' %}" class="subheader"><i class="material-icons">build</i>Panel de administración</a></li>
+    {% endif %}
 </ul>
