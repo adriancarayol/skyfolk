@@ -11,7 +11,7 @@ class Skyfolk(Services):
     # put whatever you need  here
     # eg title = models.CharField(max_length=80)
     # but keep at least this one
-    trigger = models.ForeignKey(TriggerService)
+    trigger = models.ForeignKey(TriggerService, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'th_skyfolk'

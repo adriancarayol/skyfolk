@@ -3,7 +3,7 @@ from django.test import TestCase
 from neomodel import db, clear_neo4j_database
 from user_profile.models import RelationShipProfile, LikeProfile
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from user_profile.node_models import NodeProfile
 from unittest import mock
 from django.test.client import RequestFactory

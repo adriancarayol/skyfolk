@@ -77,14 +77,14 @@ class PublicationPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User, null=True)
-    board_photo = models.ForeignKey(Photo, related_name='board_photo')
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    board_photo = models.ForeignKey(Photo, related_name='board_photo', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -203,14 +203,14 @@ class PublicationVideo(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User, null=True)
-    board_video = models.ForeignKey(Video, related_name='board_video')
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    board_video = models.ForeignKey(Video, related_name='board_video', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_video_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']

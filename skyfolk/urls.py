@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
@@ -30,7 +31,7 @@ CSRF_FAILURE_VIEW = 'user_profile.views.csrf_failure'
 urlpatterns = [
     url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
-    url(r'^4r2k1otg2zztkigzrtu6/', include(admin.site.urls)),
+    url(r'^4r2k1otg2zztkigzrtu6/', admin.site.urls),
     url(r"^accounts/signup/$", signup, name="account_signup"),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls support
@@ -74,7 +75,7 @@ urlpatterns = [
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
     url(r'^group/', include('photologue_groups.urls', namespace='photologue_groups')),  # photologue groups
-    url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
+    url(r'^messages/', include('postman.urls', namespace='postman')),
     # django-dash URLs:
     # url(r'^dashboard/', include('dash.urls')),
     # url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
@@ -175,6 +176,4 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [
-                      url(r'^__debug__/', include(debug_toolbar.urls)),
-                  ] + urlpatterns
+    urlpatterns = [path('__debug__/', include(debug_toolbar.urls)), ] + urlpatterns

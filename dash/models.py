@@ -1,6 +1,6 @@
 import logging
 
-from autoslug import AutoSlugField
+from django_extensions.db.fields import AutoSlugField
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -22,7 +22,7 @@ from .fields import OrderField
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse
 else:
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
 __title__ = 'dash.models'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -53,7 +53,7 @@ class DashboardSettings(models.Model):
           mode).
     """
 
-    user = models.OneToOneField(AUTH_USER_MODEL, verbose_name=_("User"))
+    user = models.OneToOneField(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
     layout_uid = models.CharField(_("Layout"), max_length=25)
     title = models.CharField(_("Title"), max_length=255)
     allow_different_layouts = models.BooleanField(
@@ -98,11 +98,11 @@ class DashboardWorkspace(models.Model):
           shared with. If workspace is shared with specific user, then the
           user it's shared with can also clone the workspace.
     """
-    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"))
+    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
     layout_uid = models.CharField(_("Layout"), max_length=25)
     name = models.CharField(_("Name"), max_length=255)
     slug = AutoSlugField(populate_from='name', verbose_name=_("Slug"),
-                         unique=True, slugify=slugify_workspace)
+                         unique=True)
     position = OrderField(_("Position"), null=True, blank=True)
     is_public = models.BooleanField(
         _("Is public?"),
@@ -184,9 +184,9 @@ class DashboardEntry(models.Model):
         - `plugin_data` (str): JSON formatted string with plugin data. (Point to trigger results)
         - `position` (int): Entry position.
     """
-    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"))
+    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
     workspace = models.ForeignKey(DashboardWorkspace, null=True, blank=True,
-                                  verbose_name=_("Workspace"), )
+                                  verbose_name=_("Workspace"), on_delete=models.CASCADE)
     layout_uid = models.CharField(_("Layout"), max_length=25)
     placeholder_uid = models.CharField(_("Placeholder"), max_length=255)
     plugin_uid = models.CharField(_("Plugin name"), max_length=255)

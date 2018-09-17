@@ -62,10 +62,10 @@ class ExtraGroupContent(models.Model):
 
 
 class PublicationGroup(PublicationBase):
-    author = models.ForeignKey(User)
-    board_group = models.ForeignKey(UserGroups, db_index=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    board_group = models.ForeignKey(UserGroups, db_index=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_group')
+                               related_name='reply_group', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_group_publication')
     user_give_me_hate = models.ManyToManyField(User, blank=True,

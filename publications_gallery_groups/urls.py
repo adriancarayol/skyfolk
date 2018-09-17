@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'publications_gallery_groups'
+
 urlpatterns = [
     # Publication for photo
     url(r'^publication/$', views.publication_photo_view,

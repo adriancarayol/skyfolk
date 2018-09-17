@@ -3,6 +3,8 @@ from django.conf.urls import url
 
 from .views import BadgeListView, BadgeDetailView
 
+app_name = 'badgify'
+
 
 urlpatterns = [
     url(r'^$', BadgeListView.as_view(), name='badge_list'),

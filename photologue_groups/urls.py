@@ -17,6 +17,8 @@ The new style will coexist with the existing 'pl-' prefix for a couple of releas
 
 """
 
+app_name = 'photologue_groups'
+
 urlpatterns = [
     # TODO: Permitir filtrar por año, mes... (descomentar y mejorar views)
     # url(r'^multimedia/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',

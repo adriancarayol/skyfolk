@@ -147,15 +147,15 @@ class Publication(PublicationBase):
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
+    board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True, on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
-    shared_publication = models.ForeignKey('self', blank=True, null=True)
-    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True)
+    shared_publication = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
+    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True, on_delete=models.CASCADE)
     parent = TreeForeignKey('self', blank=True, null=True,
-                            related_name='reply', db_index=True)
+                            related_name='reply', db_index=True, on_delete=models.CASCADE)
     objects = PublicationManager()
 
     class Meta:
@@ -243,7 +243,7 @@ class PublicationDeleted(models.Model):
         (1, _("skyline")),
         (2, _("photo")),
     )
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(null=True)
     type_publication = models.IntegerField(choices=TYPE_PUBLICATIONS, default=1)

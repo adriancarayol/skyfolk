@@ -63,11 +63,11 @@ class ExtraThemeContent(models.Model):
 
 
 class PublicationTheme(PublicationBase):
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     board_theme = models.ForeignKey(GroupTheme, db_index=True, related_name='publication_board_theme',
                                     on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_theme')
+                               related_name='reply_theme', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_theme_publication')
     user_give_me_hate = models.ManyToManyField(User, blank=True,

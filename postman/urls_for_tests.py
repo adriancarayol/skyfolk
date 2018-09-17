@@ -8,7 +8,7 @@ from django import VERSION
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib.auth.views import login
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.forms import ValidationError
 
 if getattr(settings, 'POSTMAN_I18N_URLS', False):

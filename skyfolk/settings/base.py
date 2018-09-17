@@ -99,12 +99,13 @@ THIRD_PARTY_APPS = (
     'embed_video',
     'haystack',
     'badgify',
-    # 'django_celery_beat', Wait for stable version
     'invitations',
     'webpack_loader',
     'user_guide',
     'graphene_django',
     'celery_haystack',
+    'django_extensions',
+    'debug_toolbar'
 )
 
 FIRST_PARTY_APPS = (
@@ -274,7 +275,7 @@ BACK_IMAGE_CACHE_TIMEOUT = 300
 BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 30
 VIDEO_EXTENTIONS = ["avi", "mp4"]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -286,7 +287,7 @@ MIDDLEWARE_CLASSES = (
     'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
     'corsheaders.middleware.CorsMiddleware',
-)
+]
 
 CORS_ORIGIN_WHITELIST = (
     'pre.skyfolk.net',

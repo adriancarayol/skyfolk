@@ -13,7 +13,7 @@ from django.db import IntegrityError, transaction
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.encoding import force_text
@@ -189,7 +189,7 @@ class PhotoGroup(ImageModel):
 
     tags = TaggableManager(blank=True)
 
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos')
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos', on_delete=models.CASCADE)
 
     url_image = models.URLField(max_length=255, default='', blank=True)
 
@@ -197,7 +197,7 @@ class PhotoGroup(ImageModel):
                                   upload_to=get_storage_path,
                                   null=True, blank=True)
 
-    group = models.ForeignKey(UserGroups, related_name="group_photos")
+    group = models.ForeignKey(UserGroups, related_name="group_photos", on_delete=models.CASCADE)
 
     objects = PhotoQuerySet.as_manager()
 
@@ -338,14 +338,14 @@ class VideoGroup(models.Model):
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
     tags = TaggableManager(blank=True)
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_videos')
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_videos', on_delete=models.CASCADE)
 
     video = models.FileField(_('video'), upload_to=upload_video,
                              max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
 
     thumbnail = models.ImageField(_('thumbnail'), upload_to=upload_thumbnail_video, blank=True)
 
-    group = models.ForeignKey(UserGroups, related_name="group_videos")
+    group = models.ForeignKey(UserGroups, related_name="group_videos", on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-date_added']

@@ -36,7 +36,7 @@ from .settings import DEBUG, RESTRICT_PLUGIN_ACCESS
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse, NoReverseMatch
 else:
-    from django.core.urlresolvers import reverse, NoReverseMatch
+    from django.urls import reverse, NoReverseMatch
 
 __title__ = 'dash.utils'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

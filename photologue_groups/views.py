@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Q, Case, When, Value, IntegerField
 from django.http import Http404, HttpResponseForbidden
 from django.http import JsonResponse

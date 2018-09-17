@@ -10,7 +10,7 @@ try:
     from django.contrib.sites.shortcuts import get_current_site  # Django 1.7
 except ImportError:
     from django.contrib.sites.models import get_current_site
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect

@@ -28,20 +28,10 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'skyfolk/media')
 
-DEVELOP_APPS = (
-    'django_extensions',
-    'debug_toolbar',
-)
-
-INSTALLED_APPS = INSTALLED_APPS + DEVELOP_APPS
-
-MIDDLEWARE_CLASSES_DEVELOP = (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + MIDDLEWARE_CLASSES_DEVELOP
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ALLOWED_HOSTS = ['*']
+
+MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # ELASTICSEARCH CONFIGURATION
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')

@@ -15,7 +15,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
@@ -198,7 +198,7 @@ class ImageModel(models.Model):
                                null=True,
                                blank=True,
                                related_name="%(class)s_related",
-                               verbose_name=_('effect'))
+                               verbose_name=_('effect'), on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -464,7 +464,7 @@ class Photo(ImageModel):
 
     tags = TaggableManager(blank=True)
 
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_photos')
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_photos', on_delete=models.CASCADE)
 
     sites = models.ManyToManyField(Site, verbose_name=_(u'sites'),
                                    blank=True)
@@ -654,7 +654,7 @@ class Video(models.Model):
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
     tags = TaggableManager(blank=True)
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos')
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos', on_delete=models.CASCADE)
 
     video = models.FileField(_('video'), upload_to=upload_video,
                              max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
@@ -983,12 +983,12 @@ class PhotoSize(models.Model):
                                null=True,
                                blank=True,
                                related_name='photo_sizes',
-                               verbose_name=_('photo effect'))
+                               verbose_name=_('photo effect'), on_delete=models.CASCADE)
     watermark = models.ForeignKey('photologue.Watermark',
                                   null=True,
                                   blank=True,
                                   related_name='photo_sizes',
-                                  verbose_name=_('watermark image'))
+                                  verbose_name=_('watermark image'), on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['width', 'height']

@@ -20,7 +20,7 @@ from dash.utils import get_user_plugins, get_workspaces, get_public_dashboard_ur
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.db import transaction, IntegrityError
 from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count

@@ -43,7 +43,7 @@ class UserGroups(models.Model):
     """
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name="user_groups")
-    owner = models.ForeignKey(User, related_name='owner_group')
+    owner = models.ForeignKey(User, related_name='owner_group', on_delete=models.CASCADE)
     slug = models.SlugField(max_length=256, unique=True)
     description = models.CharField(max_length=500)
     is_public = models.BooleanField(default=True)
@@ -78,9 +78,9 @@ class UserGroups(models.Model):
 
 
 class GroupTheme(models.Model):
-    board_group = models.ForeignKey(UserGroups)
+    board_group = models.ForeignKey(UserGroups, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=2048)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to=group_themes_images, blank=True, null=True)
@@ -107,8 +107,8 @@ class GroupTheme(models.Model):
 
 
 class LikeGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme, related_name='like_theme')
-    by_user = models.ForeignKey(User)
+    theme = models.ForeignKey(GroupTheme, related_name='like_theme', on_delete=models.CASCADE)
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
@@ -116,8 +116,8 @@ class LikeGroupTheme(models.Model):
 
 
 class HateGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme, related_name='hate_theme')
-    by_user = models.ForeignKey(User)
+    theme = models.ForeignKey(GroupTheme, related_name='hate_theme', on_delete=models.CASCADE)
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('theme', 'by_user')
@@ -155,8 +155,8 @@ class LikeGroup(models.Model):
         get_latest_by = 'created'
         unique_together = ('from_like', 'to_like')
 
-    from_like = models.ForeignKey(User, related_name='from_likegroup')
-    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup')
+    from_like = models.ForeignKey(User, related_name='from_likegroup', on_delete=models.CASCADE)
+    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     objects = LikeGroupManager()
@@ -211,8 +211,8 @@ class RequestGroup(models.Model):
             <<created>>: Fecha en la que se creó la petición
             <<notification>>: Notificación asociada a la petición
     """
-    emitter = models.ForeignKey(User, related_name='from_group_request')
-    receiver = models.ForeignKey(UserGroups, related_name='to_group_request')
+    emitter = models.ForeignKey(User, related_name='from_group_request', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(UserGroups, related_name='to_group_request', on_delete=models.CASCADE)
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
     objects = RequestGroupManager()

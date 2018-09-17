@@ -25,6 +25,8 @@ from .views import (
 
 from .contrib.plugins.poll.views import submit_poll_response
 
+app_name = 'dash'
+
 urlpatterns = [
     # Paste dashboard entry
     url(_(r'^entry/paste/(?P<placeholder_uid>[\w_]+)/'
