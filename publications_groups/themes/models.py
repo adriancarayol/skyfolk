@@ -3,7 +3,7 @@ import os
 import re
 import uuid
 
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
@@ -13,6 +13,8 @@ from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
 from user_groups.models import GroupTheme, UserGroups
+
+channel_layer = get_channel_layer()
 
 
 def upload_image_theme_publication(instance, filename):

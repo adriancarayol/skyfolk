@@ -1,7 +1,7 @@
 import json
 import logging
 
-from channels import Group as GroupChannel
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,6 +18,8 @@ from .models import UserGroups, RequestGroup, LikeGroup, GroupTheme
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+channel_layer = get_channel_layer()
 
 
 @receiver(post_save, sender=UserGroups)
@@ -109,7 +111,6 @@ def handle_delete_like(sender, instance, *args, **kwargs):
         g.likes.disconnect(n)
     except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
         pass
-
 
 
 @receiver(post_save, sender=GroupTheme)

@@ -4,7 +4,7 @@ import uuid
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
@@ -20,6 +20,8 @@ from user_profile.utils import notification_channel
 from .models import PublicationThemeVideo, PublicationTheme
 
 logger = get_task_logger(__name__)
+
+channel_layer = get_channel_layer()
 
 
 def generate_path_video(username, ext='mp4'):

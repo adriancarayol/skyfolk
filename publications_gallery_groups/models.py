@@ -3,13 +3,12 @@ import os
 import uuid
 
 import bleach
-from channels import Group as channel_group
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
 from embed_video.fields import EmbedVideoField
-
+from channels.layers import get_channel_layer
 from notifications.signals import notify
 from photologue_groups.models import PhotoGroup, VideoGroup
 from publications.models import Publication
@@ -21,6 +20,8 @@ ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 class ExtraContentPubPhoto(models.Model):
@@ -254,7 +255,8 @@ class PublicationGroupMediaVideo(PublicationBase):
             "text": json.dumps(data)
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_video_group_publication_detail.html',
+        data['content'] = render_to_string(request=request,
+                                           template_name='channels/new_video_group_publication_detail.html',
                                            context={'node': self, 'object': self.board_video})
 
         if is_edited:

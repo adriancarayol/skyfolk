@@ -18,4 +18,3 @@ done
 
 ls -lra /root/.imageio
 
-python manage.py runworker -v2

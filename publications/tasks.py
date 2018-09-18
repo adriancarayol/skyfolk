@@ -4,7 +4,7 @@ import uuid
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.template.loader import render_to_string
@@ -19,6 +19,8 @@ from notifications.models import Notification
 from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
+
+channel_layer = get_channel_layer()
 
 
 @app.task(name='tasks.clean_deleted_publications')
@@ -118,7 +120,7 @@ def process_video_publication(file, publication_id, filename, user_id=None,
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/' + str(publication_id)))
+                                                               '/publication/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
@@ -186,7 +188,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/' + str(publication_id)))
+                                                               '/publication/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error

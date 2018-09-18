@@ -3,7 +3,7 @@ import os
 import uuid
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
@@ -21,7 +21,7 @@ logger = get_task_logger(__name__)
 
 get_channel_video_name = lambda id: "video-pub-{}".format(id)
 
-
+channel_layer = get_channel_layer()
 @app.task(ignore_result=True, name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
     assert user_id is not None

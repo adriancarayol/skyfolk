@@ -1,9 +1,9 @@
 import json
 
 from django.contrib.auth.models import User
-
+from channels.layers import get_channel_layer
 from publications.models import Publication
-from channels import Group
+from channels.layers import get_channel_layer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.loader import render_to_string
 from user_profile.models import Profile, RelationShipProfile
@@ -11,6 +11,8 @@ from celery.utils.log import get_task_logger
 from skyfolk.celery import app
 
 logger = get_task_logger(__name__)
+
+channel_layer = get_channel_layer()
 
 
 @app.task(ignore_result=True)

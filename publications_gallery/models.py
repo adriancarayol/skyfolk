@@ -4,7 +4,7 @@ import re
 import uuid
 
 import bleach
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -23,6 +23,8 @@ ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 class ExtraContentPubPhoto(models.Model):

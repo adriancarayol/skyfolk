@@ -3,7 +3,7 @@ import os
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
@@ -17,6 +17,7 @@ from user_profile.utils import notification_channel
 from .models import PublicationGroupVideo, PublicationGroup
 
 logger = get_task_logger(__name__)
+channel_layer = get_channel_layer()
 
 
 @app.task(name='tasks.process_group_pub_video')
@@ -47,7 +48,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/group/detail/' + str(publication_id)))
+                                                               '/publication/group/detail/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
@@ -109,7 +110,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/group/detail/' + str(publication_id)))
+                                                               '/publication/group/detail/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error

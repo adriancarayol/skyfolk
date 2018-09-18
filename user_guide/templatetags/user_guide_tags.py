@@ -49,7 +49,7 @@ def user_guide(context, *args, **kwargs):
     """
     user = context['request'].user if 'request' in context and hasattr(context['request'], 'user') else None
 
-    if user and user.is_authenticated():  # No one is logged in
+    if user and user.is_authenticated:  # No one is logged in
         limit = kwargs.get('limit', USER_GUIDE_SHOW_MAX)
         filters = {
             'user': user,

@@ -5,7 +5,7 @@ import uuid
 
 import bleach
 from bleach.linkifier import Linker
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
@@ -27,6 +27,8 @@ ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 def upload_image_publication(instance, filename):
@@ -153,7 +155,8 @@ class Publication(PublicationBase):
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
     shared_publication = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
-    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True, on_delete=models.CASCADE)
+    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True,
+                                                 on_delete=models.CASCADE)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True, on_delete=models.CASCADE)
     objects = PublicationManager()

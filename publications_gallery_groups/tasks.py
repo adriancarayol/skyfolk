@@ -2,7 +2,7 @@ import json
 import os
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
@@ -17,6 +17,8 @@ from .models import PublicationPhotoVideo, PublicationGroupMediaPhoto, Publicati
 from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
+channel_layer = get_channel_layer()
+
 
 get_channel_video_name = lambda id: "group-video-pub-{}".format(id)
 

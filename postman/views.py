@@ -234,7 +234,7 @@ class WriteView(ComposeMixin, FormView):
         return super(WriteView, self).dispatch(*args, **kwargs)
 
     def get_form_class(self):
-        return self.form_classes[0] if self.request.user.is_authenticated() else self.form_classes[1]
+        return self.form_classes[0] if self.request.user.is_authenticated else self.form_classes[1]
 
     def get_initial(self):
         initial = super(WriteView, self).get_initial()

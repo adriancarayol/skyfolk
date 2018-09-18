@@ -1,7 +1,7 @@
 import json
 import urllib.parse
 from distutils.version import StrictVersion
-from channels import Group as group_channel
+from channels.layers import get_channel_layer
 from django import get_version
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -30,6 +30,8 @@ from model_utils import Choices
 from jsonfield.fields import JSONField
 from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import Group
+
+channel_layer = get_channel_layer()
 
 
 # SOFT_DELETE = getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
@@ -181,7 +183,8 @@ class Notification(models.Model):
     LEVELS = Choices('success', 'info', 'warning', 'error')
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=255)
 
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications',
+                                  on_delete=models.CASCADE)
     unread = models.BooleanField(default=True, blank=False)
 
     actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor', on_delete=models.CASCADE)
@@ -191,7 +194,8 @@ class Notification(models.Model):
     verb = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
-    target_content_type = models.ForeignKey(ContentType, related_name='notify_target', blank=True, null=True, on_delete=models.CASCADE)
+    target_content_type = models.ForeignKey(ContentType, related_name='notify_target', blank=True, null=True,
+                                            on_delete=models.CASCADE)
     target_object_id = models.CharField(max_length=255, blank=True, null=True)
     target = GenericForeignKey('target_content_type', 'target_object_id')
 
@@ -344,7 +348,7 @@ def notify_handler(verb, **kwargs):
         if a_description is not None:
             url = reverse('notifications:mark_as_read', kwargs={'slug': id2slug(newnotify.id)})
             a_description['href'] = urllib.parse.urljoin('http://' + current_site,
-                url + '?next=' + a_description['href'])
+                                                         url + '?next=' + a_description['href'])
 
         newnotify.description = str(soup)
         print(newnotify.description)
@@ -370,11 +374,15 @@ def notify_handler(verb, **kwargs):
         # Enviamos notificacion al canal del receptor
 
         if send_channel:
-            group_channel(notification_channel(recipient.id)).send({
-                "text": json.dumps(data)
-            }, immediately=immediately)
+            send_to_notification_channel(notification_channel(recipient.id), {"text": json.dumps(data)})
 
         return newnotify
+
+
+async def send_to_notification_channel(channel_name, text):
+    return await  channel_layer.group_send(
+        channel_name, text
+    )
 
 
 # connect the signal
