@@ -199,8 +199,11 @@ class Publication(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(group_name(self.board_owner_id)).send({
-            "text": json.dumps(data)
+        from asgiref.sync import async_to_sync
+
+        async_to_sync(channel_layer.group_send)(group_name(self.board_owner_id), {
+            'type': 'new_publication',
+            "message": data
         })
 
         # TODO: Mezclar templates para ahorrar el render

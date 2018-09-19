@@ -1,34 +1,21 @@
-from channels.generic.websockets import WebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from user_profile.models import Profile
 
 
-class MyFeedConsumer(WebsocketConsumer):
+class MyFeedConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def connection_groups(self, **kwargs):
-        id = self.message.user.id
+    async def connect(self):
+        self.user = self.scope["user"]
+        print('CONECTADO...: {}'.format(self.user))
+        await self.accept()
 
-        if not id:
-            return
+    async def receive_json(self, content):
+        await self.send_json({"error": e.code})
 
-        try:
-            profile = Profile.objects.get(user_id=id)
-        except Profile.DoesNotExist:
-            return
-
-        return [profile.news_channel]
-
-    def connect(self, message, **kwargs):
-        self.message.reply_channel.send({'accept': True})
-
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
+    async def disconnect(self, code):
         pass

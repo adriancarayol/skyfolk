@@ -8,7 +8,7 @@
     {% block top-nav-menu-wrapper %}
         {% if current_workspace.is_clonable %}
             <div class="row center">
-                <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}"
+                <a href="{% url 'dash:dash.clone_dashboard_workspace' current_workspace.pk %}"
                    class="btn blue white-text" title="{% trans 'Clone this workspace' %}">
                     {% trans 'Clone this workspace' %}
                 </a>
@@ -29,7 +29,7 @@
                                     {% for ws in workspaces %}
                                         <div class="col s3">
                                             <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
-                                                <a href="{% url 'dash.public_dashboard' user.username ws.slug %}"
+                                                <a href="{% url 'dash:dash.public_dashboard' user.username ws.slug %}"
                                                    title="Workspace {{ ws.name }}">
                                                     <p class="flow-text">
                                                         <span class="material-icons">dashboard</span>

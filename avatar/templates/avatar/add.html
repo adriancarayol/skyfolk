@@ -19,20 +19,20 @@
     <div id="change-avatar" class="col l12 m12 s12 current-avatar">
         <p>{% trans "Your current avatar: " %}</p>
         {% if avatars %}
-            <a href="{% url 'avatar_change' %}">
+            <a href="{% url 'avatar:avatar_change' %}">
                 {% avatar user %}
             </a>
         {% else %}
             {% avatar user %}
         {% endif %}
-        <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+        <a title="Eliminar imágenes de perfil" href="{% url 'avatar:avatar_delete' %}" class="delete-profile-image"><i
                 class="fa fa-trash"></i></a>
     </div>
     <div id="option-avatar" class="col l12 m12 s12 options-avatar">
         {% if not avatars %}
             <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
         {% endif %}
-        <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+        <form enctype="multipart/form-data" method="POST" action="{% url 'avatar:avatar_add' %}">
             <div class="row">
                 <div class="file-field input-field">
                     {{ upload_avatar_form.avatar.errors }}

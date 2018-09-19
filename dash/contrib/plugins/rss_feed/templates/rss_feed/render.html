@@ -2,7 +2,7 @@
         $(document).ready(function() {
             RRF_getFeed(
                 "{{ plugin.html_id }}",
-                "{% url 'dash.contrib.plugins.rss_feed.get_feed' plugin.layout_uid plugin.placeholder_uid plugin.uid %}",
+                "{% url 'dash:dash.contrib.plugins.rss_feed.get_feed' plugin.layout_uid plugin.placeholder_uid plugin.uid %}",
                 "{{ csrfmiddlewaretoken }}",
                 "{{ plugin.data.feed_url }}",
                 "{{ plugin.data.custom_feed_title }}",

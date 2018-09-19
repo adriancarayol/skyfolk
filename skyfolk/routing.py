@@ -1,14 +1,18 @@
-# from latest_news.consumers import MyFeedConsumer
+from latest_news.consumers import MyFeedConsumer
 # from photologue.consumers import PhotoConsumer, VideoConsumer
 # from publications.consumers import PublicationConsumer
 # from publications_gallery.consumers import PublicationPhotoConsumer, PublicationVideoConsumer
-# from user_profile.consumers import BlogConsumer, NotificationConsumer
+from user_profile.consumers import BlogConsumer, NotificationConsumer
 # from user_groups.consumers import GroupConsumer, ThemeConsumer
 # from publications_groups.consumers import GroupPublicationConsumer
 # from photologue_groups.consumers import PhotoMediaGroupConsumer, VideoMediaGroupConsumer
 # from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, \
 #     PublicationGroupGalleryVideoConsumer
-from channels.routing import ProtocolTypeRouter
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from django.urls import path, re_path
+
+
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all
 # types have a 'path' attribute, so we're using that to route the socket.
@@ -16,7 +20,13 @@ from channels.routing import ProtocolTypeRouter
 # same URL if we wanted; Daphne separates by protocol as it negotiates with a browser.
 
 application = ProtocolTypeRouter({
-    # Empty for now (http->django views is added by default)
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            path("profile/<username>/stream/", BlogConsumer),
+            path("inicio/news/", MyFeedConsumer),
+            re_path(r'^.*/notification/$', NotificationConsumer),
+        ])
+    ),
 })
 
 # channel_routing = [

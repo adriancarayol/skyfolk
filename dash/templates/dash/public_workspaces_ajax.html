@@ -6,7 +6,7 @@
     <ul class="collection">
         {% for workspace in workspaces %}
         <li class="collection-item avatar">
-            <span class="title"><a href="{% url 'dash.public_dashboard' username=username workspace=workspace.slug %}">{{ workspace.name }}</a></span>
+            <span class="title"><a href="{% url 'dash:dash.public_dashboard' username=username workspace=workspace.slug %}">{{ workspace.name }}</a></span>
             <p>Disposición: {{ workspace.layout_uid }}</p>
             <p>{% if workspace.is_clonable %}Se puede copiar{% endif %}</p>
         </li>
@@ -15,13 +15,13 @@
 </div>
 <ul class="pagination center">
     {% if workspaces.has_previous %}
-    <li><a href="{% url 'dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.previous_page_number }}"><i
+    <li><a href="{% url 'dash:dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.previous_page_number }}"><i
         class="material-icons">chevron_left</i></a>
     </li>
     {% endif %}
     <li class="active blue darken-1 white-text">{{ workspaces.number }}</li>
     {% if workspaces.has_next %}
-    <li><a href="{% url 'dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.next_page_number }}">
+    <li><a href="{% url 'dash:dash.public_dashboard_workspaces' user_id=user_id %}?page={{ workspaces.next_page_number }}">
         <i class="material-icons">chevron_right</i>
     </a></li>
     {% endif %}

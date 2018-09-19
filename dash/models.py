@@ -145,7 +145,7 @@ class DashboardWorkspace(models.Model):
 
         :return string:
         """
-        return reverse('dash.dashboard', kwargs={'workspace': self.slug})
+        return reverse('dash:dash.dashboard', kwargs={'workspace': self.slug})
 
 
 class DashboardEntryManager(models.Manager):
