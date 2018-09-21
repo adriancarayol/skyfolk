@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from user_profile.models import Profile, RelationShipProfile
 from celery.utils.log import get_task_logger
 from skyfolk.celery import app
+from asgiref.sync import async_to_sync
+
 
 logger = get_task_logger(__name__)
 
@@ -45,6 +47,7 @@ def send_to_stream(author_id, pub_id):
     }
 
     for follower_channel in RelationShipProfile.objects.filter(to_profile=profile):
-        Group(follower_channel.from_profile.news_channel).send({
-            "text": json.dumps(data, cls=DjangoJSONEncoder)
+        async_to_sync(channel_layer.group_send)(follower_channel.from_profile.news_channel, {
+            'type': 'new_publication',
+            "message": data
         })

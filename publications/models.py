@@ -21,6 +21,7 @@ from publications.utils import validate_video, set_link_class
 from user_profile.utils import group_name
 from .utils import get_channel_name
 from .managers import PublicationManager
+from asgiref.sync import async_to_sync
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -199,7 +200,6 @@ class Publication(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        from asgiref.sync import async_to_sync
 
         async_to_sync(channel_layer.group_send)(group_name(self.board_owner_id), {
             'type': 'new_publication',
@@ -212,14 +212,17 @@ class Publication(PublicationBase):
 
         # Enviamos por el socket de la publicacion
         if is_edited:
-            channel_group(get_channel_name(self.id)).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(get_channel_name(self.id), {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(get_channel_name(x)).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().values_list('id', flat=True)]
+        for id in self.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)(get_channel_name(id), {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:

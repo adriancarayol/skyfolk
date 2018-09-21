@@ -30,6 +30,7 @@ from model_utils import Choices
 from jsonfield.fields import JSONField
 from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import Group
+from asgiref.sync import async_to_sync
 
 channel_layer = get_channel_layer()
 
@@ -374,15 +375,12 @@ def notify_handler(verb, **kwargs):
         # Enviamos notificacion al canal del receptor
 
         if send_channel:
-            send_to_notification_channel(notification_channel(recipient.id), {"text": json.dumps(data)})
+            async_to_sync(channel_layer.group_send)(notification_channel(recipient.id), {
+                'type': 'new_notification',
+                "message": data
+            })
 
         return newnotify
-
-
-async def send_to_notification_channel(channel_name, text):
-    return await  channel_layer.group_send(
-        channel_name, text
-    )
 
 
 # connect the signal

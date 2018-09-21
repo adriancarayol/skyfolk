@@ -31,9 +31,11 @@ class BlogConsumer(AsyncJsonWebsocketConsumer):
                     await self.close()
                     return
 
+                self.profile_blog = profile_blog.group_name
+
                 await self.accept()
                 await self.channel_layer.group_add(
-                    profile_blog.group_name,
+                    self.profile_blog,
                     self.channel_name,
                 )
             except Profile.DoesNotExist:
@@ -45,7 +47,7 @@ class BlogConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json(message)
 
     async def disconnect(self, code):
-        await self.channel_layer.group_discard("users-1", self.channel_name)
+        await self.channel_layer.group_discard(self.profile_blog, self.channel_name)
 
 
 class NotificationConsumer(AsyncJsonWebsocketConsumer):
@@ -56,10 +58,24 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.user = self.scope["user"]
-        await self.accept()
+        if self.user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                profile = Profile.objects.get(user__username=self.user.username)
+                self.notification_channel = profile.notification_channel
+                await self.channel_layer.group_add(
+                    self.notification_channel,
+                    self.channel_name,
+                )
+                await self.accept()
+            except Profile.DoesNotExist:
+                await self.close()
 
-    async def receive_json(self, content):
-        await self.send_json({"error": e.code})
+    async def new_notification(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
     async def disconnect(self, code):
-        pass
+        await self.channel_layer.group_discard(self.notification_channel, self.channel_name)
