@@ -234,7 +234,7 @@ class ProfileForm(forms.Form):
         back_image = self.request.FILES.get('image', None)
         if not back_image:
             return None
-        if back_image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+        if back_image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise forms.ValidationError("La imágen no puede ser mayor a 5MB.")
         if back_image:
             validate_file_extension(back_image)

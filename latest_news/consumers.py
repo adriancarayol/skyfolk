@@ -27,8 +27,10 @@ class MyFeedConsumer(AsyncJsonWebsocketConsumer):
             except Profile.DoesNotExist:
                 await self.close()
 
-    async def receive_json(self, content):
-        await self.send_json({"error": e.code})
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.news_channels, self.channel_name)

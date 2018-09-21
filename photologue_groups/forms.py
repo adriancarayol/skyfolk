@@ -242,7 +242,7 @@ class UploadFormVideo(forms.ModelForm):
         if not video:
             raise forms.ValidationError('Debes seleccionar un vídeo.')
 
-        if video._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+        if video.size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise forms.ValidationError('El video seleccionado ocupa más de 5MB.')
 
         type = magic.from_buffer(video.read(1024), mime=True)

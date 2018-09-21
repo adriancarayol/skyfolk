@@ -1,6 +1,6 @@
 from latest_news.consumers import MyFeedConsumer
 # from photologue.consumers import PhotoConsumer, VideoConsumer
-# from publications.consumers import PublicationConsumer
+from publications.consumers import PublicationConsumer
 # from publications_gallery.consumers import PublicationPhotoConsumer, PublicationVideoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
 # from user_groups.consumers import GroupConsumer, ThemeConsumer
@@ -22,9 +22,10 @@ from django.urls import path, re_path
 application = ProtocolTypeRouter({
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            path("profile/<username>/stream/", BlogConsumer),
-            path("inicio/news/", MyFeedConsumer),
+            path('profile/<username>/stream/', BlogConsumer),
+            path('inicio/news/', MyFeedConsumer),
             re_path(r'^.*/notification/$', NotificationConsumer),
+            re_path(r'^publication/(?P<pubid>\d+)/stream/$', PublicationConsumer),
         ])
     ),
 })

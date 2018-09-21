@@ -131,26 +131,6 @@ services:
     networks:
       - skyfolknetwork
 
-  # daphne worker
-  webworker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: skyfolk/webworker
-    volumes:
-      - .:/code
-      - /tmp:/tmp
-    command: ./run_worker.sh
-    env_file:
-      - web-variables.env
-    networks:
-      - skyfolknetwork
-    depends_on:
-      - rabbit
-      - web
-      - neo4j
-    restart: always
-
   # django app
   web:
     env_file:
