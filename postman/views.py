@@ -257,7 +257,7 @@ class WriteView(ComposeMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super(WriteView, self).get_form_kwargs()
         if isinstance(self.autocomplete_channels, tuple) and len(self.autocomplete_channels) == 2:
-            channel = self.autocomplete_channels[self.request.user.is_anonymous()]
+            channel = self.autocomplete_channels[self.request.user.is_anonymous]
         else:
             channel = self.autocomplete_channels
         kwargs['channel'] = channel
