@@ -13,6 +13,7 @@ from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
 from user_groups.models import GroupTheme, UserGroups
+from asgiref.sync import async_to_sync
 
 channel_layer = get_channel_layer()
 
@@ -110,9 +111,9 @@ class PublicationTheme(PublicationBase):
                                                  'group_owner_id': group_owner_id})
         }
 
-        # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_theme.theme_channel).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_theme.theme_channel, {
+            'type': 'new_publication',
+            "message": data
         })
 
         # Notificamos al board_owner de la publicacion

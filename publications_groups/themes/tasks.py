@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.conf import settings
 from notifications.models import Notification
-
+from asgiref.sync import async_to_sync
 from publications.utils import convert_video_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
@@ -80,13 +80,17 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(notification_channel(user.id), {
+            'type': 'new_publication',
+            "message": {
+                'content': content
+            }
+        })
 
-        Channel_group(theme.theme_channel).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(theme.theme_channel, {
+            'type': 'new_publication',
+            "message": data
+        })
     except Exception as e:
         pub.delete()
         logger.info('ERROR: {}'.format(e))
@@ -140,13 +144,17 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(notification_channel(user.id), {
+            'type': 'new_publication',
+            "message": {
+                'content': content
+            }
+        })
 
-        Channel_group(theme.theme_channel).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(notification_channel(user.id), {
+            'type': 'new_publication',
+            "message": data
+        })
     except Exception as e:
         pass
     finally:

@@ -12,6 +12,7 @@ from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
 from user_groups.models import UserGroups, GroupTheme
+from asgiref.sync import async_to_sync
 
 channel_layer = get_channel_layer()
 
@@ -104,8 +105,9 @@ class PublicationGroup(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_group.group_channel).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_group.group_channel, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_group_publication_detail.html',
@@ -113,14 +115,18 @@ class PublicationGroup(PublicationBase):
 
         # Enviamos por el socket de la publicacion
         if is_edited:
-            channel_group(self.blog_channel).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.blog_channel, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group("group-publication-%d" % x).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().values_list('id', flat=True)]
+        for id in self.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)('group-publication-{}'.format(id), {
+                'type': 'new_publication',
+                "message": data
+            })
+
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_group.owner_id:

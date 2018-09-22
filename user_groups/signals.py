@@ -15,6 +15,7 @@ from notifications.models import Notification
 from user_groups.node_models import NodeGroup
 from user_profile.node_models import NodeProfile, TagProfile
 from .models import UserGroups, RequestGroup, LikeGroup, GroupTheme
+from asgiref.sync import async_to_sync
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -123,6 +124,8 @@ def handle_new_theme(sender, instance, created, *args, **kwargs):
             'type': 'theme',
             'id': instance.id
         }
-        GroupChannel(group.group_channel).send({
-            "text": json.dumps(data)
+
+        async_to_sync(channel_layer.group_send)(group.group_channel, {
+            'type': 'new_publication',
+            "message": data
         })

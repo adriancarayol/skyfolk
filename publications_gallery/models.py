@@ -17,6 +17,7 @@ from photologue.models import Photo, Video
 from publications.models import Publication
 from publications.models import PublicationBase
 from publications.utils import validate_video
+from asgiref.sync import async_to_sync
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -125,22 +126,26 @@ class PublicationPhoto(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_photo.group_name).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_photo.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
                                            context={'node': self, 'photo': self.board_photo})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().only('id')]
+        for publication in self.get_ancestors().only('id'):
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_photo.owner_id:
@@ -251,23 +256,27 @@ class PublicationVideo(PublicationBase):
                                         context={'node': self, 'object': self.board_video})
         }
 
-        # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_video.group_name).send({
-            "text": json.dumps(data)
+        # Enviamos a todos los usuarios que visitan el video
+        async_to_sync(channel_layer.group_send)(self.board_video.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_video_publication_detail.html',
                                            context={'node': self, 'object': self.board_video})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().defer()]
+        for publication in self.get_ancestors().only('id'):
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_video.owner_id:
