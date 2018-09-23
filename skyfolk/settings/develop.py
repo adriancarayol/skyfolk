@@ -31,7 +31,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'skyfolk/media')
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ALLOWED_HOSTS = ['*']
 
-MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # ELASTICSEARCH CONFIGURATION
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')

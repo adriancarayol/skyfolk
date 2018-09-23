@@ -276,6 +276,7 @@ BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 30
 VIDEO_EXTENTIONS = ["avi", "mp4"]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
