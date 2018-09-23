@@ -5,9 +5,9 @@ from publications_gallery.consumers import PublicationPhotoConsumer, Publication
 from user_profile.consumers import BlogConsumer, NotificationConsumer
 from user_groups.consumers import GroupConsumer, ThemeConsumer
 from publications_groups.consumers import GroupPublicationConsumer
-# from photologue_groups.consumers import PhotoMediaGroupConsumer, VideoMediaGroupConsumer
-# from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, \
-#     PublicationGroupGalleryVideoConsumer
+from photologue_groups.consumers import PhotoMediaGroupConsumer, VideoMediaGroupConsumer
+from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, \
+    PublicationGroupGalleryVideoConsumer
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path, re_path
@@ -33,6 +33,10 @@ application = ProtocolTypeRouter({
             re_path(r'^multimedia/(?P<username>[\w-]+)/video/(?P<slug>[\-\d\w]+)/stream/$', VideoConsumer),
             re_path(r'^photo/publication/(?P<pubid>\d+)/stream/$', PublicationPhotoConsumer),
             re_path(r'^video/publication/(?P<pubid>\d+)/stream/$', PublicationVideoConsumer),
+            re_path(r'^group/photo/(?P<slug>[\w-]+)/stream/$', PhotoMediaGroupConsumer),
+            re_path(r'^group/video/(?P<slug>[\w-]+)/stream/$', VideoMediaGroupConsumer),
+            re_path(r'^group/multimedia/publication/detail/(?P<id>\d+)/stream/$', PublicationGroupGalleryPhotoConsumer),
+            re_path(r'^group/multimedia/video/publication/detail/(?P<id>\d+)/stream/$', PublicationGroupGalleryVideoConsumer),
         ])
     ),
 })
