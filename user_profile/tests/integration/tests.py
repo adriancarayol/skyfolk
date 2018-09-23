@@ -3,7 +3,7 @@ from django.db import transaction
 from django.test import TestCase
 from neomodel import db, clear_neo4j_database
 from django.db import IntegrityError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from user_profile.node_models import NodeProfile
 from user_profile.models import RelationShipProfile, FOLLOWING, BLOCK, \
     LikeProfile, Profile

@@ -6,7 +6,7 @@
     </div>
 
     <div class="row content-body">
-        <form method="post" action="{% url 'dash.edit_dashboard_workspace' workspace_id %}" enctype="multipart/form-data" class="form-horizontal">
+        <form method="post" action="{% url 'dash:dash.edit_dashboard_workspace' workspace_id %}" enctype="multipart/form-data" class="form-horizontal">
             {% csrf_token %}
             <ul class="content-listing generic-form">
                 {% comment %}

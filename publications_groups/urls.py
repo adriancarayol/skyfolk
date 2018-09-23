@@ -3,6 +3,8 @@ from django.conf.urls import url
 import publications_groups.themes.views
 from . import views
 
+app_name = 'publications_groups'
+
 urlpatterns = [
     # Publication for photo
     url(r'^new/publication/$', views.publication_group_view,

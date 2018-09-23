@@ -18,7 +18,7 @@ from .settings import API_KEY, API_ENDPOINT_URL
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse
 else:
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
 __title__ = 'dash.contrib.plugins.weather.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

@@ -2,7 +2,7 @@ import json
 import os
 import uuid
 
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
@@ -12,6 +12,9 @@ from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
 from user_groups.models import UserGroups, GroupTheme
+from asgiref.sync import async_to_sync
+
+channel_layer = get_channel_layer()
 
 
 def upload_image_group_publication(instance, filename):
@@ -62,10 +65,10 @@ class ExtraGroupContent(models.Model):
 
 
 class PublicationGroup(PublicationBase):
-    author = models.ForeignKey(User)
-    board_group = models.ForeignKey(UserGroups, db_index=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    board_group = models.ForeignKey(UserGroups, db_index=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_group')
+                               related_name='reply_group', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_group_publication')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
@@ -102,8 +105,9 @@ class PublicationGroup(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_group.group_channel).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_group.group_channel, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_group_publication_detail.html',
@@ -111,14 +115,18 @@ class PublicationGroup(PublicationBase):
 
         # Enviamos por el socket de la publicacion
         if is_edited:
-            channel_group(self.blog_channel).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.blog_channel, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group("group-publication-%d" % x).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().values_list('id', flat=True)]
+        for id in self.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)('group-publication-{}'.format(id), {
+                'type': 'new_publication',
+                "message": data
+            })
+
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_group.owner_id:

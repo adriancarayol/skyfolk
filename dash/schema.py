@@ -69,7 +69,7 @@ class ModifyDashboardEntry(relay.ClientIDMutation):
     def swap_widgets(cls, info, source_position, target_position, workspace):
         user = info.context.user
 
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return None, None
 
         if target_position == source_position:

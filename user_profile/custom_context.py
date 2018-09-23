@@ -6,7 +6,7 @@ def user_processor(request):
     user = request.user
     if not user:
         return {}
-    if user and not user.is_authenticated():
+    if user and not user.is_authenticated:
         return {}
 
     total_notifications = user.notifications.unread().count()

@@ -15,4 +15,4 @@ def upload_dash_image(instance, filename):
 
 class DashImageModel(models.Model):
 	image = models.ImageField(upload_to=upload_dash_image)
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)

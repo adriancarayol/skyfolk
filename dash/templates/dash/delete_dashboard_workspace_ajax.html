@@ -8,7 +8,7 @@
     <div class="content-body center">
         <p>{% blocktrans with workspace.name as workspace_name %}Are you sure you want to delete the dashboard workspace
             {{ workspace_name }}?{% endblocktrans %}</p>
-        <form method="post" action="{% url 'dash.delete_dashboard_workspace' workspace.pk %}"
+        <form method="post" action="{% url 'dash:dash.delete_dashboard_workspace' workspace.pk %}"
               enctype="multipart/form-data" class="form-horizontal">
             {% csrf_token %}
             <ul class="row content-listing generic-form center">
@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col s12">
                             <button type="submit" name="delete" class="btn white red-text">{% trans "Delete" %}</button>
-                            <input type="hidden" name="next" value="{% url 'dash.edit_dashboard' workspace.slug %}"/>
+                            <input type="hidden" name="next" value="{% url 'dash:dash.edit_dashboard' workspace.slug %}"/>
                             <button type="submit" class="btn blue">{% trans "Cancel" %}</button>
                         </div>
                     </div>

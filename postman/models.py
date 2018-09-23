@@ -9,7 +9,7 @@ except ImportError:
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import six
@@ -17,10 +17,12 @@ from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.text import Truncator
 from django.utils.timezone import now
 from django.utils.translation import ugettext, ugettext_lazy as _
+
 if getattr(settings, 'POSTMAN_I18N_URLS', False):
     from django.utils.translation import pgettext_lazy
 else:
-    def pgettext_lazy(c, m): return m
+    def pgettext_lazy(c, m):
+        return m
 
 from .query import PostmanQuery
 from .utils import email_visitor, notify_user
@@ -54,7 +56,7 @@ def setup():
     from django.contrib.auth import get_user_model
     name_user_as = getattr(settings, 'POSTMAN_NAME_USER_AS', get_user_model().USERNAME_FIELD)
     ORDER_BY_FIELDS.update({
-        'f': 'sender__' + name_user_as,     # as 'from'
+        'f': 'sender__' + name_user_as,  # as 'from'
         't': 'recipient__' + name_user_as,  # as 'to'
         's': 'subject',  # as 'subject'
         'd': 'sent_at',  # as 'date'
@@ -142,10 +144,11 @@ class MessageManager(models.Manager):
             qs.query.pm_set_extra(table=(
                 # extra columns are always first in the SELECT query
                 # for tests with the version 2.4.1 of sqlite3 in py26, add to the select: , 'id': 'postman_message.id'
-                self.filter(lookups, thread_id__isnull=True).extra(select={'count': 0})\
+                self.filter(lookups, thread_id__isnull=True).extra(select={'count': 0}) \
                     .values_list('id', 'count').order_by(),
                 # use separate annotate() to keep control of the necessary order
-                self.filter(lookups, thread_id__isnull=False).values('thread').annotate(count=models.Count('pk')).annotate(id=models.Max('pk'))\
+                self.filter(lookups, thread_id__isnull=False).values('thread').annotate(
+                    count=models.Count('pk')).annotate(id=models.Max('pk')) \
                     .values_list('id', 'count').order_by(),
             ))
             return qs
@@ -191,15 +194,15 @@ class MessageManager(models.Manager):
         """
         related = ('sender', 'recipient')
         filters = ({
-            'recipient': user,
-            'recipient_archived': True,
-            'recipient_deleted_at__isnull': True,
-            'moderation_status': STATUS_ACCEPTED,
-        }, {
-            'sender': user,
-            'sender_archived': True,
-            'sender_deleted_at__isnull': True,
-        })
+                       'recipient': user,
+                       'recipient_archived': True,
+                       'recipient_deleted_at__isnull': True,
+                       'moderation_status': STATUS_ACCEPTED,
+                   }, {
+                       'sender': user,
+                       'sender_archived': True,
+                       'sender_deleted_at__isnull': True,
+                   })
         return self._folder(related, filters, **kwargs)
 
     def trash(self, user, **kwargs):
@@ -208,13 +211,13 @@ class MessageManager(models.Manager):
         """
         related = ('sender', 'recipient')
         filters = ({
-            'recipient': user,
-            'recipient_deleted_at__isnull': False,
-            'moderation_status': STATUS_ACCEPTED,
-        }, {
-            'sender': user,
-            'sender_deleted_at__isnull': False,
-        })
+                       'recipient': user,
+                       'recipient_deleted_at__isnull': False,
+                       'moderation_status': STATUS_ACCEPTED,
+                   }, {
+                       'sender': user,
+                       'sender_deleted_at__isnull': False,
+                   })
         return self._folder(related, filters, **kwargs)
 
     def thread(self, user, filter):
@@ -245,7 +248,8 @@ class MessageManager(models.Manager):
         The user must be the recipient of the accepted, non-deleted, message
 
         """
-        return models.Q(recipient=user) & models.Q(moderation_status=STATUS_ACCEPTED) & models.Q(recipient_deleted_at__isnull=True)
+        return models.Q(recipient=user) & models.Q(moderation_status=STATUS_ACCEPTED) & models.Q(
+            recipient_deleted_at__isnull=True)
 
     def set_read(self, user, filter):
         """
@@ -269,11 +273,15 @@ class Message(models.Model):
 
     subject = models.CharField(_("subject"), max_length=SUBJECT_MAX_LENGTH)
     body = models.TextField(_("body"), blank=True)
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_messages', null=True, blank=True, verbose_name=_("sender"))
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_messages', null=True, blank=True, verbose_name=_("recipient"))
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_messages', null=True, blank=True,
+                               verbose_name=_("sender"), on_delete=models.CASCADE)
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_messages', null=True, blank=True,
+                                  verbose_name=_("recipient"), on_delete=models.CASCADE)
     email = models.EmailField(_("visitor"), blank=True)  # instead of either sender or recipient, for an AnonymousUser
-    parent = models.ForeignKey('self', related_name='next_messages', null=True, blank=True, verbose_name=_("parent message"))
-    thread = models.ForeignKey('self', related_name='child_messages', null=True, blank=True, verbose_name=_("root message"))
+    parent = models.ForeignKey('self', related_name='next_messages', null=True, blank=True,
+                               verbose_name=_("parent message"), on_delete=models.CASCADE)
+    thread = models.ForeignKey('self', related_name='child_messages', null=True, blank=True,
+                               verbose_name=_("root message"), on_delete=models.CASCADE)
     sent_at = models.DateTimeField(_("sent at"), default=now)
     read_at = models.DateTimeField(_("read at"), null=True, blank=True)
     replied_at = models.DateTimeField(_("replied at"), null=True, blank=True)
@@ -284,7 +292,7 @@ class Message(models.Model):
     # moderation fields
     moderation_status = models.CharField(_("status"), max_length=1, choices=STATUS_CHOICES, default=STATUS_PENDING)
     moderation_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='moderated_messages',
-        null=True, blank=True, verbose_name=_("moderator"))
+                                      null=True, blank=True, verbose_name=_("moderator"), on_delete=models.CASCADE)
     moderation_date = models.DateTimeField(_("moderated at"), null=True, blank=True)
     moderation_reason = models.CharField(_("rejection reason"), max_length=120, blank=True)
 
@@ -305,9 +313,11 @@ class Message(models.Model):
     def is_pending(self):
         """Tell if the message is in the pending state."""
         return self.moderation_status == STATUS_PENDING
+
     def is_rejected(self):
         """Tell if the message is in the rejected state."""
         return self.moderation_status == STATUS_REJECTED
+
     def is_accepted(self):
         """Tell if the message is in the accepted state."""
         return self.moderation_status == STATUS_ACCEPTED
@@ -352,6 +362,7 @@ class Message(models.Model):
             return str(self.sender)
         else:
             return '<{0}>'.format(self.email)
+
     admin_sender.short_description = _("sender")
     admin_sender.admin_order_field = 'sender'
 
@@ -376,6 +387,7 @@ class Message(models.Model):
             return str(self.recipient)
         else:
             return '<{0}>'.format(self.email)
+
     admin_recipient.short_description = _("recipient")
     admin_recipient.admin_order_field = 'recipient'
 
@@ -451,10 +463,10 @@ class Message(models.Model):
                 if parent and parent.replied_at == self.sent_at:
                     # rollback, but there may be some other valid replies
                     try:
-                        other_date = parent.next_messages\
-                            .exclude(pk=self.pk).filter(moderation_status=STATUS_ACCEPTED)\
-                            .values_list('sent_at', flat=True)\
-                            .order_by('sent_at')[:1].get()
+                        other_date = parent.next_messages \
+                                         .exclude(pk=self.pk).filter(moderation_status=STATUS_ACCEPTED) \
+                                         .values_list('sent_at', flat=True) \
+                                         .order_by('sent_at')[:1].get()
                         parent.replied_at = other_date
                     except Message.DoesNotExist:
                         parent.replied_at = None

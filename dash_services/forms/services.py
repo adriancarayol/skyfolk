@@ -12,7 +12,6 @@ def available_services():
         to be added to the system by the administrator
     """
     all_datas = ()
-    data = ()
 
     for class_path in settings.TH_SERVICES:
         class_name = class_path.rsplit('.', 1)[1]
@@ -39,6 +38,6 @@ class ServicesAdminForm(forms.ModelForm):
         widget=forms.Select(),
         required=True
     )
-    name = forms.ChoiceField(available_services())
+    name = forms.ChoiceField(choices=available_services())
 
     # todo : set the value of status when editing the object

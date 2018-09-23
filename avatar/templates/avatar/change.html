@@ -34,9 +34,9 @@
     <div class="col l12 m12 s12 current-avatar">
         <p>{% trans "Your current avatar: " %}</p>
         {% avatar user %}
-        <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+        <a title="Eliminar imágenes de perfil" href="{% url 'avatar:avatar_delete' %}" class="delete-profile-image"><i
                 class="fa fa-trash"></i></a>
-        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+        <a title="Subir imágenes de perfil" href="{% url 'avatar:avatar_add' %}" class="add-profile-image"><i
                 class="fa fa-plus"></i></a>
     </div>
     {% if not avatars %}
@@ -44,7 +44,7 @@
     {% else %}
         <div id="option-avatar" class="col l12 m12 s12 options-avatar">
         <div class="row list-avatar">
-            <form method="POST" action="{% url 'avatar_change' %}">
+            <form method="POST" action="{% url 'avatar:avatar_change' %}">
                 <ul>
                     {{ primary_avatar_form.as_ul }}
                 </ul>
@@ -55,7 +55,7 @@
     {% endif %}
 <div class="divider"></div>
 <div class="row">
-    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar:avatar_add' %}">
         <div class="file-field input-field">
             {{ upload_avatar_form.avatar.errors }}
             <div class="btn blue darken-1 waves-effect waves-light">

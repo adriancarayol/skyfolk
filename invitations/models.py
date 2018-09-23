@@ -5,7 +5,7 @@ from django.contrib.sites.models import Site
 try:
     from django.urls import reverse
 except ImportError:
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string

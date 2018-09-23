@@ -4,7 +4,7 @@
     {% get_dash_plugin entry as plugin %}
     <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
         <div class="ventana-pin blue" style="display: block;">
-            <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
+            <a href="{% url 'dash:dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
                title="{% trans 'Copy widget' %}">
                 <span class="material-icons">content_copy</span>
             </a>

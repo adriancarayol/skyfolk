@@ -4,7 +4,7 @@ from ....models import DashboardEntry
 
 
 class PollResponse(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     poll = models.ForeignKey(DashboardEntry, on_delete=models.CASCADE)
     options = models.BooleanField(default=False)
 

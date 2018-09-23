@@ -5,7 +5,7 @@ import uuid
 
 import bleach
 from bleach.linkifier import Linker
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
@@ -21,12 +21,15 @@ from publications.utils import validate_video, set_link_class
 from user_profile.utils import group_name
 from .utils import get_channel_name
 from .managers import PublicationManager
+from asgiref.sync import async_to_sync
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 def upload_image_publication(instance, filename):
@@ -147,15 +150,16 @@ class Publication(PublicationBase):
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
+    board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True, on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
-    shared_publication = models.ForeignKey('self', blank=True, null=True)
-    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True)
+    shared_publication = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
+    shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True,
+                                                 on_delete=models.CASCADE)
     parent = TreeForeignKey('self', blank=True, null=True,
-                            related_name='reply', db_index=True)
+                            related_name='reply', db_index=True, on_delete=models.CASCADE)
     objects = PublicationManager()
 
     class Meta:
@@ -196,8 +200,10 @@ class Publication(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(group_name(self.board_owner_id)).send({
-            "text": json.dumps(data)
+
+        async_to_sync(channel_layer.group_send)(group_name(self.board_owner_id), {
+            'type': 'new_publication',
+            "message": data
         })
 
         # TODO: Mezclar templates para ahorrar el render
@@ -206,14 +212,17 @@ class Publication(PublicationBase):
 
         # Enviamos por el socket de la publicacion
         if is_edited:
-            channel_group(get_channel_name(self.id)).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(get_channel_name(self.id), {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(get_channel_name(x)).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().values_list('id', flat=True)]
+        for id in self.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)(get_channel_name(id), {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:
@@ -243,7 +252,7 @@ class PublicationDeleted(models.Model):
         (1, _("skyline")),
         (2, _("photo")),
     )
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(null=True)
     type_publication = models.IntegerField(choices=TYPE_PUBLICATIONS, default=1)

@@ -3,24 +3,26 @@ import os
 import uuid
 
 import bleach
-from channels import Group as channel_group
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
 from embed_video.fields import EmbedVideoField
-
+from channels.layers import get_channel_layer
 from notifications.signals import notify
 from photologue_groups.models import PhotoGroup, VideoGroup
 from publications.models import Publication
 from publications.models import PublicationBase
 from publications.utils import validate_video
+from asgiref.sync import async_to_sync
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 class ExtraContentPubPhoto(models.Model):
@@ -76,14 +78,14 @@ class PublicationGroupMediaPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User)
-    board_photo = models.ForeignKey(PhotoGroup, related_name='board_group_multimedia_photo')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    board_photo = models.ForeignKey(PhotoGroup, related_name='board_group_multimedia_photo', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_group_multimedia_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_group_multimedia_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='group_multimedia_reply_photo')
+                               related_name='group_multimedia_reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -122,8 +124,9 @@ class PublicationGroupMediaPhoto(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_photo.group_name).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_photo.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request,
@@ -131,14 +134,17 @@ class PublicationGroupMediaPhoto(PublicationBase):
                                            context={'node': self, 'object': self.board_photo})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().only('id')]
+        for publication in self.get_ancestors().only('id'):
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_photo.owner_id:
@@ -203,14 +209,14 @@ class PublicationGroupMediaVideo(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User)
-    board_video = models.ForeignKey(VideoGroup, related_name='board_group_multimedia_video')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    board_video = models.ForeignKey(VideoGroup, related_name='board_group_multimedia_video', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_group_multimedia_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_group_multimedia_video_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='roup_multimedia_reply_photo')
+                               related_name='roup_multimedia_reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -250,22 +256,27 @@ class PublicationGroupMediaVideo(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_video.group_name).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_video.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_video_group_publication_detail.html',
+        data['content'] = render_to_string(request=request,
+                                           template_name='channels/new_video_group_publication_detail.html',
                                            context={'node': self, 'object': self.board_video})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().defer()]
+        for publication in self.get_ancestors().defer():
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_video.owner_id:

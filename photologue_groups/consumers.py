@@ -1,114 +1,112 @@
-from channels.generic.websockets import WebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.http import Http404
-
+from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 from .models import PhotoGroup, VideoGroup
 
 
-class PhotoMediaGroupConsumer(WebsocketConsumer):
+class PhotoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        slug = kwargs.pop('slug', None)
-        if not slug:
-            return
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.photo_channel = None
 
-        try:
-            self.photo = PhotoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
-        except PhotoGroup.DoesNotExist:
-            return
+    async def connect(self):
+        user = self.scope["user"]
+        slug = self.scope['url_route']['kwargs']['slug']
 
-        super(PhotoMediaGroupConsumer, self).__init__(message, **kwargs)
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                photo = PhotoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
+                group = photo.group
 
-    def connection_groups(self, **kwargs):
-        return [self.photo.group_name]
+                if not group.is_public and user != group.owner_id:
+                    if not user.user_groups.filter(id=group.id).exists():
+                        raise PermissionDenied(
+                            '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
 
-    def connect(self, message, **kwargs):
-        user = message.user
+                n = Profile.objects.get(user_id=user.id)
+                m = Profile.objects.get(user_id=photo.owner_id)
 
-        group = self.photo.group
+                visibility = m.is_visible(n)
 
-        if not group.is_public and user != group.owner_id:
-            if not user.user_groups.filter(id=group.id).exists():
-                self.message.reply_channel({'close': True})
-                return
+                if visibility and visibility != 'all':
+                    raise PermissionDenied(
+                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
 
-        try:
-            n = Profile.objects.get(user_id=user.id)
-            m = Profile.objects.get(user_id=self.photo.owner_id)
-        except Profile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
+                self.photo_channel = photo.group_name
 
-        visibility = m.is_visible(n)
-        if visibility and visibility != 'all':
-            self.message.reply_channel({'close': True})
-            return
+                await self.channel_layer.group_add(
+                    self.photo_channel,
+                    self.channel_name,
+                )
+                await self.accept()
+            except (PhotoGroup.DoesNotExist, Profile.DoesNotExist) as e:
+                await self.close()
+            except PermissionDenied:
+                await self.close()
 
-        self.message.reply_channel.send({'accept': True})
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.photo_channel, self.channel_name)
 
 
-class VideoMediaGroupConsumer(WebsocketConsumer):
+class VideoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        slug = kwargs.pop('slug', None)
-        if not slug:
-            return
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.video_channel = None
 
-        try:
-            self.video = VideoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
-        except VideoGroup.DoesNotExist:
-            return
+    async def connect(self):
+        user = self.scope["user"]
+        slug = self.scope['url_route']['kwargs']['slug']
 
-        super(VideoMediaGroupConsumer, self).__init__(message, **kwargs)
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                video = VideoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
 
-    def connection_groups(self, **kwargs):
-        return [self.video.group_name]
+                n = Profile.objects.get(user_id=user.id)
+                m = Profile.objects.get(user_id=video.owner_id)
 
-    def connect(self, message, **kwargs):
-        user = message.user
+                visibility = m.is_visible(n)
 
-        group = self.video.group
+                if visibility and visibility != 'all':
+                    raise PermissionDenied(
+                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
 
-        if not group.is_public and user != group.owner_id:
-            if not user.user_groups.filter(id=group.id).exists():
-                self.message.reply_channel({'close': True})
-                return
+                self.video_channel = video.group_name
 
-        try:
-            n = Profile.objects.get(user_id=user.id)
-            m = Profile.objects.get(user_id=self.video.owner_id)
-        except Profile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
+                await self.channel_layer.group_add(
+                    self.video_channel,
+                    self.channel_name,
+                )
+                await self.accept()
+            except (VideoGroup.DoesNotExist, Profile.DoesNotExist) as e:
+                await self.close()
+            except PermissionDenied:
+                await self.close()
 
-        visibility = m.is_visible(n)
-        if visibility and visibility != 'all':
-            self.message.reply_channel({'close': True})
-            return
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-        self.message.reply_channel.send({'accept': True})
-
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.video_channel, self.channel_name)

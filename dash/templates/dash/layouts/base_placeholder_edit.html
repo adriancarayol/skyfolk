@@ -2,7 +2,7 @@
 
 {% if widget_cells %}
 <div class="row center">
-    <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid %}{% endif %}"
+    <a href="{% if workspace %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace %}{% else %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder.uid %}{% endif %}"
        class="add-plugin waves-effect waves-light btn blue" title="{% trans 'Add widget' %}">
         Añadir nuevo widget
     </a>
@@ -14,15 +14,15 @@
 
     <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}" data-id="{{ plugin.position }}">
         <div class="ventana-pin blue">
-            <a href="{% url 'dash.delete_dashboard_entry' entry.pk %}" class="remove-plugin"
+            <a href="{% url 'dash:dash.delete_dashboard_entry' entry.pk %}" class="remove-plugin"
                title="{% trans 'Remove widget' %}">
                 <span class="material-icons">close</span>
             </a>
-            <a href="{% url 'dash.edit_dashboard_entry' entry.pk %}" class="edit-plugin"
+            <a href="{% url 'dash:dash.edit_dashboard_entry' entry.pk %}" class="edit-plugin"
                title="{% trans 'Edit widget' %}">
                 <span class="material-icons">edit</span>
             </a>
-            <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
+            <a href="{% url 'dash:dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
                title="{% trans 'Copy widget' %}">
                 <span class="material-icons">content_copy</span>
             </a>

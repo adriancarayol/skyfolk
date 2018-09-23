@@ -32,9 +32,9 @@ class GuideInfo(models.Model):
     Ties a guide to a user.
     """
     # The user that should see this guide.
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # The guide that should be shown to the user.
-    guide = models.ForeignKey(Guide)
+    guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
     # Has the guide been seen by a user?
     is_finished = models.BooleanField(default=False)
     # Save the finished time for convenience

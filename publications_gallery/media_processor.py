@@ -14,10 +14,10 @@ from .tasks import process_video_video_publication, process_gif_video_publicatio
 def check_image_property(image):
     if not image:
         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=image.name))
-    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+    if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise SizeIncorrect(
             u"Sólo se permiten archivos de hasta 5MB. ({image} tiene {size}B)".format(image=image.name,
-                                                                                      size=image._size))
+                                                                                      size=image.size))
 
 
 def check_num_images(image_collection):

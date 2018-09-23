@@ -1,0 +1,16 @@
+{
+  "name": "skyfolk_db-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "dbpostgres",
+    "database.port": "5432",
+    "database.user": "skyfolk",
+    "database.password": "skyfolk_password",
+    "database.dbname": "skyfolk_db",
+    "database.server.name": "dbserver1",
+    "database.whitelist": "skyfolk_db",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes.skyfolk_db"
+  }
+}

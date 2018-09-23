@@ -2,9 +2,10 @@ from haystack import indexes
 from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
 from .models import Photo, Video
+from celery_haystack.indexes import CelerySearchIndex
 
 
-class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
+class PhotosIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(
         document=True, use_template=True,
         template_name='search/indexes/photos/photos_text.txt')
@@ -42,7 +43,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.filter(date_added__lte=timezone.now())
 
 
-class VideoIndex(indexes.SearchIndex, indexes.Indexable):
+class VideoIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(
         document=True, use_template=True,
         template_name='search/indexes/videos/videos_text.txt')

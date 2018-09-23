@@ -32,7 +32,7 @@
                     <ul class="dashboard_menu">
                         {% if edit_mode %}
                             <li class="menu-item">
-                                <a href="{% if current_workspace %}{% url 'dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash.dashboard' %}{% endif %}"
+                                <a href="{% if current_workspace %}{% url 'dash:dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash:dash.dashboard' %}{% endif %}"
                                    class="waffes-effect waves-light btn white black-text menu-dashboard-home"
                                    title="{% trans 'View dashboard' %}">
                                     <span class="material-icons">remove_red_eye</span>
@@ -42,7 +42,7 @@
                             {% has_edit_dashboard_permissions as has_edit_dashboard_permissions %}
                             {% if has_edit_dashboard_permissions and current_workspace %}
                                 <li class="menu-item">
-                                    <a href="{% if current_workspace %}{% url 'dash.edit_dashboard' current_workspace.slug %}{% endif %}"
+                                    <a href="{% if current_workspace %}{% url 'dash:dash.edit_dashboard' current_workspace.slug %}{% endif %}"
                                        class="waffes-effect waves-light btn white black-text"
                                        title="{% trans 'Edit dashboard' %}">
                                         <span class="material-icons">settings</span>
@@ -52,7 +52,7 @@
                         {% endif %}
                         
                             <li class="menu-item">
-                                <a href="{% url 'dash.create_dashboard_workspace' %}"
+                                <a href="{% url 'dash:dash.create_dashboard_workspace' %}"
                                    class="waffes-effect waves-light btn white black-text menu-dashboard-create-workspace"
                                    title="{% trans 'Create a workspace' %}">
                                     <span class="material-icons">add</span>
@@ -62,7 +62,7 @@
                         {% if current_workspace %}
                             
                                 <li class="menu-item">
-                                    <a href="{% url 'dash.edit_dashboard_workspace' current_workspace.pk %}"
+                                    <a href="{% url 'dash:dash.edit_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white black-text menu-dashboard-edit-workspace"
                                        title="{% trans 'Edit current workspace' %}">
                                         <span class="material-icons">edit</span>
@@ -72,7 +72,7 @@
 
                             
                                 <li class="menu-item">
-                                    <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}"
+                                    <a href="{% url 'dash:dash.clone_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white black-text menu-dashboard-clone-workspace"
                                        title="{% trans 'Clone current workspace' %}">
                                         <span class="material-icons">content_copy</span>
@@ -82,7 +82,7 @@
 
                             
                                 <li class="menu-item">
-                                    <a href="{% url 'dash.delete_dashboard_workspace' current_workspace.pk %}"
+                                    <a href="{% url 'dash:dash.delete_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white red-text menu-dashboard-delete-workspace"
                                        title="{% trans 'Delete current workspace' %}">
                                         <span class="material-icons">remove</span>
@@ -117,7 +117,7 @@
                                             {% for ws in workspaces %}
                                                 <div class="col s3">
                                                     <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
-                                                        <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
+                                                        <a href="{% if edit_mode %}{% url 'dash:dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash:dash.dashboard' ws.slug %}{% endif %}"
                                                            title="Workspace {{ ws.name }}">
                                                             <p class="flow-text">
                                                                 <span class="material-icons">dashboard</span>

@@ -87,7 +87,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 image = request.FILES.get('back_image', None)
 
                 if image:
-                    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+                    if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
                         raise ValueError('BackImage > 5MB!')
 
                     im = Image.open(image)

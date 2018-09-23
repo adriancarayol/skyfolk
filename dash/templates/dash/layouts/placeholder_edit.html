@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="row center">
-    <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder_uid workspace=workspace %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder_uid %}{% endif %}"
+    <a href="{% if workspace %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder_uid workspace=workspace %}{% else %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder_uid %}{% endif %}"
        class="add-plugin waves-effect waves-light btn blue" title="{% trans 'Add widget' %}">
         Añadir nuevo widget
     </a>

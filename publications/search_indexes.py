@@ -1,9 +1,10 @@
 from django.utils import timezone
 from haystack import indexes
 from .models import Publication
+from celery_haystack.indexes import CelerySearchIndex
 
 
-class PublicationIndex(indexes.SearchIndex, indexes.Indexable):
+class PublicationIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(
         document=True, use_template=True,
         template_name='search/indexes/publications/publications_text.txt')

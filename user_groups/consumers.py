@@ -1,86 +1,96 @@
-from channels.generic.websockets import WebsocketConsumer
-
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.core.exceptions import PermissionDenied
 from .models import UserGroups, GroupTheme
 
 
-class GroupConsumer(WebsocketConsumer):
+class GroupConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        groupname = kwargs.pop('groupname', None)
-        if not groupname:
-            return
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.group_profile_channel = None
 
-        try:
-            self.group_profile = UserGroups.objects.get(slug=groupname)
-        except UserGroups.DoesNotExist:
-            return
+    async def connect(self):
+        user = self.scope["user"]
 
-        super(GroupConsumer, self).__init__(message, **kwargs)
+        groupname = self.scope['url_route']['kwargs']['groupname']
 
-    def connection_groups(self, **kwargs):
-        return [self.group_profile.group_channel]
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                group_profile = UserGroups.objects.get(slug=groupname)
 
-    def connect(self, message, **kwargs):
-        user = message.user
+                if not group_profile.is_public and not group_profile.users.filter(id=user.id).exists():
+                    raise PermissionDenied(
+                        '{} no tiene permisos para conectarse a esta channel: {}'.format(user, groupname))
 
-        if not self.group_profile.is_public and not self.group_profile.users.filter(id=user.id).exists():
-            self.message.reply_channel.send({'close': True})
-            return
+                self.group_profile_channel = group_profile.group_channel
 
-        self.message.reply_channel.send({'accept': True})
+                await self.accept()
+                await self.channel_layer.group_add(
+                    self.group_profile_channel,
+                    self.channel_name,
+                )
+            except Profile.DoesNotExist:
+                await self.close()
+            except PermissionDenied:
+                await self.close()
 
-    def receive(self, content, **kwargs):
-        self.send(content)
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.group_profile_channel, self.channel_name)
 
 
-class ThemeConsumer(WebsocketConsumer):
+class ThemeConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        slug = kwargs.pop('slug', None)
-        if not slug:
-            return
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.theme_channel = None
 
-        try:
-            self.theme = GroupTheme.objects.select_related('board_group').get(slug=slug)
-        except UserGroups.DoesNotExist:
-            return
+    async def connect(self):
+        user = self.scope["user"]
 
-        super(ThemeConsumer, self).__init__(message, **kwargs)
+        slug = self.scope['url_route']['kwargs']['slug']
 
-    def connection_groups(self, **kwargs):
-        return [self.theme.theme_channel]
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                theme = GroupTheme.objects.select_related('board_group').get(slug=slug)
+                group_profile = UserGroups.objects.get(id=theme.board_group_id)
 
-    def connect(self, message, **kwargs):
-        user = message.user
-        try:
-            group = UserGroups.objects.get(id=self.theme.board_group_id)
-        except UserGroups.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
+                if not group_profile.is_public and not user.user_groups.filter(id=theme.board_group_id).exists():
+                    raise PermissionDenied(
+                        '{} no tiene permisos para conectarse a esta channel: {}'.format(user, groupname))
 
-        if not group.is_public and not user.user_groups.filter(id=self.theme.board_group_id).exists():
-            self.message.reply_channel.send({'close': True})
-            return
+                self.theme_channel = theme.theme_channel
 
-        self.message.reply_channel.send({'accept': True})
+                await self.accept()
+                await self.channel_layer.group_add(
+                    self.theme_channel,
+                    self.channel_name,
+                )
+            except Profile.DoesNotExist:
+                await self.close()
+            except PermissionDenied:
+                await self.close()
 
-    def receive(self, content, **kwargs):
-        self.send(content)
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.theme_channel, self.channel_name)
