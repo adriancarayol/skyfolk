@@ -3,7 +3,7 @@ from neomodel import db, clear_neo4j_database
 from user_profile.models import LikeProfile
 from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 class LikeProfileTest(TestCase):

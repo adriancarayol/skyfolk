@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from publications import views as publications_views
 
+app_name = 'publications'
+
 urlpatterns = [
     url(r'^publication/$', publications_views.publication_new_view,
         name='new_publication'),

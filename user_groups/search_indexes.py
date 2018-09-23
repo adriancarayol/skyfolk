@@ -1,9 +1,10 @@
 from haystack import indexes
 from django.utils import timezone
 from .models import UserGroups
+from celery_haystack.indexes import CelerySearchIndex
 
 
-class GroupIndex(indexes.SearchIndex, indexes.Indexable):
+class GroupIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(
         document=True, use_template=True,
         template_name='search/indexes/groups/groups_text.txt')

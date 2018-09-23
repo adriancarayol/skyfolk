@@ -3,7 +3,7 @@ import os
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
-from channels import Group as Channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
@@ -15,8 +15,10 @@ from publications.utils import convert_video_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
 from .models import PublicationGroupVideo, PublicationGroup
+from asgiref.sync import async_to_sync
 
 logger = get_task_logger(__name__)
+channel_layer = get_channel_layer()
 
 
 @app.task(name='tasks.process_group_pub_video')
@@ -47,7 +49,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/group/detail/' + str(publication_id)))
+                                                               '/publication/group/detail/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
@@ -62,17 +64,24 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(notification_channel(user.id), {
+            'type': 'new_notification',
+            "message": {
+                'content': content
+            }
+        })
 
-        [Channel_group(publications_groups.utils.get_channel_name(x)).send({
-            "text": json.dumps(data)
-        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        for id in publication.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)(publications_groups.utils.get_channel_name(id), {
+                'type': 'new_publication',
+                "message": data
+            })
 
-        Channel_group(group.group_channel).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(group.group_channel, {
+            'type': 'new_publication',
+            "message": data
+        })
+
     except Exception as e:
         pub.delete()
         logger.info('ERROR {}'.format(e))
@@ -109,7 +118,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="%s">Ver</a>' % (
-                                                           '/publication/group/detail/' + str(publication_id)))
+                                                               '/publication/group/detail/' + str(publication_id)))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
@@ -124,17 +133,24 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(notification_channel(user.id), {
+            'type': 'new_notification',
+            "message": {
+                'content': content
+            }
+        })
 
-        [Channel_group(publications_groups.utils.get_channel_name(x)).send({
-            "text": json.dumps(data)
-        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+        for id in publication.get_ancestors().values_list('id', flat=True):
+            async_to_sync(channel_layer.group_send)(publications_groups.utils.get_channel_name(id), {
+                'type': 'new_publication',
+                "message": data
+            })
 
-        Channel_group(group.group_channel).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        async_to_sync(channel_layer.group_send)(group.group_channel, {
+            'type': 'new_publication',
+            "message": data
+        })
+
     except Exception as e:
         pub.delete()
         logger.info('ERROR {}'.format(e))

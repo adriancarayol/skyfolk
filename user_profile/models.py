@@ -79,8 +79,8 @@ class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
     """
-    to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
-    from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
+    to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True, on_delete=models.CASCADE)
+    from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True, on_delete=models.CASCADE)
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
     objects = RelationShipProfileManager()
 
@@ -94,8 +94,8 @@ class RelationShipProfile(models.Model):
 
 
 class LikeProfile(models.Model):
-    to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True)
-    from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True)
+    to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True, on_delete=models.CASCADE)
+    from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
@@ -313,11 +313,11 @@ class Request(models.Model):
             <<created>>: Fecha en la que se creó la petición
             <<notification>>: Notificación asociada a la petición
     """
-    emitter = models.ForeignKey(User, related_name='from_request')
-    receiver = models.ForeignKey(User, related_name='to_request')
+    emitter = models.ForeignKey(User, related_name='from_request', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='to_request', on_delete=models.CASCADE)
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey(Notification, related_name='request_notification', null=True)
+    notification = models.ForeignKey(Notification, related_name='request_notification', null=True, on_delete=models.CASCADE)
     objects = RequestManager()
 
     class Meta:
@@ -375,7 +375,7 @@ class AuthDevices(models.Model):
     """
         Establece una relacion entre el usuario y los navegadores/dispositivos que usa.
     """
-    user_profile = models.ForeignKey(User, related_name='device_to_profile')
+    user_profile = models.ForeignKey(User, related_name='device_to_profile', on_delete=models.CASCADE)
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
 
@@ -390,4 +390,4 @@ class NotificationSettings(models.Model):
     followed_notifications = models.BooleanField(default=True)
     followers_notifications = models.BooleanField(default=True)
     only_confirmed_users = models.BooleanField(default=True)
-    user = models.OneToOneField(User, related_name='notification_settings')
+    user = models.OneToOneField(User, related_name='notification_settings', on_delete=models.CASCADE)

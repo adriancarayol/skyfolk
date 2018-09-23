@@ -10,7 +10,7 @@
                 <div class="row center">
                     <p class="flow-text">{{ plugin.data.description }}</p>
                 </div>
-                <form action="{% url "dash.response_dashboard_entry" %}" method="post" id="submit_poll_response">
+                <form action="{% url "dash:dash.response_dashboard_entry" %}" method="post" id="submit_poll_response">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div class="row center">

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Q, Case, When, Value, IntegerField
 from django.http import Http404, HttpResponseForbidden
 from django.http import JsonResponse
@@ -280,7 +280,7 @@ def crop_image(obj, request):
             w = str_value.get('width')
             h = str_value.get('height')
             rotate = str_value.get('rotate')
-    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+    if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise ValueError("Backimage > 5MB!")
 
     im = Image.open(image)

@@ -1,9 +1,8 @@
 from django.conf.urls import url, include
-
-
 from user_groups import views as user_groups_views
 from user_groups import interests as user_groups_interests
 
+app_name = 'user_groups'
 
 urlpatterns = [
     # url(r'^group/(?P<group_name>[\w-]+)/$', 'user_groups.views.user_group_create', name='group'),

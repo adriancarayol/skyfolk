@@ -23,7 +23,6 @@ enable_utc = True
 result_cache_max = 32768
 worker_disable_rate_limits = True
 task_acks_late = True
-broker_heartbeat = 60
 result_backend = 'django-db'
 result_persistent = True
 result_compression = 'gzip'

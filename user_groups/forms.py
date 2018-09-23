@@ -127,7 +127,7 @@ class GroupThemeForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
                 raise forms.ValidationError('La imagen no puede ser superior a 5MB')
         return image
 
@@ -165,7 +165,7 @@ class EditGroupThemeForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get('image')
         if image:
-            if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
                 raise forms.ValidationError('La imagen no puede ser superior a 5MB')
         return image
 

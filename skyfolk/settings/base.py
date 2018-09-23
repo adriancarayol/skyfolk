@@ -99,11 +99,13 @@ THIRD_PARTY_APPS = (
     'embed_video',
     'haystack',
     'badgify',
-    # 'django_celery_beat', Wait for stable version
     'invitations',
     'webpack_loader',
     'user_guide',
     'graphene_django',
+    'celery_haystack',
+    'django_extensions',
+    'debug_toolbar'
 )
 
 FIRST_PARTY_APPS = (
@@ -273,19 +275,18 @@ BACK_IMAGE_CACHE_TIMEOUT = 300
 BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 30
 VIDEO_EXTENTIONS = ["avi", "mp4"]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
     'corsheaders.middleware.CorsMiddleware',
-)
+]
 
 CORS_ORIGIN_WHITELIST = (
     'pre.skyfolk.net',
@@ -354,13 +355,13 @@ redis_host = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'localhost')
 
 # Channel layer definitions
 # http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
+ASGI_APPLICATION = 'skyfolk.routing.application'
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [(redis_host, 6379)],
         },
-        "ROUTING": "skyfolk.routing.channel_routing",
     },
 }
 
@@ -419,7 +420,7 @@ POSTMAN_AUTO_MODERATE_AS = True
 POSTMAN_DISABLE_USER_EMAILING = True
 
 # HAYSTACK REALTIME SIGNAL
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
 
 # LOGROS

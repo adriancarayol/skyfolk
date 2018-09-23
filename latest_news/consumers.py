@@ -1,34 +1,36 @@
-from channels.generic.websockets import WebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from user_profile.models import Profile
 
 
-class MyFeedConsumer(WebsocketConsumer):
+class MyFeedConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def connection_groups(self, **kwargs):
-        id = self.message.user.id
+    async def connect(self):
+        user = self.scope["user"]
 
-        if not id:
-            return
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                profile = Profile.objects.get(user_id=user.id)
+                self.news_channels = profile.news_channel
 
-        try:
-            profile = Profile.objects.get(user_id=id)
-        except Profile.DoesNotExist:
-            return
+                await self.channel_layer.group_add(
+                    self.news_channels,
+                    self.channel_name,
+                )
+                await self.accept()
+            except Profile.DoesNotExist:
+                await self.close()
 
-        return [profile.news_channel]
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-    def connect(self, message, **kwargs):
-        self.message.reply_channel.send({'accept': True})
-
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.news_channels, self.channel_name)

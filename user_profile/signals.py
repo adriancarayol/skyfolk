@@ -104,7 +104,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using="default"):
                 with db.transaction:
-                    p = Profile.objects.create(user=instance, accept_policy=accept_policy)
+                    p = Profile.objects.create(user=instance, accepted_policy=accept_policy)
                     NotificationSettings.objects.create(user=instance)
                     DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
                                                      is_public=True)

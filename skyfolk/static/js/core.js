@@ -475,8 +475,8 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
 
             if (response === "added_friend") {
                 swal({
-                    title: "Success!",
-                    text: "You have added a friend!",
+                    title: "¡Bien!",
+                    text: "Ahora sigues a " + data.friend_username,
                     customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true

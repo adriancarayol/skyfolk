@@ -1,4 +1,4 @@
-from autoslug.settings import slugify
+from django.utils.text import slugify
 
 from django.utils.encoding import force_text
 

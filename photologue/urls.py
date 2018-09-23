@@ -16,6 +16,7 @@ twice within a few releases, could be confusing, so instead I am updating URLs b
 The new style will coexist with the existing 'pl-' prefix for a couple of releases.
 
 """
+app_name = 'photologue'
 
 urlpatterns = [
     # TODO: Permitir filtrar por año, mes... (descomentar y mejorar views)

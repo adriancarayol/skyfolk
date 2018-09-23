@@ -3,7 +3,7 @@ import os
 import re
 import uuid
 
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
@@ -13,6 +13,9 @@ from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
 from user_groups.models import GroupTheme, UserGroups
+from asgiref.sync import async_to_sync
+
+channel_layer = get_channel_layer()
 
 
 def upload_image_theme_publication(instance, filename):
@@ -63,11 +66,11 @@ class ExtraThemeContent(models.Model):
 
 
 class PublicationTheme(PublicationBase):
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     board_theme = models.ForeignKey(GroupTheme, db_index=True, related_name='publication_board_theme',
                                     on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_theme')
+                               related_name='reply_theme', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_theme_publication')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
@@ -108,9 +111,9 @@ class PublicationTheme(PublicationBase):
                                                  'group_owner_id': group_owner_id})
         }
 
-        # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_theme.theme_channel).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_theme.theme_channel, {
+            'type': 'new_publication',
+            "message": data
         })
 
         # Notificamos al board_owner de la publicacion

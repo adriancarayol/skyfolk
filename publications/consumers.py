@@ -1,57 +1,54 @@
-from channels.generic.websockets import WebsocketConsumer
-
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
 from .models import Publication
 from .utils import get_channel_name
 
 
-class PublicationConsumer(WebsocketConsumer):
+class PublicationConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        pubid = kwargs.get('pubid', None)
-        if not pubid:
-            return
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.publication_channel = None
 
-        try:
-            publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
-        except Publication.DoesNotExist:
-            return
+    async def connect(self):
+        user = self.scope["user"]
+        pubid = self.scope['url_route']['kwargs']['pubid']
 
-        try:
-            self.board_owner = Profile.objects.get(user_id=publication_board_owner)
-        except Profile.DoesNotExist:
-            return
+        if user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
+                board_owner = Profile.objects.get(user_id=publication_board_owner)
+                n = Profile.objects.get(user_id=user.id)
 
-        super(PublicationConsumer, self).__init__(message, **kwargs)
+                visibility = board_owner.is_visible(n)
 
-    def connection_groups(self, **kwargs):
-        pubid = kwargs.get('pubid', None)
-        return [get_channel_name(pubid)]
+                if visibility and visibility != 'all':
+                    raise PermissionDenied(
+                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, pubid))
 
-    def connect(self, message, **kwargs):
-        user = message.user
-        try:
-            n = Profile.objects.get(user_id=user.id)
-        except Profile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
+                self.publication_channel = get_channel_name(pubid)
 
-        visibility = self.board_owner.is_visible(n)
+                await self.channel_layer.group_add(
+                    self.publication_channel,
+                    self.channel_name,
+                )
+                await self.accept()
+            except (Publication.DoesNotExist, Profile.DoesNotExist) as e:
+                await self.close()
+            except PermissionDenied:
+                await self.close()
 
-        if visibility and visibility != 'all':
-            self.message.reply_channel({'close': True})
-            return
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-        self.message.reply_channel.send({'accept': True})
-
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.publication_channel, self.channel_name)

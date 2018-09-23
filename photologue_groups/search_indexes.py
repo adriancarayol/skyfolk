@@ -2,9 +2,10 @@ from haystack import indexes
 
 from avatar.templatetags.avatar_tags import avatar_url
 from .models import PhotoGroup
+from celery_haystack.indexes import CelerySearchIndex
 
 
-class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
+class PhotosIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(
         document=True, use_template=True,
         template_name='search/indexes/photos/photos_text.txt')
@@ -28,4 +29,3 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
-

@@ -30,9 +30,9 @@ Template para la configuracion del perfil de usuario
                     <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
                         style="background-image: url({% avatar_url request.user %}); background-repeat: no-repeat; background-position: center;
                         background-size: 100% 100%">
-                        <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+                        <a title="Eliminar imágenes de perfil" href="{% url 'avatar:avatar_delete' %}" class="delete-profile-image"><i
                                 class="material-icons">delete_forever</i></a>
-                        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+                        <a title="Subir imágenes de perfil" href="{% url 'avatar:avatar_add' %}" class="add-profile-image"><i
                                 class="material-icons">add</i></a>
                     </div>
                 </div>
@@ -111,9 +111,9 @@ Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fich
     $(document).ready(function () {
         $('#avatar-profile').on('click', function () {
             {% if request.user|has_avatar %}
-            window.location.href = "{% url 'avatar_change' %}";
+            window.location.href = "{% url 'avatar:avatar_change' %}";
             {% else %}
-            window.location.href = "{% url 'avatar_add' %}";
+            window.location.href = "{% url 'avatar:avatar_add' %}";
             {% endif %}
         });
 

@@ -16,7 +16,7 @@
                     </a>
                     <ul class="submenu">
                         <li class="sub-menu-item">
-                            <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}" class="menu-dashboard-clone-workspace" title="{% trans 'Clone this workspace' %}">
+                            <a href="{% url 'dash:dash.clone_dashboard_workspace' current_workspace.pk %}" class="menu-dashboard-clone-workspace" title="{% trans 'Clone this workspace' %}">
                                 <span class="iconic icon-copy" title="{% trans 'Clone this workspace' %}"></span>
                                 <span class="textonic">{% trans 'Clone this workspace' %}</span>
                             </a>
@@ -38,7 +38,7 @@
                 </li>
                 {% for ws in workspaces %}
                 <li class="menu-item{% if ws == current_workspace %} active{% endif %}">
-                    <a href="{% url 'dash.public_dashboard' user.username ws.slug %}" title="{{ ws.name }}">
+                    <a href="{% url 'dash:dash.public_dashboard' user.username ws.slug %}" title="{{ ws.name }}">
                         <span class="iconic {% if ws == current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
                     </a>
                 </li>

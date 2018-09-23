@@ -23,10 +23,10 @@
                     <li id="config-password" onclick="toProfile('/config/password/change')">Contraseña<i
                             class="material-icons right">lock</i></li>
                     {% if request.user|has_avatar %}
-                        <li id="config-avatar" onclick="toProfile('{% url 'avatar_change' %}')">Imagen de perfil<i
+                        <li id="config-avatar" onclick="toProfile('{% url 'avatar:avatar_change' %}')">Imagen de perfil<i
                                 class="material-icons right">camera_front</i></li>
                     {% else %}
-                        <li id="config-avatar" onclick="toProfile('{% url 'avatar_add' %}')">Imagen de perfil<i
+                        <li id="config-avatar" onclick="toProfile('{% url 'avatar:avatar_add' %}')">Imagen de perfil<i
                                 class="material-icons right">camera_front</i></li>
                     {% endif %}
                     <li id="config-email" onclick="toProfile('/config/email')">Email<i class="material-icons right">email</i>

@@ -169,7 +169,7 @@ def render_auth_link(context):
         return {}
 
     request = context.get('request', None)
-    if request and request.user.is_authenticated():
+    if request and request.user.is_authenticated:
         try:
             auth_url = settings.LOGOUT_URL
             auth_icon_class = 'icon-signout'

@@ -1,81 +1,81 @@
-from channels.generic.websockets import WebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.http import Http404
-
+from channels.layers import get_channel_layer
 from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 
+channel_layer = get_channel_layer()
 
-class BlogConsumer(WebsocketConsumer):
+
+class BlogConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def __init__(self, message, **kwargs):
-        username = kwargs.pop('username', None)
-        if not username:
-            return
+    async def connect(self):
+        self.user = self.scope["user"]
 
-        try:
-            self.profile_blog = Profile.objects.get(user__username=username)
-        except NodeProfile.DoesNotExist:
-            return
+        profile_username = self.scope['url_route']['kwargs']['username']
 
-        super(BlogConsumer, self).__init__(message, **kwargs)
+        if self.user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                profile_blog = Profile.objects.get(user__username=profile_username)
+                user_profile = Profile.objects.get(user__username=self.user.username)
 
-    def connection_groups(self, **kwargs):
-        return [self.profile_blog.group_name]
+                visibility = profile_blog.is_visible(user_profile)
 
-    def connect(self, message, **kwargs):
-        user = message.user
-        try:
-            n = Profile.objects.get(user_id=user.id)
-        except Profile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
+                if visibility and visibility != 'all':
+                    await self.close()
+                    return
 
-        visibility = self.profile_blog.is_visible(n)
+                self.profile_blog = profile_blog.group_name
 
-        if visibility and visibility != 'all':
-            self.message.reply_channel({'close': True})
-            return
+                await self.accept()
+                await self.channel_layer.group_add(
+                    self.profile_blog,
+                    self.channel_name,
+                )
+            except Profile.DoesNotExist:
+                await self.close()
 
-        self.message.reply_channel.send({'accept': True})
+    async def new_publication(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.profile_blog, self.channel_name)
 
 
-class NotificationConsumer(WebsocketConsumer):
+class NotificationConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse a las notificaciones
     de un usuario
     """
-    http_user = True
-    strict_ordering = False
 
-    def connection_groups(self, **kwargs):
-        username = self.message.user.username
-        if not username:
-            return
+    async def connect(self):
+        self.user = self.scope["user"]
+        if self.user.is_anonymous:
+            await self.close()
+        else:
+            try:
+                profile = Profile.objects.get(user__username=self.user.username)
+                self.notification_channel = profile.notification_channel
+                await self.channel_layer.group_add(
+                    self.notification_channel,
+                    self.channel_name,
+                )
+                await self.accept()
+            except Profile.DoesNotExist:
+                await self.close()
 
-        try:
-            profile = Profile.objects.get(user__username=username)
-        except Profile.DoesNotExist:
-            return
+    async def new_notification(self, event):
+        message = event['message']
+        # Send message to WebSocket
+        await self.send_json(message)
 
-        return [profile.notification_channel]
-
-    def connect(self, message, **kwargs):
-        self.message.reply_channel.send({'accept': True})
-
-    def receive(self, content, **kwargs):
-        self.send(content)
-
-    def disconnect(self, message, **kwargs):
-        pass
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.notification_channel, self.channel_name)

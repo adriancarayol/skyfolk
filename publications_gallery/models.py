@@ -4,7 +4,7 @@ import re
 import uuid
 
 import bleach
-from channels import Group as channel_group
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -17,12 +17,15 @@ from photologue.models import Photo, Video
 from publications.models import Publication
 from publications.models import PublicationBase
 from publications.utils import validate_video
+from asgiref.sync import async_to_sync
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
+channel_layer = get_channel_layer()
 
 
 class ExtraContentPubPhoto(models.Model):
@@ -77,14 +80,14 @@ class PublicationPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User, null=True)
-    board_photo = models.ForeignKey(Photo, related_name='board_photo')
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    board_photo = models.ForeignKey(Photo, related_name='board_photo', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -123,22 +126,26 @@ class PublicationPhoto(PublicationBase):
         }
 
         # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_photo.group_name).send({
-            "text": json.dumps(data)
+        async_to_sync(channel_layer.group_send)(self.board_photo.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
                                            context={'node': self, 'photo': self.board_photo})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().only('id')]
+        for publication in self.get_ancestors().only('id'):
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_photo.owner_id:
@@ -203,14 +210,14 @@ class PublicationVideo(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User, null=True)
-    board_video = models.ForeignKey(Video, related_name='board_video')
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    board_video = models.ForeignKey(Video, related_name='board_video', on_delete=models.CASCADE)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_video_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='reply_photo', on_delete=models.CASCADE)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -249,23 +256,27 @@ class PublicationVideo(PublicationBase):
                                         context={'node': self, 'object': self.board_video})
         }
 
-        # Enviamos a todos los usuarios que visitan la foto
-        channel_group(self.board_video.group_name).send({
-            "text": json.dumps(data)
+        # Enviamos a todos los usuarios que visitan el video
+        async_to_sync(channel_layer.group_send)(self.board_video.group_name, {
+            'type': 'new_publication',
+            "message": data
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_video_publication_detail.html',
                                            context={'node': self, 'object': self.board_video})
 
         if is_edited:
-            channel_group(self.get_channel_name).send({
-                'text': json.dumps(data)
+            async_to_sync(channel_layer.group_send)(self.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
             })
 
         # Enviamos al blog de la publicacion
-        [channel_group(x.get_channel_name).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().defer()]
+        for publication in self.get_ancestors().only('id'):
+            async_to_sync(channel_layer.group_send)(publication.get_channel_name, {
+                'type': 'new_publication',
+                "message": data
+            })
 
         # Enviamos al owner de la notificacion
         if self.author_id != self.board_video.owner_id:

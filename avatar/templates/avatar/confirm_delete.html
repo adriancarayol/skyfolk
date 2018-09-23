@@ -32,16 +32,16 @@
                 <p>{% trans "Please select the avatars that you would like to delete." %}</p>
             {% endif %}
             {% if not avatars %}
-                {% url 'avatar_add' as avatar_change_url %}
+                {% url 'avatar:avatar_add' as avatar_change_url %}
                 <p>{% blocktrans %}You have no avatars to delete. Please
                     <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
             {% else %}
                 <div class="row">
-                    <form method="POST" action="{% url 'avatar_delete' %}">
+                    <form method="POST" action="{% url 'avatar:avatar_delete' %}">
                         <ul>
                             {{ delete_avatar_form.as_ul }}
                         </ul>
-                        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+                        <a title="Subir imágenes de perfil" href="{% url 'avatar:avatar_add' %}" class="add-profile-image"><i
                                 class="fa fa-plus"></i></a>
                         {% csrf_token %}<input class="btn blue waves-effect waves-light right" type="submit"
                                                value="{% trans "Delete These" %}"/>

@@ -36,7 +36,7 @@ from .settings import DEBUG, RESTRICT_PLUGIN_ACCESS
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse, NoReverseMatch
 else:
-    from django.core.urlresolvers import reverse, NoReverseMatch
+    from django.urls import reverse, NoReverseMatch
 
 __title__ = 'dash.utils'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -207,7 +207,7 @@ def get_widgets(layout, placeholder, user=None, workspace=None,
                         '{0} ({1}x{2})'.format(widget_name,
                                                plugin_widget.cols,
                                                plugin_widget.rows),
-                        reverse('dash.add_dashboard_entry', kwargs=kwargs)
+                        reverse('dash:dash.add_dashboard_entry', kwargs=kwargs)
                     )
                 )
     else:
@@ -256,7 +256,7 @@ def get_widgets(layout, placeholder, user=None, workspace=None,
                         '{0} ({1}x{2})'.format(safe_text(plugin.name),
                                                plugin_widget.cols,
                                                plugin_widget.rows),
-                        reverse('dash.add_dashboard_entry', kwargs=kwargs)
+                        reverse('dash:dash.add_dashboard_entry', kwargs=kwargs)
                     )
                 )
 
