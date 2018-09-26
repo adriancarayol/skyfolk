@@ -1269,6 +1269,7 @@ def create_dashboard_workspace(request,
         if form.is_valid():
             obj = form.save(commit=False)
             obj.user = request.user
+
             if not dashboard_settings.allow_different_layouts:
                 obj.layout_uid = layout.uid
             obj.save()
@@ -1283,7 +1284,6 @@ def create_dashboard_workspace(request,
         form = DashboardWorkspaceForm(
             initial={
                 'user': request.user,
-                'layout_uid': layout.uid,
             },
             different_layouts=dashboard_settings.allow_different_layouts
         )
