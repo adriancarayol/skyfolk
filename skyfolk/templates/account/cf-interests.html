@@ -5,7 +5,6 @@
 	Template para cambiar de contraseña
 {% endcomment %}
 {% block extra-css %}
-  
     <style>
         .delete {
             background-color: tomato;
@@ -31,7 +30,7 @@
         <span>Tus intereses actuales: </span>
             {% for interest in my_interests %}
                 <div class="chip top-theme interest">
-                    {{ interest }}
+                    {{ interest.0 }}
                 </div>
             {% endfor %}
     </div>

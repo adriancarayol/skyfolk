@@ -112,7 +112,7 @@ def public_dashboard(request,
             _('The workspace with slug "{0}" does not exist.'
               '').format(workspace)
         )
-        return redirect('dash.public_dashboard', username=username)
+        return redirect('dash:dash.public_dashboard', username=username)
 
     context.update(workspaces)
 

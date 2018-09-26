@@ -43,21 +43,21 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=7, minute=30, day_of_week=1),
         'options': {'queue': 'background'}
     },
-    'read_services': {
-        'task': 'tasks.read_services',
-        'schedule': crontab(minute='*/10'),
-        'options': {'queue': 'low'}
-    },
-    'publish_services': {
-        'task': 'tasks.publish_services',
-        'schedule': crontab(minute='*/15'),
-        'options': {'queue': 'low'}
-    },
-    'recycle_services': {
-        'task': 'tasks.recycle_services',
-        'schedule': crontab(minute='*/30'),
-        'options': {'queue': 'low'}
-    }
+    # 'read_services': {
+    #    'task': 'tasks.read_services',
+    #    'schedule': crontab(minute='*/10'),
+    #    'options': {'queue': 'low'}
+    # },
+    # 'publish_services': {
+    #    'task': 'tasks.publish_services',
+    #    'schedule': crontab(minute='*/15'),
+    #    'options': {'queue': 'low'}
+    # },
+    #'recycle_services': {
+    #    'task': 'tasks.recycle_services',
+    #    'schedule': crontab(minute='*/30'),
+    #    'options': {'queue': 'low'}
+    #}
 }
 
 """

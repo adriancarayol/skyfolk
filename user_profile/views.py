@@ -540,6 +540,7 @@ class InterestsView(FormView):
             return super().post(request, *args, **kwargs)
 
         user = request.user
+        user_profile = user.profile
         user_node = NodeProfile.nodes.get(title=user.username)
         response = "success"
 

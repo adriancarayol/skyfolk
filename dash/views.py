@@ -581,7 +581,7 @@ class AddDashboardEntry(SessionWizardView):
 
         if obj.workspace:
             return redirect(
-                'dash.edit_dashboard', workspace=obj.workspace.slug
+                'dash:dash.edit_dashboard', workspace=obj.workspace.slug
             )
         else:
             return redirect('user_profile:profile', username=self.request.user.username)
@@ -731,7 +731,7 @@ def add_dashboard_entry(request,
                 # Redirect to the dashboard view.
                 if obj.workspace:
                     return redirect(
-                        'dash.edit_dashboard', workspace=obj.workspace.slug
+                        'dash:dash.edit_dashboard', workspace=obj.workspace.slug
                     )
                 else:
                     return redirect('user_profile:profile', username=request.user.username)
@@ -1011,7 +1011,7 @@ def edit_dashboard_entry(request,
                 # Redirect to edit dashboard view
                 if obj.workspace:
                     return redirect(
-                        'dash.edit_dashboard', workspace=obj.workspace.slug
+                        'dash:dash.edit_dashboard', workspace=obj.workspace.slug
                     )
                 else:
                     return redirect('user_profile:profile', username=request.user.username)
@@ -1269,6 +1269,7 @@ def create_dashboard_workspace(request,
         if form.is_valid():
             obj = form.save(commit=False)
             obj.user = request.user
+
             if not dashboard_settings.allow_different_layouts:
                 obj.layout_uid = layout.uid
             obj.save()
@@ -1277,13 +1278,12 @@ def create_dashboard_workspace(request,
                 _('The dashboard workspace "{0}" was '
                   'created successfully.').format(obj.name)
             )
-            return redirect('dash.edit_dashboard', workspace=obj.slug)
+            return redirect('dash:dash.edit_dashboard', workspace=obj.slug)
 
     else:
         form = DashboardWorkspaceForm(
             initial={
                 'user': request.user,
-                'layout_uid': layout.uid,
             },
             different_layouts=dashboard_settings.allow_different_layouts
         )
@@ -1356,7 +1356,7 @@ def edit_dashboard_workspace(request, workspace_id,
                 request,
                 _('The dashboard workspace "{0}" was '
                   'edited successfully.').format(obj.name))
-            return redirect('dash.edit_dashboard', workspace=obj.slug)
+            return redirect('dash:dash.edit_dashboard', workspace=obj.slug)
 
     else:
         form = DashboardWorkspaceForm(
@@ -1632,7 +1632,7 @@ def clone_dashboard_workspace(request, workspace_id):
             _("Dashboard workspace `{0}` was successfully cloned into "
               "`{1}`.".format(workspace.name, cloned_workspace.name))
         )
-        return redirect('dash.edit_dashboard', workspace=cloned_workspace.slug)
+        return redirect('dash:dash.edit_dashboard', workspace=cloned_workspace.slug)
 
     else:
 
@@ -1681,7 +1681,7 @@ def cut_dashboard_entry(request, entry_id):
                              'clipboard.').format(safe_text(plugin.name)))
 
     if workspace and workspace.slug:
-        return redirect('dash.edit_dashboard', workspace=workspace.slug)
+        return redirect('dash:dash.edit_dashboard', workspace=workspace.slug)
     else:
         return redirect('user_profile:profile', username=request.user.username)
 
@@ -1728,7 +1728,7 @@ def copy_dashboard_entry(request, entry_id):
                              'clipboard.').format(safe_text(plugin.name)))
 
     if workspace and workspace.slug:
-        return redirect('dash.edit_dashboard', workspace=workspace.slug)
+        return redirect('dash:dash.edit_dashboard', workspace=workspace.slug)
     else:
         return redirect('user_profile:profile', username=request.user.username)
 
@@ -1806,7 +1806,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
         )
 
     if workspace:
-        return redirect('dash.edit_dashboard', workspace=workspace.slug)
+        return redirect('dash:dash.edit_dashboard', workspace=workspace.slug)
     else:
         return redirect('user_profile:profile', username=request.user.username)
 
