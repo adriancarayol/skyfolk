@@ -1,3 +1,5 @@
+{% load emoji_tags %}
+
 <div class="stock card">
     <div class="wrapper">
         <div class="widget-wr">
@@ -7,7 +9,7 @@
                 </div>
             </div>
             <div class="row center">
-                <p class="flow-text">{{ plugin.data.text }}</p>
+                <p class="flow-text">{{ plugin.data.text|emoji_replace }}</p>
             </div>
         </div>
     </div>

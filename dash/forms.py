@@ -21,7 +21,7 @@ class DashboardWorkspaceForm(forms.ModelForm):
 
     layout_uid = forms.TypedChoiceField(
         label=_('Layout'),
-        choices=get_registered_layouts(),
+        choices=[layout for layout in get_registered_layouts() if layout[0] != 'profile'],
         empty_value=None,
     )
 
@@ -41,10 +41,18 @@ class DashboardWorkspaceForm(forms.ModelForm):
         if not different_layouts:
             self.fields['layout_uid'].widget = forms.widgets.HiddenInput()
 
+    def clean_layout_uid(self):
+        layout_id = self.cleaned_data['layout_uid']
+        if layout_id == 'profile':
+            raise forms.ValidationError('No puedes crear un workspace con este layout.')
+
+        return layout_id
+
 
 class DashboardSettingsForm(forms.ModelForm):
     """Dashboard settings form."""
     """No se utiliza"""
+
     class Meta(object):
         """Meta."""
 

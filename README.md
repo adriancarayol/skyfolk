@@ -47,7 +47,7 @@ python manage.py badgify_sync badges
 python manage.py badgify_sync badges --update
 python manage.py rebuild_index --noinput
 python manage.py create_initial_services
-daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:channel_layer
+daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:application
 ```
 ### Lanzar celery
 Para lanzar celery debemos lanzar los siguientes comandos:

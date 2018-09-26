@@ -118,14 +118,14 @@ plugin_widget_factory(BaseVideoWidget,
 # **************************************************************************
 
 
-main_sizes = (
-    (1, 1),
-)
-plugin_widget_factory(BaseTriggerWidget,
-                      'skyspace',
-                      'main',
-                      'trigger',
-                      main_sizes)
+# main_sizes = (
+#     (1, 1),
+# )
+# plugin_widget_factory(BaseTriggerWidget,
+#                       'skyspace',
+#                       'main',
+#                       'trigger',
+#                       main_sizes)
 
 # **************************************************************************
 # *************** Registering the widgets for Weather plugin ***************
