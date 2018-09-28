@@ -129,9 +129,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                     {% if user.username == user_profile.username %}
                                     <!-- Si el usuario esta visitando su propio perfil -->
                                     <li id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</li>
-                                    <li onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
-                                                                                                       class="material-icons group-profile"
-                                                                                                       title="Grupos">group</li>
                                     {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
                                     {% if isFriend == True %}
                                     <li id="addfriend" class="material-icons unfollow-profile" title="Dejar de seguir"
@@ -147,8 +144,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                     <li id="ilike_profile" class="material-icons like-profile" title="¡Me gusta!"
                                                                                  onclick=AJAX_likeprofile('noabort');>favorite</li>
                                     {% endif %}
-                                    {% if user.username != user_profile.username %}
-                                {% endif %}
                                 {% if user_profile != user %}
                                     <li class="info-groups" title="Grupos de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">group</i>
                                     </li>
@@ -158,8 +153,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 {% if user_profile == request.user %}
                                     <li title="Mi contenido" class="my-content" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
                                 {% endif %}
-                                <li class="info-workspaces" title="Workspaces de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">dashboard</i></li>
                                 {% if user_profile != user %}
+                                    <li class="info-workspaces" title="Espacios de trabajo de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">dashboard</i></li>
                                     <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
                                 {% endif %}
                             </ul>
@@ -189,7 +184,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
         <div class="col s12 m12 l10 offset-l1 workspaces">
             <div class="row">
                 <span id="close-workspaces" class="material-icons right">close</span>
-                <h3 class="workspaces-title">Workspaces de {{ user_profile.username }}</h3>
+                <h3 class="workspaces-title">Espacios de trabajo de {{ user_profile.username }}</h3>
             </div>
             <div class="row">
                 <div class="col l12 m12 s12 wrapper-workspaces">

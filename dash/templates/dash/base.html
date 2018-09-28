@@ -112,13 +112,13 @@
                             <div>
                                 <ul class="collapsible" data-collapsible="accordion">
                                     <li>
-                                        <div class="collapsible-header">{{ workspaces|length }} Workspaces</div>
+                                        <div class="collapsible-header">{{ workspaces|length }} Espacios de trabajo</div>
                                         <div class="collapsible-body">
                                             {% for ws in workspaces %}
                                                 <div class="col s3">
                                                     <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
                                                         <a href="{% if edit_mode %}{% url 'dash:dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash:dash.dashboard' ws.slug %}{% endif %}"
-                                                           title="Workspace {{ ws.name }}">
+                                                           title="Espacio de trabajo {{ ws.name }}">
                                                             <p class="flow-text">
                                                                 <span class="material-icons">dashboard</span>
                                                                 <span>{{ ws.name }}</span>

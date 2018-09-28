@@ -558,9 +558,6 @@ def edit_publication(request):
             if publication.author.id != user.id:
                 return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-            if publication.event_type != 1 and publication.event_type != 3:
-                return JsonResponse({'data': "No puedes editar este tipo de comentario"})
-
             try:
                 publication.content = content
                 publication.parse_content()  # parse publication content
@@ -704,9 +701,6 @@ def share_publication(request):
                 obj = Publication.objects.create(shared_publication=pub_to_add, author=user, board_owner=user)
 
             obj.content = Emoji.replace(pub.content)
-            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
-                          'href="/profile/%s">@%s</a><br>%s' % (
-                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
             obj.created = timezone.now()
             obj.event_type = 6
             obj.deleted = False

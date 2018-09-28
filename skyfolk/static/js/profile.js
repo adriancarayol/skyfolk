@@ -509,6 +509,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
             var numLikes = $(heart).find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
+                console.log(countLikes);
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
                     if (status == 1) {
                         $(heart).css('color', '#f06292');

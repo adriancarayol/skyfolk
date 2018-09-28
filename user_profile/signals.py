@@ -38,31 +38,6 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     else:
         n.follow.connect(m)
         if created:
-            try:
-                Publication.objects.update_or_create(author_id=recipient.id,
-                                                     board_owner_id=recipient.id,
-                                                     content='<i class="material-icons blue1e88e5 left">person_add</i> '
-                                                             '¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, '
-                                                             '<a href="/profile/%s">@%s</a>!' % (
-                                                                 recipient.username,
-                                                                 recipient.username,
-                                                                 emitter.username,
-                                                                 emitter.username),
-                                                     event_type=2)
-
-                Publication.objects.update_or_create(author_id=emitter.id,
-                                                     board_owner_id=emitter.id,
-                                                     content='<i class="material-icons blue1e88e5 left">person_add</i> '
-                                                             '¡<a href="/profile/%s">%s</a> ahora sigue a <a '
-                                                             'href="/profile/%s">@%s</a>!' % (
-                                                                 emitter.username,
-                                                                 emitter.username,
-                                                                 recipient.username,
-                                                                 recipient.username),
-                                                     event_type=2)
-            except Exception as e:
-                raise Exception("Publication relationship not created: {}".format(e))
-
             # Aumentamos la fuerza de la relacion entre los usuarios
             if n.title != m.title:
                 rel = n.follow.relationship(m)
