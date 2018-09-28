@@ -19,7 +19,7 @@
             <li title="¡Me gusta!" class="like-comment"
                     {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
                 <i class="material-icons md-18">keyboard_arrow_up</i>
-                <i class="like- value">{{ node.likes|zero_to_empty }}</i>
+                <i class="like-value">{{ node.likes|zero_to_empty }}</i>
             </li>
         {% if node|classname == 'Publication' or node|classname == 'PublicationGroup' %}
             <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
@@ -37,10 +37,8 @@
     </div>
     <ul id='dropdown-{{ node.pk }}' class='dropdown-content'>
             {% if user.id == node.author.id %}
-                {% if node.event_type == 1 or node.event_type == 3 %}
                     <li data-id="{{ node.pk }}"
                         class="edit-comment center"><span>Editar</span></li>
-                {% endif %}
             {% endif %}
             {% if user.id == node.author.id or user.id == user_profile.id %}
                 {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}

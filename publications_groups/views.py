@@ -605,9 +605,6 @@ class ShareGroupPublication(View):
                 obj = Publication.objects.create(shared_group_publication=pub_to_add, author=user, board_owner=user)
 
             obj.content = Emoji.replace(pub.content)
-            obj.content = '<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a ' \
-                          'href="/profile/%s">@%s</a><br>%s' % (
-                              pub_to_add.author.username, pub_to_add.author.username, obj.content)
             obj.created = timezone.now()
             obj.event_type = 6
             obj.deleted = False

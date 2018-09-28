@@ -12,7 +12,7 @@ from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 
 from .dash_widgets import (
     URL1x1SkySpaceMainWidget,
-    URL1x1SkySpaceShortcutWidget,
+    # URL1x1SkySpaceShortcutWidget,
 )
 
 __title__ = 'dash.contrib.layouts.skyspace.dash_plugins'
@@ -45,22 +45,22 @@ plugin_widget_factory(BaseImageWidget,
 # **************************************************************************
 
 
-main_sizes = (
-    (1, 1),
-)
-shortcut_sizes = (
-    (1, 1),
-)
-plugin_widget_factory(BaseMemoWidget,
-                      'skyspace',
-                      'main',
-                      'memo',
-                      main_sizes)
-plugin_widget_factory(BaseMemoWidget,
-                      'skyspace',
-                      'shortcut',
-                      'memo',
-                      shortcut_sizes)
+# main_sizes = (
+#     (1, 1),
+# )
+# shortcut_sizes = (
+#     (1, 1),
+# )
+# plugin_widget_factory(BaseMemoWidget,
+#                       'skyspace',
+#                       'main',
+#                       'memo',
+#                       main_sizes)
+# plugin_widget_factory(BaseMemoWidget,
+#                       'skyspace',
+#                       'shortcut',
+#                       'memo',
+#                       shortcut_sizes)
 
 # **************************************************************************
 # ************** Registering widgets for TinyMCEMemo plugin ****************
@@ -96,7 +96,7 @@ plugin_widget_factory(BaseReadRSSFeedWidget,
 
 
 plugin_widget_registry.register(URL1x1SkySpaceMainWidget)
-plugin_widget_registry.register(URL1x1SkySpaceShortcutWidget)
+# plugin_widget_registry.register(URL1x1SkySpaceShortcutWidget)
 
 # **************************************************************************
 # ***************** Registering the widgets for Video plugin ***************
@@ -111,7 +111,6 @@ plugin_widget_factory(BaseVideoWidget,
                       'main',
                       'video',
                       main_sizes)
-
 
 # **************************************************************************
 # ***************** Registering the widgets for Trigger plugin ***************
@@ -134,9 +133,9 @@ plugin_widget_factory(BaseVideoWidget,
 
 # main_sizes = (
 #    (1, 1),
-#)
+# )
 # plugin_widget_factory(BaseWeatherWidget,
- #                     'skyspace',
- #                     'main',
- #                    'weather',
- #                     main_sizes)
+#                     'skyspace',
+#                     'main',
+#                    'weather',
+#                     main_sizes)
