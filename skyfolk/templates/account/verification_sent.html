@@ -1,59 +1,21 @@
-{% extends "account/base_cf.html" %}
+{% extends "account/base.html" %}
 
 {% load i18n %}
 
 {% block title %}Configuración - Confirmar Email {% endblock %}
 
-{% block extra-css %}
-    <style>
-        body {
-            background-color: #b0bec5;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .information-text {
-            font-size: 1.3em;
-        }
-
-        .email-info {
-            padding: 10px;
-        }
-
-        .email-info > h1 {
-            font-size: 2em;
-        }
-
-        .email-info > p {
-            font-size: 1.3em;
-        }
-    </style>
-{% endblock %}
-
-{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
-
-{% block barra_navegacion %}
-    {% comment %} No debe aparecer, ya que no estamos registrados aun {% endcomment %}{% endblock %}
+{% block head_title %}Confirmar email{% endblock %}
+{% block menu %}{% endblock %}
 
 {% block content %}
-    <div class="col l12 s12 m12">
-        <div class="container">
-            <div class="col l12 s12 m12 hgroup">
-                <h4 class="cn"> Email </h4>
-                <h6 class="ch"> {% trans "Verify Your E-mail Address" %} </h6>
-            </div>
-            <div class="col l12 s12 m12 email-info">
-                <h1><i class="material-icons">mail</i> {% trans "Verify Your E-mail Address" %}</h1>
-                <br><br>
-                <p class="information-text">
-                    {% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize
-                        the signup process. Please contact us if you do not receive it within a few
-                        minutes.{% endblocktrans %}
-                </p>
+    <div class="wrapper">
+        <div class="row">
+            <p class="flow-text">{% trans "Verify Your E-mail Address" %}.</p>
+            <div class="col offset-l3 col l6 m12 s12">
+                <div class="z-depth-1">
+                    {% blocktrans %}Le hemos enviado un correo electrónico para su verificación. Siga el enlace para finalizar
+                        el proceso de registro. Póngase en contacto con nosotros si no lo recibe en unos pocos minutos.{% endblocktrans %}
+                </div>
             </div>
         </div>
     </div>

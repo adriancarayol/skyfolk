@@ -38,7 +38,7 @@ class SkySpaceLayout(BaseDashboardLayout):
     name = 'Skyspace'
     view_template_name = 'skyspace/view_layout.html'
     edit_template_name = 'skyspace/edit_layout.html'
-    placeholders = [SkySpaceMainPlaceholder, SkySpaceShortcutsPlaceholder]
+    placeholders = [SkySpaceMainPlaceholder, ]
     cell_units = 'px'
     media_css = (
         'css/dash_dotted_borders.css',

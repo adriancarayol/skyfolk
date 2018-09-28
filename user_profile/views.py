@@ -591,7 +591,6 @@ class AffinityView(TemplateView):
         query = "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
         follows, meta = db.cypher_query(query=query)
         dict_results = [item for sublist in follows for item in sublist]
-        print(dict_results)
         # Get followers of user
         query = "MATCH (a)<-[follow:FOLLOW]-(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000" % self.request.user.username
         followers, meta = db.cypher_query(query=query)

@@ -1205,7 +1205,7 @@ def plugin_widgets(request,
                 kwargs.update({'workspace': workspace.slug})
 
             paste_from_clipboard_url = reverse(
-                'dash.paste_dashboard_entry',
+                'dash:dash.paste_dashboard_entry',
                 kwargs=kwargs
             )
 
