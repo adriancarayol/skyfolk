@@ -1,7 +1,7 @@
 {% extends "emails/base_email.html" %}
 {% load i18n %}
 {% block header_content %}
-    Â¡Has recibido una invitaciÃ³n para Skyfolk!
+    ¡Has recibido una invitación para Skyfolk!
 {% endblock %}
 {% block title %}
     <a href="https://{{ site_name }}/profile/{{ inviter }}/">@{{ inviter }}</a> quiere que te unas a Skyfolk
@@ -12,6 +12,7 @@
                 Hola,
                 Has recibido una invitacion para unirte a {{ site_name }}
                 Si quieres unirte, pulsa el siguiente enlace: {{ invite_url }}
+                Te agradeceríamos mucho que completaras esta pequeña encuesta: <a href="https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk">Encuesta</a>
         {% endblocktrans %}
     {% endautoescape %}
 {% endblock %}
