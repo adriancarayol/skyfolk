@@ -693,7 +693,7 @@ def share_publication(request):
             pub.parse_content()
             pub.add_hashtag()
             pub.parse_mentions()
-
+            
             try:
                 obj = Publication.objects.get(shared_publication=pub_to_add, author=user, board_owner=user)
             except Publication.DoesNotExist:
@@ -702,6 +702,7 @@ def share_publication(request):
             obj.created = timezone.now()
             obj.event_type = 6
             obj.deleted = False
+            obj.content = pub.content
 
             with transaction.atomic(using='default'):
                 obj.save()

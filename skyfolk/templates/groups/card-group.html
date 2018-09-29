@@ -92,7 +92,7 @@
                                 data-slug="{{ group_profile.slug }}"
                                 data-tooltip="">
                                     {% for i in interests %}
-                                        <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>{{ i.name }}</b></a>
+                                        <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i.name }}</b></a>
                                     {% endfor %}
                                     {% with interests|length as interest_returned %}
                                         {% if interest_returned < total_interests %}

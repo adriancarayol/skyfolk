@@ -76,17 +76,19 @@
 </main>
 <footer class="page-footer white">
     <div class="container center">
-        <div class="chip left">
-            <a>© 2018 Skyfolk</a>
-        </div>
-        <div class="chip">
-            <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
-        </div>
-        <div class="chip">
-            <a class="blue-text text-darken-1" href="/blog">Blog</a>
-        </div>
-        <div class="chip">
-            <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
+        <div class="row center">
+            <div class="col l3 s12">
+                <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
+            </div>
+            <div class="col l3 s12">
+                <a class="blue-text text-darken-1" href="/blog">Blog</a>    
+            </div>
+            <div class="col l3 s12">
+                <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
+            </div>
+            <div class="col l3 s12">
+                <b class="blue-text text-darken">© 2018 Skyfolk</b>
+            </div>
         </div>
     </div>
 </footer>
