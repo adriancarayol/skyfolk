@@ -264,7 +264,8 @@ def profile_view(request, username,
     isBlocked = False
     if user.username != username:
         try:
-            isBlocked = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile, type=BLOCK).exists()
+            isBlocked = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile,
+                                                           type=BLOCK).exists()
         except Exception as e:
             pass
 
@@ -272,14 +273,16 @@ def profile_view(request, username,
     isFollower = False
     if user.username != username:
         try:
-            isFollower = RelationShipProfile.objects.filter(from_profile=user_profile.profile, to_profile=m, type=FOLLOWING).exists()
+            isFollower = RelationShipProfile.objects.filter(from_profile=user_profile.profile, to_profile=m,
+                                                            type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si el perfil es seguido
     isFollow = False
     if user.username != username:
         try:
-            isFollow = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile, type=FOLLOWING).exists()
+            isFollow = RelationShipProfile.objects.filter(from_profile=m, to_profile=user_profile.profile,
+                                                          type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si existe una peticion de seguimiento
@@ -326,7 +329,6 @@ def profile_view(request, username,
     context['isFriend'] = isFollow
     context['multimedia_count'] = multimedia_count
     context['existFollowRequest'] = True if friend_request else False
-
 
     context['profile_interests'] = user_profile.profile.tags.names()[:10]
     context['profile_interests_total'] = user_profile.profile.tags.all().count()
@@ -572,7 +574,7 @@ class InterestsView(FormView):
         context = super().get_context_data(**kwargs)
         results, meta = db.cypher_query(
             "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
-        context['my_interests'] = self.request.user.profile.tags.all().values_list('name')
+        context['my_interests'] = self.request.user.profile.tags.all().values_list('name', 'id')
         context['top_tags'] = results
         context['form'] = ThemesForm
         return context
@@ -831,7 +833,8 @@ def request_friend(request):
                             notify.send(user, actor=n.user.username,
                                         recipient=m.user,
                                         action_object=user,
-                                        description="<a href='/profile/{0}/'>@{0}</a> ahora es tu seguidor.".format(user.username),
+                                        description="<a href='/profile/{0}/'>@{0}</a> ahora es tu seguidor.".format(
+                                            user.username),
                                         verb=u'Nuevo seguidor',
                                         level='new_follow')
                     response = "added_friend"

@@ -75,60 +75,20 @@
     {% block content %}{% endblock %}
 </main>
 <footer class="page-footer white">
-    <div class="row">
-        <ul>
-            <li class="left">
-                <div class="chip">
-                    <a>© 2018 Skyfolk</a>
-                </div>
-            </li>
-            {% comment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/about/home">Sobre Skyfolk</a>
-                </div>
-            </li>
-            {% endcomment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
-                </div>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/blog">Blog</a>
-                </div>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
-                </div>
-            </li>
-            {% comment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/blog">Ayuda</a>
-                </div>
-            </li>
-            {% endcomment %}
-            {% comment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/blog">Trabaja con nosotros</a>
-                </div>
-            </li>
-            {% endcomment %}
-            {% comment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/blog">Publicidad</a>
-                </div>
-            </li>
-            {% endcomment %}
-            {% comment %}
-            <li>
-                <div class="chip">
-                    <a class="blue-text text-darken-1" href="/blog">Privacidad</a>
-                </div>
-            </li>
-            {% endcomment %}
-        </ul>
+    <div class="container center">
+        <div class="chip left">
+            <a>© 2018 Skyfolk</a>
+        </div>
+        <div class="chip">
+            <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
+        </div>
+        <div class="chip">
+            <a class="blue-text text-darken-1" href="/blog">Blog</a>
+        </div>
+        <div class="chip">
+            <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
+        </div>
+
     </div>
 </footer>
 </body>

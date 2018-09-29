@@ -2,6 +2,7 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load app_filters %}
+{% load emoji_tags %}
 {% load static %}
 <div data-id="{{ item.id }}" class="grid-item infinite-item">
     <div class="notice-item">
@@ -16,7 +17,7 @@
                 <p><i class="pub-date">{{ item.created|naturaltime }}{% if item.edition_date %}<i> - Editado</i>{% endif %}</i></p>
         </div>
         <div class="col l9 m10 s9 contenido">
-            <p>{{ item.content|safe }}</p>
+            <p>{{ item.content|emoji_replace|safe }}</p>
             {% if item.shared_publication %}
                 {% if item.shared_publication.deleted %}
                     <div class="row">
@@ -34,7 +35,7 @@
                             <span class="card-title"><a
                                     href="{% url 'user_profile:profile' item.shared_publication.author %}">@{{ item.shared_publication.author }}</a>
                             <i class="blue-text text-darken-2"> {{ item.shared_publication.created|naturaltime }}</i>{% if item.shared_publication.edition_date %}<i> - Editado</i>{% endif %}</span>
-                            <p>{{ item.shared_publication.content|safe }}</p>
+                            <p>{{ item.shared_publication.content|emoji_replace|safe }}</p>
                             {% with item.shared_publication.images.all as images %}
                                 {% if images %}<br>
                                     <div class="row">

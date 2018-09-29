@@ -1,6 +1,7 @@
 {% load static from staticfiles %}
 {% load group_utils %}
 {% load humanize %}
+{% load emoji_tags %}
 {% for theme in themes %}
     <div class="col s12 theme" data-id="{{ theme.id }}">
         <div class="card horizontal">
@@ -13,8 +14,8 @@
                 <div class="card-content">
                     <a href="{% url "user_profile:profile" username=theme.owner %}">@{{ theme.owner }}</a>
                     <i>{{ theme.created|naturaltime }}</i>
-                    <h4>{{ theme.title|safe }}</h4>
-                    <p>{{ theme.description|safe }}</p>
+                    <h4>{{ theme.title|emoji_replace|safe }}</h4>
+                    <p>{{ theme.description|emoji_replace|safe }}</p>
                 </div>
                 <div class="card-action">
                     <a href="{% url 'user_groups:group_theme' slug=theme.slug %}" class="blue-text">Ver tema</a>
