@@ -17,8 +17,6 @@
     {% endblock top-nav-menu-wrapper %}
     {% block workspaces-wrapper %}
         {% if workspaces %}
-            <div class="divider"></div>
-
             <div class="row">
                 <div class="col s12">
                     <div>
@@ -27,7 +25,7 @@
                                 <div class="collapsible-header">{{ workspaces|length }} Espacios de trabajo</div>
                                 <div class="collapsible-body">
                                     {% for ws in workspaces %}
-                                        <div class="col s3">
+                                        <div class="col l3 s12">
                                             <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
                                                 <a href="{% url 'dash:dash.public_dashboard' user.username ws.slug %}"
                                                    title="Espacios de trabajo {{ ws.name }}">
@@ -46,8 +44,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="divider"></div>
         {% endif %}
     {% endblock workspaces-wrapper %}
     {% block content %}

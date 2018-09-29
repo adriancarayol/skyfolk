@@ -105,7 +105,6 @@
         {% endblock top-nav-menu-wrapper %}
         {% block workspaces-wrapper %}
             {% if workspaces %}
-                <div class="divider"></div>
                 <div class="container">
                     <div class="row">
                         <div class="col s12">
@@ -115,7 +114,7 @@
                                         <div class="collapsible-header">{{ workspaces|length }} Espacios de trabajo</div>
                                         <div class="collapsible-body">
                                             {% for ws in workspaces %}
-                                                <div class="col s3">
+                                                <div class="col l3 s12">
                                                     <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
                                                         <a href="{% if edit_mode %}{% url 'dash:dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash:dash.dashboard' ws.slug %}{% endif %}"
                                                            title="Espacio de trabajo {{ ws.name }}">
@@ -134,7 +133,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="divider"></div>
             {% endif %}
         {% endblock workspaces-wrapper %}
     {% endblock top-menu %}
