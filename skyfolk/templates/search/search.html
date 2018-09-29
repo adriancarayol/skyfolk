@@ -156,7 +156,7 @@ Template para las busquedas
                                         <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
                                     </div>
                                     <div class="row" style="word-wrap: break-word;">
-                                        <p>{{ item.content|emoji_replace|truncatechars_html:"150"|safe }}</p>
+                                        <p>{{ item.content|safe|emoji_replace|truncatechars_html:"150"|safe }}</p>
                                         {% with item.object.shared_publication as shared_publication %}
                                             {% include "account/shared_publication.html" %}
                                         {% endwith %}
@@ -353,7 +353,7 @@ Template para las busquedas
                                     <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
                                 </div>
                                 <div class="row" style="word-wrap: break-word;">
-                                    <p>{{ item.content|emoji_replace|truncatechars_html:"150"|safe }}</p>
+                                    <p>{{ item.content|safe|emoji_replace|truncatechars_html:"150"|safe }}</p>
                                     <br>
                                     {% if node.shared_publication %}
                                             {% if node.shared_publication.deleted %}
@@ -373,7 +373,7 @@ Template para las busquedas
                                                                 href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
                                                             <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i>
                                                         </p>
-                                                        <p>{{ node.shared_publication.content|emoji_replace|safe }}</p>
+                                                        <p>{{ node.shared_publication.content|safe|emoji_replace }}</p>
                                                         {% with node.shared_publication.images.all as images %}
                                                             {% if images %}<br>
                                                                 <div class="row">
@@ -454,7 +454,7 @@ Template para las busquedas
                                                                 href="{% url 'user_profile:profile' item.object.shared_group_publication.author %}">@{{ item.object.shared_group_publication.author }}</a>
                                                             <i class="blue-textº text-darken-2"> {{ item.object.shared_group_publication.created|naturaltime }}</i>
                                                         </p>
-                                                        <p>{{ item.object.shared_group_publication.content|emoji_replace|safe }}</p>
+                                                        <p>{{ item.object.shared_group_publication.content|safe|emoji_replace }}</p>
                                                         {% with item.object.shared_group_publication.images.all as images %}
                                                             {% if images %}<br>
                                                                 <div class="row">
