@@ -52,7 +52,7 @@
                                             <div class="row z-depth-1-half">
                                                         {% avatar node.parent.author 40 %}
                                                         <a
-                                                                href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.author }}: {{ node.parent.content|emoji_replace|truncatewords_html:10|safe }}</a>
+                                                                href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.author }}: {{ node.parent.content|safe|emoji_replace|truncatewords_html:10|safe }}</a>
                                                 </div>
                                             {% endif %}
                                         </h2>
@@ -60,7 +60,7 @@
                                             <div class="parrafo comment">
                                                 <p
                                                         class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}{% if node.edition_date %}<i> - Editado</i>{% endif %}</p>
-                                                <div class="wrp-comment">{{ node.content|emoji_replace|safe }}</div>
+                                                <div class="wrp-comment">{{ node.content|safe|emoji_replace }}</div>
                                             </div>
                                             <div class="show-more" id="show-comment-{{ node.pk }}">
                                                 <a href="#">+ Mostrar más</a>

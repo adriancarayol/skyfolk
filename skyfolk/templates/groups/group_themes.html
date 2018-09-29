@@ -14,8 +14,8 @@
                 <div class="card-content">
                     <a href="{% url "user_profile:profile" username=theme.owner %}">@{{ theme.owner }}</a>
                     <i>{{ theme.created|naturaltime }}</i>
-                    <h4>{{ theme.title|emoji_replace|safe }}</h4>
-                    <p>{{ theme.description|emoji_replace|safe }}</p>
+                    <h4>{{ theme.title|safe|emoji_replace }}</h4>
+                    <p>{{ theme.description|safe|emoji_replace }}</p>
                 </div>
                 <div class="card-action">
                     <a href="{% url 'user_groups:group_theme' slug=theme.slug %}" class="blue-text">Ver tema</a>

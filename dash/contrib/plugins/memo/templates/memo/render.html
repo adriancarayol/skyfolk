@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="row center">
-                <p class="flow-text">{{ plugin.data.text|emoji_replace }}</p>
+                <p class="flow-text">{{ plugin.data.text|safe|emoji_replace }}</p>
             </div>
         </div>
     </div>
