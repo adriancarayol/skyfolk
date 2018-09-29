@@ -606,7 +606,8 @@ class ShareGroupPublication(View):
             obj.created = timezone.now()
             obj.event_type = 6
             obj.deleted = False
-
+            obj.content = pub.content
+            
             with transaction.atomic(using='default'):
                 obj.save()
                 transaction.on_commit(lambda: obj.send_notification(request))

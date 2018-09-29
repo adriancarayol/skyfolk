@@ -7,7 +7,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            {% for placeholder in placeholders %
+            {% for placeholder in placeholders %}
                 <div id="{{ placeholder.html_id }}" class="placeholder {{ placeholder.html_class }}">
                     {{ placeholder.render_for_edit|safe }}
                 </div>
