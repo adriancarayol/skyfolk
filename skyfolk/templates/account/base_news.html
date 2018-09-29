@@ -86,7 +86,7 @@
                     <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                 </div>
                 <div class="col l9 m10 s9 contenido">
-                    <p>{{ item.content|emoji_replace|safe }}</p>
+                    <p>{{ item.content|safe|emoji_replace }}</p>
                     {% with item.shared_publication as shared_publication %}
                     {% include "account/shared_publication.html" %}
                     {% endwith %}

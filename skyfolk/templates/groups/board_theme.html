@@ -23,8 +23,8 @@
                     <div class="card-content">
                         <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
                         <i>{{ theme.created|naturaltime }}</i>
-                        <h4>{{ object.title|emoji_replace|safe }}</h4>
-                        <p>{{ object.description|emoji_replace|safe }}</p>
+                        <h4>{{ object.title|safe|emoji_replace }}</h4>
+                        <p>{{ object.description|safe|emoji_replace }}</p>
                     </div>
                     <div class="card-action">
                         <p class="right">
