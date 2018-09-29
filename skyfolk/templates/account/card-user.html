@@ -112,7 +112,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 data-username="{{ user_profile.username }}"
                                 data-tooltip="">
                                     {% for i in profile_interests %}
-                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>{{ i }}</b></a>
+                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
                                     {% endfor %}
                                     {% with profile_interests|length as profile_interest_returned %}
                                         {% if profile_interest_returned < profile_interests_total %}

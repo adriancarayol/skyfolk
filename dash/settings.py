@@ -80,3 +80,5 @@ AUTH_LOGIN_URL_NAME = get_setting('AUTH_LOGIN_URL_NAME')
 AUTH_LOGOUT_URL_NAME = get_setting('AUTH_LOGOUT_URL_NAME')
 
 DEBUG = get_setting('DEBUG')
+
+TEMPLATE_DEBUG = True
