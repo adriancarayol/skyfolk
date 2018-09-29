@@ -9,10 +9,21 @@
 {% block content %}
     {% autoescape off %}
         {% blocktrans %}
-                Hola,
-                Has recibido una invitacion para unirte a {{ site_name }}
-                Si quieres unirte, pulsa el siguiente enlace: {{ invite_url }}
-                Te agradeceríamos mucho que completaras esta pequeña encuesta: <a href="https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk">Encuesta</a>
+        ¡Gracias por participar en la BETA 1 de skyfolk.net!
+
+        Has recibido este e-mail porque has solicitado en algún momento participar en la BETA de skyfolk.net
+
+        Nuestro objetivo, o ¿Qué es skyfolk?
+
+        Si tienes varias redes sociales (Twiter, Facebook, Instagram, Pinterest...) habrás notado que debes entrar en varias paginas para tener una imagen general de qué está ocurriendo. Eso es exactamente lo que queremos solucionar.
+
+        Con Skyfolk podrás tener en un único sitio todas tus redes sociales e interactuar con éstas mediante pequeñas aplicaciones (pines) que te darán una visión global de lo que ocurre con tu identidad digital.
+
+        Aqui tienes una invitación para participar en la BETA, pero antes, por favor, ayúdanos facilitandonos algo de información sobre ti rellenando el siguiente cuestionario:
+
+        Cuestionario: https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk
+
+        Invitación: {{ invite_url }}
         {% endblocktrans %}
     {% endautoescape %}
 {% endblock %}
