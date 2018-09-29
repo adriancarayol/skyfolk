@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load group_utils %}
+{% load emoji_tags %}
 {% load static %}
 
 {% if shared_publication %}
@@ -31,7 +32,7 @@
     <br/>
     <div class="row">
         <div class="col s12">
-            <p>{{ shared_publication.content|safe }}</p>
+            <p>{{ shared_publication.content|emoji_replace|safe }}</p>
         </div>
         <div class="col s12">
             {% with shared_publication.images.all as images %}

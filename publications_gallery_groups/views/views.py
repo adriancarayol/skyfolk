@@ -72,7 +72,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
                 publication.add_hashtag()  # add hashtags
-                publication.content = Emoji.replace(publication.content)  # Add emoji img
+
 
                 media = request.FILES.getlist('image')
 
@@ -455,7 +455,7 @@ def edit_publication(request):
                 publication.parse_content()  # parse publication content
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()
-                publication.content = Emoji.replace(publication.content)
+
                 publication.edition_date = datetime.datetime.now()
                 publication._edited = True
                 with transaction.atomic(using="default"):

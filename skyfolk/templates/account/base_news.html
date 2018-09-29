@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load app_filters %}
+{% load emoji_tags %}
 {% load static %}
 {% load render_bundle from webpack_loader %}
 {% block title %}Novedades{% endblock %}
@@ -85,7 +86,7 @@
                     <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                 </div>
                 <div class="col l9 m10 s9 contenido">
-                    <p>{{ item.content|safe }}</p>
+                    <p>{{ item.content|emoji_replace|safe }}</p>
                     {% with item.shared_publication as shared_publication %}
                     {% include "account/shared_publication.html" %}
                     {% endwith %}

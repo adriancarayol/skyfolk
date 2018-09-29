@@ -74,7 +74,6 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
                 publication.add_hashtag()  # add hashtags
-                publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
 
@@ -381,7 +380,6 @@ class EditGroupPublication(UpdateView):
             publication.parse_content()
             publication.add_hashtag()
             publication.parse_mentions()
-            publication.content = Emoji.replace(publication.content)
             publication.edition_date = datetime.datetime.now()
             publication._edited = True
             with transaction.atomic(using="default"):
@@ -604,7 +602,7 @@ class ShareGroupPublication(View):
             except Publication.DoesNotExist:
                 obj = Publication.objects.create(shared_group_publication=pub_to_add, author=user, board_owner=user)
 
-            obj.content = Emoji.replace(pub.content)
+
             obj.created = timezone.now()
             obj.event_type = 6
             obj.deleted = False

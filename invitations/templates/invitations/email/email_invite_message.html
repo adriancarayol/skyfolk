@@ -1,15 +1,17 @@
 {% extends "emails/base_email.html" %}
 {% load i18n %}
+{% block header_content %}
+    ¡Has recibido una invitación para Skyfolk!
+{% endblock %}
+{% block title %}
+    <a href="https://{{ site_name }}/profile/{{ inviter }}/">@{{ inviter }}</a> quiere que te unas a Skyfolk
+{% endblock %}
 {% block content %}
-{% autoescape off %}
-{% blocktrans %}
-
-Hello,
-
-You ({{ email }}) have been invited to join {{ site_name }}
-
-If you'd like to join, please go to {{ invite_url }}
-
-{% endblocktrans %}
-{% endautoescape %}
+    {% autoescape off %}
+        {% blocktrans %}
+                Hola,
+                Has recibido una invitacion para unirte a {{ site_name }}
+                Si quieres unirte, pulsa el siguiente enlace: {{ invite_url }}
+        {% endblocktrans %}
+    {% endautoescape %}
 {% endblock %}

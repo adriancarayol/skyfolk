@@ -2,6 +2,7 @@
 {% load group_utils %}
 {% load static %}
 {% load humanize %}
+{% load emoji_tags %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
@@ -22,8 +23,8 @@
                     <div class="card-content">
                         <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
                         <i>{{ theme.created|naturaltime }}</i>
-                        <h4>{{ object.title|safe }}</h4>
-                        <p>{{ object.description|safe }}</p>
+                        <h4>{{ object.title|emoji_replace|safe }}</h4>
+                        <p>{{ object.description|emoji_replace|safe }}</p>
                     </div>
                     <div class="card-action">
                         <p class="right">
