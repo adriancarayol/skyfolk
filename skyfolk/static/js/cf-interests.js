@@ -206,11 +206,7 @@
         this.renderChip = function (elem) {
             if (!elem.tag) return;
             var tag = elem.tag.toLowerCase();
-            if (elem.delete) {
-                var html = '<div class="chip delete">' + tag;
-            } else {
-                var html = '<div class="chip">' + tag;
-            }
+            var html = '<div class="chip">' + tag;
             if (elem.image) {
                 html += ' <img src="' + elem.image + '"> ';
             }
@@ -244,11 +240,13 @@
         };
 
         this.addChip = function (chipsIndex, elem, $chips) {
+            console.log(elem);
             if (!self.isValid($chips, elem)) {
                 return;
             }
             var options = $chips.data('options');
             var chipHtml = self.renderChip(elem);
+
             $chips.data('chips').push(elem);
             $(chipHtml).insertBefore($chips.find('input'));
             $chips.trigger('chip.add', elem);
@@ -345,4 +343,20 @@ $(document).ready(function () {
         });
         return false;
     });
+    $('.interest').on('click', '.close', function () {
+            let chip = $(this).closest('.chip');
+            let id = chip.attr('data-id');
+            if (!id) {
+                Materialize.toast('Hay un pequeño, reinicia la página', 1000);
+                return;
+            }
+            $.ajax({
+                url: "/interest/" + id + '/',
+                type: "DELETE",
+                success: function (result) {
+                    Materialize.toast(result.message, 1000);
+                }
+            })
+        }
+    );
 });

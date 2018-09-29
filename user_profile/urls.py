@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from django.contrib.auth.decorators import login_required
 
 from user_profile import views as user_profile_views
@@ -91,4 +92,5 @@ urlpatterns = [
     # Interest VIEWS
     url(r'^profile/(?P<username>[\w-]+)/interests/$', interests_views.ProfileInterests.as_view(),
         name='json_profile_interests'),
+    path('interest/<int:id>/', interests_views.delete_interest, name='delete_interest'),
 ]

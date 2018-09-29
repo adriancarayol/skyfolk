@@ -6,7 +6,7 @@
     </div>
 
     <div class="content-body center">
-        <p>{% blocktrans with workspace.name as workspace_name %}Are you sure you want to delete the dashboard workspace
+        <p>{% blocktrans with workspace.name as workspace_name %}¿Estás seguro de que quieres eliminar el espacio de trabajo
             {{ workspace_name }}?{% endblocktrans %}</p>
         <form method="post" action="{% url 'dash:dash.delete_dashboard_workspace' workspace.pk %}"
               enctype="multipart/form-data" class="form-horizontal">

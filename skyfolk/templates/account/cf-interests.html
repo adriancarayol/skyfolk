@@ -26,14 +26,17 @@
         <h5>Añade aquellos intereses que deseas seguir.</h5>
     </div>
     <div class="row"></div>
+
     <div class="col s12">
         <span>Tus intereses actuales: </span>
-            {% for interest in my_interests %}
-                <div class="chip top-theme interest">
-                    {{ interest.0 }}
-                </div>
-            {% endfor %}
+        {% for interest in my_interests %}
+            <div class="chip interest" data-id="{{ interest.1 }}">
+                {{ interest.0 }}
+                <i class="close material-icons">close</i>
+            </div>
+        {% endfor %}
     </div>
+    <div class="row"></div>
     <div class="row">
         <div class="col s12">
             <div class="chips chips-placeholder"></div>

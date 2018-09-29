@@ -115,14 +115,14 @@ class GroupThemeForm(forms.ModelForm):
         title = self.cleaned_data['title']
         title = title.replace('\n', '').replace('\r', '')
         title = bleach.clean(title, tags=[''])
-        return Emoji.replace(title)
+        return title
 
     def clean_description(self):
         description = self.cleaned_data['description']
         description = description.replace('\n', '').replace('\r', '')
         description = bleach.clean(description, tags=[''])
         description = bleach.linkify(description)
-        return Emoji.replace(description)
+        return description
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
@@ -153,14 +153,14 @@ class EditGroupThemeForm(forms.ModelForm):
         title = self.cleaned_data['title']
         title = title.replace('\n', '').replace('\r', '')
         title = bleach.clean(title, tags=[''])
-        return Emoji.replace(title)
+        return title
 
     def clean_description(self):
         description = self.cleaned_data['description']
         description = description.replace('\n', '').replace('\r', '')
         description = bleach.clean(description, tags=[''])
         description = bleach.linkify(description)
-        return Emoji.replace(description)
+        return description
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
