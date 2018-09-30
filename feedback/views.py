@@ -8,9 +8,11 @@ class FeedbackView(FormView):
     success_url = '/feedback/success/'
     form_class = ContactForm
 
-    def form_valid(self, form):
+    def form_valid(self, form, **kwargs):
         form.save()
         form.send_email()
+        context = self.get_context_data(**kwargs)
+        context['success'] = form.cleaned_data['message']
         return super().form_valid(form)
 
 

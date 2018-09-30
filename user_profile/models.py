@@ -378,6 +378,9 @@ class AuthDevices(models.Model):
     user_profile = models.ForeignKey(User, related_name='device_to_profile', on_delete=models.CASCADE)
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
+    
+    class Meta:
+        unique_together = (('user_profile', 'browser_token'))
 
 
 class NotificationSettings(models.Model):

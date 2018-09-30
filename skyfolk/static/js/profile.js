@@ -100,7 +100,18 @@ $(document).ready(function () {
         $('.wrapper-workspaces').load($(this).attr('href'));
     });
 
-    $('#configurationOnProfile').on('click', function () {
+    $('#configurationOnProfile').on('click', function () {     
+        var configIcon = $(this).find('.configure-profile');
+        
+        $(configIcon).text(function(i, oldText) {
+            if (oldText === 'settings') {
+                return 'remove_red_eye';
+            }
+            if (oldText === 'remove_red_eye') {
+                return 'settings';
+            }
+        });
+        
         $('html, body').toggleClass('body-inConf');
         $('.ventana-pin').fadeToggle();
         $(add_pin).toggle();
@@ -197,6 +208,7 @@ $(document).ready(function () {
         var tag = $(this);
         $(wrapper_shared_pub).find('#id_pk').val($(tag).data('id'));
         $(wrapper_shared_pub).show();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
     /* Compartir a skyline */

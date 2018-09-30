@@ -1608,4 +1608,48 @@ span[class*="group-profile"], span[class*="like-profile"] {
     max-height: 100%;
     object-fit: cover; }
 
+.profile-controls, .profile-items, .profile-info {
+  padding: 5px; }
+
+.profile-controls > li {
+  display: inline;
+  margin: 10px;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out; }
+
+.profile-controls .configure-profile:hover {
+  color: grey; }
+
+.profile-controls .write-profile:hover {
+  color: #1e88e5; }
+
+.profile-controls .info-groups:hover, .group-profile:hover {
+  color: #4caf50; }
+
+.profile-controls .info-trof:hover {
+  color: #ffc107; }
+
+.profile-controls .my-content:hover {
+  color: #f44336; }
+
+.profile-controls .info-workspaces:hover {
+  color: #90caf9; }
+
+.profile-controls .follow-profile:hover {
+  color: #81c784; }
+
+.profile-controls .like-profile:hover {
+  color: #ec407a; }
+
+.profile-items > li {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1.2em; }
+
+.profile-items > li > a {
+  color: #424242; }
+
+.user-stats .user-pic-wrapper {
+  margin: 5px; }
+
 /*# sourceMappingURL=profile.css.map */
