@@ -1,0 +1,4 @@
+{% load i18n %}
+{% autoescape off %}
+    {% blocktrans %}Has recibido una invitación para la beta de {{ site_name }}{% endblocktrans %}
+{% endautoescape %}

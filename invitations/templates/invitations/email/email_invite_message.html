@@ -1,7 +1,7 @@
 {% extends "emails/base_email.html" %}
 {% load i18n %}
 {% block header_content %}
-    ¡Has recibido una invitación para Skyfolk!
+    ¡Has recibido una invitación para la beta de Skyfolk!
 {% endblock %}
 {% block title %}
     <a href="https://{{ site_name }}/profile/{{ inviter }}/">@{{ inviter }}</a> quiere que te unas a Skyfolk
@@ -9,19 +9,19 @@
 {% block content %}
     {% autoescape off %}
         {% blocktrans %}
-        ¡Gracias por participar en la BETA 1 de skyfolk.net!
+        ¡Gracias por participar en la BETA de skyfolk.net!<br/><br/>
 
-        Has recibido este e-mail porque has solicitado en algún momento participar en la BETA de skyfolk.net
+        Has recibido este e-mail porque has solicitado en algún momento participar en la BETA de skyfolk.net<br/><br/>
         
-        Nuestro objetivo, o ¿Qué es skyfolk?
+        Nuestro objetivo, o ¿Qué es skyfolk?<br/><br/>
         
-        Si tienes varias redes sociales (Twiter, Facebook, Instagram, Pinterest...) habrás notado que debes entrar en varias paginas para tener una imagen general de qué está ocurriendo. Eso es exactamente lo que queremos solucionar.
+        Si tienes varias redes sociales (Twiter, Facebook, Instagram, Pinterest...) habrás notado que debes entrar en varias paginas para tener una imagen general de qué está ocurriendo. Eso es exactamente lo que queremos solucionar.<br/><br/>
         
-        Con Skyfolk podrás tener en un único sitio todas tus redes sociales e interactuar con éstas mediante pequeñas aplicaciones (pines) que te darán una visión global de lo que ocurre con tu identidad digital.
+        Con Skyfolk podrás tener en un único sitio todas tus redes sociales e interactuar con éstas mediante pequeñas aplicaciones (pines) que te darán una visión global de lo que ocurre con tu identidad digital.<br/><br/>
         
-        Aqui tienes una invitación para participar en la BETA, pero antes, por favor, ayúdanos facilitandonos algo de información sobre ti rellenando el siguiente cuestionario: <a href="https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk">Cuestionario</a>
+        Aqui tienes una invitación para participar en la BETA, pero antes, por favor, ayúdanos facilitandonos algo de información sobre ti rellenando el siguiente cuestionario: <a href="https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk">Cuestionario</a><br/><br/>
         
-        Invitación: {{ invite_url }}
+        Invitación: {{ invite_url }}<br/><br/>
         {% endblocktrans %}
     {% endautoescape %}
 {% endblock %}
