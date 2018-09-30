@@ -1,7 +1,7 @@
 {% extends "emails/base_email.html" %}
 {% load i18n %}
 {% block header_content %}
-    ¡Has recibido una invitación para Skyfolk!
+    ¡Has recibido una invitación para la beta de Skyfolk!
 {% endblock %}
 {% block title %}
     <a href="https://{{ site_name }}/profile/{{ inviter }}/">@{{ inviter }}</a> quiere que te unas a Skyfolk
@@ -9,7 +9,8 @@
 {% block content %}
     {% autoescape off %}
         {% blocktrans %}
-        ¡Gracias por participar en la BETA 1 de skyfolk.net!
+        <pre>
+        ¡Gracias por participar en la BETA de skyfolk.net!
 
         Has recibido este e-mail porque has solicitado en algún momento participar en la BETA de skyfolk.net
         
@@ -22,6 +23,7 @@
         Aqui tienes una invitación para participar en la BETA, pero antes, por favor, ayúdanos facilitandonos algo de información sobre ti rellenando el siguiente cuestionario: <a href="https://docs.google.com/a/skyfolk.net/forms/d/104JoI-pMAjUCKs2bwYVylJpHZmW5h9tsySduGcX5iNw/edit?usp=drivesdk">Cuestionario</a>
         
         Invitación: {{ invite_url }}
+        </pre>
         {% endblocktrans %}
     {% endautoescape %}
 {% endblock %}
