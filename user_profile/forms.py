@@ -63,7 +63,7 @@ class CustomLoginForm(LoginForm):
                                        template='emails/new_login.html',
                                        context={'to_user': self.user.username, 'message': message},
                                        to_emails=(self.user.email,))
-            except IntegrityError:
+            except (IntegrityError, Exception) as e:
                 pass
         else:
             message = 'Hemos detectado un nuevo inicio de sesión desde la IP: {}'.format(ip)

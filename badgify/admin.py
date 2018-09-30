@@ -31,7 +31,7 @@ class BadgeAdmin(admin.ModelAdmin):
     link.allow_tags = True
 
     def view_on_site(self, obj):
-        return reverse('badge_detail', kwargs={'slug': obj.slug})
+        return reverse('badgify:badge_detail', kwargs={'slug': obj.slug})
 
 
 class AwardAdmin(admin.ModelAdmin):
