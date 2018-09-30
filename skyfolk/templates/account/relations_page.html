@@ -3,6 +3,7 @@
 {% load static %}
 {% if following %}
 {% for item in following %}
+{% comment %}
     <div class="col l3 m10 s12 offset-m2">
         <div class="personal-card">
             <div class="row">
@@ -31,36 +32,15 @@
             </div>
         </div>
     </div>
+    {% endcomment %}
+    {% with item.to_profile as user_profile %}
+        {% include "user_profile/skyfolk-card.html" %}
+    {% endwith %}
 {% endfor %}
 {% elif followers %}
 {% for item in followers %}
-    <div class="col l3 m10 s12 offset-m2">
-        <div class="personal-card">
-            <div class="row">
-                <div class="col s12">
-                    <div class="header">
-                        {% if item.from_profile.back_image %}
-                            <img class="back-profile-user lazyload" data-src="{{ item.from_profile.back_image.url }}">
-                        {% else %}
-                            <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.jpg" %}">
-                        {% endif %}
-                        <i class="material-icons like-him">person</i>
-                        <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.from_profile.user.username }}'"
-                                 class="profile-user-bg">{% avatar item.from_profile.user.username %}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <div class="name-friend">
-                        <a href="/profile/{{ item.from_profile.user.username }}">@{{ item.from_profile.user.username }} </a><br><br>
-                        <p>{{ item.from_profile.user.first_name }} {{ item.from_profile.user.last_name }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% with item.from_profile as user_profile %}
+        {% include "user_profile/skyfolk-card.html" %}
+    {% endwith %}
 {% endfor %}
 {% endif %}

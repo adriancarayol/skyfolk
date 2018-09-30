@@ -1,0 +1,58 @@
+{% comment %}
+Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.html)
+{% endcomment %}
+{% load app_filters %}
+{% load avatar_tags %}
+{% load humanize %}
+{% load static %}
+    <div class="col l3 m10 s12 offset-m2 z-depth-2">
+        <div class="user-card card">
+                <div class="col s12 user-avatar" style="background: {% if user_profile.back_image %}
+                    url({{ user_profile.back_image.url }})
+                    {% else %}
+                    url({% static "dist/img/nuevo_back.jpg" %})
+                    {% endif %} no-repeat center center; background-size: cover;">
+                </div>
+            <div class="col s12 user-stats">
+                    <div class="col l3 s4">
+                        <div class="tooltipped user-pic-wrapper" data-position="bottom" 
+                            data-tooltip="{% if user_profile.online %} Online {%else%} Offline {% endif %}"
+                            style="{% if user_profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);{% else %}
+                                -webkit-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile.user css_class="responsive-img" %}</div>
+                    </div>
+                    <div class="col l9 s8">
+                        <ul class="profile-info">
+                            <li><b id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.user.username }}">@{{ user_profile.user.username }}</b> {% if user_profile.first_name or user_profile.last_name %}
+                                ({{ user_profile.first_name }} {{ user_profile.last_name }}) {% endif %}
+                                {% if isFollower %}
+                                <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
+                                {% if user_profile.status %}
+                                    <li class="status">{{ user_profile.status }}</li>
+                                {% endif %}
+                        </ul>
+                        <ul class="profile-items">
+                            <li>
+                                {% if user_profile.tags %}
+                                <div class="interests tooltipped" data-position="bottom"
+                                data-username="{{ user_profile.user.username }}"
+                                data-tooltip="">
+                                    {% for i in user_profile.tags.all %}
+                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
+                                    {% endfor %}
+                                    {% with user_profile.tags.all|length as profile_interest_returned %}
+                                        {% if profile_interest_returned < profile_interests_total %}
+                                            +{% reduce profile_interests_total profile_interest_returned %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+            </div>
+    </div>
+</div>
