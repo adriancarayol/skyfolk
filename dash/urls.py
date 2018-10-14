@@ -5,7 +5,6 @@ from .views import (
     add_dashboard_entry,
     edit_dashboard_entry,
     PublicWorkspacesAJAX,
-    RetrieveInfoForServicePin,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -23,6 +22,7 @@ from .views import (
     public_dashboard,
 )
 
+from .contrib.plugins.service.views import RetrieveInfoForServicePin
 from .contrib.plugins.poll.views import submit_poll_response
 
 app_name = 'dash'

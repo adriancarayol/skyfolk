@@ -1450,6 +1450,7 @@ def public_dashboard(request,
             template_name, context, context_instance=RequestContext(request)
         )
 
+
 class PublicWorkspacesAJAX(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "dash/public_workspaces_ajax.html"
@@ -1489,37 +1490,3 @@ class PublicWorkspacesAJAX(APIView):
             workspaces = paginator.page(paginator.num_pages)
 
         return Response({'workspaces': workspaces, 'username': user.username, 'user_id': user.id})
-
-#TODO: Mover to service module
-
-
-class RetrieveInfoForServicePin(APIView):
-    
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        pin_id = kwargs.pop('pin_id')
-        
-        try:
-            pin = DashboardEntry._default_manager.get(id=pin_id)
-        except DashboardEntry.DoesNotExist:
-            raise Http404
-        
-        try:
-            profile = Profile.objects.get(user_id=pin.user.id)
-            request_user = Profile.objects.get(user_id=request.user.id)
-        except Profile.DoesNotExist:
-            raise Http404
-
-        privacity = profile.is_visible(request_user)
-
-        if privacity and privacity != 'all':
-            return HttpResponseForbidden()
-        
-        response = requests.get('http://127.0.0.1:1800/service/{}/'.format(pin_id))
-        json_response = response.json()
-        
-        
-        return Response({'content': json_response})    
