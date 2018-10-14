@@ -6,4 +6,3 @@ class DashConfiguration(AppConfig):
 
     def ready(self):
         super(DashConfiguration, self).ready()
-        import dash.signals

@@ -351,6 +351,7 @@ class BaseDashboardLayout(object):
         return '{0} {1}'.format(self.primary_html_class,
                                 ' '.join(self.html_classes))
 
+    
     def get_css(self, placeholders):
         """Get placeholder specific css.
 
@@ -1147,7 +1148,7 @@ class BaseDashboardPlugin(object):
         :return string:
         """
         widget_cls = self.get_widget()
-
+        
         if widget_cls:
             widget = widget_cls(self)
 
@@ -1417,7 +1418,7 @@ class BaseDashboardPluginWidget(object):
         :return str:
         """
         return ''
-
+    
     @classproperty
     def html_class(cls):
         """HTML class of the ``dash.base.BaseDashboardPluginWidget``.

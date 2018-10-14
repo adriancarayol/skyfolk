@@ -1,0 +1,135 @@
+{% extends "account/base_interface.html" %}
+
+{% load static %}
+{% load i18n %}
+{% block filter_trigger %}
+    {% block title %}Mis servicios{% comment %}{% trans "My Services" %}{% endcomment %}{% endblock %}
+    {% block extra-css %}
+        <style>
+            .row .service {
+                width: 100%;
+                height: 250px;
+                border-radius: 10px;
+                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.3);
+                position: relative;
+            }
+            .row .service-actions {
+                border-top: 2px solid rgba(30, 136, 229, 0.3);
+                text-align: center;
+                padding: 5px;
+            }
+            .row .service-actions > a{
+                margin: 5px;
+            }
+            .row .service .service-thumbnail img {
+                width: 100%;
+                height: 100%;
+                object-fit: fill;
+            }
+            .row .service .service-thumbnail {
+                padding: 10px;
+                height: 70%;
+            }
+
+            .row .service .service-description {
+                padding: 5px;
+            }
+            .row .service:hover .actions-service {
+                display: block;
+                box-shadow:
+                1px 1px #53a7ea,
+                2px 2px #53a7ea,
+                3px 3px #53a7ea;
+                -webkit-transform: translateX(-3px);
+                transform: translateX(-3px);
+            }
+            .row .service .actions-service {
+                border-radius: 10px;
+	            position: absolute;
+	            display: none;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                cursor: pointer;
+            }
+            .row .service .actions-service i {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin: 0 -50% 0 0;
+                transform: translate(-50%, -50%);
+                font-size: 80px;
+                color: #FFF;
+            }
+        </style>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                {% if user.is_authenticated %}
+                    <div class="row">
+                        <h2 class="center">Mis servicios</h2>
+                    </div>
+                    {% if services_list %}
+                        <div class="row">
+                            <h3>Servicios activos</h3>
+                            {% for service in services_list %}
+                               <div class="col s12 m4 l2">
+                                    <div class="service tooltipped" data-position="bottom" data-tooltip="{{ service.description }}">
+                                        <div class="service-thumbnail">
+                                            <img src="{% if service.thumbnail %}{{ service.thumbnail.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
+                                                 title="{{ service.name|safe|escape }}" alt="{{ service.name|safe|escape }}" />
+                                        </div>
+                                        <div class="service-description">
+                                            <p class="center flow-text">
+                                                <b>{{ service.name|safe|escape }}</b>
+                                            </p>
+                                        </div>
+                                    <div class="service-actions">
+                                        {% if service.name.auth_required == True %}
+                                                <a
+                                                   href=""
+                                                   title="Renovar servicio"><i
+                                                        class="material-icons">autorenew</i></a>
+                                            {% endif %}
+                                            <a
+                                               href=""
+                                               title="Editar servicio"><i
+                                                    class="material-icons">edit</i></a>
+                                            <a
+                                               href=""
+                                               title="Desactivar todos los widgets de este servicio"><i
+                                                    class="material-icons">pause_circle_filled</i></a>
+                                            <a
+                                               href=""
+                                               title="Activar todos los widgets de este servicio"><i
+                                                    class="material-icons">play_circle_filled</i></a>
+                                            <a
+                                               href=""
+                                               title="Eliminar este servicio"><i
+                                                    class="material-icons">remove</i></a>
+                                    </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="row center">
+                            <p class="flow-text">Actualmente no tienes ningún servicio activo.</p>
+                        </div>
+                    {% endif %}
+                    <div class="divider"></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.tooltipped').tooltip({delay: 50});
+        });
+
+    </script>
+{% endblock %}

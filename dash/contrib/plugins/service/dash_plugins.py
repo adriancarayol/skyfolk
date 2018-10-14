@@ -2,63 +2,33 @@ from django.utils.translation import ugettext_lazy as _
 
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
+from .forms import ServiceForm
 
-from .forms import TriggerForm
-from dash_services.models import TriggerService
 
 # ****************************************************************************
-# ********************************* Service plugin *******************************
+# ******************************* Base memo plugin ***************************
 # ****************************************************************************
 
 
-class BaseTriggerPlugin(BaseDashboardPlugin):
-    """Base Trigger plugin."""
+class BaseServicePlugin(BaseDashboardPlugin):
+    """Base memo plugin."""
 
-    def __init__(self, layout_uid, placeholder_uid, workspace=None, user=None, position=None):
-        super(BaseTriggerPlugin, self).__init__(layout_uid=layout_uid, placeholder_uid=placeholder_uid,
-                                                workspace=workspace,
-                                                user=user, position=position)
+    name = _("Service")
+    group = _("Service")
+    form = ServiceForm
 
-    name = _(u"Trigger")
-    group = _(u"Internet")
-    form = TriggerForm
-
-    @property
-    def html_class(self):
-        """HTML class.
-
-        If plugin has an image, we add a class ``iconic`` to it.
-        """
-        html_class = super(BaseTriggerPlugin, self).html_class
-        return html_class
-
-    def update_plugin_data(self, dashboard_entry):
-        """Update plugin data.
-
-        Should return a dictionary with the plugin data which is supposed to
-        be updated.
-        """
-        try:
-            trigger = TriggerService.objects.get(pk=self.data.trigger)
-        except TriggerService.DoesNotExist:
-            return
-
-        if trigger:
-            data = {
-                'trigger': trigger.pk,
-                'description': trigger.description,
-                'result': trigger.result,
-            }
-
-            return data
 
 # ****************************************************************************
-# ********** Generating and registering the Trigger plugins using factory ********
+# ********** Generating and registering the plugins using factory ************
 # ****************************************************************************
-
 
 sizes = (
     (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6)
 )
 
-plugin_factory(BaseTriggerPlugin, 'trigger', sizes)
+plugin_factory(BaseServicePlugin, 'service', sizes)

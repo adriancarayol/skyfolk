@@ -38,7 +38,6 @@ DEFAULT_APPS = (
 
 # Third Party Applications
 THIRD_PARTY_APPS = (
-    'dash_services',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -57,23 +56,8 @@ THIRD_PARTY_APPS = (
     'formtools',
     'collectfast',
     'django_js_reverse',
-    'th_services',
-    'th_services.th_rss',
-    'th_services.th_evernote',
-    'th_services.th_github',
-    'th_services.th_instapush',
-    'th_services.th_mastodon',
-    'th_services.th_pocket',
-    'th_services.th_pushbullet',
-    'th_services.th_reddit',
-    'th_services.th_slack',
-    'th_services.th_taiga',
-    'th_services.th_todoist',
-    'th_services.th_trello',
-    'th_services.th_tumblr',
-    'th_services.th_twitter',
-    'th_services.th_wallabag',
-    'th_services.th_skyfolk',
+    'external_services',
+    'external_services.twitter',
     'dash',
     'dash.contrib.layouts.skyspace',
     'dash.contrib.layouts.profile',
@@ -442,6 +426,7 @@ WEBPACK_LOADER = {
 # LOGGING
 SKYFOLK_LOG_PATH = os.getenv('SKYFOLK_LOG_PATH', os.path.join(BASE_DIR, 'skyfolk.log'))
 
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -494,9 +479,3 @@ LOGGING = {
         }
 }
 
-# dedicated TriggerHappy settings
-try:
-    from skyfolk.th_settings import *
-except ImportError:
-    raise ImportError("you should create a th_settings.py with "
-                      "everything related to TriggerHappy, see th_settings_sample.py")

@@ -1,11 +1,11 @@
-from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from .views import (
-    AddDashboardEntry,
-    EditDashboardEntry,
+    add_dashboard_entry,
+    edit_dashboard_entry,
     PublicWorkspacesAJAX,
+    RetrieveInfoForServicePin,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -50,44 +50,24 @@ urlpatterns = [
     # Add dashboard entry.
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/pos/(?P<position>\d+)/$'),
-        view=AddDashboardEntry.as_view([ProviderForm,
-                                        DummyForm,
-                                        ConsumerForm,
-                                        DummyForm,
-                                        ServicesDescriptionForm]),
+        view=add_dashboard_entry,
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/$'),
-        view=AddDashboardEntry.as_view([ProviderForm,
-                                        DummyForm,
-                                        ConsumerForm,
-                                        DummyForm,
-                                        ServicesDescriptionForm]),
+        view=add_dashboard_entry,
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'pos/(?P<position>\d+)/$'),
-        view=AddDashboardEntry.as_view([ProviderForm,
-                                        DummyForm,
-                                        ConsumerForm,
-                                        DummyForm,
-                                        ServicesDescriptionForm]),
+        view=add_dashboard_entry,
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/'
           r'(?P<plugin_uid>[\w_\-]+)/$'),
-        view=AddDashboardEntry.as_view([ProviderForm,
-                                        DummyForm,
-                                        ConsumerForm,
-                                        DummyForm,
-                                        ServicesDescriptionForm]),
+        view=add_dashboard_entry,
         name='dash.add_dashboard_entry'),
 
     # Edit dashboard entry.
     url(_(r'^entry/edit/(?P<entry_id>\d+)/$'),
-        view=EditDashboardEntry.as_view([ProviderForm,
-                                        DummyForm,
-                                        ConsumerForm,
-                                        DummyForm,
-                                        ServicesDescriptionForm]),
+        view=edit_dashboard_entry,
         name='dash.edit_dashboard_entry'),
 
     # Delete dashboard entry.
@@ -188,4 +168,9 @@ urlpatterns = [
     url(r'^public/workspaces/(?P<user_id>\d+)/$',
         view=PublicWorkspacesAJAX.as_view(),
         name='dash.public_dashboard_workspaces'),
+    
+    # Service pin
+    url(r'^pin/service/(?P<pin_id>\d+)/$',
+        view=RetrieveInfoForServicePin.as_view(),
+        name='dash.pin-service'),
 ]
