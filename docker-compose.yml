@@ -153,6 +153,8 @@ services:
     networks:
       - skyfolknetwork
     restart: always
+    extra_hosts:
+      - "outside:172.17.0.1"
 
   # celery worker
   celery_worker:

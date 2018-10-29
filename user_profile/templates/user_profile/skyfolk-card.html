@@ -26,7 +26,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     </div>
                     <div class="col l9 s8">
                         <ul class="profile-info">
-                            <li><b id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.user.username }}">@{{ user_profile.user.username }}</b> {% if user_profile.first_name or user_profile.last_name %}
+                            <li><a href="/profile/{{user_profile.user.username }}/" id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.user.username }}">@{{ user_profile.user.username }}</a> {% if user_profile.first_name or user_profile.last_name %}
                                 ({{ user_profile.first_name }} {{ user_profile.last_name }}) {% endif %}
                                 {% if isFollower %}
                                 <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
