@@ -3,7 +3,7 @@
 <div class="row infinite-following">
     {% for item in friends_top12 %}
         <div class="item-followed col l6 s12">
-            <div class="following-item" id="friend-{{ item.user_id }}">
+            <div class="following-item" id="friend-{{ item.id }}">
                 <div class="usr-img img-responsive">{% avatar item %}</div>
                 <a class="name" href="/profile/{{ item.username }}">{{ item.first_name }} {{ item.last_name }}
                     @{{ item.username }}</a>

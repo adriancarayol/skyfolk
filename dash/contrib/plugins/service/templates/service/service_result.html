@@ -1,3 +1,5 @@
 <div class="service-result">
-    <p>{{ twitter_id }}</p>
+    {% for result in results %}
+        <p>{{ result.text }}</p>
+    {% endfor %}
 </div>
