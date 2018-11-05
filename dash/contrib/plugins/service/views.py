@@ -52,7 +52,6 @@ class RetrieveInfoForServicePin(APIView):
                 }
             ]
             rendered = render_to_string('service/service_result.html', {'results': response_json})
-            print(rendered)
             return Response({'content': rendered})
         except Exception:
             pass
