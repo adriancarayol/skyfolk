@@ -116,21 +116,19 @@ services:
     networks:
       - skyfolknetwork
       
-  # rabbitmq nodo 2
-  rabbit_2:
-    hostname: rabbit_2
-    image: rabbitmq:latest
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
+  # golang app
+  go_skyfolk:
+    build:
+      context: .
+      dockerfile: skyfolk_services/Dockerfile
     ports:
-      - "5673:5672"  # we forward this port because it's useful for debugging
-      - "15673:15672"  # here, we can access rabbitmq management plugin
-    restart: always
+      - "1800:1800"
     networks:
       - skyfolknetwork
-
+    restart: on-failure
+    depends_on:
+      - redis
+      - dbpostgres
   # django app
   web:
     env_file:
@@ -153,8 +151,6 @@ services:
     networks:
       - skyfolknetwork
     restart: always
-    extra_hosts:
-      - "outside:172.18.0.1"
 
   # celery worker
   celery_worker:

@@ -43,9 +43,10 @@ urlpatterns = [
         name='dash.cut_dashboard_entry'),
 
     # Copy dashboard entry
-    url(_(r'^entry/copy/(?P<entry_id>\d+)/$'),
-        view=copy_dashboard_entry,
-        name='dash.copy_dashboard_entry'),
+    
+    # url(_(r'^entry/copy/(?P<entry_id>\d+)/$'),
+    #     view=copy_dashboard_entry,
+    #    name='dash.copy_dashboard_entry'),
 
     # Add dashboard entry.
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'

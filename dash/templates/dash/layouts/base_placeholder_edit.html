@@ -22,10 +22,12 @@
                title="Editar pin">
                 <span class="material-icons">edit</span>
             </a>
+            {% comment %}
             <a href="{% url 'dash:dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
                title="Copiar pin">
                 <span class="material-icons">content_copy</span>
             </a>
+            {% endcomment %}
         </div>
         <div class="plugin-content-wrapper">
             {% with plugin.render as rendered %}

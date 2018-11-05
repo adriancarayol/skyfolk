@@ -35,25 +35,14 @@ class RetrieveInfoForServicePin(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        # response = requests.get('http://outside:1800/service/{}/'.format(pin_id))
-
-        # if response.status_code != 200:
-        try:
-            response_json = [
-                {
-                'text': 'FOO',
-                'account': 'Adrian',
-                'link': 'YEE'
-                },
-                {
-                'text': 'FOO2',
-                'account': 'Adrian',
-                'link': 'YEE'
-                }
-            ]
-            rendered = render_to_string('service/service_result.html', {'results': response_json})
-            return Response({'content': rendered})
-        except Exception:
-            pass
+        response = requests.get('http://go_skyfolk:1800/service/{}'.format(pin_id))
+        
+        if response.status_code == 200:
+            try:
+                response_json = json.loads(response.json())
+                rendered = render_to_string('service/service_result.html', {'results': response_json})
+                return Response({'content': rendered})
+            except Exception:
+                pass
 
         return Response({'content': ''})

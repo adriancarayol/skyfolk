@@ -1,5 +1,10 @@
-<div class="service-result">
+<div class="service-result row">
     {% for result in results %}
-        <p>{{ result.text }}</p>
+        <div class="col s12">
+            <div class="card">
+                {{ result.userAccount }}
+                {{ result.fullText }}
+            </div>
+        </div>
     {% endfor %}
 </div>
