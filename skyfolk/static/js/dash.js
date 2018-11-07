@@ -104,5 +104,20 @@ $(document).ready(function () {
         });
         return false;
     });
+    
+    $(this).on('click', '.plugin .pagination a', function(e) {
+        e.preventDefault();
+        let serviceId = $(this).closest('.plugin').attr('data-id');
+        let page = $(this).attr('href');
+        let wrapper = $(this).closest('#api-results-' + serviceId);
+        
+        $.ajax({
+            url: '/dashboard/pin/service/' + serviceId + '/' + page,
+            type: 'GET',
 
+            success: function (data) {
+                wrapper.html(data.content);
+            }
+        });
+    });
 });

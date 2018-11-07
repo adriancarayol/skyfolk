@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="row center">
-                <div id="api-results">
+                <div id="api-results-{{ id }}">
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
 <script>
 $(document).ready(function() {
     $.get("http://0.0.0.0:8000/dashboard/pin/service/" + {{ id }}, function(data, status){
-        $('#api-results').replaceWith(data.content);
+        $('#api-results-{{ id }}').html(data.content);
     });
 });
 </script>

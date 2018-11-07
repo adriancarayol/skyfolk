@@ -1,10 +1,39 @@
-<div class="service-result row">
-    {% for result in results %}
-        <div class="col s12">
-            <div class="card">
-                {{ result.userAccount }}
-                {{ result.fullText }}
-            </div>
+{% load humanize %}
+{% for result in results %}
+     <div class="row">
+    <div class="col s12">
+      <div class="card white">
+        <div class="card-content black-text">
+          <div class="row">
+            <p>{{ result.fullText }}</p>
+            <b>{{ result.createAt }}</b>
+          </div>
+          <div class="row">
+            <a class="btn blue right" href="https://twitter.com/{{ result.userAccount }}/">@{{ result.userAccount }}</a>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% if results.has_other_pages %}
+  <ul class="pagination">
+    {% if results.has_previous %}
+      <li><a href="?page={{ results.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in results.paginator.page_range %}
+      {% if results.number == i %}
+        <li class="active"><span>{{ i }}</span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
     {% endfor %}
-</div>
+    {% if results.has_next %}
+      <li><a href="?page={{ results.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}

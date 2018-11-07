@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dash.models import DashboardEntry
 from django.utils.decorators import method_decorator
 from user_profile.models import Profile
@@ -18,7 +19,8 @@ class RetrieveInfoForServicePin(APIView):
 
     def get(self, request, *args, **kwargs):
         pin_id = kwargs.pop('pin_id')
-
+        page = request.GET.get('page', 1)
+        
         try:
             pin = DashboardEntry._default_manager.get(id=pin_id)
         except DashboardEntry.DoesNotExist:
@@ -34,13 +36,22 @@ class RetrieveInfoForServicePin(APIView):
 
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
-
+        
         response = requests.get('http://go_skyfolk:1800/service/{}'.format(pin_id))
         
         if response.status_code == 200:
             try:
                 response_json = json.loads(response.json())
-                rendered = render_to_string('service/service_result.html', {'results': response_json})
+                paginator = Paginator(response_json, 5)
+                
+                try:
+                    results = paginator.page(page)
+                except PageNotAnInteger:
+                    results = paginator.page(1)
+                except EmptyPage:
+                    results = paginator.page(paginator.num_pages)
+                    
+                rendered = render_to_string('service/service_result.html', {'results': results})
                 return Response({'content': rendered})
             except Exception:
                 pass
