@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 
 from ....base import BaseDashboardPluginWidget
-from ....models import DashboardEntry, DashboardWorkspace
+from ....models import DashboardEntry
 
 __all__ = (
     'BaseServiceWidget',
@@ -13,6 +13,7 @@ __all__ = (
     'Service6x6Widget',
 )
 
+
 # ***********************************************************************
 # ********************** Base widget for Memo plugin ********************
 # ***********************************************************************
@@ -23,14 +24,15 @@ class BaseServiceWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
-        #TODO: Optimize this, get entry id directly.
+        # TODO: Optimize this, get entry id directly.
         entry = DashboardEntry._default_manager \
-                                    .filter(user=self.plugin.user,
-                                                  layout_uid=self.plugin.layout_uid,
-                                                  position=self.plugin.position,
-                                                  workspace=self.plugin.workspace).first()
+            .filter(user=self.plugin.user,
+                    layout_uid=self.plugin.layout_uid,
+                    position=self.plugin.position,
+                    workspace=self.plugin.workspace).first()
         context = {'plugin': self.plugin, 'id': entry.id}
         return render_to_string('service/render.html', context)
+
 
 # ***********************************************************************
 # ********************** Specific widgets for Memo plugin ***************

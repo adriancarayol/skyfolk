@@ -7,5 +7,6 @@ class ListServiceView(ListView):
     model = Services
     paginate_by = 100
     template_name = 'external_services/services.html'
-    
+
+
 list_service_view = login_required(ListServiceView.as_view())

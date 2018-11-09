@@ -15,5 +15,6 @@ class CreateTwitterServiceView(View):
         twitter_service = TwitterService()
         return redirect(twitter_service.callback_oauth1(request))
 
+
 auth_twitter_view = login_required(AuthTwitterServiceView.as_view())
 create_twitter_service_view = login_required(CreateTwitterServiceView.as_view())

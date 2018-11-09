@@ -16,3 +16,6 @@ class UserService(models.Model):
     
     class Meta:
         unique_together = ('service', 'user')
+
+    def __str__(self):
+        return self.service.name
