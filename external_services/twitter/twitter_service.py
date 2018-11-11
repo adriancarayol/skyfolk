@@ -1,7 +1,7 @@
 import tweepy
 from external_services.models import Services, UserService
+from django.urls import reverse
 from django.db import IntegrityError
-
 
 
 class TwitterService(object):
@@ -9,6 +9,10 @@ class TwitterService(object):
         self.consumer_token = '9UUbALvoV2evTTdJYSo3KNIiv'
         self.consumer_secret = 'DC0Obqkqh74cilW9h3dtYUNsvDg9QcgZu5ES1RBXwY7XtuY7zJ'
         self.callback = 'http://0.0.0.0:8000/external/services/twitter/callback/'
+
+    @staticmethod
+    def get_auth_url():
+        return reverse('external_services:twitter-service:connect-twitter-service')
         
     def auth(self, request):
         return self.get_request_token(request)

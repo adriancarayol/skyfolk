@@ -1,6 +1,6 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from external_services.models import UserService
+from external_services.factory import ServiceFormFactory
 from ....base import DashboardPluginFormBase
 
 
@@ -9,18 +9,24 @@ class ServiceForm(forms.Form, DashboardPluginFormBase):
 
     plugin_data_fields = [
         ("title", ""),
-        ("text", ""),
+        ("data", ""),
         ("service", "")
     ]
 
     service = forms.ModelChoiceField(queryset=UserService.objects.filter(service__status=True),
                                      required=True)
-    text = forms.CharField(label=_("Text"), required=True,
-                           widget=forms.widgets.Textarea(attrs={"class": "materialize-textarea"}))
 
     def save_plugin_data(self, request=None):
         service = self.cleaned_data.get('service', None)
 
         if service:
-            self.cleaned_data['service'] = service.pk
-            self.cleaned_data['title'] = service.service.name
+            service_name = service.service.name.lower()
+            form = ServiceFormFactory.factory(service_name)(request.POST)
+
+            if form.is_valid():
+                form_data = form.cleaned_data
+                self.cleaned_data['service'] = service.pk
+                self.cleaned_data['title'] = service.service.name
+                self.cleaned_data['data'] = form_data
+            else:
+                raise ValueError(form.errors)

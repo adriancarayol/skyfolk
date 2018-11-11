@@ -5,6 +5,6 @@ from . import views
 app_name = 'external_services'
 
 urlpatterns = [
-    path('services/', include('external_services.twitter.urls')),
+    path('services/twitter/', include('external_services.twitter.urls', namespace='twitter-service')),
     path('all/', views.list_service_view, name='all-external-services')
 ]

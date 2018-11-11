@@ -1,27 +1,21 @@
-import os
 import logging
-import requests
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import FileSystemStorage
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
-from formtools.wizard.views import SessionWizardView
 from nine import versions
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect
-from django.conf import settings
 from django.db.models import Q
 from user_profile.models import Profile
 from django.contrib.auth.models import User
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db import transaction
 from django.template.loader import render_to_string
 from .base import (
     get_layout,
@@ -37,7 +31,7 @@ from .clipboard import (
     get_plugin_data_from_clipboard,
     paste_entry_from_clipboard,
 )
-from .forms import DashboardWorkspaceForm, DashboardSettingsForm
+from .forms import DashboardWorkspaceForm
 from .helpers import (
     clean_plugin_data,
     iterable_to_dict,
@@ -46,7 +40,7 @@ from .helpers import (
     slugify_workspace,
 )
 from .models import DashboardEntry, DashboardWorkspace
-from .settings import RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT, AUTH_LOGIN_URL_NAME, AUTH_LOGOUT_URL_NAME
+from .settings import AUTH_LOGIN_URL_NAME, AUTH_LOGOUT_URL_NAME
 from .utils import (
     build_cells_matrix,
     clone_workspace,
@@ -60,7 +54,6 @@ from .utils import (
 )
 from django.http import JsonResponse
 from .json_package import json
-from io import StringIO
 
 if versions.DJANGO_GTE_1_10:
     from django.shortcuts import render

@@ -30,7 +30,7 @@ class BaseServiceWidget(BaseDashboardPluginWidget):
                     layout_uid=self.plugin.layout_uid,
                     position=self.plugin.position,
                     workspace=self.plugin.workspace).first()
-        context = {'plugin': self.plugin, 'id': entry.id}
+        context = {'plugin': self.plugin, 'id': entry.pk}
         return render_to_string('service/render.html', context)
 
 

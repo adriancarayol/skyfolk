@@ -1,5 +1,6 @@
 {% extends "account/base_interface.html" %}
 
+{% load external_services %}
 {% load static %}
 {% load i18n %}
 {% block filter_trigger %}
@@ -86,31 +87,11 @@
                                         <div class="service-description">
                                             <p class="center flow-text">
                                                 <b>{{ service.name|safe|escape }}</b>
+                                                <span>- {{ service.description }}</span>
                                             </p>
                                         </div>
                                     <div class="service-actions">
-                                        {% if service.name.auth_required == True %}
-                                                <a
-                                                   href=""
-                                                   title="Renovar servicio"><i
-                                                        class="material-icons">autorenew</i></a>
-                                            {% endif %}
-                                            <a
-                                               href=""
-                                               title="Editar servicio"><i
-                                                    class="material-icons">edit</i></a>
-                                            <a
-                                               href=""
-                                               title="Desactivar todos los widgets de este servicio"><i
-                                                    class="material-icons">pause_circle_filled</i></a>
-                                            <a
-                                               href=""
-                                               title="Activar todos los widgets de este servicio"><i
-                                                    class="material-icons">play_circle_filled</i></a>
-                                            <a
-                                               href=""
-                                               title="Eliminar este servicio"><i
-                                                    class="material-icons">remove</i></a>
+                                        <a class="btn blue white-text" href="{{ service.name|get_auth_url_given_service_name }}" title="Conectar con {{ service.name|safe|escape }}">Conectar {{ service.name|safe|escape }}</a>
                                     </div>
                                     </div>
                                 </div>

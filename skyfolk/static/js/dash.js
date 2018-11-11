@@ -107,7 +107,7 @@ $(document).ready(function () {
     
     $(this).on('click', '.plugin .pagination a', function(e) {
         e.preventDefault();
-        let serviceId = $(this).closest('.plugin').attr('data-id');
+        let serviceId = $(this).closest('.plugin').attr('data-entry-id');
         let page = $(this).attr('href');
         let wrapper = $(this).closest('#api-results-' + serviceId);
         

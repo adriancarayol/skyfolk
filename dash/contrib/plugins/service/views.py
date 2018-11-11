@@ -2,6 +2,8 @@ import json
 import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework import status
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -9,6 +11,29 @@ from dash.models import DashboardEntry
 from django.utils.decorators import method_decorator
 from user_profile.models import Profile
 from django.template.loader import render_to_string
+from external_services.factory import ServiceFormFactory
+from external_services.models import UserService
+
+
+class LoadDynamicallyFormGivenService(APIView):
+    renderer_classes = (TemplateHTMLRenderer, )
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        service_id = kwargs.pop('service_id')
+
+        try:
+            service = UserService.objects.get(user=request.user, id=service_id)
+        except UserService.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        service_name = service.service.name.lower()
+        template_name = "service/form_rendered.html"
+        form = ServiceFormFactory.factory(service_name)()
+        return Response({'form': form}, template_name=template_name)
 
 
 class RetrieveInfoForServicePin(APIView):

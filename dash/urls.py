@@ -22,7 +22,7 @@ from .views import (
     public_dashboard,
 )
 
-from .contrib.plugins.service.views import RetrieveInfoForServicePin
+from .contrib.plugins.service.views import RetrieveInfoForServicePin, LoadDynamicallyFormGivenService
 from .contrib.plugins.poll.views import submit_poll_response
 
 app_name = 'dash'
@@ -174,4 +174,7 @@ urlpatterns = [
     url(r'^pin/service/(?P<pin_id>\d+)/$',
         view=RetrieveInfoForServicePin.as_view(),
         name='dash.pin-service'),
+    url(r'^pin/form/(?P<service_id>\d+)/$',
+        view=LoadDynamicallyFormGivenService.as_view(),
+        name='dash.load-form-pin-service'),
 ]
