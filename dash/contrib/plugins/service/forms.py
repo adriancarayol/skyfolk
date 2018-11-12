@@ -1,3 +1,4 @@
+import requests
 from django import forms
 from external_services.models import UserService
 from external_services.factory import ServiceFormFactory
