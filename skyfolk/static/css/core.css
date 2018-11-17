@@ -509,4 +509,7 @@ ul#vertical-menu .userView .background {
 .draggable-mirror {
   z-index: 9999; }
 
+.pagination li.active {
+  background-color: #1e88e5 !important; }
+
 /*# sourceMappingURL=core.css.map */

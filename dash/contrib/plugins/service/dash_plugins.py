@@ -14,7 +14,7 @@ class BaseServicePlugin(BaseDashboardPlugin):
     """Base memo plugin."""
 
     name = _("Service")
-    group = _("Service")
+    group = _("Redes sociales")
     form = ServiceForm
 
 

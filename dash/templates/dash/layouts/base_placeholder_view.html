@@ -2,12 +2,14 @@
 
 {% for entry in dashboard_entries %}
     {% get_dash_plugin entry as plugin %}
-    <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
+    <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}" data-entry-id="{{ entry.pk }}">
         <div class="ventana-pin blue" style="display: block;">
+            {% comment %}
             <a href="{% url 'dash:dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
                title="Copiar pin">
                 <span class="material-icons">content_copy</span>
             </a>
+            {% endcomment %}
         </div>
         <div class="plugin-content-wrapper">
             {% with plugin.render as rendered %}

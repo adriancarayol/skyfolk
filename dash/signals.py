@@ -8,4 +8,8 @@ from dash.models import DashboardEntry
 def handle_new_dashboard_entry(sender, instance, created, **kwargs):
     service_name = instance.plugin_uid.split('_')[0]
     if service_name.lower() == 'service':
-        requests.get('http://go_skyfolk:1800/update/{}'.format(instance.pk))
+        try:
+            response = requests.post('http://go_skyfolk:1800/update/', data={'id': instance.pk})
+            print(response)
+        except requests.RequestException:
+            pass

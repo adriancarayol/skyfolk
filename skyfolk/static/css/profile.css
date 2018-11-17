@@ -1613,6 +1613,7 @@ span[class*="group-profile"], span[class*="like-profile"] {
 
 .profile-controls > li {
   display: inline;
+  cursor: pointer;
   margin: 10px;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out; }

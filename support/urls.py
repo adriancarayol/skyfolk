@@ -9,4 +9,6 @@ urlpatterns = [
     # haya un problema
     url(r'^accounts/contact/$', support_views.support_view,
         name='support-password'),
+    url(r'^accounts/contact/submitted/$', support_views.after_submit_view,
+        name='support-password-submitted'),
 ]
