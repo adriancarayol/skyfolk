@@ -36,7 +36,7 @@ class TwitterService(object):
         try:
             service = Services.objects.get(name="Twitter", status=True)
         except Services.DoesNotExist:
-            pass
+            return '/'
         
         try:
             user_service = UserService.objects.get(user=request.user, service=service)

@@ -1,10 +1,13 @@
 from django import template
 from external_services.twitter.twitter_service import TwitterService
+from external_services.instagram.instagram_service import InstagramService
+
 
 register = template.Library()
 
 external_services = {
-    'twitter': TwitterService
+    'twitter': TwitterService,
+    'instagram': InstagramService
 }
 
 
