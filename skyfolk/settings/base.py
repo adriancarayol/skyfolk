@@ -167,15 +167,12 @@ AVATAR_GRAVATAR_DEFAULT = 'https://d32rim3h420riw.cloudfront.net/img/nuevo.png'
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
-# EMAIL_HOST = 'mail'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-# EMAIL_PORT = 587
-EMAIL_PORT = 25
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'error@skyfolk.net'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@skyfolk.net'
 # SESSION EXPIRATION
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 SESSION_UPDATE_SECONDS = 10 * 60

@@ -6,5 +6,6 @@ app_name = 'external_services'
 
 urlpatterns = [
     path('services/twitter/', include('external_services.twitter.urls', namespace='twitter-service')),
-    path('all/', views.list_service_view, name='all-external-services')
+    path('all/', views.list_service_view, name='all-external-services'),
+    path('services/delete/<int:pk>/', views.delete_user_service_view, name='delete-user-service')
 ]
