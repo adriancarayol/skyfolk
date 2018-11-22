@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from user_profile.models import Profile
 from django.template.loader import render_to_string
 from external_services.factory import ServiceFormFactory
-from external_services.models import UserService
+from external_services.models import UserService, Services
 
 
 class LoadDynamicallyFormGivenService(APIView):
@@ -61,12 +61,29 @@ class RetrieveInfoForServicePin(APIView):
 
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
-        
-        response = requests.get('http://go_skyfolk:1800/service/{}'.format(pin_id))
-        
+
+        service_info = json.loads(pin.plugin_data)
+
+        if "service" not in service_info:
+            return Response({'content': ''})
+
+        try:
+            user_service = UserService.objects.get(id=service_info["service"])
+        except UserService.DoesNotExist:
+            return Response({'content': ''})
+
+        service_name = user_service.service.name.lower()
+        template_name = 'service/{}/service_result.html'.format(service_name)
+
+        response = requests.get('http://go_skyfolk:1800/service/{}/{}'.format(service_name, pin_id))
+
         if response.status_code == 200:
             try:
                 response_json = json.loads(response.json())
+
+                if isinstance(response_json, dict):
+                    response_json = [response_json]
+
                 paginator = Paginator(response_json, 5)
                 
                 try:
@@ -75,10 +92,10 @@ class RetrieveInfoForServicePin(APIView):
                     results = paginator.page(1)
                 except EmptyPage:
                     results = paginator.page(paginator.num_pages)
-                    
-                rendered = render_to_string('service/service_result.html', {'results': results})
+
+                rendered = render_to_string(template_name, {'results': results})
                 return Response({'content': rendered})
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
 
         return Response({'content': ''})
