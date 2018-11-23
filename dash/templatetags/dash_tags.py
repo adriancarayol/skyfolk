@@ -3,6 +3,8 @@ from django import forms
 from django.conf import settings
 from django.template import Library, TemplateSyntaxError, Node
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from datetime import datetime
 
 from ..settings import ACTIVE_LAYOUT, DISPLAY_AUTH_LINK
 from ..utils import get_workspaces
@@ -406,3 +408,9 @@ def simplify_plugin_name(value):
 @register.filter(name='field_type')
 def field_type(field):
     return field.field.widget.__class__.__name__
+
+@register.filter(name='parse_timestamp')
+def parse_timestamp(field):
+    dt = datetime.fromtimestamp(int(field))
+    new_datetime = timezone.make_aware(dt, timezone.utc)
+    return new_datetime
