@@ -1,4 +1,5 @@
 import re
+import time
 from django import forms
 from django.conf import settings
 from django.template import Library, TemplateSyntaxError, Node
@@ -404,6 +405,10 @@ def simplify_plugin_name(value):
     value = re.sub('\([0-9]x[0-9]\)', '', value)
     return value
 
+@register.filter(name='get_plugin_uid_without_col_and_row')
+def get_plugin_uid_without_col_and_row(value):
+    values = value.split('_')
+    return "".join(values[:-1])
 
 @register.filter(name='field_type')
 def field_type(field):
@@ -414,3 +419,8 @@ def parse_timestamp(field):
     dt = datetime.fromtimestamp(int(field))
     new_datetime = timezone.make_aware(dt, timezone.utc)
     return new_datetime
+
+@register.filter(name='parse_rfc822_datetime')
+def parse_rfc822_datetime(field):
+    formatted_datetime = datetime.strptime(field, '%a %b %d %H:%M:%S +0000 %Y')
+    return formatted_datetime

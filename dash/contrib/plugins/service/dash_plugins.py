@@ -13,7 +13,7 @@ from .forms import ServiceForm
 class BaseServicePlugin(BaseDashboardPlugin):
     """Base memo plugin."""
 
-    name = _("Service")
+    name = _("Red social")
     group = _("Redes sociales")
     form = ServiceForm
 

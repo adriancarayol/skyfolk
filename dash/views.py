@@ -359,7 +359,7 @@ def add_dashboard_entry(request,
         # to the dashboard edit.
         if request.method == 'POST':
             form = plugin.get_initialised_create_form_or_404(
-                data=request.POST, files=request.FILES
+                data=request.POST, files=request.FILES, user_id=obj.user.id
             )
             if form.is_valid():
                 # Saving the plugin form data.
@@ -396,7 +396,7 @@ def add_dashboard_entry(request,
 
         # If POST but data invalid, show the form with errors.
         else:
-            form = plugin.get_initialised_create_form_or_404()
+            form = plugin.get_initialised_create_form_or_404(user_id=obj.user.id)
 
         context.update(
             {'form': form, 'plugin_uid': plugin_uid, 'plugin': plugin}
@@ -477,6 +477,7 @@ def edit_dashboard_entry(request,
             form = plugin.get_initialised_edit_form_or_404(
                 data=request.POST,
                 files=request.FILES,
+                user_id=obj.user.id
             )
             if form.is_valid():
                 # Saving the plugin form data.
@@ -503,7 +504,7 @@ def edit_dashboard_entry(request,
                     return redirect('user_profile:profile', username=request.user.username)
 
         else:
-            form = plugin.get_initialised_edit_form_or_404()
+            form = plugin.get_initialised_edit_form_or_404(user_id=obj.user.id)
 
         context.update({'form': form, 'plugin': plugin})
 

@@ -1,4 +1,5 @@
 {% extends "service/base_result.html" %}
+{% load dash_tags %}
 {% block rendered_results %}
     {% for result in results %}
         <div class="row">
@@ -7,11 +8,13 @@
                     <div class="card-content black-text">
                         <div class="row">
                             <p>{{ result.fullText }}</p>
-                            <b>{{ result.createAt }}</b>
                         </div>
                         <div class="row">
                             <a class="btn blue right"
                                href="https://twitter.com/{{ result.userAccount }}/">@{{ result.userAccount }}</a>
+                        </div>
+                        <div class="row right">
+                            <b>{{ result.createAt|parse_rfc822_datetime }}</b>
                         </div>
                     </div>
                 </div>

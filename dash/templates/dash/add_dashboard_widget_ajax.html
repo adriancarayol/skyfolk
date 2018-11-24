@@ -56,7 +56,7 @@
         </div>
     </div>
 </div>
-{% if plugin.name|lower == "service" %}
+{% if plugin.uid|get_plugin_uid_without_col_and_row == "service" %}
     <script>
         $(document).ready(function () {
             $('#id_service').on('change', function () {

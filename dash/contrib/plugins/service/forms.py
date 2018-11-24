@@ -17,6 +17,13 @@ class ServiceForm(forms.Form, DashboardPluginFormBase):
     service = forms.ModelChoiceField(queryset=UserService.objects.filter(service__status=True),
                                      required=True)
 
+    def __init__(self, *args, **kwargs):
+        print(kwargs)
+        user_id = kwargs.pop('user_id', None)
+        super(ServiceForm, self).__init__(*args, **kwargs)
+        if user_id:
+            self.fields['service'].queryset = UserService.objects.filter(service__status=True, user_id=user_id)
+
     def save_plugin_data(self, request=None):
         service = self.cleaned_data.get('service', None)
 
