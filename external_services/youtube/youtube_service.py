@@ -1,0 +1,72 @@
+import os
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+from external_services.models import Services, UserService
+from django.urls import reverse
+from django.db import IntegrityError
+
+CLIENT_SECRETS_FILE = "client_secret.json"
+
+
+class YouTubeService(object):
+    scopes = ['https://www.googleapis.com/auth/youtube.force-ssl',
+              'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile']
+    api_service_name = 'youtube'
+    api_version = 'v3'
+
+    def __init__(self, **kwargs):
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+        self.callback = 'http://localhost:8000/external/services/youtube/callback/'
+
+    @staticmethod
+    def get_auth_url():
+        return reverse('external_services:youtube-service:connect-youtube-service')
+
+    def auth(self, request):
+        return self.get_request_token(request)
+
+    def get_request_token(self, request):
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=self.scopes)
+        flow.redirect_uri = self.callback
+        authorization_url, state = flow.authorization_url(
+            # This parameter enables offline access which gives your application
+            # both an access and refresh token.
+            access_type='offline',
+            # This parameter enables incremental auth.
+            include_granted_scopes='true')
+
+        request.session['request_token'] = state
+        return authorization_url
+
+    def callback_oauth1(self, request):
+        state = request.session['request_token']
+        del request.session['request_token']
+
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=self.scopes, state=state)
+
+        flow.redirect_uri = self.callback
+        authorization_response = request.build_absolute_uri()
+        flow.fetch_token(authorization_response=authorization_response)
+        credentials = flow.credentials
+
+        try:
+            service = Services.objects.get(name="YouTube", status=True)
+        except Services.DoesNotExist:
+            return '/'
+
+        try:
+            user_service = UserService.objects.get(user=request.user, service=service)
+            user_service.auth_token = credentials.token
+            user_service.refresh_token = credentials.refresh_token
+            user_service.save()
+        except UserService.DoesNotExist as e:
+            try:
+                UserService.objects.create(user=request.user, service=service,
+                                           auth_token=credentials.access_token,
+                                           auth_token_secret=credentials.access_token_secret)
+            except IntegrityError as e:
+                pass
+
+        return '/'

@@ -38,3 +38,4 @@ def delete_user_service_view(request, pk):
 
 list_service_view = login_required(ListServiceView.as_view())
 delete_user_service_view = login_required(delete_user_service_view)
+

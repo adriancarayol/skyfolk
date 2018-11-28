@@ -13,7 +13,8 @@ class UserService(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     auth_token = models.CharField(max_length=255)
     auth_token_secret = models.CharField(max_length=255)
-    
+    refresh_token = models.CharField(max_length=255, default='')
+
     class Meta:
         unique_together = ('service', 'user')
 
