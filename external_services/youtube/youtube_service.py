@@ -1,5 +1,4 @@
 import os
-import google.oauth2.credentials
 import google_auth_oauthlib.flow
 from external_services.models import Services, UserService
 from django.urls import reverse
@@ -54,7 +53,7 @@ class YouTubeService(object):
         try:
             service = Services.objects.get(name="YouTube", status=True)
         except Services.DoesNotExist:
-            return '/'
+            return reverse('external_services:all-external-services')
 
         try:
             user_service = UserService.objects.get(user=request.user, service=service)
@@ -64,9 +63,10 @@ class YouTubeService(object):
         except UserService.DoesNotExist as e:
             try:
                 UserService.objects.create(user=request.user, service=service,
-                                           auth_token=credentials.access_token,
-                                           auth_token_secret=credentials.access_token_secret)
+                                           auth_token=credentials.token,
+                                           refresh_token=credentials.refresh_token,
+                                           auth_token_secret='')
             except IntegrityError as e:
                 pass
 
-        return '/'
+        return reverse('external_services:all-external-services')

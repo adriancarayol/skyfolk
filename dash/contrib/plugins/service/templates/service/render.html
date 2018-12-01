@@ -18,7 +18,7 @@
 
 <script>
 $(document).ready(function() {
-    $.get("http://0.0.0.0:8000/dashboard/pin/service/" + {{ id }}, function(data, status){
+    $.get("/dashboard/pin/service/" + {{ id }}, function(data, status){
         $('#api-results-{{ id }}').html(data.content);
     });
 });

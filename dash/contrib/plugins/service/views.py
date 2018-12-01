@@ -76,7 +76,6 @@ class RetrieveInfoForServicePin(APIView):
         template_name = 'service/{}/service_result.html'.format(service_name)
 
         response = requests.get('http://go_skyfolk:1800/service/{}/{}'.format(service_name, pin_id))
-
         if response.status_code == 200:
             try:
                 response_json = json.loads(response.json())

@@ -49,7 +49,7 @@ class InstagramService(object):
         try:
             service = Services.objects.get(name="Instagram", status=True)
         except Services.DoesNotExist:
-            return '/'
+            return reverse('external_services:all-external-services')
 
         try:
             user_service = UserService.objects.get(user=request.user, service=service)
@@ -63,4 +63,4 @@ class InstagramService(object):
             except IntegrityError as e:
                 pass
 
-        return '/'
+        return reverse('external_services:all-external-services')

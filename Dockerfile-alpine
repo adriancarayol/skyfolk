@@ -1,0 +1,26 @@
+FROM python:3.7-alpine
+
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /code
+
+WORKDIR /code
+
+ADD requirements/develop.txt /code/
+
+RUN set -e; \
+  apk update \
+  && apk add --virtual .build-deps gcc python3-dev musl-dev libffi-dev py-pip jpeg-dev zlib-dev\
+  && apk del libressl-dev \
+  && apk add openssl-dev \
+  && pip install cryptography==2.2.2 \
+  && apk del openssl-dev \
+  && apk add libressl-dev \
+  && apk add postgresql-dev \
+  && pip install --no-cache-dir -r develop.txt \
+  && apk del .build-deps
+
+ENV LC_ALL C.UTF-8
+ENV LIBRARY_PATH=/lib:/usr/lib
+
+VOLUME /root

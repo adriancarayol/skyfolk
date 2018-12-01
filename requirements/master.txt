@@ -17,7 +17,7 @@ bleach==2.1.1
 boto3==1.4.7
 botocore==1.7.48
 cached-property==1.4.3
-celery==4.1.0
+celery==4.2
 cffi==1.11.5
 channels==2.1.3
 channels_redis==2.3.0
@@ -94,7 +94,7 @@ iso8601==0.1.12
 jedi==0.12.0
 jmespath==0.9.3
 jsonfield==2.0.2
-kombu==4.1.0
+kombu==4.2.1
 lorem-ipsum-generator==0.3
 Mastodon.py==1.1.1
 moviepy==0.2.3.5

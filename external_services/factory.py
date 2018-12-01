@@ -1,5 +1,6 @@
 from external_services.twitter.forms import CreateNewTwitterWidgetForm
 from external_services.instagram.forms import CreateNewInstagramWidgetForm
+from external_services.youtube.forms import CreateNewYoutubeWidgetForm
 
 
 class ServiceFormFactory(object):
@@ -14,5 +15,8 @@ class ServiceFormFactory(object):
 
         if service_name == 'instagram':
             return CreateNewInstagramWidgetForm
+
+        if service_name == 'youtube':
+            return CreateNewYoutubeWidgetForm
 
         raise ValueError('Unknown service name')

@@ -86,7 +86,7 @@
                                 <div class="service tooltipped" data-position="bottom"
                                      data-tooltip="{{ service.service.description }}">
                                     <div class="service-thumbnail">
-                                        <img src="{% if service.thumbnail %}{{ service.thumbnail.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
+                                        <img src="{% if service.service.thumbnail %}{{ service.service.thumbnail.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
                                              title="{{ service.service.name|safe|escape }}"
                                              alt="{{ service.service.name|safe|escape }}"/>
                                     </div>

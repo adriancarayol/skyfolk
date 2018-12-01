@@ -1,13 +1,15 @@
 from django import template
 from external_services.twitter.twitter_service import TwitterService
 from external_services.instagram.instagram_service import InstagramService
+from external_services.youtube.youtube_service import YouTubeService
 
 
 register = template.Library()
 
 external_services = {
     'twitter': TwitterService,
-    'instagram': InstagramService
+    'instagram': InstagramService,
+    'youtube': YouTubeService,
 }
 
 

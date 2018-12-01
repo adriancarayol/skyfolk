@@ -6,14 +6,14 @@ from external_services.youtube.youtube_service import YouTubeService
 
 class AuthYouTubeServiceView(View):
     def get(self, request, *args, **kwargs):
-        twitter_service = YouTubeService()
-        return redirect(twitter_service.auth(request))
-    
+        youtube_service = YouTubeService()
+        return redirect(youtube_service.auth(request))
+
 
 class CreateYouTubeServiceView(View):
     def get(self, request, *args, **kwargs):
-        twitter_service = YouTubeService()
-        return redirect(twitter_service.callback_oauth1(request))
+        youtube_service = YouTubeService()
+        return redirect(youtube_service.callback_oauth1(request))
 
 
 auth_youtube_view = login_required(AuthYouTubeServiceView.as_view())

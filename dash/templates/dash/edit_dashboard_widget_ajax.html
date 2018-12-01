@@ -45,7 +45,7 @@
         $(document).ready(function () {
             $('#id_service').on('change', function () {
                 let service_id = this.value;
-                $.get("http://0.0.0.0:8000/dashboard/pin/form/" + service_id + '/', function (data) {
+                $.get("/dashboard/pin/form/" + service_id + '/', function (data) {
                     $('.dynamic-form').html(data);
                 }).fail(function () {
                     $('.dynamic-form').empty();
