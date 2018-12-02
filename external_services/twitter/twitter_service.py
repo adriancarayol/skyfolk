@@ -8,7 +8,7 @@ class TwitterService(object):
     def __init__(self, **kwargs):
         self.consumer_token = '9UUbALvoV2evTTdJYSo3KNIiv'
         self.consumer_secret = 'DC0Obqkqh74cilW9h3dtYUNsvDg9QcgZu5ES1RBXwY7XtuY7zJ'
-        self.callback = 'http://0.0.0.0:8000/external/services/twitter/callback/'
+        self.callback = reverse('external_services:twitter-service:callback-twitter-service')
 
     @staticmethod
     def get_auth_url():

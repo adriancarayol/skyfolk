@@ -10,10 +10,7 @@ class InstagramService(object):
     client_secret = 'ab13542b945e44828c597a1ef42ccf39'
 
     def __init__(self, **kwargs):
-        self.callback = 'http://0.0.0.0:8000/external/services/instagram/callback/'
-        self.auth_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}' \
-                        '&redirect_uri={redirect_url}&response_type=code'.format(
-                         client_id='dec537046acd40ea8c5365d36a8ee7a3', redirect_url=self.callback)
+        self.callback = reverse('external_services:instagram-service:callback-instagram-service')
 
     @classmethod
     def exchange_code_for_access_token(cls, code, redirect_uri, **kwargs):
@@ -40,11 +37,17 @@ class InstagramService(object):
         return self.get_request_token(request)
 
     def get_request_token(self, request):
-        return self.auth_url
+        callback = request.build_absolute_uri(self.callback)
+        auth_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}' \
+                   '&redirect_uri={redirect_url}&response_type=code'.format(
+                    client_id='dec537046acd40ea8c5365d36a8ee7a3', redirect_url=callback)
+        return auth_url
 
     def callback_oauth1(self, request):
         code = request.GET.get('code')
-        data = self.exchange_code_for_access_token(code, self.callback)
+        callback = request.build_absolute_uri(self.callback)
+
+        data = self.exchange_code_for_access_token(code, callback)
 
         try:
             service = Services.objects.get(name="Instagram", status=True)

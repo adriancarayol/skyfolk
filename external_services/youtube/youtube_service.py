@@ -1,4 +1,3 @@
-import os
 import google_auth_oauthlib.flow
 from external_services.models import Services, UserService
 from django.urls import reverse
@@ -14,8 +13,7 @@ class YouTubeService(object):
     api_version = 'v3'
 
     def __init__(self, **kwargs):
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-        self.callback = 'http://localhost:8000/external/services/youtube/callback/'
+        self.callback = reverse('external_services:youtube-service:callback-youtube-service')
 
     @staticmethod
     def get_auth_url():
@@ -25,9 +23,10 @@ class YouTubeService(object):
         return self.get_request_token(request)
 
     def get_request_token(self, request):
+        callback = request.build_absolute_uri(self.callback)
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=self.scopes)
-        flow.redirect_uri = self.callback
+        flow.redirect_uri = callback
         authorization_url, state = flow.authorization_url(
             # This parameter enables offline access which gives your application
             # both an access and refresh token.
@@ -39,13 +38,14 @@ class YouTubeService(object):
         return authorization_url
 
     def callback_oauth1(self, request):
+        callback = request.build_absolute_uri(self.callback)
         state = request.session['request_token']
         del request.session['request_token']
 
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=self.scopes, state=state)
 
-        flow.redirect_uri = self.callback
+        flow.redirect_uri = callback
         authorization_response = request.build_absolute_uri()
         flow.fetch_token(authorization_response=authorization_response)
         credentials = flow.credentials

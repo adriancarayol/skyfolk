@@ -49,5 +49,5 @@ if __name__ == "__main__":
 
         os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                               "skyfolk.settings.develop")
-
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
         execute_from_command_line(sys.argv)
