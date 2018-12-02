@@ -1,17 +1,17 @@
-import json
-from django.db.models.signals import post_delete
+import requests
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from dash_services.models import TriggerService
-from .models import DashboardEntry
-from io import StringIO
+from dash.models import DashboardEntry
 
 
-@receiver(post_delete, sender=DashboardEntry)
-def handle_delete_entry(sender, instance, *args, **kwargs):
-    data = instance.plugin_data
-    io = StringIO(data)
-    parse_data = json.load(io)
-    trigger_id = parse_data.get('trigger', None)
+@receiver(post_save, sender=DashboardEntry)
+def handle_new_dashboard_entry(sender, instance, created, **kwargs):
+    service_name = instance.plugin_uid.split('_')
+    service_name = "".join(service_name[:-1])
 
-    if trigger_id is not None:
-        TriggerService.objects.filter(id=trigger_id).delete()
+    if service_name.lower() == 'service':
+        try:
+            response = requests.post('http://go_skyfolk:1800/update/', data={'id': instance.pk})
+            print(response)
+        except requests.RequestException:
+            pass

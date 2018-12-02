@@ -1,1 +1,0 @@
-default_app_config = 'th_services.th_github.apps.ThGithubAppConfiguration'

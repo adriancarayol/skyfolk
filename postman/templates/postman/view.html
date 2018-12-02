@@ -1,4 +1,6 @@
 {% extends "postman/base.html" %}
+{% load emoji_tags %}
+
 {% load i18n %}{% load postman_tags %}{% load avatar_tags static %}
 {% block title %}{% if pm_messages|length > 1 %}{% trans "Conversation" %}{% else %}
     {% trans "Message" %}{% endif %}{% endblock %}
@@ -50,7 +52,7 @@
                                             </div>
                                         <div class="col s10">
                                           <span class="black-text pm_body">
-                                              <p class="flow-text">{{ message.body|linebreaksbr }}</p>
+                                              <p class="flow-text">{{ message.body|emoji_replace|linebreaksbr }}</p>
                                           </span>
                                         </div>
                                     </div>
@@ -66,7 +68,7 @@
                                                 <a class="pm_sender" href="/profile/{{ message.obfuscated_sender|or_me:user.id }}">{{ message.obfuscated_sender|or_me:user.id }}</a>
                                             </div>
                                             <br><br>
-                                            <blockquote class="pm_subject">{{ message.subject }}</blockquote>
+                                            <blockquote class="pm_subject">{{ message.subject|emoji_replace }}</blockquote>
                                             <b class="time left pm_date">{{ message.sent_at|date:"DATETIME_FORMAT" }}</b>
                                             {% if message.is_rejected %}
                                             <div class="pm_status">
@@ -75,7 +77,7 @@
                                             </div>
                                         <div class="col s10">
                                           <span class="black-text pm_body">
-                                              <p class="flow-text">{{ message.body|linebreaksbr }}</p>
+                                              <p class="flow-text">{{ message.body|emoji_replace|linebreaksbr }}</p>
                                           </span>
                                         </div>
                                     </div>

@@ -17,7 +17,7 @@ bleach==2.1.1
 boto3==1.4.7
 botocore==1.7.48
 cached-property==1.4.3
-celery==4.1.0
+celery==4.2
 cffi==1.11.5
 channels==2.1.3
 channels_redis==2.3.0
@@ -94,7 +94,7 @@ iso8601==0.1.12
 jedi==0.12.0
 jmespath==0.9.3
 jsonfield==2.0.2
-kombu==4.1.0
+kombu==4.2.1
 lorem-ipsum-generator==0.3
 Mastodon.py==1.1.1
 moviepy==0.2.3.5
@@ -166,7 +166,7 @@ tqdm==4.23.4
 traitlets==4.3.2
 transliterate==1.10
 Twisted==18.7.0
-twython==3.6.0
+tweepy==3.6.0
 txaio==2.8.2
 typing==3.6.4
 Unidecode==0.4.21
@@ -184,3 +184,6 @@ Werkzeug==0.12.2
 Whoosh==2.7.4
 celery-haystack==0.10
 zope.interface==4.4.3
+google-auth==1.6.1
+google-auth-oauthlib==0.2.0
+google-auth-httplib2==0.0.3

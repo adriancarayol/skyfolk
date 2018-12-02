@@ -1,43 +1,40 @@
+import requests
 from django import forms
-from django.utils.translation import ugettext_lazy as _
-
+from external_services.models import UserService
+from external_services.factory import ServiceFormFactory
 from ....base import DashboardPluginFormBase
-from dash_services.models import TriggerService
 
-__all__ = (
-    'TriggerForm',
-)
 
-class TriggerForm(forms.Form, DashboardPluginFormBase):
-    class Media(object):
-        """Media."""
-
-        css = {
-            'all': ('css/dash_plugin_service_form.css',)
-        }
-        js = ('js/dash_plugin_service_form.js',)
+class ServiceForm(forms.Form, DashboardPluginFormBase):
+    """Servie form (for ``Service`` plugin)."""
 
     plugin_data_fields = [
-        ("trigger", ""),
-        ("result", ""),
-        ("description", ""),
+        ("title", ""),
+        ("data", ""),
+        ("service", "")
     ]
 
-    trigger = forms.ModelChoiceField(label=_("Trigger"),
-                                     queryset=TriggerService.objects.all(),
-                                     empty_label=_('---------'),
+    service = forms.ModelChoiceField(queryset=UserService.objects.filter(service__status=True),
                                      required=True)
 
+    def __init__(self, *args, **kwargs):
+        print(kwargs)
+        user_id = kwargs.pop('user_id', None)
+        super(ServiceForm, self).__init__(*args, **kwargs)
+        if user_id:
+            self.fields['service'].queryset = UserService.objects.filter(service__status=True, user_id=user_id)
+
     def save_plugin_data(self, request=None):
-        """Save plugin data.
+        service = self.cleaned_data.get('service', None)
 
-        Saving the plugin data and moving the file.
-        """
-        trigger = self.cleaned_data.get('trigger', None)
-        if trigger:
-            # Since it's a ``ModelChoiceField``, we can safely given an ID.
-            self.cleaned_data['trigger'] = trigger.pk
+        if service:
+            service_name = service.service.name.lower()
+            form = ServiceFormFactory.factory(service_name)(request.POST)
 
-            # Saving the rest of the fields.
-            self.cleaned_data['result'] = trigger.result
-            self.cleaned_data['description'] = trigger.description
+            if form.is_valid():
+                form_data = form.cleaned_data
+                self.cleaned_data['service'] = service.pk
+                self.cleaned_data['title'] = service.service.name
+                self.cleaned_data['data'] = form_data
+            else:
+                raise ValueError(form.errors)

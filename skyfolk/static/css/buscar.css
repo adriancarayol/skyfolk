@@ -389,3 +389,7 @@
     background-color: #1e88e5;
     color: #fff;
 }
+
+.principal-content {
+    cursor: pointer;
+}

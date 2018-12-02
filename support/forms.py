@@ -1,9 +1,6 @@
 # encoding:utf-8
 from django import forms
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from .models import SupportPasswordModel
@@ -58,8 +55,7 @@ class SupportPasswordForm(forms.ModelForm):
 
     def clean_username_or_email(self):
         username_or_email = self.cleaned_data['username_or_email']
-        try:
-            user = User.objects.get(Q(username__iexact=username_or_email) | Q(email=username_or_email))
-        except ObjectDoesNotExist:
+
+        if not username_or_email:
             raise forms.ValidationError(_('No hay ninguna cuenta asociada a ese nombre de usuario o email'))
-        return user
+        return username_or_email

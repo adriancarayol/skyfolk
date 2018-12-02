@@ -1,0 +1,18 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Password Reset" %}{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        {% if user.is_authenticated %}
+            {% include "account/account/snippets/already_logged_in.html" %}
+        {% endif %}
+        <div class="row center">
+            <h5>¡Mensaje recibido, en breves contactaremos contigo!</h5>
+            <h6>Hemos enviado una copia del mensaje a tu e-mail.</h6>
+        </div>
+    </div>
+{% endblock %}

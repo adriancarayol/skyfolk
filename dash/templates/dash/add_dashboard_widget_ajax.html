@@ -5,7 +5,8 @@
         <div class="col l4 s12 offset-l4">
             <div class="wrapper-bg"></div>
             <div class="hero-unit-small center">
-                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to Dashboard{% endblocktrans %}</h2>
+                <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to
+                    Dashboard{% endblocktrans %}</h2>
             </div>
         </div>
         <div class="col l4 s12 offset-l4">
@@ -17,40 +18,55 @@
                         {% include layout.form_snippet_template_name %}
                         {% endcomment %}
                         {% for hidden_field in form.hidden_fields %}
-                        {{ hidden_field.errors }}
-                        {{ hidden_field }}
+                            {{ hidden_field.errors }}
+                            {{ hidden_field }}
                         {% endfor %}
                         {% for field in form.visible_fields %}
-                        <div class="row">
-                            <div class="input-field col s12">
-                                {{ field.errors }}
-                                {% if field.help_text %}
-                                <small>{{ field.help_text }}</small>
-                                {% endif %}
-                                {% if 'FileInput' in field|field_type %}
-                                    <div class="file-field input-field">
-                                        <div class="btn">
-                                            <span>{{ field.label }}</span>
-                                            {{ field }}
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ field.errors }}
+                                    {% if field.help_text %}
+                                        <small>{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% if 'FileInput' in field|field_type %}
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span>{{ field.label }}</span>
+                                                {{ field }}
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text">
+                                            </div>
                                         </div>
-                                        <div class="file-path-wrapper">
-                                            <input class="file-path validate" type="text">
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    {{ field }}
-                                    {{ field.label_tag }}
-                                {% endif %}
+                                    {% else %}
+                                        {{ field }}
+                                        {{ field.label_tag }}
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
                         {% endfor %}
-                        <div class="row">
-                            <button type="submit" class="btn blue white-text right">{% trans "Add" %}</button>
-                        </div>
-                        {% include "dash/snippets/plugin_help_text.html" %}
                     </ul>
+                    <div class="dynamic-form"></div>
+                    <div class="row">
+                        <button type="submit" class="btn blue white-text right">{% trans "Add" %}</button>
+                    </div>
+                    {% include "dash/snippets/plugin_help_text.html" %}
                 </form>
             </div>
         </div>
     </div>
 </div>
+{% if plugin.uid|get_plugin_uid_without_col_and_row == "service" %}
+    <script>
+        $(document).ready(function () {
+            $('#id_service').on('change', function () {
+                let service_id = this.value;
+                $.get("/dashboard/pin/form/" + service_id + '/', function (data) {
+                    $('.dynamic-form').html(data);
+                }).fail(function() {
+                    $('.dynamic-form').empty();
+                });
+            });
+        });
+    </script>
+{% endif %}

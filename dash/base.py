@@ -351,6 +351,7 @@ class BaseDashboardLayout(object):
         return '{0} {1}'.format(self.primary_html_class,
                                 ' '.join(self.html_classes))
 
+    
     def get_css(self, placeholders):
         """Get placeholder specific css.
 
@@ -1035,7 +1036,7 @@ class BaseDashboardPlugin(object):
         """
         return self.form
 
-    def get_initialised_create_form(self, data=None, files=None):
+    def get_initialised_create_form(self, data=None, files=None, user_id=None):
         """
         Used ``dash.views.add_dashboard_entry`` view to gets initialised form
         for object to be created.
@@ -1045,13 +1046,13 @@ class BaseDashboardPlugin(object):
             try:
                 plugin_form = self.get_form()
                 if plugin_form:
-                    return plugin_form(data=data, files=files)
+                    return plugin_form(data=data, files=files, user_id=user_id)
             except Exception as err:
                 if DEBUG:
                     logger.debug(err)
                 raise Http404(err)
 
-    def get_initialised_create_form_or_404(self, data=None, files=None):
+    def get_initialised_create_form_or_404(self, data=None, files=None, user_id=None):
         """Get initialised create form or 404.
 
         Same as ``get_initialised_create_form`` but raises
@@ -1060,7 +1061,7 @@ class BaseDashboardPlugin(object):
         plugin_form = self.get_form()
         if plugin_form:
             try:
-                return self.get_initialised_create_form(data=data, files=files)
+                return self.get_initialised_create_form(data=data, files=files, user_id=user_id)
             except Exception as e:
                 if DEBUG:
                     logger.debug(e)
@@ -1068,6 +1069,7 @@ class BaseDashboardPlugin(object):
 
     def get_initialised_edit_form(self, data=None, files=None,
                                   auto_id='id_%s', prefix=None, initial=None,
+                                  user_id=None,
                                   error_class=ErrorList, label_suffix=':',
                                   empty_permitted=False, instance=None):
         """Get initialised edit form.
@@ -1082,6 +1084,7 @@ class BaseDashboardPlugin(object):
                 'auto_id': auto_id,
                 'prefix': prefix,
                 'initial': initial,
+                'user_id': user_id,
                 'error_class': error_class,
                 'label_suffix': label_suffix,
                 'empty_permitted': empty_permitted
@@ -1093,6 +1096,7 @@ class BaseDashboardPlugin(object):
     def get_initialised_edit_form_or_404(self, data=None, files=None,
                                          auto_id='id_%s', prefix=None,
                                          error_class=ErrorList,
+                                         user_id=None,
                                          label_suffix=':',
                                          empty_permitted=False):
         """Get initialised edit form or 404.
@@ -1108,6 +1112,7 @@ class BaseDashboardPlugin(object):
                     files=files,
                     auto_id=auto_id,
                     prefix=prefix,
+                    user_id=user_id,
                     initial=self.get_plugin_form_data(),
                     error_class=error_class,
                     label_suffix=label_suffix,
@@ -1147,7 +1152,7 @@ class BaseDashboardPlugin(object):
         :return string:
         """
         widget_cls = self.get_widget()
-
+        
         if widget_cls:
             widget = widget_cls(self)
 
@@ -1417,7 +1422,7 @@ class BaseDashboardPluginWidget(object):
         :return str:
         """
         return ''
-
+    
     @classproperty
     def html_class(cls):
         """HTML class of the ``dash.base.BaseDashboardPluginWidget``.
