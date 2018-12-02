@@ -1,0 +1,30 @@
+{% load dash_tags %}
+
+{% for hidden_field in form.hidden_fields %}
+    {{ hidden_field.errors }}
+    {{ hidden_field }}
+{% endfor %}
+{% for field in form.visible_fields %}
+    <div class="row">
+        <div class="input-field col s12">
+            {{ field.errors }}
+            {% if field.help_text %}
+                <small>{{ field.help_text }}</small>
+            {% endif %}
+            {% if 'FileInput' in field|field_type %}
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>{{ field.label }}</span>
+                        {{ field }}
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            {% else %}
+                {{ field }}
+                {{ field.label_tag }}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

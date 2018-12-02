@@ -6,14 +6,33 @@
         <title>¡Bienvenido a Skyfolk, {{ user_profile }}!</title>
     {% endblock %}
     <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-        <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
-        <link type="text/css" rel="stylesheet" href="{% static "css/materialize.css" %}" media="screen,projection"/>
-        <link rel="stylesheet" type="text/css" href="{% static "css/welcome.css" %}"/>
-        <link rel="stylesheet" href="{% static "themes/google/google.css" %}">
-        <link rel="stylesheet" href="{% static "dist/sweetalert.css" %}">
-        <link rel="stylesheet" type="text/css" href="{% static "fonts/iconfont/material-icons.css" %}">
-        <link rel="icon" type="image/ico" href="{% static "img/favicon.ico" %}"/>
+    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+    <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
+    <link type="text/css" rel="stylesheet" href="{% static "css/materialize.css" %}" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/welcome.css" %}"/>
+    <link rel="stylesheet" href="{% static "themes/google/google.css" %}">
+    <link rel="stylesheet" href="{% static "dist/sweetalert.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "fonts/iconfont/material-icons.css" %}">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{% static "img/apple-touch-icon-57x57.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static "img/apple-touch-icon-114x114.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static "img/apple-touch-icon-72x72.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static "img/apple-touch-icon-144x144.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{% static "img/apple-touch-icon-60x60.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{% static "img/apple-touch-icon-120x120.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{% static "img/apple-touch-icon-76x76.png" %}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{% static "img/apple-touch-icon-152x152.png" %}"/>
+    <link rel="icon" type="image/png" href="{% static "img/favicon-196x196.png" %}" sizes="196x196"/>
+    <link rel="icon" type="image/png" href="{% static "img/favicon-96x96.png" %}" sizes="96x96"/>
+    <link rel="icon" type="image/png" href="{% static "img/favicon-32x32.png" %}" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="{% static "img/favicon-16x16.png" %}" sizes="16x16"/>
+    <link rel="icon" type="image/png" href="{% static "img/favicon-128.png" %}" sizes="128x128"/>
+    <meta name="application-name" content="&nbsp;"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF"/>
+    <meta name="msapplication-TileImage" content="{% static "img/mstile-144x144.png" %}"/>
+    <meta name="msapplication-square70x70logo" content="{% static "img/mstile-70x70.png" %}"/>
+    <meta name="msapplication-square150x150logo" content="{% static "img/mstile-150x150.png" %}"/>
+    <meta name="msapplication-wide310x150logo" content="{% static "img/mstile-310x150.png" %}"/>
+    <meta name="msapplication-square310x310logo" content="{% static "img/mstile-310x310.png" %}"/>
     <style>
         .default-div {
             background-color: #fff;
@@ -21,10 +40,10 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
         }
     </style>
-        <script src="{% static "js/jquery-3.1.0.min.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/jquery-migrate-1.4.1.min.js" %}" type="text/javascript"></script>
-        <script src="{% static "js/welcome.js" %}"></script>
-        <script src="{% static "dist/sweetalert.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery-3.1.0.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery-migrate-1.4.1.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/welcome.js" %}"></script>
+    <script src="{% static "dist/sweetalert.min.js" %}" type="text/javascript"></script>
 </head>
 
 
@@ -48,10 +67,10 @@
         </div>
         <div class="row">
             <div class="col s12">
-                    <a onclick="location.href='{% url 'user_profile:welcome_step_1' %}'"
-                       class="waves-effect waves-light btn right blue darken-1">Configurar cuenta</a>
-                    <a href="{% url 'user_profile:profile' username=user_profile %}"
-                       class="waves-effect waves-light btn right blue darken-1">Omitir</a>
+                <a onclick="location.href='{% url 'user_profile:welcome_step_1' %}'"
+                   class="waves-effect waves-light btn right blue darken-1">Configurar cuenta</a>
+                <a href="{% url 'user_profile:profile' username=user_profile %}"
+                   class="waves-effect waves-light btn right blue darken-1">Omitir</a>
             </div>
         </div>
     {% endblock %}

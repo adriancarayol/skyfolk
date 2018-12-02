@@ -52,6 +52,9 @@ table
   border-collapse: collapse
   border-spacing: 0
 
+a:visited
+  color: inherit !important
+
 .emoji
   width: 20px !important
   height: 20px !important
@@ -292,7 +295,7 @@ body > .container
     -webkit-transition: all .1s linear
     -moz-transition: all .1s linear
     transition: all .1s linear
-    & a, a:visited
+    & a
       color: $blueskyfolk
       text-decoration: none
       padding: 0
@@ -526,3 +529,6 @@ ul#vertical-menu .userView .background
 
 .draggable-mirror
   z-index: 9999
+
+.pagination li.active
+  background-color: #1e88e5 !important

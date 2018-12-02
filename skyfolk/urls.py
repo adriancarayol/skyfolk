@@ -5,13 +5,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
 from django_js_reverse.views import urls_js
-from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 from user_profile.views import signup
-from dash_services.views_fbv import logout_view
-from dash_services.views_fbv import service_related_triggers_switch_to
-from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
-from dash_services.views_userservices import UserServiceDeleteView, renew_service
-from dash_services.views_wizard import UserServiceWizard, finalcallback
 from allauth.account import views as allauth_views
 from graphene_django.views import GraphQLView
 
@@ -40,9 +34,6 @@ urlpatterns = [
     re_path(r'^', include('user_profile.urls', namespace="user_profile"), name="user_profile"),
     # urls para grupos de usuarios
     re_path(r'^', include('user_groups.urls', namespace="user_groups"), name="user_groups"),
-    # url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
-    # url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-    # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     re_path(r'^', include('publications.urls', namespace="publications"), name="publications"),
     re_path(r'^group/', include('publications_groups.urls', namespace="publications_groups"),
@@ -60,16 +51,11 @@ urlpatterns = [
     # Recomendacion password para usuarios
     re_path(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),
-    # Importamos las urls de REST Framework
-    # url(r'^', include(router.urls)),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Urls para el modulo emoji
     re_path(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
     re_path(r'^', include('avatar.urls', namespace="avatar")),
     # notificaciones
-    # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
-    # namespace='notifications')),
     re_path('^inbox/notifications/', include('notifications.urls',
                                          namespace='notifications')),
     # django-photologue
@@ -77,9 +63,6 @@ urlpatterns = [
     re_path(r'^group/', include('photologue_groups.urls', namespace='photologue_groups')),  # photologue groups
     re_path(r'^messages/', include('postman.urls', namespace='postman')),
     # django-dash URLs:
-    # url(r'^dashboard/', include('dash.urls')),
-    # url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
-    # url(r'^contrib/', include('dash.contrib.apps.public_dashboard.urls')),
     # logros
     re_path(r'^badges/', include('badgify.urls', namespace="badges")),
     re_path(r'^awards/', include('awards.urls', namespace="awards")),
@@ -91,72 +74,6 @@ urlpatterns = [
     # ****************************************
     re_path(r'^auth/', include('django.contrib.auth.urls')),
     # ****************************************
-    # customized logout action
-    # ****************************************
-    re_path(r'^logout/$', logout_view, name='logout'),
-
-    # ****************************************
-    # trigger happy module
-    # ****************************************
-    # url(r'^th/$', TriggerListView.as_view(), name='base'),
-    # url(r'^th/trigger/filter_by/(?P<trigger_filtered_by>[a-zA-Z]+)$', TriggerListView.as_view(),
-    #     name='trigger_filter_by'),
-    # url(r'^th/trigger/order_by/(?P<trigger_ordered_by>[a-zA-Z_]+)$', TriggerListView.as_view(),
-    #     name='trigger_order_by'),
-    # url(r'^th/trigger/$', TriggerListView.as_view(), name='home'),
-    # ****************************************
-    # * trigger
-    # ****************************************
-    # url(r'^th/trigger/delete/(?P<pk>\d+)$', TriggerDeleteView.as_view(), name='delete_trigger'),
-    # url(r'^th/trigger/edit/(?P<pk>\d+)$', TriggerUpdateView.as_view(), name='edit_trigger'),
-    # url(r'^th/trigger/editprovider/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Provider'},
-    #     name='edit_provider'),
-    # url(r'^th/trigger/editconsumer/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Consumer'},
-    #    name='edit_consumer'),
-    # url(r'^th/trigger/edit/thanks', TriggerEditedTemplateView.as_view(), name="trigger_edit_thanks"),
-    # url(r'^th/trigger/delete/thanks', TriggerDeletedTemplateView.as_view(), name="trigger_delete_thanks"),
-    # url(r'^th/trigger/onoff/(?P<trigger_id>\d+)$', trigger_on_off, name="trigger_on_off"),
-    # url(r'^th/trigger/all/(?P<switch>(on|off))$', trigger_switch_all_to, name="trigger_switch_all_to"),
-    # ****************************************
-    # * service
-    # ****************************************
-    # re_path(r'^th/service/$', UserServiceListView.as_view(), name='user_services'),
-    # re_path(r'^th/service/add/(?P<service_name>\w+)$', UserServiceCreateView.as_view(), name='add_service'),
-    # re_path(r'^th/service/edit/(?P<pk>\d+)$', UserServiceUpdateView.as_view(), name='edit_service'),
-    # re_path(r'^th/service/delete/(?P<pk>\d+)$', UserServiceDeleteView.as_view(), name='delete_service'),
-    # re_path(r'^th/service/renew/(?P<pk>\d+)$', renew_service, name="renew_service"),
-    # re_path(r'^th/service/delete/$', UserServiceDeleteView.as_view(), name='delete_service'),
-    # re_path(r'^th/service/onoff/(?P<user_service_id>\d+)/(?P<switch>(on|off))$', service_related_triggers_switch_to,
-    #     name="service_related_triggers_switch_to"),
-    # # ****************************************
-    # # wizard
-    # # ****************************************
-    # re_path(r'^th/service/create/$',
-    #     UserServiceWizard.as_view([ProviderForm,
-    #                                DummyForm,
-    #                                ConsumerForm,
-    #                                DummyForm,
-    #                                ServicesDescriptionForm]),
-    #     name='create_service'),
-    # # every service will use django_th.views.finalcallback
-    # # and give the service_name value to use to
-    # # trigger the real callback
-    # re_path(r"^th/callbackevernote/$", finalcallback, {'service_name': 'ServiceEvernote', }, name="evernote_callback", ),
-    # re_path(r"^th/callbackgithub/$", finalcallback, {'service_name': 'ServiceGithub', }, name="github_callback", ),
-    # re_path(r"^th/callbackpocket/$", finalcallback, {'service_name': 'ServicePocket', }, name="pocket_callback", ),
-    # re_path(r"^th/callbackpushbullet/$", finalcallback, {'service_name': 'ServicePushbullet', },
-    #     name="pushbullet_callback", ),
-    # re_path(r"^th/callbackreddit/$", finalcallback, {'service_name': 'ServiceReddit', }, name="reddit_callback", ),
-    # re_path(r"^th/callbacktodoist/$", finalcallback, {'service_name': 'ServiceTodoist', }, name="todoist_callback", ),
-    # re_path(r"^th/callbacktrello/$", finalcallback, {'service_name': 'ServiceTrello', }, name="trello_callback", ),
-    # re_path(r"^th/callbacktumblr/$", finalcallback, {'service_name': 'ServiceTumblr', }, name="tumblr_callback", ),
-    # re_path(r"^th/callbacktwitter/$", finalcallback, {'service_name': 'ServiceTwitter', }, name="twitter_callback", ),
-    # re_path(r"^th/callbackwallabag/$", finalcallback, {'service_name': 'ServiceWallabag', }, name="wallabag_callback", ),
-    # re_path(r"^th/callbackmastodon/$", finalcallback, {'service_name': 'ServiceMastodon', }, name="mastodon_callback", ),
-    # # url(r'^th/myfeeds/', include('th_services.th_rss.urls')),
-    #
-    # re_path(r'^th/api/taiga/webhook/', include('th_services.th_taiga.urls')),
-    # re_path(r'^th/api/slack/webhook/', include('th_services.th_slack.urls')),
     # dash
     re_path(r'^dashboard/', include('dash.urls', namespace='dash')),
     # API_REST
@@ -167,7 +84,10 @@ urlpatterns = [
     # Feedback contact
     re_path(r'^feedback/', include('feedback.urls', namespace='feedback')),
     # Privacy policy
-    re_path(r'^information/', include('information.urls', namespace='information'))
+    re_path(r'^information/', include('information.urls', namespace='information')),
+    
+    # external servies (twitter, instagram...)
+    path('external/', include('external_services.urls', namespace='external_services'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

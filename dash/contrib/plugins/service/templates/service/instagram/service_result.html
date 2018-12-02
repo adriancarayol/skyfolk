@@ -1,0 +1,31 @@
+{% extends "service/base_result.html" %}
+{% load dash_tags %}
+
+{% block rendered_results %}
+{% for result in results %}
+<div class="row">
+    <div class="col s12">
+        <div class="card white">
+            <div class="card-content black-text">
+                <div class="row">
+                    <a href="{{ result.link }}">
+                        <img src="{{ result.images.low_resolution.url }}" class="responsive-img"
+                             alt="Imagen de perfil de {{ result.user.username }}"
+                             title="Imagen de perfil de {{ result.user.username }}" width="{{ result.images.low_resolution.width }}" height="{{ result.images.low_resolution.height }}"/>
+                    </a>
+                    <p>{{ result.full_name }}</p>
+                    <b>{{ result.website }}</b>
+                </div>
+                <div class="row">
+                    <a class="btn blue right"
+                       href="https://instagram.com/{{ result.user.username }}/">@{{ result.user.username }}</a>
+                </div>
+                <div class="row right">
+                    <p>{{ result.created_time|parse_timestamp }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

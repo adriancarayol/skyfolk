@@ -19,7 +19,7 @@ services:
     volumes:
       - ./run/db/dbms:/data/dbms
 #      - ./neo4j:/var/lib/neo4j/plugins
-    restart: always
+    restart: on-failure
     networks:
       - skyfolknetwork
     depends_on:
@@ -62,7 +62,7 @@ services:
     image: debezium/postgres:9.6
     volumes:
       - ./run/postgresql:/var/lib/postgresql
-    restart: always
+    restart: on-failure
     ports:
       - "5432:5432"
     environment:
@@ -80,7 +80,7 @@ services:
       - "9200:9200"
     volumes:
       - ./run/esdata/:/usr/share/elasticsearch/data/
-    restart: always
+    restart: on-failure
     environment:
       - http.host=0.0.0.0
       - transport.host=127.0.0.1
@@ -93,7 +93,7 @@ services:
     image: kibana:4.6.0
     ports:
       - "5601:5601"
-    restart: always
+    restart: on-failure
     volumes:
       - ./run/kibana/config/:/usr/share/kibana/config
     depends_on:
@@ -112,25 +112,23 @@ services:
     ports:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
-    restart: always
+    restart: on-failure
     networks:
       - skyfolknetwork
       
-  # rabbitmq nodo 2
-  rabbit_2:
-    hostname: rabbit_2
-    image: rabbitmq:latest
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
+  # golang app
+  go_skyfolk:
+    build:
+      context: .
+      dockerfile: skyfolk_services/Dockerfile
     ports:
-      - "5673:5672"  # we forward this port because it's useful for debugging
-      - "15673:15672"  # here, we can access rabbitmq management plugin
-    restart: always
+      - "1800:1800"
     networks:
       - skyfolknetwork
-
+    restart: on-failure
+    depends_on:
+      - redis
+      - dbpostgres
   # django app
   web:
     env_file:
@@ -152,7 +150,7 @@ services:
       - dbpostgres
     networks:
       - skyfolknetwork
-    restart: always
+    restart: on-failure
 
   # celery worker
   celery_worker:
@@ -170,7 +168,7 @@ services:
       - skyfolknetwork
     depends_on:
       - web
-    restart: always
+    restart: on-failure
 
   # celery beat
   celery_beat:
@@ -188,7 +186,7 @@ services:
       - skyfolknetwork
     depends_on:
       - web
-    restart: always
+    restart: on-failure
 
 networks:
   skyfolknetwork:
