@@ -1,8 +1,0 @@
-{
-  "engine": "postgres",
-  "server": "dbpostgres",
-  "port": "5432",
-  "user": "skyfolk",
-  "password": "skyfolk_password",
-  "database": "skyfolk_db"
-}
