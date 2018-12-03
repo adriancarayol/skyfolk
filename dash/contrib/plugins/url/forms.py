@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from ....base import DashboardPluginFormBase
-from ....widgets import BooleanRadioSelect
+from dash.mixins import DashboardEntryMixin
 
 from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
 from .models import Bookmark
@@ -17,7 +17,7 @@ __all__ = (
 )
 
 
-class URLForm(forms.Form, DashboardPluginFormBase):
+class URLForm(DashboardEntryMixin, DashboardPluginFormBase):
     """URL form for ``BaseURLPlugin`` plugin."""
 
     class Media(object):

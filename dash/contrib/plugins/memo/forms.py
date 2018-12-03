@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
 try:
@@ -19,7 +19,7 @@ __all__ = (
 )
 
 
-class MemoForm(forms.Form, DashboardPluginFormBase):
+class MemoForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Memo form (for ``Memo`` plugin)."""
 
     plugin_data_fields = [
@@ -45,7 +45,7 @@ MCE_ATTRS = {
 }
 
 
-class TinyMCEMemoForm(forms.Form, DashboardPluginFormBase):
+class TinyMCEMemoForm(DashboardEntryMixin, DashboardPluginFormBase):
     """TinyMCE memo form (for ``TinyMCEMemo`` plugin)."""
 
     plugin_data_fields = [

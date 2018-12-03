@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
 __title__ = 'dash.contrib.plugins.statistics.forms'
@@ -9,7 +9,7 @@ __all__ = (
 )
 
 
-class StatisticsForm(forms.Form, DashboardPluginFormBase):
+class StatisticsForm(DashboardEntryMixin, DashboardPluginFormBase):
     """StatisticsForm for ``BaseStatisticsPlugin`` plugin."""
 
     plugin_data_fields = [

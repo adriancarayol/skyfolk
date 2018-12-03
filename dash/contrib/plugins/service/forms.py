@@ -1,11 +1,11 @@
-import requests
 from django import forms
 from external_services.models import UserService
 from external_services.factory import ServiceFormFactory
 from ....base import DashboardPluginFormBase
+from dash.mixins import DashboardEntryMixin
 
 
-class ServiceForm(forms.Form, DashboardPluginFormBase):
+class ServiceForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Servie form (for ``Service`` plugin)."""
 
     plugin_data_fields = [
@@ -18,11 +18,9 @@ class ServiceForm(forms.Form, DashboardPluginFormBase):
                                      required=True)
 
     def __init__(self, *args, **kwargs):
-        print(kwargs)
-        user_id = kwargs.pop('user_id', None)
         super(ServiceForm, self).__init__(*args, **kwargs)
-        if user_id:
-            self.fields['service'].queryset = UserService.objects.filter(service__status=True, user_id=user_id)
+        if self.user_id:
+            self.fields['service'].queryset = UserService.objects.filter(service__status=True, user_id=self.user_id)
 
     def save_plugin_data(self, request=None):
         service = self.cleaned_data.get('service', None)
