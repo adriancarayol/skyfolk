@@ -6,3 +6,4 @@ class ExternalServicesConfiguration(AppConfig):
 
     def ready(self):
         super(ExternalServicesConfiguration, self).ready()
+        import external_services.signals
