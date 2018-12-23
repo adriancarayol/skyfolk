@@ -1,11 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
 __all__ = ('TwitchForm',)
 
 
-class TwitchForm(forms.Form, DashboardPluginFormBase):
+class TwitchForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Poll form for ``PollPlugin`` plugin."""
 
     plugin_data_fields = [

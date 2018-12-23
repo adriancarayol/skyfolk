@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from pif import get_public_ip
-
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
 
@@ -19,7 +19,7 @@ __all__ = ('WeatherForm',)
 logger = logging.getLogger(__name__)
 
 
-class WeatherForm(forms.Form, DashboardPluginFormBase):
+class WeatherForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Form for main ``WeatherPlugin``."""
 
     plugin_data_fields = [

@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from .models import PollResponse
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
 __all__ = ('PollForm',)
 
 
-class PollForm(forms.Form, DashboardPluginFormBase):
+class PollForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Poll form for ``PollPlugin`` plugin."""
 
     plugin_data_fields = [

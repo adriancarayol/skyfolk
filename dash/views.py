@@ -267,7 +267,6 @@ def add_dashboard_entry(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
-
     dashboard_settings = get_or_create_dashboard_settings(request.user)
 
     if workspace:

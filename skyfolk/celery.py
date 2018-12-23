@@ -3,7 +3,6 @@ import os
 import django
 from celery import Celery
 from celery.schedules import crontab
-from django.conf import settings
 from kombu import Exchange, Queue
 
 # set the default Django settings module for the 'celery' program.
@@ -43,21 +42,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour=7, minute=30, day_of_week=1),
         'options': {'queue': 'background'}
     },
-    # 'read_services': {
-    #    'task': 'tasks.read_services',
-    #    'schedule': crontab(minute='*/10'),
-    #    'options': {'queue': 'low'}
-    # },
-    # 'publish_services': {
-    #    'task': 'tasks.publish_services',
-    #    'schedule': crontab(minute='*/15'),
-    #    'options': {'queue': 'low'}
-    # },
-    #'recycle_services': {
-    #    'task': 'tasks.recycle_services',
-    #    'schedule': crontab(minute='*/30'),
-    #    'options': {'queue': 'low'}
-    #}
+    'periodic_update_external_services': {
+        'task': 'tasks.periodic_update_external_services',
+        'schedule': crontab(minute=1),
+        'options': {'queue': 'low'}
+    },
 }
 
 """
@@ -70,7 +59,7 @@ la configuracion de las aplicaciones necesaria
 if not hasattr(django, 'apps'):
     django.setup()
 
+
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
-
