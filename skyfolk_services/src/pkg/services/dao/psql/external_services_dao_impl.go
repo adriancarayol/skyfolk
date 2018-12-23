@@ -3,7 +3,7 @@ package psql
 import (
 	"database/sql"
 	"log"
-	"skyfolk_services/pkg/services/models"
+	"skyfolk_services/src/pkg/services/models"
 	"strconv"
 )
 
