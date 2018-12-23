@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
 
@@ -18,7 +18,7 @@ __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = ('ReadRSSFeedForm',)
 
 
-class ReadRSSFeedForm(forms.Form, DashboardPluginFormBase):
+class ReadRSSFeedForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Form for main ``ReadRSSFeedPlugin``."""
 
     plugin_data_fields = [

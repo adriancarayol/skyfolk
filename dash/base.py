@@ -1048,6 +1048,7 @@ class BaseDashboardPlugin(object):
                 if plugin_form:
                     return plugin_form(data=data, files=files, user_id=user_id)
             except Exception as err:
+                print(err)
                 if DEBUG:
                     logger.debug(err)
                 raise Http404(err)

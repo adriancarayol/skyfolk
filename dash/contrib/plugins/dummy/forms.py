@@ -7,7 +7,7 @@ from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
 
 from transliterate.contrib.apps.translipsum import TranslipsumGenerator
-
+from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
 from .defaults import (
@@ -31,7 +31,7 @@ __all__ = ('DummyForm', 'DummyShortcutsForm')
 logger = logging.getLogger(__name__)
 
 
-class DummyForm(forms.Form, DashboardPluginFormBase):
+class DummyForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Dummy form (for main `placeholder`)."""
 
     plugin_data_fields = [
@@ -85,8 +85,7 @@ class DummyForm(forms.Form, DashboardPluginFormBase):
                                               DEFAULT_MAX_CHARS)
                     )
             except Exception as err:
-                if DEBUG:
-                    logger.debug(err)
+                logger.error(err)
 
 
 class DummyShortcutsForm(DummyForm):

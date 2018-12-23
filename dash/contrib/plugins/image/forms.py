@@ -1,14 +1,12 @@
 import uuid
+from dash.mixins import DashboardEntryMixin
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from ....base import DashboardPluginFormBase
-from ....widgets import BooleanRadioSelect
 from .models import DashImageModel
-from .helpers import handle_uploaded_file
-from .settings import FIT_METHODS_CHOICES, DEFAULT_FIT_METHOD
 
 
 __title__ = 'dash.contrib.plugins.image.forms'
@@ -18,7 +16,7 @@ __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = ('ImageForm',)
 
 
-class ImageForm(forms.Form, DashboardPluginFormBase):
+class ImageForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Image form for `ImagePlugin` plugin."""
 
     plugin_data_fields = [

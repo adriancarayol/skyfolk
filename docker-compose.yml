@@ -131,6 +131,8 @@ services:
       - dbpostgres
   # django app
   web:
+    stdin_open: true
+    tty: true
     env_file:
       - web-variables.env
     build:

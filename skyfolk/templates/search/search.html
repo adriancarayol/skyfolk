@@ -191,8 +191,7 @@ Template para las busquedas
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
                                                 <div class="card small">
                                                     <div class="card-image">
-                                                        <img class="lazyload" data-src="
-                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
+                                                        <img src="{% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                         <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
                                                     </div>
                                                     <div class="card-content">
@@ -221,7 +220,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                    <img src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
@@ -252,7 +251,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
+                                        <img src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
                                             <source src="{{ item.video }}" type="video/mp4">
@@ -380,8 +379,8 @@ Template para las busquedas
                                                                     {% for image in images %}
                                                                         {% if image.image %}
                                                                         <div class="col l4 s12">
-                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
-                                                                                 data-src="{{ image.image.url }}"
+                                                                            <img class="materialboxed responsive-img z-depth-2"
+                                                                                 src="{{ image.image.url }}"
                                                                                  alt="Imagen de: {{ node.author }}"
                                                                                  title="Imagen de: {{ node.author }}">
                                                                         </div>
@@ -414,7 +413,7 @@ Template para las busquedas
                                                             {% else %}
                                                                 <div class="card small">
                                                                     <div class="card-image">
-                                                                        <img class="lazyload" data-src="
+                                                                        <img src="
                                                                                 {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                                         <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
                                                                     </div>
@@ -461,8 +460,8 @@ Template para las busquedas
                                                                     {% for image in images %}
                                                                         {% if image.image %}
                                                                         <div class="col l4 s12">
-                                                                            <img class="lazyload materialboxed responsive-img z-depth-2"
-                                                                                 data-src="{{ image.image.url }}"
+                                                                            <img class="materialboxed responsive-img z-depth-2"
+                                                                                 src="{{ image.image.url }}"
                                                                                  alt="Imagen de: {{ node.author }}"
                                                                                  title="Imagen de: {{ node.author }}">
                                                                         </div>
@@ -495,7 +494,7 @@ Template para las busquedas
                                                             {% else %}
                                                                 <div class="card small">
                                                                     <div class="card-image">
-                                                                        <img class="lazyload" data-src="
+                                                                        <img src="
                                                                                 {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                                         <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
                                                                     </div>
@@ -545,7 +544,7 @@ Template para las busquedas
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
                                                 <div class="card small">
                                                     <div class="card-image">
-                                                        <img class="lazyload" data-src="
+                                                        <img src="
                                                                 {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                         <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
                                                     </div>
@@ -580,7 +579,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                <img src="{% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
                             </div>
                             <div class="col s12 legend-content">
                                 <div class="legend-user-image">
@@ -615,7 +614,7 @@ Template para las busquedas
                                     </div>
                                 {% endif %}
                                 {% if item.thumbnail %}
-                                    <img class="lazyload" data-src="{{ item.thumbnail }}"
+                                    <img src="{{ item.thumbnail }}"
                                          alt="{{ item.name }}" title="{{ item.name }}"
                                          onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
                                 {% else %}

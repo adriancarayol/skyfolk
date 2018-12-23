@@ -25,6 +25,7 @@ $(document).ready(function () {
         var tag = $(this);
         $wrapper_shared_pub.find('#id_pk').val($(tag).data('id'));
         $wrapper_shared_pub.show();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
     /* Compartir a skyline */

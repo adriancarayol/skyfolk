@@ -469,7 +469,7 @@ class PublicationGroupDetail(ListView):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
         if not self.request.is_ajax():
             context['publication_id'] = self.kwargs.get('pk', None)
-            context['asdasdadaddr'] = SharedPublicationForm()
+            context['share_publication'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
         context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(
             id=self.publication.board_group_id))
