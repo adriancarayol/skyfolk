@@ -5,9 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"skyfolk_services/pkg/cache"
-	"skyfolk_services/pkg/services/controller"
-	"skyfolk_services/tools"
+	"skyfolk_services/src/pkg/cache"
+	"skyfolk_services/src/pkg/services/controller"
+	"skyfolk_services/src/tools"
 )
 
 func main() {
