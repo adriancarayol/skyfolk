@@ -6,8 +6,8 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 	"log"
 	"net/url"
-	"skyfolk_services/pkg/cache"
-	"skyfolk_services/pkg/services/dao/psql"
+	"skyfolk_services/src/pkg/cache"
+	"skyfolk_services/src/pkg/services/dao/psql"
 	"strconv"
 	"time"
 )

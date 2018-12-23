@@ -3,7 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"os"
-	"skyfolk_services/configs"
+	"skyfolk_services/src/configs"
 )
 
 func GetConfiguration() (configs.Configuration, error) {
