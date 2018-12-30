@@ -194,6 +194,7 @@ Template para el perfil de cada usuario
                             Incluimos el tab comentarios
                             {% endcomment %}
                                 <div id="tab-comentarios">
+                                    {% comment %}
                                     <div class="btn-filters row">
                                         <div id="react">
                                         </div>
@@ -202,6 +203,7 @@ Template para el perfil de cada usuario
                                         </script>
                                         {% render_bundle component %}
                                     </div>
+                                    {% endcomment %}
                                     {% if publications|length == 0 %}
                                         <div class="no-comments" id="without-comments">
                                             <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>

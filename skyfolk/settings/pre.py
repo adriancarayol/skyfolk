@@ -30,7 +30,7 @@ STATIC_ROOT = "/var/www/skyfolk.net/run/static/static/"
 MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
 MEDIA_URL = '/media/'
 # INVITATIONS ONLY EMAIL
-INVITATIONS_INVITATION_ONLY = True
+INVITATIONS_INVITATION_ONLY = False
 
 # ELASTICSEARCH CONFIGURATION
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
