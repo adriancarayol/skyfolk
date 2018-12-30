@@ -21,7 +21,7 @@ AWS_PRELOAD_METADATA = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 
-
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

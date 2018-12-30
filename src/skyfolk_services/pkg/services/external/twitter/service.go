@@ -23,8 +23,8 @@ type TwitterResult struct {
 	CreatedAt   string `json:"createAt"`
 }
 
-const ConsumerKey = "9UUbALvoV2evTTdJYSo3KNIiv";
-const ConsumerSecret = "DC0Obqkqh74cilW9h3dtYUNsvDg9QcgZu5ES1RBXwY7XtuY7zJ";
+const ConsumerKey = "ICxk7pSKDmUffHxEVyP2bqQ2l";
+const ConsumerSecret = "ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR";
 
 func (twitter *TwitterResult) GetAPI(auth_token string, auth_token_secret string) *anaconda.TwitterApi {
 	api := anaconda.NewTwitterApiWithCredentials(auth_token,
