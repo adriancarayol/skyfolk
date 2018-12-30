@@ -5,6 +5,8 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
+    <div class="row center">
+    <div class="col s12 l4 offset-l4">
     <h1>{% trans "Sign Up" %}</h1>
 
     <p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your
@@ -17,8 +19,9 @@
         {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
         {% endif %}
-        <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+        <button type="submit" class="waves-effect waves-light btn blue lighten-2">{% trans "Sign Up" %} &raquo;</button>
     </form>
-
+    </div>
+</div>
 
 {% endblock %}
