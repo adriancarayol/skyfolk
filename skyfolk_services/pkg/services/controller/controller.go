@@ -6,13 +6,13 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"skyfolk_services/src/pkg/cache"
-	"skyfolk_services/src/pkg/services/external/twitter"
-	"skyfolk_services/src/pkg/services/external/instagram"
-	"skyfolk_services/src/pkg/services/models"
-	"skyfolk_services/src/pkg/services/dao/psql"
+	"skyfolk_services/pkg/cache"
+	"skyfolk_services/pkg/services/external/twitter"
+	"skyfolk_services/pkg/services/external/instagram"
+	"skyfolk_services/pkg/services/models"
+	"skyfolk_services/pkg/services/dao/psql"
 	"strings"
-	"skyfolk_services/src/pkg/services/external/youtube"
+	"skyfolk_services/pkg/services/external/youtube"
 )
 
 type Controller struct {

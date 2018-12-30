@@ -169,10 +169,11 @@ AVATAR_GRAVATAR_DEFAULT = 'https://d32rim3h420riw.cloudfront.net/img/nuevo.png'
 # CONFIG E-MAIL
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'error@skyfolk.net'
+EMAIL_HOST_USER = 'no-reply@skyfolk.net'
+EMAIL_HOST_PASSWORD = 'uLL:4jrpd(g5jgH!'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@skyfolk.net'
+DEFAULT_FROM_EMAIL = 'no-reply@skyfolk.net'
 # SESSION EXPIRATION
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 SESSION_UPDATE_SECONDS = 10 * 60

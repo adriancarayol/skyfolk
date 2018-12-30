@@ -6,7 +6,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
-	"skyfolk_services/src/tools"
+	"skyfolk_services/tools"
 )
 
 var ctx = context.Background()

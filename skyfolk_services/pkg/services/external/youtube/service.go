@@ -3,9 +3,9 @@ package youtube
 import (
 	"time"
 	"fmt"
-	"skyfolk_services/src/pkg/cache"
+	"skyfolk_services/pkg/cache"
 	"log"
-	"skyfolk_services/src/pkg/services/dao/psql"
+	"skyfolk_services/pkg/services/dao/psql"
 	"strconv"
 	"net/http"
 	"encoding/json"

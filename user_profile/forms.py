@@ -167,7 +167,7 @@ class EmailForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(
         attrs={'type': 'email',
                'placeholder': _('E-mail address')}))
-    policy = forms.BooleanField(help_text=_('Acepto la politica de privacidad y condiciones de uso.'))
+    policy = forms.BooleanField(help_text=_('Acepto la <a href="/information/privacy/">politica de privacidad y condiciones de uso</a>.'))
 
     def clean_email(self):
         data = self.cleaned_data['email']
