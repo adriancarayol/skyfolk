@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"skyfolk_services/src/pkg/services/models"
+	"skyfolk_services/pkg/services/models"
 	"strconv"
 )
 

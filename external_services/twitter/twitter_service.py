@@ -6,8 +6,8 @@ from django.db import IntegrityError
 
 class TwitterService(object):
     def __init__(self, **kwargs):
-        self.consumer_token = '9UUbALvoV2evTTdJYSo3KNIiv'
-        self.consumer_secret = 'DC0Obqkqh74cilW9h3dtYUNsvDg9QcgZu5ES1RBXwY7XtuY7zJ'
+        self.consumer_token = 'ICxk7pSKDmUffHxEVyP2bqQ2l'
+        self.consumer_secret = 'ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR'
         self.callback = reverse('external_services:twitter-service:callback-twitter-service')
 
     @staticmethod

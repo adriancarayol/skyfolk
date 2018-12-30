@@ -20,7 +20,7 @@
                     <div class="input-field col s12">
                         <p>
                             {{ form.policy }}
-                            <label for="{{ form.policy.id_for_label }}"><span>{{ form.policy.help_text }}</span></label>
+                            <label for="{{ form.policy.id_for_label }}"><span>{{ form.policy.help_text|safe }}</span></label>
                         </p>
                     </div>
                 </div>

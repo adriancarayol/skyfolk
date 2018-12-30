@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"skyfolk_services/src/pkg/cache"
-	"skyfolk_services/src/pkg/services/dao/psql"
+	"skyfolk_services/pkg/cache"
+	"skyfolk_services/pkg/services/dao/psql"
 	"strconv"
 	"time"
 )
