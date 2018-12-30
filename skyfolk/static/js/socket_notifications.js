@@ -25,7 +25,7 @@ var UTILS_N = UTILS_N || (function () {
                 } else {
                     $(list_notifications).prepend(data.content);
                     var live_notify = $('#live_notify_badge');
-                    $(live_notify).html(parseInt($(live_notify).html(), 10) + 1);
+                    $(live_notify).html(parseInt($(live_notify).text(), 10) + 1);
                 }
                 Materialize.toast($(data.content).find('.title'), 4000);
             };
