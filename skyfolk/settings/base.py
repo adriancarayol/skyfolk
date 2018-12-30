@@ -136,7 +136,7 @@ LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'user_profile.adapter.MySocialAccountAdapter`
+SOCIALACCOUNT_ADAPTER = 'user_profile.adapter.MySocialAccountAdapter'
 ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
