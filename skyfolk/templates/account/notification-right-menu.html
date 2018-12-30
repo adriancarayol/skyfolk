@@ -24,7 +24,6 @@ Menu de notificaciones verticales
     </style>
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 <div id="notification-menu" class="side-nav nav-vertical-and-chat">
-    {% if user_notifications %}
     <ul id="list-notify" class="collection">
             {% for notification in user_notifications %}
                 <li class="collection-item avatar" data-id="{{ notification.id }}">
@@ -78,7 +77,6 @@ Menu de notificaciones verticales
                 </li>
             {% endfor %}
     </ul>
-      {% endif %}
     <div class="nav-vertical-controls">
         <div class="controls-notifications">
             {% if user_notifications %}
