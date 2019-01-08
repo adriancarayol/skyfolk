@@ -37,7 +37,7 @@
                             <div class="col s12 m10 card z-depth-2 right">
                                 <div class="card-panel grey lighten-5 z-depth-1">
                                     <div class="row valign-wrapper">
-                                        <div class="col s2">
+                                        <div class="col s12">
                                             <div class="chip">
                                                 {% avatar message.sender %}
                                                 <a class="pm_sender" href="/profile/{{ message.obfuscated_sender|or_me:user.id }}">{{ message.obfuscated_sender|or_me:user.id }}</a>
@@ -50,7 +50,7 @@
                                             {% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %}
                                                 {{ message.moderation_reason }}{% endif %}</div>{% endif %}
                                             </div>
-                                        <div class="col s10">
+                                        <div class="col s12">
                                           <span class="black-text pm_body">
                                               <p class="flow-text">{{ message.body|emoji_replace|linebreaksbr }}</p>
                                           </span>
