@@ -67,7 +67,7 @@
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         {% if node.publication_group_multimedia_photo_extra_content.video %}
                                             {% video node.publication_group_multimedia_photo_extra_content.video as my_video %}
-                                               {% video my_video "100% x 100%" %}
+                                               {% video my_video "100% x 100%" is_secure=True %}
                                             {% endvideo %}
                                         {% else %}
                                         <div class="card small">
