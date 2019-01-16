@@ -136,7 +136,7 @@
                                         {% if item.extra_content %}
                                             {% if item.extra_content.video %}
                                                 {% video item.extra_content.video as my_video %}
-                                                {% video my_video "100% x 100%" %}
+                                                {% video my_video "100% x 100%" is_secure=True %}
                                                 {% endvideo %}
                                             {% else %}
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
@@ -259,6 +259,17 @@
     <script src="{% static "js/socket_news.js" %}" type="text/javascript"></script>
     <script src="{% static "js/dash.js" %}" type="text/javascript"></script>
     <script>
+        var $grid = $('.grid').imagesLoaded(function () {
+            $grid.masonry({
+                itemSelector: '.grid-item',
+                columnWidth: 300,
+                gutter: 20,
+                fitWidth: true,
+                horizontalOrder: true,
+                transitionDuration: '0.3s'
+            });
+        });
+
         var infinite = new Waypoint.Infinite({
             element: $('#stream-publications'),
             offset: 'bottom-in-view',
@@ -274,17 +285,6 @@
             }
         });
 
-        var $grid = $('.grid').imagesLoaded(function () {
-            $grid.masonry({
-                itemSelector: '.grid-item',
-                columnWidth: 300,
-                gutter: 20,
-                fitWidth: true,
-                initLayout: false,
-                horizontalOrder: true,
-                transitionDuration: '0.3s'
-            });
-        });
     </script>
     <script>
         UTILS_E.init([{{ user.pk }}]);
