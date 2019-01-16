@@ -9,7 +9,7 @@
                     <div class="card-content black-text">
                         <div class="row">
                             {% with "https://youtube.com/watch?v="|add:result.snippet.resourceId.videoId as youtube_url %}
-                                {% video youtube_url %}
+                                {% video youtube_url is_secure=True %}
                             {% endwith %}
                         </div>
                         <div class="row">

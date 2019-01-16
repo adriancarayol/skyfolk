@@ -72,7 +72,7 @@
                         {% if node.publication_group_multimedia_video_extra_content %}
                         {% if node.publication_group_multimedia_video_extra_content.video %}
                         {% video node.publication_group_multimedia_video_extra_content.video as my_video %}
-                        {% video my_video "100% x 100%" %}
+                        {% video my_video "100% x 100%" is_secure=True %}
                         {% endvideo %}
                         {% else %}
                         {% comment %} Para publicaciones con URL {% endcomment %}
