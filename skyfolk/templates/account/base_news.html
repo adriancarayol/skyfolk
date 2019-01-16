@@ -143,6 +143,7 @@
                                                 <div class="card small">
                                                     <div class="card-image">
                                                         <img src="
+
                                                                 {% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                         <span class="card-title white-text">{{ item.extra_content.title }}</span>
                                                     </div>
@@ -174,7 +175,8 @@
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
-                                        <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
+                                        <img src="
+                                                {% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                                              alt="{{ item.title }}" title="{{ item.title }}"
                                              onclick="location.href='{{ item.get_absolute_url }}'">
                                     </div>
@@ -271,18 +273,17 @@
                 });
             }
         });
-        var $grid = $('.grid').masonry({
-            itemSelector: '.grid-item',
-            columnWidth: 300,
-            gutter: 10,
-            fitWidth: true,
-            initLayout: false,
-            horizontalOrder: true,
-            transitionDuration: '0.3s'
-        });
-        $grid.imagesLoaded().progress(function () {
-            $grid.masonry('reloadItems');
-            $grid.masonry('layout');
+
+        var $grid = $('.grid').imagesLoaded(function () {
+            $grid.masonry({
+                itemSelector: '.grid-item',
+                columnWidth: 300,
+                gutter: 20,
+                fitWidth: true,
+                initLayout: false,
+                horizontalOrder: true,
+                transitionDuration: '0.3s'
+            });
         });
     </script>
     <script>
