@@ -1,14 +1,11 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from neomodel import clear_neo4j_database
-from neomodel import db
 from publications_gallery.models import Photo
 from .models import PublicationPhoto, ExtraContentPubPhoto
 
 
 class PublicationGalleryTestCase(TestCase):
     def setUp(self):
-        clear_neo4j_database(db)
         u = User.objects.create(username="example", password="foo")
         p = Photo.objects.create(title="yee", owner=u, image="skyfolk/static/img/nuevo.png")
         PublicationPhoto.objects.create(content='example_content', author=u, board_photo=p)

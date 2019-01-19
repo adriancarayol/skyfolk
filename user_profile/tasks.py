@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from mailer.mailer import Mailer
 from skyfolk.celery import app
 from neomodel import db
-from user_profile.node_models import NodeProfile
 
 logger = get_task_logger(__name__)
 

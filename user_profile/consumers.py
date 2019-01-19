@@ -2,7 +2,6 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.http import Http404
 from channels.layers import get_channel_layer
 from user_profile.models import Profile
-from user_profile.node_models import NodeProfile
 
 channel_layer = get_channel_layer()
 

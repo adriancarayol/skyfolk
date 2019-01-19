@@ -15,31 +15,31 @@
             {% for item in object_list %}
                 <div class="col s12 m12 l4">
                     <div class="card white">
-                        <div class="card-content" {% if item.profile.back_image %}style="background: url({{ item.profile.back_image.url }}) top center repeat-y; background-size: 100%" {% endif %}>
-                            {% avatar item %}
+                        <div class="card-content" {% if item.back_image %}style="background: url({{ item.back_image.url }}) top center repeat-y; background-size: 100%" {% endif %}>
+                            {% avatar item.user %}
                             <span class="card-title grey-text darken-1">
-                                <a href="/profile/{{ item.username }}">{{ item.username }}</a>
+                                <a href="/profile/{{ item.user.username }}">{{ item.user.username }}</a>
                             </span>
                             <div class="divider"></div>
-                            <br> {% for tag in item.username|get_tags %}
+                            <br> {% for tag in item.user.id|get_tags %}
                             <div class="chip">{{ tag.title }}</div>
                         {% endfor %}
                         </div>
                         <div class="card-action right-align">
-                            {% if user.id|is_blocked:item.id %}
-                                <button data-user-id="{{ item.user_id }}"
+                            {% if user.id|is_blocked:item.user.id %}
+                                <button data-user-id="{{ item.user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 unblock-user" type="submit">
                                     Desbloquear
                                 </button>
-                            {% elif user.id|exist_request:item.id %}
-                                <button data-user-id="{{ item.id }}"
+                            {% elif user.id|exist_request:item.user.id %}
+                                <button data-user-id="{{ item.user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">
                                     Solicitud enviada
                                 </button>
                             {% else %}
-                                <button data-user-id="{{ item.id }}"
+                                <button data-user-id="{{ item.user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">
-                                    {% if user.id|is_follow:item.id %}Dejar de seguir {% else %}
+                                    {% if user.id|is_follow:item.user.id %}Dejar de seguir {% else %}
                                         Seguir{% endif %}</button>
                             {% endif %}
                         </div>

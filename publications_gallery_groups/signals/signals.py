@@ -11,7 +11,7 @@ from embed_video.backends import detect_backend, EmbedVideoException
 from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
-from user_profile.node_models import NodeProfile
+
 from publications_gallery_groups.models import PublicationGroupMediaPhoto, ExtraContentPubPhoto, ExtraContentPubVideo
 
 logging.basicConfig(level=logging.INFO)

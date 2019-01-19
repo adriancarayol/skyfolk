@@ -43,14 +43,6 @@
             <p>Presiona intro para añadir un nuevo interés.</p>
         </div>
     </div>
-    <div class="row">
-        <div class="col s12">
-            <p class="flow-text">Los usuarios han mostrado interés por... </p>
-            {% for theme in top_tags %}
-                <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0|intword }}</div>
-            {% endfor %}
-        </div>
-    </div>
     <div class="divider"></div>
     <form id="submit-themes" action="" method="post">{% csrf_token %}
         <div class="row">

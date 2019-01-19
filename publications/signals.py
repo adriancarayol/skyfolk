@@ -9,11 +9,10 @@ from django.dispatch import receiver
 from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
 from requests.exceptions import MissingSchema
-
+from user_profile.models import FOLLOWING, RelationShipProfile
 from notifications.signals import notify
-from user_profile.node_models import NodeProfile
 from .models import Publication, ExtraContent
-from django.db.models import Sum, Count, When, Case, Value, IntegerField, Q
+from django.db.models import Sum, Count, When, Case, Value, Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -166,21 +165,24 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.author.username)
-    m = NodeProfile.nodes.get(title=instance.board_owner.username)
-    # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.title != m.title:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight + 1
-            rel.save()
+    try:
+        relation = RelationShipProfile.objects.get(
+            from_profile=instance.author.profile,
+            to_profile=instance.board_owner.profile,
+            type=FOLLOWING,
+        )
+        relation.weight = relation.weight + 1
+    except RelationShipProfile.DoesNotExist:
+        pass
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.author.username)
-    m = NodeProfile.nodes.get(title=instance.board_owner.username)
-    if n.title != m.title:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight - 1
-            rel.save()
+    try:
+        relation = RelationShipProfile.objects.get(
+            from_profile=instance.author.profile,
+            to_profile=instance.board_owner.profile,
+            type=FOLLOWING,
+        )
+        relation.weight = relation.weight - 1
+    except RelationShipProfile.DoesNotExist:
+        pass

@@ -10,7 +10,6 @@ from django.db import models
 from django.db import transaction
 from django.utils.http import urlencode
 from taggit.managers import TaggableManager
-from notifications.models import Notification
 from photologue.models import Photo, Video
 
 REQUEST_FOLLOWING = 1
@@ -82,6 +81,7 @@ class RelationShipProfile(models.Model):
     to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True, on_delete=models.CASCADE)
     from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True, on_delete=models.CASCADE)
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+    weight = models.PositiveIntegerField(default=0)
     objects = RelationShipProfileManager()
 
     class Meta:
@@ -317,7 +317,7 @@ class Request(models.Model):
     receiver = models.ForeignKey(User, related_name='to_request', on_delete=models.CASCADE)
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey(Notification, related_name='request_notification', null=True, on_delete=models.CASCADE)
+    notification = models.ForeignKey('notifications.Notification', related_name='request_notification', null=True, on_delete=models.CASCADE)
     objects = RequestManager()
 
     class Meta:

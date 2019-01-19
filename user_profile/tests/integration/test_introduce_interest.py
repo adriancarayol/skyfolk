@@ -1,6 +1,5 @@
 import pytest
 from user_profile.views import InterestsView
-from user_profile.node_models import TagProfile, NodeProfile
 
 """
   Integration test for introducing profile interest

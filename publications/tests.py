@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import TestCase
-from neomodel import db, clear_neo4j_database
 
 from publications.models import Publication
 
@@ -9,7 +8,6 @@ from publications.models import Publication
 class PublicationTest(TestCase):
     @classmethod
     def setUpTestData(self):
-        clear_neo4j_database(db)
         User.objects.create_user(username='foo', password='foo')
 
     def test_create_publication(self):
@@ -44,6 +42,3 @@ class PublicationTest(TestCase):
         response = self.client.post(reverse('publications:new_publication'), {'content': 'pol'})
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Publication.objects.filter(content='pol').exists())
-
-    def tearDown(self):
-        clear_neo4j_database(db)

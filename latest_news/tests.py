@@ -1,6 +1,5 @@
 from django.db.models import Q
 from django.test import TestCase
-from neomodel import db, clear_neo4j_database
 from django.contrib.auth.models import User
 from user_profile.models import RelationShipProfile, FOLLOWING, BLOCK
 from publications.models import Publication
@@ -8,7 +7,6 @@ from publications.models import Publication
 
 class NewTestClass(TestCase):
     def setUp(self):
-        clear_neo4j_database(db)
         User.objects.create(username="usuario", password="foo")
         User.objects.create(username="usuario2", password="foo")
 
@@ -43,7 +41,3 @@ class NewTestClass(TestCase):
         users_not_blocked_me = RelationShipProfile.objects.filter(
             to_profile=u.profile, type=BLOCK).values('from_profile_id')
         self.assertFalse(Publication.objects.exclude(board_owner__profile__in=users_not_blocked_me).exists())
-
-    @classmethod
-    def tearDownClass(cls):
-        clear_neo4j_database(db)

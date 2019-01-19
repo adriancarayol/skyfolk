@@ -1,11 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
-from neomodel import db
 from user_profile.models import Profile
 from django.http import Http404, HttpResponseForbidden
 from rest_framework.decorators import api_view
-from user_profile.node_models import TagProfile, NodeProfile
 
 
 class ProfileInterests(APIView):
@@ -40,13 +38,5 @@ def delete_interest(request, id):
         tag.delete()
     except Exception:
         return Response({"message": "Hubo un error interno, por favor, prueba de nuevo."})
-
-    try:
-        interest = TagProfile.nodes.get_or_none(title=tag.name)
-        node_profile = NodeProfile.nodes.get(title=user.username)
-        if interest:
-            interest.user.disconnect(node_profile)
-    except Exception:
-        pass
 
     return Response({"message": "¡Eliminado!"})

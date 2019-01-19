@@ -39,8 +39,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5432'),
     }
 }
-# NEO4J config
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 
 # ACCOUNT SETTINGS FOR PRE
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
