@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.db import transaction
 from django.test import TestCase
 from django.db import IntegrityError
 from django.urls import reverse
@@ -12,19 +11,6 @@ from user_profile.models import (
 )
 from publications.models import Publication
 from django.core.management import call_command
-
-
-class UserTestClass(TestCase):
-    def test_create_object(self):
-        try:
-            with transaction.atomic(using="default"):
-                User.objects.create(username="example", password="foo")
-                raise Exception
-        except Exception as e:
-            pass
-        sql_q = User.objects.filter(username="example").first()
-
-        self.assertIsNone(sql_q)
 
 
 class RelationShipTestClass(TestCase):
@@ -46,7 +32,7 @@ class RelationShipTestClass(TestCase):
         rel = RelationShipProfile.objects.create(
             to_profile=u2.profile, from_profile=u.profile, type=BLOCK
         )
-        self.assertIsNone(rel)
+        self.assertIsNotNone(rel)
 
     def test_create_new_relationship_blocked_user(self):
         u = User.objects.get(username="usuario")
@@ -71,14 +57,14 @@ class RelationShipTestClass(TestCase):
         rel2 = RelationShipProfile.objects.create(
             to_profile=u.profile, from_profile=u2.profile, type=FOLLOWING
         )
-        self.assertIsNone(rel1)
-        self.assertIsNone(rel2)
+        self.assertIsNotNone(rel1)
+        self.assertIsNotNone(rel2)
 
 
 class UserContentTest(TestCase):
     @classmethod
     def setUpTestData(self):
-        call_command("badgify_sync", "badges", interactive=False)
+        call_command("badgify_sync", "badges")
         new_user = User.objects.create_user(username="foo", password="foo")
         publications = [
             Publication.objects.create(

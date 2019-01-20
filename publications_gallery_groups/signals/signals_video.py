@@ -1,12 +1,11 @@
 import logging
-import re
-
 import requests
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse_lazy
+from user_profile.models import FOLLOWING, RelationShipProfile
 from embed_video.backends import detect_backend, EmbedVideoException
 from requests.exceptions import MissingSchema
 
@@ -114,13 +113,15 @@ def add_extra_content(instance):
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.author.username)
-    m = NodeProfile.nodes.get(title=instance.board_video.owner.username)
-    if n.title != m.title:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight - 1
-            rel.save()
+    try:
+        relation = RelationShipProfile.objects.get(
+            from_profile=instance.author.profile,
+            to_profile=instance.board_video.owner.profile,
+            type=FOLLOWING,
+        )
+        relation.weight = relation.weight - 1
+    except RelationShipProfile.DoesNotExist:
+        pass
 
 
 def notify_mentions(instance):
@@ -144,11 +145,12 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(title=instance.author.username)
-    m = NodeProfile.nodes.get(title=instance.board_video.owner.username)
-    # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.title != m.title:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight + 1
-            rel.save()
+    try:
+        relation = RelationShipProfile.objects.get(
+            from_profile=instance.author.profile,
+            to_profile=instance.board_video.owner.profile,
+            type=FOLLOWING,
+        )
+        relation.weight = relation.weight + 1
+    except RelationShipProfile.DoesNotExist:
+        pass
