@@ -19,18 +19,29 @@
 {% block cf-form %}
     <div id="container"></div>
     <script src="{% static "js/sigma.min.js" %}"></script>
+    <script src="{% static "js/settings.js" %}"></script>
     <script src="{% static "js/sigma.parsers.json.min.js" %}"></script>
     <script src="{% static "js/sigma.plugins.dragNodes.min.js" %}"></script>
+    <script src="{% static "js/sigma.canvas.edges.labels.curve.js" %}"></script>
+    <script src="{% static "js/sigma.canvas.edges.labels.curvedArrow.js" %}"></script>
+    <script src="{% static "js/sigma.canvas.edges.labels.def.js" %}"></script>
     <script>
         var data = JSON.parse('{{ data|safe }}');
         s = new sigma({
             graph: data,
-            container: 'container',
+            renderer: {
+                // IMPORTANT:
+                // This works only with the canvas renderer, so the
+                // renderer type set as "canvas" is necessary here.
+                container: 'container',
+                type: 'canvas'
+            },
             settings: {
-                defaultNodeColor: '#ec5148'
+                edgeLabelSize: 'proportional'
             }
         });
-        s.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 0.1 });
+
+        s.cameras[0].goTo({x: 0, y: 0, angle: 0, ratio: 0.1});
         var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
     </script>
     <script>

@@ -89,8 +89,8 @@ def load_profile_publications(request, page, profile):
 
     shared_publications = (
         Publication.objects.filter(shared_publication__id=OuterRef("pk"), deleted=False)
-        .order_by()
-        .values("shared_publication__id")
+            .order_by()
+            .values("shared_publication__id")
     )
 
     total_shared_publications = shared_publications.annotate(c=Count("*")).values("c")
@@ -110,7 +110,7 @@ def load_profile_publications(request, page, profile):
             & Q(level__lte=0)
             & Q(deleted=False)
         )
-        .prefetch_related(
+            .prefetch_related(
             "extra_content",
             "images",
             "videos",
@@ -124,15 +124,15 @@ def load_profile_publications(request, page, profile):
             "shared_publication__videos",
             "shared_publication__extra_content",
         )
-        .select_related(
+            .select_related(
             "author",
             "board_owner",
             "shared_publication",
             "parent",
             "shared_group_publication",
         )
-        .annotate(likes=Count("user_give_me_like"), hates=Count("user_give_me_hate"))
-        .annotate(
+            .annotate(likes=Count("user_give_me_like"), hates=Count("user_give_me_hate"))
+            .annotate(
             have_like=Count(
                 Case(
                     When(user_give_me_like__id=user.id, then=Value(1)),
@@ -146,12 +146,12 @@ def load_profile_publications(request, page, profile):
                 )
             ),
         )
-        .annotate(
+            .annotate(
             total_shared=Subquery(
                 total_shared_publications, output_field=IntegerField()
             )
         )
-        .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+            .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
     )
 
     try:
@@ -233,8 +233,8 @@ def fill_profile_dashboard(request, user, username, context):
 
     dashboard_entries = (
         DashboardEntry._default_manager.filter(entries_q)
-        .select_related("workspace", "user")
-        .order_by("placeholder_uid", "position")[:]
+            .select_related("workspace", "user")
+            .order_by("placeholder_uid", "position")[:]
     )
 
     placeholders = layout.get_placeholder_instances(dashboard_entries, request=request)
@@ -357,7 +357,7 @@ def profile_view(request, username, template="account/profile.html"):
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
     elif RelationShipProfile.objects.filter(
-        from_profile=user_profile.profile, to_profile=m, type=BLOCK
+            from_profile=user_profile.profile, to_profile=m, type=BLOCK
     ):
         template = "account/privacity/block_profile.html"
         context["isBlocked"] = isBlocked
@@ -656,56 +656,54 @@ class AffinityView(TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
         context = super().get_context_data(**kwargs)
-        # Get follows of user
-        query = (
-            "MATCH (a)-[follow:FOLLOW]->(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000"
-            % self.request.user.username
-        )
-        follows, meta = db.cypher_query(query=query)
-        dict_results = [item for sublist in follows for item in sublist]
-        # Get followers of user
-        query = (
-            "MATCH (a)<-[follow:FOLLOW]-(b) WHERE a.title='%s' and b.is_active=true RETURN {label: b.title, weight: follow.weight} ORDER BY follow.weight DESC LIMIT 3000"
-            % self.request.user.username
-        )
-        followers, meta = db.cypher_query(query=query)
-        followers = [item for sublist in followers for item in sublist]
+        # Get follows and followers of user
+        relation_ships = RelationShipProfile.objects.filter(
+            Q(from_profile__user=user) | Q(to_profile__user=user)).order_by("-weight").select_related(
+            'from_profile__user',
+            'to_profile__user')[:1000]
 
-        for dict_result in followers:
-            if not any(dict_result["label"] == d["label"] for d in dict_results):
-                dict_results.append(dict_result)
-
-        nodes = [
-            {
-                "id": "n" + str(self.request.user.username),
-                "label": self.request.user.username,
-                "x": 0,
-                "y": 0,
-                "size": 8,
-                "color": "#ccc",
-            }
-        ]
-
+        user_already_exists_in_nodes = []
         edges = []
 
-        for index, node in enumerate(dict_results):
+        nodes = []
+
+        for relation in relation_ships:
             r = lambda: random.randint(0, 255)
-            nodes.append(
-                {
-                    "id": "n" + str(node["label"]),
-                    "label": node["label"] + " (" + str(node["weight"]) + ")",
-                    "x": random.uniform(0, 0.1),
-                    "y": random.uniform(0, 0.1),
-                    "size": node["weight"],
-                    "color": "#%02X%02X%02X" % (r(), r(), r()),
-                }
-            )
+
+            if relation.from_profile.user_id not in user_already_exists_in_nodes:
+                user_already_exists_in_nodes.append(relation.from_profile.user_id)
+                nodes.append(
+                    {
+                        "id": "n" + str(relation.from_profile.user_id),
+                        "label": str(relation.from_profile.user.username),
+                        "x": random.uniform(0, 0.1),
+                        "y": random.uniform(0, 0.1),
+                        "size": relation.weight,
+                        "color": "#%02X%02X%02X" % (r(), r(), r()),
+                    }
+                )
+
+            if relation.to_profile.user_id not in user_already_exists_in_nodes:
+                user_already_exists_in_nodes.append(relation.to_profile.user_id)
+                nodes.append(
+                    {
+                        "id": "n" + str(relation.to_profile.user_id),
+                        "label": str(relation.to_profile.user.username),
+                        "x": random.uniform(0, 0.1),
+                        "y": random.uniform(0, 0.1),
+                        "size": relation.weight,
+                        "color": "#%02X%02X%02X" % (r(), r(), r()),
+                    }
+                )
+
             edges.append(
                 {
-                    "id": "e" + str(node["label"]),
-                    "source": "n" + str(node["label"]),
-                    "target": "n" + str(self.request.user.username),
+                    "id": "e" + str(relation.id),
+                    "source": "n" + str(relation.from_profile.user_id),
+                    "target": "n" + str(relation.to_profile.user_id),
+                    "label": str(relation.weight)
                 }
             )
 
@@ -752,7 +750,7 @@ def add_friend_by_username_or_pin(request):
                 )
 
             if RelationShipProfile.objects.is_follow(
-                from_profile=user_profile, to_profile=friend
+                    from_profile=user_profile, to_profile=friend
             ):
                 data["response"] = "its_your_friend"
                 data["friend"] = friend.user.username
@@ -762,7 +760,7 @@ def add_friend_by_username_or_pin(request):
 
             # Me tienen bloqueado
             if RelationShipProfile.objects.is_blocked(
-                from_profile=friend, to_profile=user_profile
+                    from_profile=friend, to_profile=user_profile
             ):
                 data["response"] = "user_blocked"
                 data["friend"] = friend.user.username
@@ -772,7 +770,7 @@ def add_friend_by_username_or_pin(request):
 
             # Yo tengo bloqueado al perfil
             if RelationShipProfile.objects.is_blocked(
-                from_profile=user_profile, to_profile=friend
+                    from_profile=user_profile, to_profile=friend
             ):
                 data["response"] = "blocked_profile"
                 data["friend"] = friend.user.username
@@ -1106,7 +1104,7 @@ def remove_relationship(request):
             )
 
         if RelationShipProfile.objects.is_follow(
-            from_profile=me, to_profile=profile_user
+                from_profile=me, to_profile=profile_user
         ):
             try:
                 RelationShipProfile.objects.filter(
@@ -1146,7 +1144,7 @@ def remove_blocked(request):
 
         try:
             if RelationShipProfile.objects.filter(
-                from_profile=m, to_profile=n, type=BLOCK
+                    from_profile=m, to_profile=n, type=BLOCK
             ).exists():
                 RelationShipProfile.objects.filter(
                     to_profile=n, from_profile=m, type=BLOCK
@@ -1215,8 +1213,8 @@ class FollowersListView(ListView):
                 to_profile__user__username=self.kwargs.get("username", None),
                 type=FOLLOWING,
             )
-            .select_related("from_profile", "from_profile__user")
-            .prefetch_related("from_profile__tags")
+                .select_related("from_profile", "from_profile__user")
+                .prefetch_related("from_profile__tags")
         )
 
     def get_context_data(self, **kwargs):
@@ -1249,8 +1247,8 @@ class FollowingListView(ListView):
             RelationShipProfile.objects.filter(
                 from_profile__user__username=username, type=FOLLOWING
             )
-            .select_related("to_profile", "to_profile__user")
-            .prefetch_related("to_profile__tags")
+                .select_related("to_profile", "to_profile__user")
+                .prefetch_related("to_profile__tags")
         )
 
     def get_context_data(self, **kwargs):
@@ -1417,7 +1415,7 @@ def bloq_user(request):
         recipient = Profile.objects.get(user_id=id_user)
 
         if RelationShipProfile.objects.is_follow(
-            from_profile=emitter, to_profile=recipient
+                from_profile=emitter, to_profile=recipient
         ):
             try:
                 with transaction.atomic(using="default"):
@@ -1450,7 +1448,7 @@ def bloq_user(request):
         # Ver si seguimos al perfil que vamos a bloquear
 
         if RelationShipProfile.objects.is_follow(
-            from_profile=recipient, to_profile=emitter
+                from_profile=recipient, to_profile=emitter
         ):
             try:
                 with transaction.atomic(using="default"):
@@ -1583,24 +1581,24 @@ class RecommendationUsers(ListView):
                 & ~Q(privacity="N")
                 & Q(user__is_active=True)
             )
-            .annotate(similarity=Count("tags"))
-            .order_by("-similarity")
-            .select_related("user")[offset:limit]
+                .annotate(similarity=Count("tags"))
+                .order_by("-similarity")
+                .select_related("user")[offset:limit]
         )
 
         if not users:
             users = (
                 Profile.objects.filter(privacity__ne="N")
-                .exclude(user=user)
-                .order_by("?")[:25]
+                    .exclude(user=user)
+                    .order_by("?")[:25]
             )
 
         total_users = (
             Profile.objects.exclude(
                 user=self.request.user, privacity="N", user__is_active=False
             )
-            .filter(tags__in=user.profile.tags.all())
-            .count()
+                .filter(tags__in=user.profile.tags.all())
+                .count()
         )
 
         total_pages = int(total_users / 25)
@@ -1667,8 +1665,8 @@ def autocomplete(request):
     try:
         sqs = (
             SearchQuerySet()
-            .models(Profile)
-            .filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
+                .models(Profile)
+                .filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
         )
         suggestions = [
             {
@@ -1711,93 +1709,93 @@ class SearchUsuarioView(SearchView):
 
         queryset = (
             RelatedSearchQuerySet()
-            .order_by("-pub_date")
-            .load_all()
-            .load_all_queryset(
+                .order_by("-pub_date")
+                .load_all()
+                .load_all_queryset(
                 Publication,
                 Publication.objects.filter(
                     (
-                        SQ(board_owner_id=self.request.user.id)
-                        | SQ(author_id=self.request.user.id)
+                            SQ(board_owner_id=self.request.user.id)
+                            | SQ(author_id=self.request.user.id)
                     )
                     | (
-                        (
-                            ~SQ(board_owner__profile__in=users_not_blocked_me)
-                            & ~SQ(board_owner__profile__privacity="N")
-                            & ~SQ(author__profile__in=users_not_blocked_me)
-                        )
-                        & (
                             (
-                                SQ(board_owner__profile__privacity="A")
-                                | (
-                                    (
-                                        SQ(board_owner__profile__privacity="OF")
-                                        & SQ(board_owner__profile__in=following)
-                                    )
-                                    | (
-                                        SQ(board_owner__profile__privacity="OFAF")
-                                        & (
-                                            SQ(board_owner__profile__in=following)
-                                            | SQ(board_owner__profile__in=followers)
-                                        )
-                                    )
-                                )
-                                & (
-                                    (
-                                        SQ(author__profile__privacity="OF")
-                                        & SQ(author__profile__in=following)
-                                    )
-                                    | (
-                                        SQ(author__profile__privacity="OFAF")
-                                        & (
-                                            SQ(author__profile__in=following)
-                                            | SQ(author__profile__in=followers)
-                                        )
-                                    )
-                                    | SQ(author__profile__privacity="A")
-                                )
+                                    ~SQ(board_owner__profile__in=users_not_blocked_me)
+                                    & ~SQ(board_owner__profile__privacity="N")
+                                    & ~SQ(author__profile__in=users_not_blocked_me)
                             )
-                            | (
-                                SQ(author__profile__privacity="A")
-                                | (
+                            & (
                                     (
-                                        SQ(author__profile__privacity="OF")
-                                        & SQ(author__profile__in=following)
+                                            SQ(board_owner__profile__privacity="A")
+                                            | (
+                                                    (
+                                                            SQ(board_owner__profile__privacity="OF")
+                                                            & SQ(board_owner__profile__in=following)
+                                                    )
+                                                    | (
+                                                            SQ(board_owner__profile__privacity="OFAF")
+                                                            & (
+                                                                    SQ(board_owner__profile__in=following)
+                                                                    | SQ(board_owner__profile__in=followers)
+                                                            )
+                                                    )
+                                            )
+                                            & (
+                                                    (
+                                                            SQ(author__profile__privacity="OF")
+                                                            & SQ(author__profile__in=following)
+                                                    )
+                                                    | (
+                                                            SQ(author__profile__privacity="OFAF")
+                                                            & (
+                                                                    SQ(author__profile__in=following)
+                                                                    | SQ(author__profile__in=followers)
+                                                            )
+                                                    )
+                                                    | SQ(author__profile__privacity="A")
+                                            )
                                     )
                                     | (
-                                        SQ(author__profile__privacity="OFAF")
-                                        & (
-                                            SQ(author__profile__in=following)
-                                            | SQ(author__profile__in=followers)
-                                        )
+                                            SQ(author__profile__privacity="A")
+                                            | (
+                                                    (
+                                                            SQ(author__profile__privacity="OF")
+                                                            & SQ(author__profile__in=following)
+                                                    )
+                                                    | (
+                                                            SQ(author__profile__privacity="OFAF")
+                                                            & (
+                                                                    SQ(author__profile__in=following)
+                                                                    | SQ(author__profile__in=followers)
+                                                            )
+                                                    )
+                                            )
+                                            & (
+                                                    (
+                                                            SQ(board_owner__profile__privacity="OF")
+                                                            & SQ(board_owner__profile__in=following)
+                                                    )
+                                                    | (
+                                                            SQ(board_owner__profile__privacity="OFAF")
+                                                            & (
+                                                                    SQ(board_owner__profile__in=following)
+                                                                    | SQ(board_owner__profile__in=followers)
+                                                            )
+                                                    )
+                                                    | SQ(board_owner__profile__privacity="A")
+                                            )
                                     )
-                                )
-                                & (
-                                    (
-                                        SQ(board_owner__profile__privacity="OF")
-                                        & SQ(board_owner__profile__in=following)
-                                    )
-                                    | (
-                                        SQ(board_owner__profile__privacity="OFAF")
-                                        & (
-                                            SQ(board_owner__profile__in=following)
-                                            | SQ(board_owner__profile__in=followers)
-                                        )
-                                    )
-                                    | SQ(board_owner__profile__privacity="A")
-                                )
                             )
-                        )
                     )
                 )
-                .select_related(
+                    .select_related(
                     "author",
                     "board_owner",
                     "shared_publication",
                     "parent",
                     "shared_group_publication",
                 )
-                .prefetch_related(
+                    .prefetch_related(
                     "extra_content",
                     "images",
                     "videos",
@@ -1811,71 +1809,71 @@ class SearchUsuarioView(SearchView):
                     "shared_publication__videos",
                     "shared_publication__extra_content",
                 )
-                .filter(deleted=False),
+                    .filter(deleted=False),
             )
-            .load_all_queryset(
+                .load_all_queryset(
                 Photo,
                 Photo.objects.filter(
                     SQ(owner_id=self.request.user.id)
                     | (
-                        (
-                            ~SQ(owner__profile__privacity="N")
-                            & ~SQ(owner__profile__in=users_not_blocked_me)
-                        )
-                        & (
                             (
-                                SQ(owner__profile__privacity="OF")
-                                & SQ(owner__profile__in=following)
-                                & SQ(is_public=True)
+                                    ~SQ(owner__profile__privacity="N")
+                                    & ~SQ(owner__profile__in=users_not_blocked_me)
                             )
-                            | (SQ(owner__profile__privacity="A") & SQ(is_public=True))
-                            | (
-                                SQ(owner__profile__privacity="OFAF")
-                                & (
-                                    SQ(owner__profile__in=following)
-                                    | SQ(owner__profile__in=followers)
-                                )
+                            & (
+                                    (
+                                            SQ(owner__profile__privacity="OF")
+                                            & SQ(owner__profile__in=following)
+                                            & SQ(is_public=True)
+                                    )
+                                    | (SQ(owner__profile__privacity="A") & SQ(is_public=True))
+                                    | (
+                                            SQ(owner__profile__privacity="OFAF")
+                                            & (
+                                                    SQ(owner__profile__in=following)
+                                                    | SQ(owner__profile__in=followers)
+                                            )
+                                    )
                             )
-                        )
                     )
                 )
-                .select_related("owner")
-                .prefetch_related("tags"),
+                    .select_related("owner")
+                    .prefetch_related("tags"),
             )
-            .load_all_queryset(
+                .load_all_queryset(
                 Profile,
                 Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity="N")),
             )
-            .load_all_queryset(
+                .load_all_queryset(
                 Video,
                 Video.objects.filter(
                     SQ(owner_id=self.request.user.id)
                     | (
-                        (
-                            ~SQ(owner__profile__privacity="N")
-                            & ~SQ(owner__profile__in=users_not_blocked_me)
-                        )
-                        & (
                             (
-                                SQ(owner__profile__privacity="OF")
-                                & SQ(owner__profile__in=following)
-                                & SQ(is_public=True)
+                                    ~SQ(owner__profile__privacity="N")
+                                    & ~SQ(owner__profile__in=users_not_blocked_me)
                             )
-                            | (SQ(owner__profile__privacity="A") & SQ(is_public=True))
-                            | (
-                                SQ(owner__profile__privacity="OFAF")
-                                & (
-                                    SQ(owner__profile__in=following)
-                                    | SQ(owner__profile__in=followers)
-                                )
+                            & (
+                                    (
+                                            SQ(owner__profile__privacity="OF")
+                                            & SQ(owner__profile__in=following)
+                                            & SQ(is_public=True)
+                                    )
+                                    | (SQ(owner__profile__privacity="A") & SQ(is_public=True))
+                                    | (
+                                            SQ(owner__profile__privacity="OFAF")
+                                            & (
+                                                    SQ(owner__profile__in=following)
+                                                    | SQ(owner__profile__in=followers)
+                                            )
+                                    )
                             )
-                        )
                     )
                 )
-                .select_related("owner")
-                .prefetch_related("tags"),
+                    .select_related("owner")
+                    .prefetch_related("tags"),
             )
-            .load_all_queryset(UserGroups, UserGroups.objects.all())
+                .load_all_queryset(UserGroups, UserGroups.objects.all())
         )
 
         models = []
@@ -1946,9 +1944,9 @@ def recommendation_real_time(request):
                 & Q(user__is_active=True)
                 & ~Q(user_id__in=ids)
             )
-            .annotate(similarity=Count("tags"))
-            .select_related('user')
-            .order_by("-similarity")[:50]
+                .annotate(similarity=Count("tags"))
+                .select_related('user')
+                .order_by("-similarity")[:50]
         )
 
         sql_users = [
@@ -2038,15 +2036,15 @@ class UserLikeContent(TemplateView):
         user = self.request.user
         publications = (
             Publication.objects.filter(user_give_me_like__id__exact=user.id)
-            .select_related("author")
-            .prefetch_related("images")[offset:limit]
+                .select_related("author")
+                .prefetch_related("images")[offset:limit]
         )
         users = LikeProfile.objects.filter(from_profile__user=user).select_related(
             "to_profile__user"
         )[offset:limit]
         groups = LikeGroup.objects.filter(from_like=user).select_related("to_like")[
-            offset:limit
-        ]
+                 offset:limit
+                 ]
 
         mixed = list(
             sorted(
@@ -2102,8 +2100,8 @@ class CustomSignupView(
     def get_success_url(self):
         # Explicitly passed ?next= URL takes precedence
         ret = (
-            get_next_redirect_url(self.request, self.redirect_field_name)
-            or self.success_url
+                get_next_redirect_url(self.request, self.redirect_field_name)
+                or self.success_url
         )
         return ret
 
