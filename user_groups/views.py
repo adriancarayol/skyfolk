@@ -11,7 +11,16 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Q, Count, Case, When, Value, IntegerField, OuterRef, Subquery
+from django.db.models import (
+    Q,
+    Count,
+    Case,
+    When,
+    Value,
+    IntegerField,
+    OuterRef,
+    Subquery,
+)
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
@@ -24,7 +33,6 @@ from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 from guardian.shortcuts import remove_perm
-from neomodel import db
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,7 +41,11 @@ from notifications.models import Notification
 from notifications.signals import notify
 from publications.forms import SharedPublicationForm
 from publications.models import Publication
-from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
+from publications_groups.forms import (
+    PublicationGroupForm,
+    GroupPublicationEdit,
+    PublicationThemeForm,
+)
 from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
 from user_groups.forms import EditGroupThemeForm
@@ -49,28 +61,24 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
     """
     Vista para la creacion de un grupo
     """
+
     model = UserGroups
     form_class = FormUserGroup
-    http_method_names = [u'post']
-    success_url = '/thanks/'
+    http_method_names = [u"post"]
+    success_url = "/thanks/"
 
     def __init__(self, **kwargs):
         super(UserGroupCreate, self).__init__(**kwargs)
         self.object = None
-
 
     def form_valid(self, form, group_created, msg=None):
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
         response = super(AjaxableResponseMixin, self).form_valid(form)
-        
+
         if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-                'msg': msg,
-                'group_created': group_created
-            }
+            data = {"pk": self.object.pk, "msg": msg, "group_created": group_created}
 
             return JsonResponse(data)
         else:
@@ -83,58 +91,68 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 group = form.save(commit=False)
                 user = self.request.user
                 group.owner = user
-                group.avatar = request.FILES.get('avatar', None)
-                image = request.FILES.get('back_image', None)
+                group.avatar = request.FILES.get("avatar", None)
+                image = request.FILES.get("back_image", None)
 
                 if image:
                     if image.size > settings.BACK_IMAGE_DEFAULT_SIZE:
-                        raise ValueError('BackImage > 5MB!')
+                        raise ValueError("BackImage > 5MB!")
 
                     im = Image.open(image)
                     fill_color = (255, 255, 255, 0)
 
-                    if im.mode in ('RGBA', 'LA'):
+                    if im.mode in ("RGBA", "LA"):
                         background = Image.new(im.mode[:-1], im.size, fill_color)
                         background.paste(im, im.split()[-1])
                         im = background
 
                     im.thumbnail((1500, 630), Image.ANTIALIAS)
                     tempfile_io = six.BytesIO()
-                    im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
+                    im.save(tempfile_io, format="JPEG", optimize=True, quality=90)
                     tempfile_io.seek(0)
-                    image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
-                                                      tempfile_io.tell(), None)
+                    image_file = InMemoryUploadedFile(
+                        tempfile_io,
+                        None,
+                        "cover_%s.jpg" % group.name,
+                        "image/jpeg",
+                        tempfile_io.tell(),
+                        None,
+                    )
                     group.back_image = image_file
 
-                tags = form.cleaned_data.get('tags', None)
+                tags = form.cleaned_data.get("tags", None)
                 try:
                     with transaction.atomic():
-                        with db.transaction:
-                            group.save()
-                            group.users.add(user)
-                            if tags:
-                                for tag in tags:
-                                    group.tags.add(tag)
+                        group.save()
+                        group.users.add(user)
+                        if tags:
+                            for tag in tags:
+                                group.tags.add(tag)
                 except Exception as e:
                     print(e)
                     return self.form_invalid(form=form)
             except IntegrityError as e:
                 return self.form_invalid(form=form)
-            
+
             data = {
-                'msg': '¡Tu grupo ha sido creado, haz click <a href="{0}">&emsp;aquí&emsp;</a> para visitarlo.'.format(
-                                       reverse_lazy('user_groups:group-profile', kwargs={'groupname': group.slug})),
-                'group_created': render_to_string("groups/item_group.html", {'group': group})
+                "msg": '¡Tu grupo ha sido creado, haz click <a href="{0}">&emsp;aquí&emsp;</a> para visitarlo.'.format(
+                    reverse_lazy(
+                        "user_groups:group-profile", kwargs={"groupname": group.slug}
+                    )
+                ),
+                "group_created": render_to_string(
+                    "groups/item_group.html", {"group": group}
+                ),
             }
-            return self.form_valid(form=form,
-                                    group_created=data['group_created'],
-                                    msg=data['msg'])
+            return self.form_valid(
+                form=form, group_created=data["group_created"], msg=data["msg"]
+            )
 
         print(form.errors)
         return self.form_invalid(form=form)
 
 
-user_group_create = login_required(UserGroupCreate.as_view(), login_url='/')
+user_group_create = login_required(UserGroupCreate.as_view(), login_url="/")
 
 
 class UserGroupList(ListView):
@@ -142,6 +160,7 @@ class UserGroupList(ListView):
     Vista para listar todos los grupos de la red
     social
     """
+
     model = UserGroups
     template_name = "groups/list_group.html"
     paginate_by = 20
@@ -150,22 +169,13 @@ class UserGroupList(ListView):
     def dispatch(self, request, *args, **kwargs):
         return super(UserGroupList, self).dispatch(request, *args, **kwargs)
 
-    def get_in_groups(self):
-        """
-        Obtenemos los grupos
-        del usuario que hace la peticion
-        """
-        results, meta = db.cypher_query(
-            "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.title='%s' RETURN n.group_id" % self.request.user.username)
-        return [y for x in results for y in x]
-
     def get_queryset(self):
         return self.request.user.user_groups.all()
 
 
 @user_can_view_group
-@login_required(login_url='/')
-def group_profile(request, groupname, template='groups/group_profile.html'):
+@login_required(login_url="/")
+def group_profile(request, groupname, template="groups/group_profile.html"):
     """
     Vista del perfil de un grupo
     :param request:
@@ -173,7 +183,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     """
     user = request.user
     try:
-        group_profile = UserGroups.objects.select_related('owner').get(slug=groupname)
+        group_profile = UserGroups.objects.select_related("owner").get(slug=groupname)
     except UserGroups.DoesNotExist:
         raise Http404
 
@@ -185,32 +195,50 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     is_ajax = False
 
     if request.is_ajax():
-        page = request.GET.get('page', 1)
-        qs = request.GET.get('qs', None)
+        page = request.GET.get("page", 1)
+        qs = request.GET.get("qs", None)
         is_ajax = True
     else:
         page = 1
         qs = None
 
-    if is_ajax and qs == 'themes':
-        template = 'groups/group_themes.html'
+    if is_ajax and qs == "themes":
+        template = "groups/group_themes.html"
 
-        theme_publications = PublicationTheme.objects.filter(board_theme=OuterRef('pk'),
-                                                             deleted=False).order_by().values(
-            'board_theme')
+        theme_publications = (
+            PublicationTheme.objects.filter(board_theme=OuterRef("pk"), deleted=False)
+            .order_by()
+            .values("board_theme")
+        )
 
-        total_theme_publications = theme_publications.annotate(c=Count('*')).values('c')
+        total_theme_publications = theme_publications.annotate(c=Count("*")).values("c")
 
-        themes = GroupTheme.objects.filter(board_group_id=group_profile.id).annotate(
-            likes=Count('like_theme'),
-            hates=Count('hate_theme')).annotate(
-            have_like=Count(Case(
-                When(like_theme__by_user_id=user.id, then=Value(1)),
-                output_field=IntegerField()
-            ))).annotate(have_hate=Count(Case(
-            When(hate_theme__by_user_id=user.id, then=Value(1)),
-            output_field=IntegerField()
-        ))).annotate(total_pubs=Subquery(total_theme_publications, output_field=IntegerField())).select_related('owner')
+        themes = (
+            GroupTheme.objects.filter(board_group_id=group_profile.id)
+            .annotate(likes=Count("like_theme"), hates=Count("hate_theme"))
+            .annotate(
+                have_like=Count(
+                    Case(
+                        When(like_theme__by_user_id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
+            .annotate(
+                have_hate=Count(
+                    Case(
+                        When(hate_theme__by_user_id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
+            .annotate(
+                total_pubs=Subquery(
+                    total_theme_publications, output_field=IntegerField()
+                )
+            )
+            .select_related("owner")
+        )
 
         paginator = Paginator(themes, 20)
 
@@ -221,41 +249,66 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         except EmptyPage:
             themes = paginator.page(paginator.num_pages)
 
-        context = {
-            'themes': themes
-        }
+        context = {"themes": themes}
         return render(request, template, context)
 
-    shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
-                                                     deleted=False).order_by().values(
-        'shared_group_publication__id')
+    shared_publications = (
+        Publication.objects.filter(
+            shared_group_publication__id=OuterRef("pk"), deleted=False
+        )
+        .order_by()
+        .values("shared_group_publication__id")
+    )
 
-    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+    total_shared_publications = shared_publications.annotate(c=Count("*")).values("c")
 
-    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-        When(author_id=user.id, then=Value(1))
-    ))).values('have_shared')
+    shared_for_me = shared_publications.annotate(
+        have_shared=Count(Case(When(author_id=user.id, then=Value(1))))
+    ).values("have_shared")
 
     users_not_blocked_me = RelationShipProfile.objects.filter(
-        to_profile=user.profile, type=BLOCK).values('from_profile_id')
+        to_profile=user.profile, type=BLOCK
+    ).values("from_profile_id")
 
-    publications = PublicationGroup.objects.annotate(likes=Count('user_give_me_like'),
-                                                     hates=Count('user_give_me_hate'), have_like=Count(Case(
-            When(user_give_me_like__id=user.id, then=Value(1)),
-            output_field=IntegerField()
-        )), have_hate=Count(Case(
-            When(user_give_me_hate__id=user.id, then=Value(1)),
-            output_field=IntegerField()
-        ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-        have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(Q(board_group=group_profile) &
-                                                                                 Q(deleted=False) & Q(
-        level__lte=0) & ~Q(
-        author__profile__in=users_not_blocked_me)) \
-        .prefetch_related('extra_content', 'images',
-                          'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
-        .select_related('author',
-                        'board_group',
-                        'parent')
+    publications = (
+        PublicationGroup.objects.annotate(
+            likes=Count("user_give_me_like"),
+            hates=Count("user_give_me_hate"),
+            have_like=Count(
+                Case(
+                    When(user_give_me_like__id=user.id, then=Value(1)),
+                    output_field=IntegerField(),
+                )
+            ),
+            have_hate=Count(
+                Case(
+                    When(user_give_me_hate__id=user.id, then=Value(1)),
+                    output_field=IntegerField(),
+                )
+            ),
+        )
+        .annotate(
+            total_shared=Subquery(
+                total_shared_publications, output_field=IntegerField()
+            )
+        )
+        .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+        .filter(
+            Q(board_group=group_profile)
+            & Q(deleted=False)
+            & Q(level__lte=0)
+            & ~Q(author__profile__in=users_not_blocked_me)
+        )
+        .prefetch_related(
+            "extra_content",
+            "images",
+            "videos",
+            "user_give_me_like",
+            "user_give_me_hate",
+            "tags",
+        )
+        .select_related("author", "board_group", "parent")
+    )
 
     paginator = Paginator(publications, 20)
 
@@ -266,12 +319,14 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except EmptyPage:
         publications = paginator.page(paginator.num_pages)
 
-    if is_ajax and qs == 'publications':
-        template = 'groups/comentarios_entries.html'
+    if is_ajax and qs == "publications":
+        template = "groups/comentarios_entries.html"
         context = {
-            'publications': publications,
-            'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
-            'group_profile': group_profile
+            "publications": publications,
+            "enable_control_pubs_btn": user.has_perm(
+                "delete_publication", group_profile
+            ),
+            "group_profile": group_profile,
         }
         return render(request, template, context)
 
@@ -279,176 +334,181 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
     users_in_group = group_profile.users.count()
 
-    group_initial = {'owner': user.pk}
+    group_initial = {"owner": user.pk}
 
     user_list = group_profile.users.all()
 
     try:
         friend_request = RequestGroup.objects.get_follow_request(
-            from_profile=user.id, to_group=group_profile)
+            from_profile=user.id, to_group=group_profile
+        )
     except ObjectDoesNotExist:
         friend_request = None
 
-    context = {'groupForm': FormUserGroup(initial=group_initial),
-               'group_profile': group_profile,
-               'follow_group': is_member,
-               'likes': likes,
-               'user_like_group': user_like_group,
-               'users_in_group': users_in_group,
-               'publication_group_form': PublicationGroupForm(
-                   initial={'author': request.user, 'board_group': group_profile}),
-               'publications': publications,
-               'group_owner': True if user.id == group_profile.owner_id else False,
-               'friend_request': friend_request,
-               'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
-               'interests': group_profile.tags.all()[:10],
-               'total_interests': group_profile.tags.all().count(),
-               'share_publication': SharedPublicationForm(),
-               'publication_edit': GroupPublicationEdit(),
-               'theme_form': GroupThemeForm(initial={'owner': request.user, 'board_group': group_profile}),
-               'user_list': user_list}
+    context = {
+        "groupForm": FormUserGroup(initial=group_initial),
+        "group_profile": group_profile,
+        "follow_group": is_member,
+        "likes": likes,
+        "user_like_group": user_like_group,
+        "users_in_group": users_in_group,
+        "publication_group_form": PublicationGroupForm(
+            initial={"author": request.user, "board_group": group_profile}
+        ),
+        "publications": publications,
+        "group_owner": True if user.id == group_profile.owner_id else False,
+        "friend_request": friend_request,
+        "enable_control_pubs_btn": user.has_perm("delete_publication", group_profile),
+        "interests": group_profile.tags.all()[:10],
+        "total_interests": group_profile.tags.all().count(),
+        "share_publication": SharedPublicationForm(),
+        "publication_edit": GroupPublicationEdit(),
+        "theme_form": GroupThemeForm(
+            initial={"owner": request.user, "board_group": group_profile}
+        ),
+        "user_list": user_list,
+    }
 
     return render(request, template, context)
 
 
-@login_required(login_url='/')
+@login_required(login_url="/")
 def follow_group(request):
     """
     Vista para seguir a un grupo
     """
-    if request.method == 'POST':
+    if request.method == "POST":
         if request.is_ajax():
             user = request.user
-            group_id = request.POST.get('id', None)
-            group = get_object_or_404(UserGroups,
-                                      id=group_id)
+            group_id = request.POST.get("id", None)
+            group = get_object_or_404(UserGroups, id=group_id)
 
             if user.pk != group.owner.pk:
                 created = group.users.filter(id=user.id).exists()
 
                 if created:
-                    return JsonResponse({
-                        'response': "in_group"
-                    })
+                    return JsonResponse({"response": "in_group"})
 
                 if group.is_public:
                     try:
                         with transaction.atomic(using="default"):
-                            with db.transaction:
-                                group.users.add(user)
-                                return JsonResponse({
-                                    'response': "user_add"
-                                })
+                            group.users.add(user)
+                            return JsonResponse({"response": "user_add"})
                     except Exception:
-                        return JsonResponse({
-                            'response': "error"
-                        })
+                        return JsonResponse({"response": "error"})
                 else:
                     # Recuperamos peticion al grupo
                     try:
-                        group_request = RequestGroup.objects.get_follow_request(user, group)
+                        group_request = RequestGroup.objects.get_follow_request(
+                            user, group
+                        )
                     except ObjectDoesNotExist:
                         group_request = None
 
                     # Si no existe, creamos una nueva
                     if not group_request:
-                        Notification.objects.filter(actor_object_id=user.id, recipient=group.owner,
-                                                    level='grouprequest').delete()
+                        Notification.objects.filter(
+                            actor_object_id=user.id,
+                            recipient=group.owner,
+                            level="grouprequest",
+                        ).delete()
                         try:
                             with transaction.atomic(using="default"):
-                                request_group = RequestGroup.objects.add_follow_request(user.id,
-                                                                                        group.id)
+                                request_group = RequestGroup.objects.add_follow_request(
+                                    user.id, group.id
+                                )
 
-                                notify.send(user,
-                                            actor=user.username,
-                                            recipient=group.owner,
-                                            description="@{0} solicita unirse al grupo {1}.".format(user.username,
-                                                                                                    group.name),
-                                            verb=u'Solicitud para unirse a grupo',
-                                            level='grouprequest', action_object=request_group)
+                                notify.send(
+                                    user,
+                                    actor=user.username,
+                                    recipient=group.owner,
+                                    description="@{0} solicita unirse al grupo {1}.".format(
+                                        user.username, group.name
+                                    ),
+                                    verb=u"Solicitud para unirse a grupo",
+                                    level="grouprequest",
+                                    action_object=request_group,
+                                )
 
                         except IntegrityError:
-                            return JsonResponse({
-                                'response': "no_added_group"
-                            })
+                            return JsonResponse({"response": "no_added_group"})
 
-                    return JsonResponse({
-                        'response': 'in_progress'
-                    })
+                    return JsonResponse({"response": "in_progress"})
 
             else:
-                return JsonResponse({
-                    'response': "own_group",
-                })
+                return JsonResponse({"response": "own_group"})
 
-    return JsonResponse({
-        'response': "error"
-    })
+    return JsonResponse({"response": "error"})
 
 
-@login_required(login_url='/')
+@login_required(login_url="/")
 def unfollow_group(request):
     """
     Vista para dejar de seguir a un grupo
     """
-    if request.method == 'POST':
+    if request.method == "POST":
         if request.is_ajax():
             user = request.user
-            group_id = request.POST.get('id', None)
+            group_id = request.POST.get("id", None)
             group = get_object_or_404(UserGroups, id=group_id)
             if user.pk != group.owner.pk:
                 try:
                     with transaction.atomic(using="default"):
-                        with db.transaction:
-                            group.users.remove(user)
-                            remove_perm('can_publish', user, group)
-                    return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
+                        group.users.remove(user)
+                        remove_perm("can_publish", user, group)
+                    return HttpResponse(
+                        json.dumps("user_unfollow"),
+                        content_type="application/javascript",
+                    )
                 except (ObjectDoesNotExist, IntegrityError) as e:
-                    return HttpResponse(json.dumps("error"), content_type='application/javascript')
+                    return HttpResponse(
+                        json.dumps("error"), content_type="application/javascript"
+                    )
             else:
-                return HttpResponse(json.dumps("error"), content_type='application/javascript')
-    return HttpResponse(json.dumps("error"), content_type='application/javascript')
+                return HttpResponse(
+                    json.dumps("error"), content_type="application/javascript"
+                )
+    return HttpResponse(json.dumps("error"), content_type="application/javascript")
 
 
-@login_required(login_url='/')
+@login_required(login_url="/")
 def like_group(request):
     """
     Funcion para dar like al perfil
     """
-    if request.method == 'POST':
+    if request.method == "POST":
         if request.is_ajax():
             user = request.user
-            group_id = request.POST.get('id', None)
-            group = get_object_or_404(UserGroups,
-                                      id=group_id)
+            group_id = request.POST.get("id", None)
+            group = get_object_or_404(UserGroups, id=group_id)
             try:
                 with transaction.atomic(using="default"):
-                    with db.transaction:
-                        like, created = LikeGroup.objects.get_or_create(
-                            from_like=user, to_like=group)
+                    like, created = LikeGroup.objects.get_or_create(
+                        from_like=user, to_like=group
+                    )
             except (IntegrityError, ObjectDoesNotExist) as e:
                 logging.info(e)
-                return JsonResponse({'response': 'error'})
+                return JsonResponse({"response": "error"})
 
             if not created:
                 try:
                     like.delete()
                 except IntegrityError as e:
-                    return JsonResponse({'response': 'error'})
-                return JsonResponse({'response': 'no_like'})
+                    return JsonResponse({"response": "error"})
+                return JsonResponse({"response": "no_like"})
             else:
-                return JsonResponse({'response': 'like'})
+                return JsonResponse({"response": "like"})
 
-    return JsonResponse(
-        {'response': 'error'})
+    return JsonResponse({"response": "error"})
 
 
 class FollowersGroup(ListView):
     """
     Vista con los seguidores (usuarios) de un grupo
     """
-    context_object_name = 'user_list'
-    template_name = 'groups/followers.html'
+
+    context_object_name = "user_list"
+    template_name = "groups/followers.html"
     paginate_by = 25
 
     def __init__(self, *args, **kwargs):
@@ -460,14 +520,14 @@ class FollowersGroup(ListView):
         return super(FollowersGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        self.group = UserGroups.objects.get(slug=self.kwargs['groupname'])
+        self.group = UserGroups.objects.get(slug=self.kwargs["groupname"])
         return self.group.users.all()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
         user = self.request.user
-        context['group'] = self.group
-        context['enable_kick_btn'] = user.has_perm('kick_member', self.group)
+        context["group"] = self.group
+        context["enable_kick_btn"] = user.has_perm("kick_member", self.group)
         return context
 
 
@@ -475,8 +535,9 @@ class LikeListGroup(ListView):
     """
     Vista con los usuarios que han dado like a un grupo
     """
-    context_object_name = 'like_list'
-    template_name = 'groups/user_likes.html'
+
+    context_object_name = "like_list"
+    template_name = "groups/user_likes.html"
     paginate_by = 25
 
     def __init__(self, *args, **kwargs):
@@ -488,126 +549,130 @@ class LikeListGroup(ListView):
         return super(LikeListGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        self.group = UserGroups.objects.get(slug=self.kwargs.pop('groupname', None))
+        self.group = UserGroups.objects.get(slug=self.kwargs.pop("groupname", None))
         return LikeGroup.objects.filter(to_like_id=self.group.id)
 
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)
-        context['group'] = self.group
+        context["group"] = self.group
         return context
 
 
-likes_group = login_required(LikeListGroup.as_view(), login_url='/')
+likes_group = login_required(LikeListGroup.as_view(), login_url="/")
 
 
 class RespondGroupRequest(View):
-    http_method_names = ['post', ]
+    http_method_names = ["post"]
 
     def post(self, request, **kwargs):
         user = request.user
-        request_id = int(request.POST.get('slug', None))
-        request_status = request.POST.get('status', None)
-        response = 'error'
+        request_id = int(request.POST.get("slug", None))
+        request_status = request.POST.get("status", None)
+        response = "error"
         try:
-            request_group = RequestGroup.objects.select_related('emitter').get(id=request_id)
+            request_group = RequestGroup.objects.select_related("emitter").get(
+                id=request_id
+            )
             group = UserGroups.objects.get(id=request_group.receiver_id)
         except ObjectDoesNotExist:
-            return JsonResponse({'response': response})
+            return JsonResponse({"response": response})
 
-        if request_status == 'accept':
-            if user.id == group.owner_id:
-                try:
-                    with transaction.atomic(using="default"):
-                        with db.transaction:
-                            request_group.delete()
-                            group.users.add(request_group.emitter)
-                            notify.send(user, actor=user.username,
-                                        recipient=request_group.emitter,
-                                        description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
-                                            user.username, group.slug
-                                        ),
-                                        verb=u'Petición aceptada',
-                                        level='new_member_group')
-                except Exception as e:
-                    return JsonResponse({'response': 'error'})
-
-                response = "added_friend"
-
-        elif request_status == 'rejected':
+        if request_status == "accept":
             if user.id == group.owner_id:
                 try:
                     with transaction.atomic(using="default"):
                         request_group.delete()
-                    response = 'removed'
+                        group.users.add(request_group.emitter)
+                        notify.send(
+                            user,
+                            actor=user.username,
+                            recipient=request_group.emitter,
+                            description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
+                                user.username, group.slug
+                            ),
+                            verb=u"Petición aceptada",
+                            level="new_member_group",
+                        )
+                except Exception as e:
+                    return JsonResponse({"response": "error"})
+
+                response = "added_friend"
+
+        elif request_status == "rejected":
+            if user.id == group.owner_id:
+                try:
+                    with transaction.atomic(using="default"):
+                        request_group.delete()
+                    response = "removed"
                 except ObjectDoesNotExist:
                     pass
 
-        return JsonResponse({'response': response})
+        return JsonResponse({"response": response})
 
 
-respond_group_request = login_required(RespondGroupRequest.as_view(), login_url='/')
+respond_group_request = login_required(RespondGroupRequest.as_view(), login_url="/")
 
 
 class RemoveRequestFollow(View):
-    http_method_names = ['post', ]
+    http_method_names = ["post"]
 
     def post(self, request, **kwargs):
         user = request.user
         response = False
-        slug = int(request.POST.get('slug', None))
-        status = request.POST.get('status', None)
+        slug = int(request.POST.get("slug", None))
+        status = request.POST.get("status", None)
 
-        if status == 'cancel':
+        if status == "cancel":
             try:
-                request_group = RequestGroup.objects.remove_received_follow_request(from_profile=user.id,
-                                                                                    to_group=slug)
+                request_group = RequestGroup.objects.remove_received_follow_request(
+                    from_profile=user.id, to_group=slug
+                )
             except ObjectDoesNotExist:
                 response = False
             response = True
-        return JsonResponse({'response': response})
+        return JsonResponse({"response": response})
 
 
-remove_group_request = login_required(RemoveRequestFollow.as_view(), login_url='/')
+remove_group_request = login_required(RemoveRequestFollow.as_view(), login_url="/")
 
 
 class KickMemberGroup(View):
-    http_method_names = ['post', ]
+    http_method_names = ["post"]
 
     def post(self, request, **kwargs):
         user = request.user
-        response = 'error'
-        user_id = int(request.POST.get('id', None))
-        group_id = int(request.POST.get('group_id', None))
+        response = "error"
+        user_id = int(request.POST.get("id", None))
+        group_id = int(request.POST.get("group_id", None))
 
         try:
             group = UserGroups.objects.get(id=group_id)
             user_to_kick = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
-            return JsonResponse({'response': 'error'})
+            return JsonResponse({"response": "error"})
 
         if user.id == user_id or user_id == group.owner_id:
-            return JsonResponse({'response': 'is_owner'})
+            return JsonResponse({"response": "is_owner"})
 
-        if user.has_perm('kick_member', group):
+        if user.has_perm("kick_member", group):
             with transaction.atomic(using="default"):
-                with db.transaction:
-                    group.users.remove(user_to_kick)
+                group.users.remove(user_to_kick)
 
-            response = 'kicked'
+            response = "kicked"
 
-        return JsonResponse({'response': response})
+        return JsonResponse({"response": response})
 
 
-kick_member = login_required(KickMemberGroup.as_view(), login_url='/')
+kick_member = login_required(KickMemberGroup.as_view(), login_url="/")
 
 
 class ProfileGroups(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "groups/list_group_profile.html"
-    pagination_class = 'rest_framework.pagination.CursorPagination'
+    pagination_class = "rest_framework.pagination.CursorPagination"
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(id=kwargs.pop('user_id'))
+        user = User.objects.get(id=kwargs.pop("user_id"))
 
         try:
             profile = Profile.objects.get(user_id=user.id)
@@ -616,15 +681,18 @@ class ProfileGroups(APIView):
             raise Http404
 
         privacity = profile.is_visible(request_user)
-        if privacity and privacity != 'all':
+        if privacity and privacity != "all":
             return HttpResponseForbidden()
 
-        queryset = UserGroups.objects.filter(id__in=user.user_groups.all()).annotate(members=Count('users')) \
-            .order_by('-created')
+        queryset = (
+            UserGroups.objects.filter(id__in=user.user_groups.all())
+            .annotate(members=Count("users"))
+            .order_by("-created")
+        )
 
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
 
-        page = request.GET.get('page', 1)
+        page = request.GET.get("page", 1)
 
         try:
             groups = paginator.page(page)
@@ -635,16 +703,16 @@ class ProfileGroups(APIView):
             # If page is out of range (e.g. 9999), deliver last page of results.
             groups = paginator.page(paginator.num_pages)
 
-        return Response({'groups': groups, 'profile_id': user.id})
+        return Response({"groups": groups, "profile_id": user.id})
 
 
-list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')
+list_group_profile = login_required(ProfileGroups.as_view(), login_url="/")
 
 
 class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
     form_class = GroupThemeForm
-    success_url = '/'
-    http_method_names = [u'post']
+    success_url = "/"
+    http_method_names = [u"post"]
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -653,7 +721,7 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
     def form_valid(self, form, msg=None):
         instance = form.save(commit=False)
         instance.owner = self.request.user
-        board_group = form.cleaned_data['board_group']
+        board_group = form.cleaned_data["board_group"]
 
         try:
             group = UserGroups.objects.get(id=board_group.id)
@@ -663,7 +731,9 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
         is_member = self.request.user.user_groups.filter(id=board_group.id).exists()
 
         if not is_member:
-            form.add_error('board_group', 'Debes ser miembro del grupo para crear temas')
+            form.add_error(
+                "board_group", "Debes ser miembro del grupo para crear temas"
+            )
             return super(CreateGroupThemeView, self).form_invalid(form)
 
         return super(CreateGroupThemeView, self).form_valid(form)
@@ -676,13 +746,11 @@ class AddLikeTheme(View):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        data = {
-            'response': False,
-            'status': None,
-            'in_hate': False
-        }
+        data = {"response": False, "status": None, "in_hate": False}
         try:
-            theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
+            theme = GroupTheme.objects.select_related("board_group").get(
+                id=request.POST["pk"]
+            )
         except ObjectDoesNotExist:
             raise Http404
 
@@ -694,11 +762,15 @@ class AddLikeTheme(View):
                 return HttpResponseForbidden()
 
         try:
-            with transaction.atomic(using='default'):
-                count, row = HateGroupTheme.objects.filter(theme=theme, by_user=user).delete()
-                obj, created = LikeGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            with transaction.atomic(using="default"):
+                count, row = HateGroupTheme.objects.filter(
+                    theme=theme, by_user=user
+                ).delete()
+                obj, created = LikeGroupTheme.objects.get_or_create(
+                    theme=theme, by_user=user
+                )
             if count > 0:
-                data['in_hate'] = True
+                data["in_hate"] = True
         except IntegrityError:
             return JsonResponse(data)
 
@@ -707,11 +779,11 @@ class AddLikeTheme(View):
                 obj.delete()
             except IntegrityError:
                 return JsonResponse(data)
-            data['status'] = 1
+            data["status"] = 1
         else:
-            data['status'] = 2
+            data["status"] = 2
 
-        data['response'] = True
+        data["response"] = True
 
         return JsonResponse(data)
 
@@ -723,13 +795,11 @@ class AddHateTheme(View):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        data = {
-            'response': False,
-            'status': None,
-            'in_like': False
-        }
+        data = {"response": False, "status": None, "in_like": False}
         try:
-            theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
+            theme = GroupTheme.objects.select_related("board_group").get(
+                id=request.POST["pk"]
+            )
         except ObjectDoesNotExist:
             raise Http404
 
@@ -741,11 +811,15 @@ class AddHateTheme(View):
                 return HttpResponseForbidden()
 
         try:
-            with transaction.atomic(using='default'):
-                count, row = LikeGroupTheme.objects.filter(theme=theme, by_user=user).delete()
-                obj, created = HateGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            with transaction.atomic(using="default"):
+                count, row = LikeGroupTheme.objects.filter(
+                    theme=theme, by_user=user
+                ).delete()
+                obj, created = HateGroupTheme.objects.get_or_create(
+                    theme=theme, by_user=user
+                )
             if count > 0:
-                data['in_like'] = True
+                data["in_like"] = True
         except IntegrityError:
             return JsonResponse(data)
 
@@ -754,22 +828,22 @@ class AddHateTheme(View):
                 obj.delete()
             except IntegrityError:
                 return JsonResponse(data)
-            data['status'] = 1
+            data["status"] = 1
         else:
-            data['status'] = 2
+            data["status"] = 2
 
-        data['response'] = True
+        data["response"] = True
 
         return JsonResponse(data)
 
 
 class GroupThemeView(DetailView):
-    template_name = 'groups/board_theme.html'
+    template_name = "groups/board_theme.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         user = self.request.user
-        theme = GroupTheme.objects.get(slug=self.kwargs['slug'])
+        theme = GroupTheme.objects.get(slug=self.kwargs["slug"])
         group = UserGroups.objects.get(id=theme.board_group_id)
 
         if not group.is_public:
@@ -779,7 +853,8 @@ class GroupThemeView(DetailView):
 
         try:
             Notification.objects.filter(
-                action_object_content_type=ContentType.objects.get_for_model(theme)).update(unread=False)
+                action_object_content_type=ContentType.objects.get_for_model(theme)
+            ).update(unread=False)
         except Notification.DoesNotExist:
             pass
 
@@ -789,34 +864,59 @@ class GroupThemeView(DetailView):
         user = self.request.user
 
         if self.request.is_ajax():
-            return GroupTheme.objects.filter(slug=self.kwargs['slug'])
+            return GroupTheme.objects.filter(slug=self.kwargs["slug"])
 
-        return GroupTheme.objects.filter(slug=self.kwargs['slug']).annotate(
-            likes=Count('like_theme', distinct=True),
-            hates=Count('hate_theme', distinct=True)).annotate(
-            have_like=Count(Case(
-                When(like_theme__by_user_id=user.id, then=Value(1)),
-                output_field=IntegerField()
-            ))).annotate(have_hate=Count(Case(
-            When(hate_theme__by_user_id=user.id, then=Value(1)),
-            output_field=IntegerField()
-        ))).select_related('owner', 'board_group')
+        return (
+            GroupTheme.objects.filter(slug=self.kwargs["slug"])
+            .annotate(
+                likes=Count("like_theme", distinct=True),
+                hates=Count("hate_theme", distinct=True),
+            )
+            .annotate(
+                have_like=Count(
+                    Case(
+                        When(like_theme__by_user_id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
+            .annotate(
+                have_hate=Count(
+                    Case(
+                        When(hate_theme__by_user_id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
+            .select_related("owner", "board_group")
+        )
 
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super(GroupThemeView, self).get_context_data(**kwargs)
-        page = self.request.GET.get('page', 1)
+        page = self.request.GET.get("page", 1)
 
-        publications = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
-                                                         hates=Count('user_give_me_hate'), have_like=Count(Case(
-                When(user_give_me_like__id=user.id, then=Value(1)),
-                output_field=IntegerField()
-            )), have_hate=Count(Case(
-                When(user_give_me_hate__id=user.id, then=Value(1)),
-                output_field=IntegerField()
-            ))).filter(board_theme=self.object,
-                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author').order_by(
-            'created')
+        publications = (
+            PublicationTheme.objects.annotate(
+                likes=Count("user_give_me_like"),
+                hates=Count("user_give_me_hate"),
+                have_like=Count(
+                    Case(
+                        When(user_give_me_like__id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                ),
+                have_hate=Count(
+                    Case(
+                        When(user_give_me_hate__id=user.id, then=Value(1)),
+                        output_field=IntegerField(),
+                    )
+                ),
+            )
+            .filter(board_theme=self.object, deleted=False)
+            .select_related("author", "board_theme", "parent", "parent__author")
+            .order_by("created")
+        )
 
         paginator = Paginator(publications, 25)
 
@@ -827,48 +927,51 @@ class GroupThemeView(DetailView):
         except EmptyPage:
             pubs = paginator.page(paginator.num_pages)
 
-        context['publications'] = pubs
-        context['form'] = PublicationThemeForm()
-        context['group_owner_id'] = UserGroups.objects.values_list('owner_id', flat=True).get(
-            id=self.object.board_group_id)
-        context['edit_form'] = EditGroupThemeForm(instance=self.object, initial={'pk': self.object.pk})
+        context["publications"] = pubs
+        context["form"] = PublicationThemeForm()
+        context["group_owner_id"] = UserGroups.objects.values_list(
+            "owner_id", flat=True
+        ).get(id=self.object.board_group_id)
+        context["edit_form"] = EditGroupThemeForm(
+            instance=self.object, initial={"pk": self.object.pk}
+        )
         return context
 
 
 class DeleteGroupTheme(DeleteView):
-    http_method_names = ['post']
+    http_method_names = ["post"]
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(DeleteGroupTheme, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        return GroupTheme.objects.get(id=self.request.POST.get('pk'))
+        return GroupTheme.objects.get(id=self.request.POST.get("pk"))
 
     def delete(self, request, *args, **kwargs):
         user = request.user
 
-        data = {
-            'response': False,
-            'redirect_url': None
-        }
+        data = {"response": False, "redirect_url": None}
 
         self.object = self.get_object()
 
         group = UserGroups.objects.get(id=self.object.board_group_id)
 
         if self.object.owner_id != user.id and (
-                        user != group.owner_id and not user.has_perm('delete_publication', group)):
+            user != group.owner_id and not user.has_perm("delete_publication", group)
+        ):
             return JsonResponse(data)
 
-        data['redirect_url'] = reverse('user_groups:group-profile', kwargs={'groupname': group.slug})
+        data["redirect_url"] = reverse(
+            "user_groups:group-profile", kwargs={"groupname": group.slug}
+        )
 
         try:
             self.object.delete()
         except IntegrityError:
             pass
 
-        data['response'] = True
+        data["response"] = True
 
         return JsonResponse(data)
 
@@ -891,25 +994,24 @@ class EditPublicationTheme(UpdateView):
 
     def form_valid(self, form, msg=None):
         user = self.request.user
-        data = {
-            'response': False,
-            'url': None
-        }
-        theme = GroupTheme.objects.get(id=form.cleaned_data['pk'])
+        data = {"response": False, "url": None}
+        theme = GroupTheme.objects.get(id=form.cleaned_data["pk"])
 
         if theme.owner_id != user.id:
             return HttpResponseForbidden()
 
-        theme.title = form.cleaned_data['title']
-        theme.description = form.cleaned_data['description']
-        theme.image = form.cleaned_data['image']
+        theme.title = form.cleaned_data["title"]
+        theme.description = form.cleaned_data["description"]
+        theme.image = form.cleaned_data["image"]
 
         theme.save()
 
-        data['url'] = reverse_lazy('user_groups:group_theme', kwargs={'slug': theme.slug})
+        data["url"] = reverse_lazy(
+            "user_groups:group_theme", kwargs={"slug": theme.slug}
+        )
         return JsonResponse(data)
 
     def form_invalid(self, form):
 
         super(EditPublicationTheme, self).form_invalid(form)
-        return JsonResponse({'response': False})
+        return JsonResponse({"response": False})

@@ -1,6 +1,5 @@
 from django.conf.urls import url
 from django.urls import path
-from django.contrib.auth.decorators import login_required
 
 from user_profile import views as user_profile_views
 from user_profile import interests as interests_views
@@ -16,12 +15,12 @@ urlpatterns = [
     url(r'^user-search/$',
         user_profile_views.SearchUsuarioView.as_view(),
         name='general-search'),
-    url(r'^follow/by_affinity/$', login_required(
-        user_profile_views.FollowingByAffinityList.as_view()),
-        name='follow-by-affinity'),
-    url(r'^followers/by_affinity/$', login_required(
-        user_profile_views.FollowersByAffinityList.as_view()),
-        name='followers-by-affinity'),
+    # url(r'^follow/by_affinity/$', login_required(
+    #     user_profile_views.FollowingByAffinityList.as_view()),
+    #     name='follow-by-affinity'),
+    # url(r'^followers/by_affinity/$', login_required(
+    #     user_profile_views.FollowersByAffinityList.as_view()),
+    #     name='followers-by-affinity'),
     # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
     url(r'^user-search/(?P<option>[\w]*)/$',
         user_profile_views.SearchUsuarioView.as_view(),

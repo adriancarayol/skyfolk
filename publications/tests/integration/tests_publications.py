@@ -3,7 +3,6 @@ from publications.views import publication_new_view
 from publications.models import Publication
 from django.urls import reverse
 from django.core.management import call_command
-from django.conf import settings
 
 """
   Integration test for create new publications

@@ -2,7 +2,6 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
-from user_profile.node_models import NodeProfile
 from .models import PhotoGroup, VideoGroup
 
 

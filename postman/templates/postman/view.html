@@ -21,12 +21,6 @@
             </li>
             <li onclick="window.location.href='{% url 'postman:trash' %}'">{% trans "Trash" %}<i class="material-icons right">delete</i></li>
             <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i class="material-icons right">folder_special</i></li>
-            <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
-            {% for item in friends_top12 %}
-                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.title }}'"><i
-                        class="material-icons right">account_circle</i>({{ item.title }})
-                </li>
-            {% endfor %}
         </ul>
     </div>
             {% endblock %}
