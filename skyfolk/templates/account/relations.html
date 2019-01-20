@@ -11,7 +11,9 @@ Template para los seguidores de un perfil
 {% endblock %}
 {% block content %}
     <div class="container">
+
         <div class="row">
+            {% comment %}
             <div class="col l12 m10 s12 container-responsive">
                 {% if user.username == username %}
                     <div class="row">
@@ -21,40 +23,42 @@ Template para los seguidores de un perfil
                         <div class="divider"></div>
                     </div>
                 {% endif %}
-                <div class="row">
-                    {% include "account/relations_page.html" %}
-                </div>
+                {% endcomment %}
+            <div class="row">
+                {% include "account/relations_page.html" %}
             </div>
         </div>
-        <div class="row">
-            {% if is_paginated %}
-                <ul class="pagination center">
-                    {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}"><i
-                                class="material-icons">chevron_left</i></a>
-                        </li>
+    </div>
+
+    <div class="row">
+        {% if is_paginated %}
+            <ul class="pagination center">
+                {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}"><i
+                            class="material-icons">chevron_left</i></a>
+                    </li>
+                {% else %}
+                    <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
                     {% else %}
-                        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+                        <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
-                        {% else %}
-                            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">
-                            <i class="material-icons">chevron_right</i>
-                        </a></li>
-                    {% else %}
-                        <li class="disabled"><span>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li><a href="?page={{ page_obj.next_page_number }}">
+                        <i class="material-icons">chevron_right</i>
+                    </a></li>
+                {% else %}
+                    <li class="disabled"><span>
                 <i class="material-icons">chevron_right</i>
         </span></li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-        </div>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
     </div>
     <script src="{% static "js/friends.js" %}"></script>
     {% if url_name == "following" %}

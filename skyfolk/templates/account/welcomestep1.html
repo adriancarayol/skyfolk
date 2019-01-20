@@ -22,7 +22,7 @@
             <div class="col s12">
                 <p class="flow-text">Los usuarios han mostrado interés por... </p>
                 {% for theme in top_tags %}
-                    <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0|intword }}</div>
+                    <div class="chip top-theme" title="{{ theme.name }}">{{ theme.name }}</div>
                 {% endfor %}
             </div>
         </div>

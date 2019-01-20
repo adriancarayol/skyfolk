@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-
-from user_profile.node_models import NodeProfile
+from user_profile.models import BLOCK, RelationShipProfile, FOLLOWING
 from user_profile.tasks import send_email
 from django.contrib.auth.models import Group
 
@@ -13,13 +12,14 @@ def notify_via_email(actor, recipients, msg, template, context):
 
     for recipient in recipients:
         try:
-            try:
-                n = NodeProfile.nodes.get(title=actor.username)
-                m = NodeProfile.nodes.get(title=recipient.username)
-            except NodeProfile.DoesNotExist:
-                continue
+            n = actor.profile
+            m = recipient.profile
 
-            if n.bloq.is_connected(m) or m.bloq.is_connected(n):
+            if RelationShipProfile.objects.filter(
+                    from_profile=n, to_profile=m, type=BLOCK
+            ) or RelationShipProfile.objects.filter(
+                from_profile=m, to_profile=n, type=BLOCK
+            ):
                 continue
 
             if recipient.notification_settings.only_confirmed_users:
@@ -27,17 +27,17 @@ def notify_via_email(actor, recipients, msg, template, context):
                     continue
 
             if not recipient.notification_settings.followed_notifications:
-                if not m.follow.is_connected(n):
+                if RelationShipProfile.objects.filter(
+                        from_profile=m, to_profile=n, type=FOLLOWING):
                     continue
 
             if not recipient.notification_settings.followers_notifications:
-                if not n.follow.is_connected(m):
+                if RelationShipProfile.objects.filter(
+                        from_profile=n, to_profile=m, type=FOLLOWING):
                     continue
 
             results.append(recipient.email)
         except ObjectDoesNotExist:
             continue
 
-    send_email.delay(msg, results,
-                     context,
-                     template)
+    send_email.delay(msg, results, context, template)

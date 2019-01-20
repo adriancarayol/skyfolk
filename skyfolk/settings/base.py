@@ -75,7 +75,6 @@ THIRD_PARTY_APPS = (
     'mptt',
     'tasks_server',
     'postman',
-    'django_neomodel',
     'easy_thumbnails',
     'storages',
     'corsheaders',

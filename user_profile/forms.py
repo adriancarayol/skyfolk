@@ -18,7 +18,6 @@ from django.contrib.auth.forms import UserCreationForm
 
 from mailer.mailer import Mailer
 from user_profile.models import AuthDevices, NotificationSettings
-from user_profile.node_models import NodeProfile
 from .validators import validate_file_extension
 
 logging.basicConfig(level=logging.WARNING)
@@ -33,12 +32,6 @@ class CustomLoginForm(LoginForm):
         self.fields["auth_browser"].widget = forms.HiddenInput()
 
     def login(self, request, redirect_url=None):
-        try:
-            user_profile = NodeProfile.nodes.get(title=self.user.username)
-        except NodeProfile.DoesNotExist:
-            user_profile = None
-            logger.warning("LOGIN: No existe instancia NodeProfile para el usuario : %s " % self.user.username)
-
         auth_token_device = self.cleaned_data['auth_browser']
 
         ip = get_real_ip(request)
@@ -50,7 +43,7 @@ class CustomLoginForm(LoginForm):
 
         mail = Mailer()
 
-        if auth_token_device and user_profile:
+        if auth_token_device:
             try:
                 components = auth_token_device.split()
                 device, created = AuthDevices.objects.get_or_create(user_profile=self.user,

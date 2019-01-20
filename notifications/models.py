@@ -14,7 +14,7 @@ from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
 from bs4 import BeautifulSoup
 
-if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
+if StrictVersion(get_version()) >= StrictVersion("1.8.0"):
     from django.contrib.contenttypes.fields import GenericForeignKey
 else:
     from django.contrib.contenttypes.generic import GenericForeignKey
@@ -28,9 +28,9 @@ from .signals import notify
 from django.contrib.sites.models import Site
 from model_utils import Choices
 from jsonfield.fields import JSONField
-from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import Group
 from asgiref.sync import async_to_sync
+from user_profile.models import RelationShipProfile, BLOCK, FOLLOWING
 
 channel_layer = get_channel_layer()
 
@@ -39,7 +39,7 @@ channel_layer = get_channel_layer()
 def is_soft_delete():
     # TODO: SOFT_DELETE = getattr(settings, ...) doesn't work with "override_settings" decorator in unittest
     #     But is_soft_delete is neither a very elegant way. Should try to find better approach
-    return getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
+    return getattr(settings, "NOTIFICATIONS_SOFT_DELETE", False)
 
 
 def assert_soft_delete():
@@ -60,12 +60,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def unread(self, include_deleted=False):
         """Return only unread items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False).prefetch_related('actor')
+            return self.filter(unread=True, deleted=False).prefetch_related("actor")
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=True).prefetch_related('actor')
+            return self.filter(unread=True).prefetch_related("actor")
 
     def unread_limit(self, include_deleted=False, limit=20):
         """
@@ -74,19 +74,21 @@ class NotificationQuerySet(models.query.QuerySet):
         :return Devuelve solo las notificaciones no leidas:
         """
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False).prefetch_related('actor')[:limit]
+            return self.filter(unread=True, deleted=False).prefetch_related("actor")[
+                :limit
+            ]
         else:
-            return self.filter(unread=True).prefetch_related('actor')[:limit]
+            return self.filter(unread=True).prefetch_related("actor")[:limit]
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=False, deleted=False).prefetch_related('actor')
+            return self.filter(unread=False, deleted=False).prefetch_related("actor")
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=False).prefetch_related('actor')
+            return self.filter(unread=False).prefetch_related("actor")
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
@@ -116,12 +118,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def deleted(self):
         """Return only deleted items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=True).prefetch_related('actor')
+        return self.filter(deleted=True).prefetch_related("actor")
 
     def active(self):
         """Return only active(un-deleted) items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=False).prefetch_related('actor')
+        return self.filter(deleted=False).prefetch_related("actor")
 
     def mark_all_as_deleted(self, recipient=None):
         """Mark current queryset as deleted.
@@ -181,29 +183,48 @@ class Notification(models.Model):
         <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago
 
     """
-    LEVELS = Choices('success', 'info', 'warning', 'error')
+
+    LEVELS = Choices("success", "info", "warning", "error")
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=255)
 
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications',
-                                  on_delete=models.CASCADE)
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=False,
+        related_name="notifications",
+        on_delete=models.CASCADE,
+    )
     unread = models.BooleanField(default=True, blank=False)
 
-    actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor', on_delete=models.CASCADE)
+    actor_content_type = models.ForeignKey(
+        ContentType, related_name="notify_actor", on_delete=models.CASCADE
+    )
     actor_object_id = models.CharField(max_length=255)
-    actor = GenericForeignKey('actor_content_type', 'actor_object_id')
+    actor = GenericForeignKey("actor_content_type", "actor_object_id")
     actor_avatar = models.CharField(max_length=255, blank=True, null=True)
     verb = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
-    target_content_type = models.ForeignKey(ContentType, related_name='notify_target', blank=True, null=True,
-                                            on_delete=models.CASCADE)
+    target_content_type = models.ForeignKey(
+        ContentType,
+        related_name="notify_target",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+    )
     target_object_id = models.CharField(max_length=255, blank=True, null=True)
-    target = GenericForeignKey('target_content_type', 'target_object_id')
+    target = GenericForeignKey("target_content_type", "target_object_id")
 
-    action_object_content_type = models.ForeignKey(ContentType, blank=True, null=True,
-                                                   related_name='notify_action_object', on_delete=models.CASCADE)
+    action_object_content_type = models.ForeignKey(
+        ContentType,
+        blank=True,
+        null=True,
+        related_name="notify_action_object",
+        on_delete=models.CASCADE,
+    )
     action_object_object_id = models.CharField(max_length=255, blank=True, null=True)
-    action_object = GenericForeignKey('action_object_content_type', 'action_object_object_id')
+    action_object = GenericForeignKey(
+        "action_object_content_type", "action_object_object_id"
+    )
 
     timestamp = models.DateTimeField(default=timezone.now)
 
@@ -215,25 +236,28 @@ class Notification(models.Model):
     objects = NotificationQuerySet.as_manager()
 
     class Meta:
-        ordering = ('-timestamp',)
-        app_label = 'notifications'
+        ordering = ("-timestamp",)
+        app_label = "notifications"
 
     def __unicode__(self):
         ctx = {
-            'actor': self.actor,
-            'verb': self.verb,
-            'action_object': self.action_object,
-            'target': self.target,
-            'timesince': self.timesince(),
-            'actor_avatar': self.actor_avatar
+            "actor": self.actor,
+            "verb": self.verb,
+            "action_object": self.action_object,
+            "target": self.target,
+            "timesince": self.timesince(),
+            "actor_avatar": self.actor_avatar,
         }
         if self.target:
             if self.action_object:
-                return u'%(actor)s %(verb)s %(action_object)s on %(target)s %(timesince)s ago' % ctx
-            return u'%(actor)s %(verb)s %(target)s %(timesince)s ago' % ctx
+                return (
+                    u"%(actor)s %(verb)s %(action_object)s on %(target)s %(timesince)s ago"
+                    % ctx
+                )
+            return u"%(actor)s %(verb)s %(target)s %(timesince)s ago" % ctx
         if self.action_object:
-            return u'%(actor)s %(verb)s %(action_object)s %(timesince)s ago' % ctx
-        return u'%(actor)s %(verb)s %(timesince)s ago' % ctx
+            return u"%(actor)s %(verb)s %(action_object)s %(timesince)s ago" % ctx
+        return u"%(actor)s %(verb)s %(timesince)s ago" % ctx
 
     def __str__(self):  # Adds support for Python 3
         return self.__unicode__()
@@ -262,9 +286,9 @@ class Notification(models.Model):
 
 # 'NOTIFY_USE_JSONFIELD' is for backward compatibility
 # As app name is 'notifications', let's use 'NOTIFICATIONS' consistently from now
-EXTRA_DATA = getattr(settings, 'NOTIFY_USE_JSONFIELD', None)
+EXTRA_DATA = getattr(settings, "NOTIFY_USE_JSONFIELD", None)
 if EXTRA_DATA is None:
-    EXTRA_DATA = getattr(settings, 'NOTIFICATIONS_USE_JSONFIELD', False)
+    EXTRA_DATA = getattr(settings, "NOTIFICATIONS_USE_JSONFIELD", False)
 
 
 def notify_handler(verb, **kwargs):
@@ -272,19 +296,18 @@ def notify_handler(verb, **kwargs):
     Handler function to create Notification instance upon action signal call.
     """
     # Pull the options out of kwargs
-    kwargs.pop('signal', None)
-    recipient = kwargs.pop('recipient')
-    actor = kwargs.pop('sender')
+    kwargs.pop("signal", None)
+    recipient = kwargs.pop("recipient")
+    actor = kwargs.pop("sender")
     optional_objs = [
-        (kwargs.pop(opt, None), opt)
-        for opt in ('target', 'action_object')
+        (kwargs.pop(opt, None), opt) for opt in ("target", "action_object")
     ]
-    public = bool(kwargs.pop('public', True))
-    description = kwargs.pop('description', None)
-    timestamp = kwargs.pop('timestamp', timezone.now())
-    level = kwargs.pop('level', Notification.LEVELS.info)
-    send_channel = kwargs.pop('send_to_channel', True)
-    immediately = kwargs.pop('immediately', False)
+    public = bool(kwargs.pop("public", True))
+    description = kwargs.pop("description", None)
+    timestamp = kwargs.pop("timestamp", timezone.now())
+    level = kwargs.pop("level", Notification.LEVELS.info)
+    send_channel = kwargs.pop("send_to_channel", True)
+    immediately = kwargs.pop("immediately", False)
 
     # Check if User or Group
     if isinstance(recipient, Group):
@@ -294,13 +317,15 @@ def notify_handler(verb, **kwargs):
 
     for recipient in recipients:
         try:
-            try:
-                n = NodeProfile.nodes.get(title=actor.username)
-                m = NodeProfile.nodes.get(title=recipient.username)
-            except NodeProfile.DoesNotExist:
-                return
 
-            if n.bloq.is_connected(m) or m.bloq.is_connected(n):
+            n = actor.profile
+            m = recipient.profile
+
+            if RelationShipProfile.objects.filter(
+                from_profile=n, to_profile=m, type=BLOCK
+            ) or RelationShipProfile.objects.filter(
+                from_profile=m, to_profile=n, type=BLOCK
+            ):
                 return
 
             if recipient.notification_settings.only_confirmed_users:
@@ -308,11 +333,15 @@ def notify_handler(verb, **kwargs):
                     return
 
             if not recipient.notification_settings.followed_notifications:
-                if not m.follow.is_connected(n):
+                if RelationShipProfile.objects.filter(
+                    from_profile=m, to_profile=n, type=FOLLOWING
+                ):
                     return
 
             if not recipient.notification_settings.followers_notifications:
-                if not n.follow.is_connected(m):
+                if RelationShipProfile.objects.filter(
+                    from_profile=n, to_profile=m, type=FOLLOWING
+                ):
                     return
 
         except ObjectDoesNotExist:
@@ -334,54 +363,67 @@ def notify_handler(verb, **kwargs):
         # Set optional objects
         for obj, opt in optional_objs:
             if obj is not None:
-                setattr(newnotify, '%s_object_id' % opt, obj.pk)
-                setattr(newnotify, '%s_content_type' % opt,
-                        ContentType.objects.get_for_model(obj))
+                setattr(newnotify, "%s_object_id" % opt, obj.pk)
+                setattr(
+                    newnotify,
+                    "%s_content_type" % opt,
+                    ContentType.objects.get_for_model(obj),
+                )
 
         if len(kwargs) and EXTRA_DATA:
             newnotify.data = kwargs
 
         soup = BeautifulSoup(description, "html5lib")
-        a_description = soup.find('a')
+        a_description = soup.find("a")
 
         current_site = Site.objects.get_current().domain
 
         if a_description is not None:
-            url = reverse('notifications:mark_as_read', kwargs={'slug': id2slug(newnotify.id)})
-            a_description['href'] = urllib.parse.urljoin('http://' + current_site,
-                                                         url + '?next=' + a_description['href'])
+            url = reverse(
+                "notifications:mark_as_read", kwargs={"slug": id2slug(newnotify.id)}
+            )
+            a_description["href"] = urllib.parse.urljoin(
+                "http://" + current_site, url + "?next=" + a_description["href"]
+            )
 
         newnotify.description = str(soup)
-        print(newnotify.description)
+
         newnotify.save()
 
         # Si el usuario desea recibir notificaciones de skyfolk a su correo
         try:
             if recipient.notification_settings.email_when_new_notification:
-                notify_via_email(actor, [recipient],
-                                 "Skyfolk - {0}, tienes nuevas notificaciones.".format(recipient.username),
-                                 'emails/new_notification.html',
-                                 {'to_user': recipient.username, 'description': newnotify.description})
+                notify_via_email(
+                    actor,
+                    [recipient],
+                    "Skyfolk - {0}, tienes nuevas notificaciones.".format(
+                        recipient.username
+                    ),
+                    "emails/new_notification.html",
+                    {
+                        "to_user": recipient.username,
+                        "description": newnotify.description,
+                    },
+                )
         except ObjectDoesNotExist:
             pass
 
-        content = render_to_string(template_name='channels/new_notification.html',
-                                   context={'notification': newnotify})
+        content = render_to_string(
+            template_name="channels/new_notification.html",
+            context={"notification": newnotify},
+        )
 
-        data = {
-            'content': content,
-            'id': newnotify.id
-        }
+        data = {"content": content, "id": newnotify.id}
         # Enviamos notificacion al canal del receptor
 
         if send_channel:
-            async_to_sync(channel_layer.group_send)(notification_channel(recipient.id), {
-                'type': 'new_notification',
-                "message": data
-            })
+            async_to_sync(channel_layer.group_send)(
+                notification_channel(recipient.id),
+                {"type": "new_notification", "message": data},
+            )
 
         return newnotify
 
 
 # connect the signal
-notify.connect(notify_handler, dispatch_uid='notifications.models.notification')
+notify.connect(notify_handler, dispatch_uid="notifications.models.notification")
