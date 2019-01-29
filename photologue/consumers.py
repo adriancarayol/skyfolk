@@ -2,7 +2,22 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from user_profile.models import Profile
 from .models import Photo, Video
 from django.core.exceptions import PermissionDenied
+from channels.db import database_sync_to_async
 
+
+@database_sync_to_async
+def get_profile(user_id):
+    profile = Profile.objects.get(user_id=user_id)
+    return profile
+
+@database_sync_to_async
+def get_photo(slug):
+    photo = Photo.objects.select_related('owner').get(slug__exact=slug)
+    return photo
+
+@database_sync_to_async
+def is_visible(from_profile, to_profile):
+    return from_profile.is_visible(to_profile)
 
 class PhotoConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -22,12 +37,12 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                photo = Photo.objects.only('owner').get(slug__exact=slug)
+                photo = await get_photo(slug)
 
-                n = Profile.objects.get(user_id=user.id)
-                m = Profile.objects.get(user_id=photo.owner_id)
+                n = await get_profile(user.id)
+                m = await get_profile(photo.owner_id)
 
-                visibility = m.is_visible(n)
+                visibility = await is_visible(m, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(
@@ -54,6 +69,11 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.photo_channel, self.channel_name)
 
 
+@database_sync_to_async
+def get_video(slug):
+    video = Video.objects.select_related('owner').get(slug__exact=slug)
+    return video
+
 class VideoConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
@@ -72,12 +92,12 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                video = Video.objects.only('owner').get(slug__exact=slug)
+                video = await get_video(slug)
 
-                n = Profile.objects.get(user_id=user.id)
-                m = Profile.objects.get(user_id=video.owner_id)
+                n = await get_profile(user.id)
+                m = await get_profile(video.owner_id)
 
-                visibility = m.is_visible(n)
+                visibility = await is_visible(m, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(

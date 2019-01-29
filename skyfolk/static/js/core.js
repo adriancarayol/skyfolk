@@ -408,7 +408,7 @@ function AJAX_mark_all_read() {
         type: 'POST',
         success: function () {
             $('#notification-menu').find('li').fadeOut("fast");
-            $("#live_notify_badge").html(0);
+            $("#live_notify_badge").find('b').html(0);
         },
         error: function (rs, e) {
             alert('ERROR: ' + rs.responseText + e);
@@ -451,9 +451,9 @@ function AJAX_delete_notification(slug, id) {
             $("ul.list-notifications").find("[data-id='" + id + "']").each(function () {
                 $(this).hide();
             });
-            var currentValue = document.getElementById('live_notify_badge');
+            var currentValue = $('#live_notify_badge').find('b');
             if (parseInt($(currentValue).html()) > 0)
-                $(currentValue).html(parseInt($(currentValue).html()) - 1);
+                $(currentValue).html(parseInt($(currentValue).html()) - 1)
         },
         error: function (rs, e) {
 
@@ -584,9 +584,11 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
         },
         dataType: "json",
         success: function (response) {
+            var currentValue = $('#live_notify_badge').find('b');
+            if (parseInt($(currentValue).html()) > 0)
+                $(currentValue).html(parseInt($(currentValue).html()) - 1)
+
             if (response == "added_friend") {
-                //TODO: Add to "seguidos" list
-                // addItemToFriendList('Nuevo', 'nuevo');
                 sweetAlert("¡Has añadido un seguidor!");
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {

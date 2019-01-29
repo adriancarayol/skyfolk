@@ -1,6 +1,17 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.core.exceptions import PermissionDenied
 from .models import UserGroups, GroupTheme
+from channels.db import database_sync_to_async
+
+
+@database_sync_to_async
+def get_user_group(groupname):
+    group_profile = UserGroups.objects.get(slug=groupname)
+    return group_profile
+
+@database_sync_to_async
+def exists_user_in_group(group_profile, user_id):
+    return group_profile.users.filter(id=user_id).exists()
 
 
 class GroupConsumer(AsyncJsonWebsocketConsumer):
@@ -22,9 +33,10 @@ class GroupConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                group_profile = UserGroups.objects.get(slug=groupname)
+                group_profile = await get_user_group(groupname)
+                exists_in_group = await exists_user_in_group(group_profile, user.id)
 
-                if not group_profile.is_public and not group_profile.users.filter(id=user.id).exists():
+                if not group_profile.is_public and not exists_in_group:
                     raise PermissionDenied(
                         '{} no tiene permisos para conectarse a esta channel: {}'.format(user, groupname))
 
@@ -35,7 +47,7 @@ class GroupConsumer(AsyncJsonWebsocketConsumer):
                     self.group_profile_channel,
                     self.channel_name,
                 )
-            except Profile.DoesNotExist:
+            except UserGroups.DoesNotExist:
                 await self.close()
             except PermissionDenied:
                 await self.close()
@@ -48,6 +60,19 @@ class GroupConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_profile_channel, self.channel_name)
 
+@database_sync_to_async
+def get_group_theme(slug):
+    theme = GroupTheme.objects.select_related('board_group').get(slug=slug)
+    return theme
+
+@database_sync_to_async
+def get_user_group_by_id(group_id):
+    user_group = UserGroups.objects.get(id=group_id)
+    return user_group
+
+@database_sync_to_async
+def exists_user_group_in_user(user, user_group_id):
+    return user.user_groups.filter(id=user_group_id).exists()
 
 class ThemeConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -68,12 +93,14 @@ class ThemeConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                theme = GroupTheme.objects.select_related('board_group').get(slug=slug)
-                group_profile = UserGroups.objects.get(id=theme.board_group_id)
+                theme = await get_group_theme(slug)
+                group_profile = await get_user_group_by_id(theme.board_group_id)
 
-                if not group_profile.is_public and not user.user_groups.filter(id=theme.board_group_id).exists():
+                exists_user_group_in_user_profile = await exists_user_group_in_user(user, theme.board_group_id)
+
+                if not group_profile.is_public and not exists_user_group_in_user_profile:
                     raise PermissionDenied(
-                        '{} no tiene permisos para conectarse a esta channel: {}'.format(user, groupname))
+                        '{} no tiene permisos para conectarse a esta channel: {}'.format(user, theme))
 
                 self.theme_channel = theme.theme_channel
 
@@ -82,7 +109,7 @@ class ThemeConsumer(AsyncJsonWebsocketConsumer):
                     self.theme_channel,
                     self.channel_name,
                 )
-            except Profile.DoesNotExist:
+            except (UserGroups.DoesNotExist, GroupTheme.DoesNotExist) as ex:
                 await self.close()
             except PermissionDenied:
                 await self.close()

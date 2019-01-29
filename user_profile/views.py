@@ -1585,11 +1585,10 @@ class RecommendationUsers(ListView):
                 .order_by("-similarity")
                 .select_related("user")[offset:limit]
         )
-
+        print(users)
         if not users:
             users = (
-                Profile.objects.filter(privacity__ne="N")
-                    .exclude(user=user)
+                Profile.objects.filter(~Q(user=user) & ~Q(privacity='N'))
                     .order_by("?")[:25]
             )
 

@@ -2,7 +2,17 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.core.exceptions import PermissionDenied
 from .models import PublicationGroup
 from .utils import get_channel_name
+from channels.db import database_sync_to_async
 
+
+@database_sync_to_async
+def get_publication_group(pubid):
+    publication = PublicationGroup.objects.select_related('board_group').get(id=pubid)
+    return publication
+
+@database_sync_to_async
+def exists_user_in_group(group, user_id):
+    return group.users.filter(id=user_id).exists()
 
 class GroupPublicationConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -22,11 +32,12 @@ class GroupPublicationConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                publication_board_group = PublicationGroup.objects.get(id=pubid)
+                publication_board_group = await get_publication_group(pubid)
                 group = publication_board_group.board_group
+                exists_in_group = await exists_user_in_group(group, user.id)
 
                 if user.id != group.owner_id:
-                    if not group.is_public and not group.users.filter(id=user.id).exists():
+                    if not group.is_public and not exists_in_group:
                         raise PermissionDenied(
                             '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, pubid))
 

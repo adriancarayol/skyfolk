@@ -7,23 +7,6 @@ services:
     restart: always
     networks:
       - skyfolknetwork
-  
-  # neo4j
-  neo4j:
-    image: neo4j:latest
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    environment:
-      - NEO4J_AUTH=neo4j/1518
-    volumes:
-      - ./run/db/dbms:/data/dbms
-#      - ./neo4j:/var/lib/neo4j/plugins
-    restart: on-failure
-    networks:
-      - skyfolknetwork
-    depends_on:
-      - dbpostgres
 
 #  zookeeper:
 #      image: debezium/zookeeper:latest
@@ -120,7 +103,7 @@ services:
   go_skyfolk:
     build:
       context: .
-      dockerfile: skyfolk_services/Dockerfile
+      dockerfile: src/skyfolk_services/Dockerfile
     ports:
       - "1800:1800"
     networks:
@@ -148,7 +131,6 @@ services:
         - "8000:8000"
     depends_on:
       - rabbit
-      - neo4j
       - dbpostgres
     networks:
       - skyfolknetwork
