@@ -3,7 +3,25 @@ from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
 from .models import PublicationGroupMediaVideo, PublicationGroupMediaPhoto
 from .utils import get_channel_name
+from channels.db import database_sync_to_async
 
+@database_sync_to_async
+def get_profile(user_id):
+    profile = Profile.objects.get(user_id=user_id)
+    return profile
+
+@database_sync_to_async
+def get_board_owner(pub_id):
+    return PublicationGroupMediaPhoto.objects.select_related('board_photo__owner', 'board_photo__group').get(
+                    id=pub_id)
+
+@database_sync_to_async
+def exists_group_in_user(user, group_id):
+    return user.user_groups.filter(id=group_id).exists()
+
+@database_sync_to_async
+def is_visible(from_profile, to_profile):
+    return from_profile.is_visible(to_profile)
 
 class PublicationGroupGalleryPhotoConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -23,21 +41,20 @@ class PublicationGroupGalleryPhotoConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                publication_board_owner = PublicationGroupMediaPhoto.objects.select_related('board_photo__owner',
-                                                                                            'board_photo__group').get(
-                    id=pubid)
-
+                publication_board_owner = await get_board_owner(pubid)
                 group = publication_board_owner.board_photo.group
 
+                exists_in_group = await exists_group_in_user(user, group.id)
+
                 if not group.is_public and user != group.owner_id:
-                    if not user.user_groups.filter(id=group.id).exists():
+                    if not exists_in_group:
                         raise PermissionDenied(
                             '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, pubid))
 
-                board_owner = Profile.objects.get(user_id=publication_board_owner.board_photo.owner_id)
-                n = Profile.objects.get(user_id=user.id)
+                board_owner = await get_profile(publication_board_owner.board_photo.owner_id)
+                n = await get_profile(user.id)
 
-                visibility = board_owner.is_visible(n)
+                visibility = await is_visible(board_owner, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(
@@ -64,6 +81,10 @@ class PublicationGroupGalleryPhotoConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.publication_channel, self.channel_name)
 
 
+@database_sync_to_async
+def get_board_owner_video(pub_id):
+    return PublicationGroupMediaVideo.objects.select_related('board_video__owner', 'board_video__group').get(id=pub_id)
+
 class PublicationGroupGalleryVideoConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
@@ -82,21 +103,21 @@ class PublicationGroupGalleryVideoConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                publication_board_owner = PublicationGroupMediaVideo.objects.select_related('board_video__owner',
-                                                                                            'board_video__group').get(
-                    id=pubid)
+                publication_board_owner = await get_board_owner_video(pubid)
 
                 group = publication_board_owner.board_video.group
 
+                exists_in_group = await exists_group_in_user(user, group.id)
+
                 if not group.is_public and user != group.owner_id:
-                    if not user.user_groups.filter(id=group.id).exists():
+                    if not exists_in_group:
                         raise PermissionDenied(
                             '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, pubid))
 
-                board_owner = Profile.objects.get(user_id=publication_board_owner.board_video.owner_id)
-                n = Profile.objects.get(user_id=user.id)
+                board_owner = await get_profile(publication_board_owner.board_video.owner_id)
+                n = await get_profile(user.id)
 
-                visibility = board_owner.is_visible(n)
+                visibility = await is_visible(board_owner, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(

@@ -56,7 +56,7 @@
                             <div class="col s12 m10 card z-depth-2 left">
                                 <div class="card-panel grey lighten-5 z-depth-1">
                                     <div class="row valign-wrapper">
-                                        <div class="col s2">
+                                        <div class="col s12">
                                             <div class="chip">
                                                 {% avatar message.sender %}
                                                 <a class="pm_sender" href="/profile/{{ message.obfuscated_sender|or_me:user.id }}">{{ message.obfuscated_sender|or_me:user.id }}</a>

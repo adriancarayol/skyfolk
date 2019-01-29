@@ -16,7 +16,7 @@ ADD https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 /usr/
 RUN chmod +x /usr/bin/dep
 
 RUN mkdir -p $GOPATH/src/skyfolk_services
-ADD skyfolk_services $GOPATH/src/skyfolk_services
+ADD src/skyfolk_services $GOPATH/src/skyfolk_services
 
 WORKDIR $GOPATH/src/skyfolk_services
 

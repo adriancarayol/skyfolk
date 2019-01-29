@@ -3,7 +3,20 @@ from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
 from .models import Publication
 from .utils import get_channel_name
+from channels.db import database_sync_to_async
 
+@database_sync_to_async
+def get_profile(user_id):
+    profile = Profile.objects.get(user_id=user_id)
+    return profile
+
+@database_sync_to_async
+def get_board_owner(pub_id):
+    return Publication.objects.values_list('board_owner__id', flat=True).get(id=pub_id)
+
+@database_sync_to_async
+def is_visible(from_profile, to_profile):
+    return from_profile.is_visible(to_profile)
 
 class PublicationConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -23,11 +36,11 @@ class PublicationConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
-                board_owner = Profile.objects.get(user_id=publication_board_owner)
-                n = Profile.objects.get(user_id=user.id)
+                publication_board_owner = await get_board_owner(pubid)
+                board_owner = await get_profile(publication_board_owner)
+                n = await get_profile(user.id)
 
-                visibility = board_owner.is_visible(n)
+                visibility = await is_visible(board_owner, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(
