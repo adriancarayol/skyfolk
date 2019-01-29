@@ -2,9 +2,19 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.http import Http404
 from channels.layers import get_channel_layer
 from user_profile.models import Profile
+from channels.db import database_sync_to_async
+
 
 channel_layer = get_channel_layer()
 
+@database_sync_to_async
+def get_profile(username):
+    profile = Profile.objects.get(user__username=username)
+    return profile
+
+@database_sync_to_async
+def is_visible(from_profile, to_profile):
+    return from_profile.is_visible(to_profile)
 
 class BlogConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -21,10 +31,10 @@ class BlogConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                profile_blog = Profile.objects.get(user__username=profile_username)
-                user_profile = Profile.objects.get(user__username=self.user.username)
+                profile_blog = await get_profile(profile_username)
+                user_profile = await get_profile(self.user.username)
 
-                visibility = profile_blog.is_visible(user_profile)
+                visibility = await is_visible(profile_blog, user_profile)
 
                 if visibility and visibility != 'all':
                     await self.close()
@@ -61,7 +71,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                profile = Profile.objects.get(user__username=self.user.username)
+                profile = await get_profile(self.user.username)
                 self.notification_channel = profile.notification_channel
                 await self.channel_layer.group_add(
                     self.notification_channel,

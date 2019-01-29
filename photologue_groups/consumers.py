@@ -3,6 +3,27 @@ from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from user_profile.models import Profile
 from .models import PhotoGroup, VideoGroup
+from channels.db import database_sync_to_async
+
+
+@database_sync_to_async
+def get_profile(user_id):
+    profile = Profile.objects.get(user_id=user_id)
+    return profile
+
+@database_sync_to_async
+def get_photo(slug):
+    photo = PhotoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
+    return photo
+
+@database_sync_to_async
+def exists_group_in_user(user, group_id):
+    return user.user_groups.filter(id=group_id).exists()
+
+
+@database_sync_to_async
+def is_visible(from_profile, to_profile):
+    return from_profile.is_visible(to_profile)
 
 
 class PhotoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
@@ -23,18 +44,19 @@ class PhotoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                photo = PhotoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
+                photo = await get_photo(slug)
                 group = photo.group
+                exists_group_in_user_profile = await exists_group_in_user(user, group.id)
 
                 if not group.is_public and user != group.owner_id:
-                    if not user.user_groups.filter(id=group.id).exists():
+                    if not exists_group_in_user_profile:
                         raise PermissionDenied(
                             '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
 
-                n = Profile.objects.get(user_id=user.id)
-                m = Profile.objects.get(user_id=photo.owner_id)
+                n = await get_profile(user.id)
+                m = await get_profile(photo.owner_id)
 
-                visibility = m.is_visible(n)
+                visibility = await is_visible(m, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(
@@ -61,6 +83,12 @@ class PhotoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.photo_channel, self.channel_name)
 
 
+@database_sync_to_async
+def get_video(slug):
+    video = VideoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
+    return video
+
+
 class VideoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
     """
     Consumidor para conectarse al perfil
@@ -79,12 +107,20 @@ class VideoMediaGroupConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                video = VideoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
+                video = await get_video(slug)
 
-                n = Profile.objects.get(user_id=user.id)
-                m = Profile.objects.get(user_id=video.owner_id)
+                group = video.group
+                exists_group_in_user_profile = await exists_group_in_user(user, group.id)
 
-                visibility = m.is_visible(n)
+                if not group.is_public and user != group.owner_id:
+                    if not exists_group_in_user_profile:
+                        raise PermissionDenied(
+                            '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
+
+                n = await get_profile(user.id)
+                m = await get_profile(video.owner_id)
+
+                visibility = await is_visible(m, n)
 
                 if visibility and visibility != 'all':
                     raise PermissionDenied(

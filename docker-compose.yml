@@ -103,7 +103,7 @@ services:
   go_skyfolk:
     build:
       context: .
-      dockerfile: skyfolk_services/Dockerfile
+      dockerfile: src/skyfolk_services/Dockerfile
     ports:
       - "1800:1800"
     networks:

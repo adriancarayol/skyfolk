@@ -1,7 +1,12 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-
+from channels.db import database_sync_to_async
 from user_profile.models import Profile
 
+@database_sync_to_async
+def get_profile(user_id):
+    profile = Profile.objects.get(user_id=user_id)
+    return profile
+    
 
 class MyFeedConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -16,7 +21,7 @@ class MyFeedConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
         else:
             try:
-                profile = Profile.objects.get(user_id=user.id)
+                profile = await get_profile(user.id)
                 self.news_channels = profile.news_channel
 
                 await self.channel_layer.group_add(
