@@ -28,7 +28,7 @@
                 {% for message in pm_messages %}
                     <div class="row pm_message{% if message.is_pending %} pm_pending{% endif %}{% if message.is_rejected %} pm_rejected{% endif %}{% if message.sender == user and message.sender_archived or message.recipient == user and message.recipient_archived %} pm_archived{% endif %}{% if message.sender == user and message.sender_deleted_at or message.recipient == user and message.recipient_deleted_at %} pm_deleted{% endif %}{% if message.recipient == user and not message.read_at %} pm_unread{% endif %}">
                         {% if message.sender == user %}
-                            <div class="col s12 m10 card z-depth-2 right">
+                            <div class="col s12 m10 card z-depth-1 right">
                                 <div class="card-panel grey lighten-5 z-depth-1">
                                     <div class="row valign-wrapper">
                                         <div class="col s12">
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         {% else %}
-                            <div class="col s12 m10 card z-depth-2 left">
+                            <div class="col s12 m10 card z-depth-1 left">
                                 <div class="card-panel grey lighten-5 z-depth-1">
                                     <div class="row valign-wrapper">
                                         <div class="col s12">

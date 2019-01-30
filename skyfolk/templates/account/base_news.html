@@ -144,6 +144,7 @@
                                                     <div class="card-image">
                                                         <img src="
 
+
                                                                 {% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                         <span class="card-title white-text">{{ item.extra_content.title }}</span>
                                                     </div>
@@ -176,6 +177,7 @@
                                             </div>
                                         {% endif %}
                                         <img src="
+
                                                 {% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                                              alt="{{ item.title }}" title="{{ item.title }}"
                                              onclick="location.href='{{ item.get_absolute_url }}'">
@@ -259,32 +261,33 @@
     <script src="{% static "js/socket_news.js" %}" type="text/javascript"></script>
     <script src="{% static "js/dash.js" %}" type="text/javascript"></script>
     <script>
-        var $grid = $('.grid').imagesLoaded(function () {
-            $grid.masonry({
-                itemSelector: '.grid-item',
-                columnWidth: 300,
-                gutter: 20,
-                fitWidth: true,
-                horizontalOrder: true,
-                transitionDuration: '0.3s'
+        $(document).ready(function () {
+            var $grid = $('.grid').imagesLoaded(function () {
+                $grid.masonry({
+                    itemSelector: '.grid-item',
+                    columnWidth: 300,
+                    gutter: 20,
+                    fitWidth: true,
+                    horizontalOrder: true,
+                    transitionDuration: '0.3s'
+                });
+            });
+
+            var infinite = new Waypoint.Infinite({
+                element: $('#stream-publications'),
+                offset: 'bottom-in-view',
+                onBeforePageLoad: function () {
+                    $('.load-feed').show();
+                },
+                onAfterPageLoad: function () {
+                    $('.load-feed').hide();
+                    $grid.imagesLoaded().progress(function () {
+                        $grid.masonry('reloadItems');
+                        $grid.masonry('layout');
+                    });
+                }
             });
         });
-
-        var infinite = new Waypoint.Infinite({
-            element: $('#stream-publications'),
-            offset: 'bottom-in-view',
-            onBeforePageLoad: function () {
-                $('.load-feed').show();
-            },
-            onAfterPageLoad: function () {
-                $('.load-feed').hide();
-                $grid.imagesLoaded().progress(function () {
-                    $grid.masonry('reloadItems');
-                    $grid.masonry('layout');
-                });
-            }
-        });
-
     </script>
     <script>
         UTILS_E.init([{{ user.pk }}]);

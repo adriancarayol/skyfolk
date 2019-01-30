@@ -173,7 +173,7 @@ Template para las busquedas
                                             {% if videos %}
                                                 <div class="row videos">
                                                     {% for video in videos %}
-                                                        <div class="col s12 z-depth-2 center">
+                                                        <div class="col s12 z-depth-1 center">
                                                             <video class="responsive-video" controls loop>
                                                                 <source src="{{ video.video.url }}" type="video/mp4">
                                                             </video>
@@ -379,7 +379,7 @@ Template para las busquedas
                                                                     {% for image in images %}
                                                                         {% if image.image %}
                                                                         <div class="col s12">
-                                                                            <img class="materialboxed responsive-img z-depth-2"
+                                                                            <img class="materialboxed responsive-img z-depth-1"
                                                                                  src="{{ image.image.url }}"
                                                                                  alt="Imagen de: {{ node.author }}"
                                                                                  title="Imagen de: {{ node.author }}">
@@ -460,7 +460,7 @@ Template para las busquedas
                                                                     {% for image in images %}
                                                                         {% if image.image %}
                                                                         <div class="col s12">
-                                                                            <img class="materialboxed responsive-img z-depth-2"
+                                                                            <img class="materialboxed responsive-img z-depth-1"
                                                                                  src="{{ image.image.url }}"
                                                                                  alt="Imagen de: {{ node.author }}"
                                                                                  title="Imagen de: {{ node.author }}">
@@ -526,7 +526,7 @@ Template para las busquedas
                                             {% if videos %}
                                                 <div class="row videos">
                                                     {% for video in videos %}
-                                                        <div class="col s12 z-depth-2 center">
+                                                        <div class="col s12 z-depth-1 center">
                                                             <video class="responsive-video" controls loop>
                                                                 <source src="{{ video.video.url }}" type="video/mp4">
                                                             </video>

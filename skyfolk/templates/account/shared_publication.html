@@ -18,7 +18,7 @@
 </div>
 {% else %}
 {% comment %} Para publicaciones que contienen citas {% endcomment %}
-<blockquote class="z-depth-2">
+<blockquote class="z-depth-1">
     <div class="row info-publication">
         <div class="col s12">
             <div class="chip">
@@ -41,7 +41,7 @@
                 {% for image in images %}
                 {% if image.image %}
                 <div class="col s12">
-                    <img class="lazyload materialboxed responsive-img z-depth-2"
+                    <img class="lazyload materialboxed responsive-img z-depth-1"
                     data-src="{{ image.image.url }}"
                     alt="Imagen de: {{ author }}"
                     title="Imagen de: {{ author }}">
