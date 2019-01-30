@@ -19,7 +19,7 @@
 {% block content %}
     <div class="container" id="publication-thread">
         <div class="row">
-            <div class="col l3 offset-l5 offset-s3 s6 z-depth-2 board-photo">
+            <div class="col l3 offset-l5 offset-s3 s6 z-depth-1 board-photo">
                 <div class="col l3 s6 board-photo-container">
                     <img src="
                             {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}">
@@ -71,7 +71,7 @@
                                                 <div class="row">
                                                     {% for image in images %}
                                                         {% if image.image %}
-                                                            <div class="col s12 z-depth-2">
+                                                            <div class="col s12 z-depth-1">
                                                                 <img class="materialboxed responsive-img lazyload"
                                                                      data-src="{{ image.image.url }}"
                                                                      alt="Imagen de: {{ node.author }}"
@@ -87,7 +87,7 @@
                                                 <div class="row">
                                                     {% for video in videos %}
                                                         {% if video.video %}
-                                                            <div class="col s12 z-depth-2 center">
+                                                            <div class="col s12 z-depth-1 center">
                                                                 <video class="responsive-video" controls loop>
                                                                     <source src="{{ video.video.url }}"
                                                                             type="video/mp4">

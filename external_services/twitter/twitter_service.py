@@ -1,3 +1,4 @@
+import os
 import tweepy
 from external_services.models import Services, UserService
 from django.urls import reverse
@@ -6,8 +7,8 @@ from django.db import IntegrityError
 
 class TwitterService(object):
     def __init__(self, **kwargs):
-        self.consumer_token = 'ICxk7pSKDmUffHxEVyP2bqQ2l'
-        self.consumer_secret = 'ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR'
+        self.consumer_token = os.environ.get('TWITTER_CONSUMER_TOKEN', 'ICxk7pSKDmUffHxEVyP2bqQ2l')
+        self.consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET', 'ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR')
         self.callback = reverse('external_services:twitter-service:callback-twitter-service')
 
     @staticmethod

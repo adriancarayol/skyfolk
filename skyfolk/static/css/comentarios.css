@@ -496,3 +496,7 @@ a.fontawesome-cog:hover {
 .hidden {
     display: none;
 }
+
+.materialboxed {
+    margin: auto !important;
+}

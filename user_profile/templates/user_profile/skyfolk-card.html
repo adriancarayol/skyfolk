@@ -5,7 +5,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 {% load avatar_tags %}
 {% load humanize %}
 {% load static %}
-    <div class="col l3 m10 s12 offset-m2 z-depth-2">
+    <div class="col l3 m10 s12 offset-m2 z-depth-1">
         <div class="user-card card">
                 <div class="col s12 user-avatar" style="background: {% if user_profile.back_image %}
                     url({{ user_profile.back_image.url }})
