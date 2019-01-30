@@ -36,7 +36,7 @@
             <div id="postman" class="col offset-l1 l8 m12 s12 body-wrapper">
                 <div class="row">
                     {% block pm_write_title %}{% endblock %}
-                    <form class="col s12 z-depth-2 write-message"
+                    <form class="col s12 z-depth-1 write-message"
                           action="{% if next_url %}?next={{ next_url|urlencode }}{% endif %}"
                           method="post">{% csrf_token %}
                         {% block pm_write_recipient %}{% endblock %}

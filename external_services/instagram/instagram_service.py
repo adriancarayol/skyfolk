@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 from external_services.models import Services, UserService
@@ -6,8 +7,8 @@ from django.db import IntegrityError
 
 
 class InstagramService(object):
-    client_id = '8d08509d6ba6416d8420e2de472e5f51'
-    client_secret = '4826451fd2294d8e902e583fbc90f95a'
+    client_id = os.environ.get('INSTAGRAM_CLIENT_ID', '8d08509d6ba6416d8420e2de472e5f51')
+    client_secret = os.environ.get('INSTAGRAM_CLIENT_SECRET', '4826451fd2294d8e902e583fbc90f95a')
 
     def __init__(self, **kwargs):
         self.callback = reverse('external_services:instagram-service:callback-instagram-service')

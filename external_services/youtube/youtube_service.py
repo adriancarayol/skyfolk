@@ -1,9 +1,12 @@
+import os
 import google_auth_oauthlib.flow
 from external_services.models import Services, UserService
 from django.urls import reverse
 from django.db import IntegrityError
+from django.conf import settings
 
-CLIENT_SECRETS_FILE = "client_secret.json"
+CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, "client_secret.json")
+print(CLIENT_SECRETS_FILE)
 
 
 class YouTubeService(object):
