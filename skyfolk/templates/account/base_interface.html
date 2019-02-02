@@ -73,66 +73,6 @@ Base para la interfaz en comun de todos los usuarios.
     {% if user.is_authenticated %}
     {% block compose-div-message %}
     {% comment "Componer mensaje" %}
-    Componer mensaje para perfil ajeno
-    {% endcomment %}
-    {% if publicationForm and user_profile.pk != user.pk %}
-    <div class="row">
-        <div id="page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
-            <div class="row">
-                <div class="col s12 title-page-wrapper">
-                    {% if user == user_profile %}
-                    <h4><i class="material-icons left">send</i>Publicar comentario</h4>
-                    <h6>Publica un comentario para que el mundo lo vea.</h6>
-                    {% else %}
-                    <h4><i class="material-icons left">send</i> Escribe algo a: {{ user_profile.username }}
-                    </h4>
-                    <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
-                    {% endif %}
-                </div>
-            </div>
-            <form id="message-form2" method="post" enctype="multiple/form-data">{% csrf_token %}
-                <div class="row">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <textarea class="materialize-textarea" cols="40" data-length="500" id="message3"
-                            maxlength="500" name="content" placeholder="Escribe tu mensaje aqui..."
-                            rows="10" required=""></textarea>
-                            <label for="message3">Escribe tu mensaje</label>
-                        </div>
-                    </div>
-                </div>
-                <input id="author" name="author" type="hidden" value="{{ request.user.id }}">
-                <input id="board_owner" name="board_owner" type="hidden" value="{{ user_profile.id }}">
-                <input id="parent" name="parent" type="hidden">
-                <div class="row">
-                    <div class="col s12">
-                        <div class="file-field">
-                            <div class="btn blue lighten-2">
-                                <span><i class="material-icons md-24">photo_camera</i></span>
-                                <input id="id_image" name="image" type="file" multiple>
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text"
-                                placeholder="Subir imágenes o videos">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <button type="submit" id="sendformpubli"
-                        class="waves-effect waves-light btn right blue">
-                        Enviar<i class="material-icons right">send</i></button>
-                        <button type="button"
-                        class="waves-effect waves-light btn right transparent black-text close">Cerrar<i
-                        class="material-icons right">close</i></button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    {% endif %}
-    {% comment "Componer mensaje" %}
     Componer mensaje para mi propio perfil.
     {% endcomment %}
     <div class="row">

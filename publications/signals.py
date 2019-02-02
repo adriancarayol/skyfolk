@@ -12,7 +12,7 @@ from requests.exceptions import MissingSchema
 from user_profile.models import FOLLOWING, RelationShipProfile
 from notifications.signals import notify
 from .models import Publication, ExtraContent
-from django.db.models import Sum, Count, When, Case, Value, Q
+from django.db.models import Count, When, Case, Value, Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
