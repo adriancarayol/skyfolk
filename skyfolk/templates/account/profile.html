@@ -207,10 +207,12 @@ Template para el perfil de cada usuario
                                     {% if publications|length == 0 %}
                                         <div class="no-comments" id="without-comments">
                                             <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                            <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
-                                               class="no-comments-new-comment">
-                                                <i class="material-icons">send</i>
-                                            </a>
+                                            {% if user_profile == user %}
+                                                <a id="compose-self-new-no-comments"
+                                                   class="no-comments-new-comment">
+                                                    <i class="material-icons">send</i>
+                                                </a>
+                                            {% endif %}
                                         </div>
                                     {% else %}
                                         {% include "account/profile_comments.html" %}

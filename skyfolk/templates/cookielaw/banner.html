@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div id="CookielawBanner">
+    <div class="row">
+        <div class="col s12">
+            <h4>{% trans "COOKIE_INFO_HEADER" %}</h4>
+            <p>
+                {% trans "COOKIE_INFO_PARA" %}
+            </p>
+            <p>
+                <a class="waves-effect waves-light btn blue lighten-2 center"
+                   href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="divider"></div>

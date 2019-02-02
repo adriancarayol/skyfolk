@@ -26,7 +26,6 @@ from django.views.generic.edit import CreateView
 from mptt.templatetags.mptt_tags import cache_tree_children
 from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
-from emoji import Emoji
 from user_profile.models import RelationShipProfile, BLOCK, Profile
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from .models import Publication, PublicationImage, PublicationVideo
