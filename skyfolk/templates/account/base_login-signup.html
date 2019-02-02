@@ -1,6 +1,7 @@
 {% comment %} Template base para el login/registro {% endcomment %}
 
 {% load static %}
+{% load cookielaw_tags %}
 <!DOCTYPE html>
 <html lang="es" style="background-color: white;">
 
@@ -35,6 +36,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/login-signup.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection">
+
     <style>
         .progress {
             margin: 0 !important;
@@ -96,6 +98,7 @@
         ga('send', 'pageview');
     </script>
     <script type="text/javascript" src="{% static "js/materialize.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "cookielaw/js/cookielaw.js" %}"></script>
 
     {% block extra_head %} {% endblock %}
 </head>
@@ -125,8 +128,10 @@
     <div class="corner-ribbon top-right sticky blue">Beta!</div>
     {% block content %}{% endblock %}
 </main>
+
 <footer class="page-footer white">
     <div class="container center">
+        {% cookielaw_banner %}
         <div class="row center">
             <div class="col l3 s12">
                 <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
@@ -138,7 +143,7 @@
                 <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
             </div>
             <div class="col l3 s12">
-                <b class="blue-text text-darken">© 2018 Skyfolk</b>
+                <b class="blue-text text-darken">© 2019 Skyfolk</b>
             </div>
         </div>
     </div>

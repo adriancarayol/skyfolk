@@ -88,7 +88,8 @@ THIRD_PARTY_APPS = (
     'graphene_django',
     'celery_haystack',
     'django_extensions',
-    'debug_toolbar'
+    'debug_toolbar',
+    'cookielaw',
 )
 
 FIRST_PARTY_APPS = (
