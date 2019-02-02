@@ -6,7 +6,6 @@ from django.db import IntegrityError
 from django.conf import settings
 
 CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, "client_secret.json")
-print(CLIENT_SECRETS_FILE)
 
 
 class YouTubeService(object):
