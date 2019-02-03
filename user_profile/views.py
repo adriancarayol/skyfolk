@@ -185,32 +185,6 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         template = "account/profile_comments.html"
         publications = load_profile_publications(request, page, user_profile)
         context = {"user_profile": user_profile, "publications": publications}
-    elif qs == "following":
-        page = int(request.GET.get("page", 1))
-        template = "account/follow_entries.html"
-        profile = Profile.objects.values_list("id", flat=True).get(user=user_profile)
-
-        following_list = RelationShipProfile.objects.filter(
-            from_profile=profile, type=FOLLOWING
-        ).values("to_profile_id")
-
-        users = User.objects.filter(profile__in=following_list)
-        paginator = Paginator(users, 25)  # Show 25 contacts per page
-
-        try:
-            followed = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            followed = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            followed = paginator.page(paginator.num_pages)
-
-        context = {
-            "user_profile": user_profile,
-            "friends_top12": followed,
-            "friend_page": page,
-        }
     else:
         raise ValueError("No existe el querystring %s" % qs[:25])
 

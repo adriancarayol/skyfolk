@@ -42,6 +42,7 @@ def url_exists(value):
     except ValidationError:
         return False
 
+
 @register.filter(name='is_follow')
 def is_follow(request, profile):
     try:
@@ -117,6 +118,11 @@ def lookup(d, key):
         return d[key]
     except KeyError:
         return ''
+
+
+@register.filter
+def subtract(value, arg):
+    return value - arg
 
 
 @register.simple_tag

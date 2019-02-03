@@ -9,6 +9,7 @@ from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.poll.dash_widgets import BasePollWidget
 from ....contrib.plugins.statistics.dash_widgets import BaseStatisticsWidget
+from ....contrib.plugins.follows.dash_widgets import BaseFollowsWidget
 from ....contrib.plugins.twitch.dash_widgets import BaseTwitchWidget
 from ....contrib.plugins.service.dash_widgets import BaseServiceWidget
 
@@ -127,6 +128,12 @@ plugin_widget_factory(BaseStatisticsWidget,
         'profile',
         'main',
         'statistics',
+        main_sizes)
+
+plugin_widget_factory(BaseFollowsWidget,
+        'profile',
+        'main',
+        'follows',
         main_sizes)
 
 plugin_widget_factory(BaseTwitchWidget,
