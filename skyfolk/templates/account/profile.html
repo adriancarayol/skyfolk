@@ -183,7 +183,6 @@ Template para el perfil de cada usuario
                                 {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
                                 <li class="tab" id="li-tab-comentarios"><a
                                         href="#tab-comentarios">skyline</a></li>
-                                <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
                             </ul>
                             <div class="unstyled content" id="hood-tabs">
                                 {% comment %}
@@ -218,10 +217,6 @@ Template para el perfil de cada usuario
                                         {% include "account/profile_comments.html" %}
                                     {% endif %}
                                 </div>
-                                {% comment %}
-                            Incluimos el tab amigos
-                            {% endcomment %}
-                                {% include "account/tab-amigos.html" %}
                             </div>
                         </div>
                     </div>

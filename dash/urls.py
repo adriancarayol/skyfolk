@@ -23,6 +23,7 @@ from .views import (
 )
 
 from .contrib.plugins.service.views import RetrieveInfoForServicePin, LoadDynamicallyFormGivenService
+from .contrib.plugins.follows.views import RetrieveInfoForFollowsPin
 from .contrib.plugins.poll.views import submit_poll_response
 
 app_name = 'dash'
@@ -43,7 +44,7 @@ urlpatterns = [
         name='dash.cut_dashboard_entry'),
 
     # Copy dashboard entry
-    
+
     # url(_(r'^entry/copy/(?P<entry_id>\d+)/$'),
     #     view=copy_dashboard_entry,
     #    name='dash.copy_dashboard_entry'),
@@ -169,7 +170,7 @@ urlpatterns = [
     url(r'^public/workspaces/(?P<user_id>\d+)/$',
         view=PublicWorkspacesAJAX.as_view(),
         name='dash.public_dashboard_workspaces'),
-    
+
     # Service pin
     url(r'^pin/service/(?P<pin_id>\d+)/$',
         view=RetrieveInfoForServicePin.as_view(),
@@ -177,4 +178,9 @@ urlpatterns = [
     url(r'^pin/form/(?P<service_id>\d+)/$',
         view=LoadDynamicallyFormGivenService.as_view(),
         name='dash.load-form-pin-service'),
+
+    # Follows pin
+    url(r'^pin/follows/(?P<pin_id>\d+)/$',
+        view=RetrieveInfoForFollowsPin.as_view(),
+        name='dash.pin-follows'),
 ]

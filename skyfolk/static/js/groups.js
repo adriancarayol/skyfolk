@@ -165,7 +165,7 @@ $(function () {
         var tag = $(this);
         $wrapper_shared_pub.find('#id_pk').val($(tag).data('id'));
         $wrapper_shared_pub.show();
-        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("html, body").animate({scrollTop: 0}, "slow");
     });
 
     /* Compartir a skyline */
@@ -358,8 +358,8 @@ $(function () {
     $('.theme-publications').on('click', '.like-comment', function () {
         var pub_box = $(this).closest('.wrapper');
         var $parent_btn = $(this);
-        var $like_btn = $(this).find('.like-value');
-        var countLikes = parseInt($like_btn.text()) || 0;
+        var $like_btn = $(this).closest('.score-controls').find('.score-comment');
+        var countLikes = $like_btn.text();
         $.ajax({
             url: '/group/publication/theme/like/',
             type: 'POST',
@@ -374,24 +374,28 @@ $(function () {
                 var _status = data.status;
                 var _in_hate = data.in_hate;
                 if (_response === true) {
-                    if (_in_hate === true) {
-                        var $hate_btn = $parent_btn.prev();
-                        var $hate_val = $hate_btn.find('.hate-value');
-                        var countHates = parseInt($hate_val.text()) || 0;
-                        countHates--;
-                        $hate_val.text(countHates > 0 ? countHates : '');
-                        $hate_btn.css('color', '#555');
-                    }
-                    if (_status === 2) {
-                        $parent_btn.css('color', 'rgb(240, 98, 146)');
-                        countLikes++;
-                    } else if (_status === 1) {
-                        $parent_btn.css('color', '#555');
-                        countLikes--;
-                    }
-                    if (countLikes <= 0) {
-                        $like_btn.text(' ');
-                    } else {
+                    if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                        countLikes = parseInt(countLikes);
+                        if (_in_hate === true) {
+                            countLikes = countLikes + 2;
+                            let hateObj = $($parent_btn).closest('.score-controls').find('.hate-comment');
+                            $($parent_btn).removeClass('white');
+                            $($parent_btn).addClass('green');
+                            $($parent_btn).addClass('lighten-3');
+                            $(hateObj).removeClass('red');
+                            $(hateObj).removeClass('lighten-3');
+                            $(hateObj).addClass('white');
+                        } else if (_status === 2) {
+                            countLikes++;
+                            $($parent_btn).removeClass('white');
+                            $($parent_btn).addClass('green');
+                            $($parent_btn).addClass('lighten-3');
+                        } else if (_status === 1) {
+                            countLikes--;
+                            $($parent_btn).removeClass('green');
+                            $($parent_btn).removeClass('lighten-3');
+                            $($parent_btn).addClass('white');
+                        }
                         $like_btn.text(countLikes);
                     }
                 }
@@ -414,8 +418,8 @@ $(function () {
     $('.theme-publications').on('click', '.hate-comment', function () {
         var pub_box = $(this).closest('.wrapper');
         var $parent_btn = $(this);
-        var $hate_btn = $(this).find('.hate-value');
-        var countHates = parseInt($hate_btn.text()) || 0;
+        var $hate_btn = $(this).closest('.score-controls').find('.score-comment');
+        var countHates = $hate_btn.text();
         $.ajax({
             url: '/group/publication/theme/hate/',
             type: 'POST',
@@ -428,25 +432,30 @@ $(function () {
                 var _response = data.response;
                 var _status = data.status;
                 var _in_like = data.in_like;
+
                 if (_response === true) {
-                    if (_in_like === true) {
-                        var $like_btn = $parent_btn.next();
-                        var $like_val = $like_btn.find('.like-value');
-                        var countLikes = parseInt($like_val.text()) || 0;
-                        countLikes--;
-                        $like_val.text(countLikes > 0 ? countLikes : '');
-                        $like_btn.css('color', '#555');
-                    }
-                    if (_status === 2) {
-                        $parent_btn.css('color', 'rgb(186, 104, 200)');
-                        countHates++;
-                    } else if (_status === 1) {
-                        $parent_btn.css('color', '#555');
-                        countHates--;
-                    }
-                    if (countHates <= 0) {
-                        $hate_btn.text(' ');
-                    } else {
+                    if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
+                        countHates = parseInt(countHates);
+                        if (_in_like === true) {
+                            countHates = countHates - 2;
+                            let likesObj = $($parent_btn).closest('.score-controls').find('.like-comment');
+                            $($parent_btn).removeClass('white');
+                            $($parent_btn).addClass('red');
+                            $($parent_btn).addClass('lighten-3');
+                            $(likesObj).removeClass('green');
+                            $(likesObj).removeClass('lighten-3');
+                            $(likesObj).addClass('white');
+                        } else if (_status === 2) {
+                            countHates--;
+                            $($parent_btn).removeClass('white');
+                            $($parent_btn).addClass('red');
+                            $($parent_btn).addClass('lighten-3');
+                        } else if (_status === 1) {
+                            countHates++;
+                            $($parent_btn).removeClass('red');
+                            $($parent_btn).removeClass('lighten-3');
+                            $($parent_btn).addClass('white');
+                        }
                         $hate_btn.text(countHates);
                     }
                 }
@@ -665,10 +674,10 @@ $(function () {
         });
     });
 
-    $('.interests').mouseenter(function() {
+    $('.interests').mouseenter(function () {
         var interests = $(this);
         var slug = interests.attr('data-slug');
-        $.get("/group/" + slug + "/interests/", function(data) {
+        $.get("/group/" + slug + "/interests/", function (data) {
             interests.attr('data-tooltip', data.join());
         });
     });
@@ -797,7 +806,7 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
         success: function (data) {
             var response = data.response;
             var msg = data.msg;
-            if (typeof(msg) !== 'undefined' && msg !== null) {
+            if (typeof (msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
@@ -960,39 +969,36 @@ function AJAX_add_like_group_publication(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('.like-value');
+            var numLikes = $(heart).closest('.score-controls').find('.score-comment');
             var countLikes = numLikes.text();
             if (response === true) {
-                if (!countLikes || (Math.floor(countLikes) === parseInt(countLikes) && $.isNumeric(countLikes))) {
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    countLikes = parseInt(countLikes);
                     if (status === 1) {
-                        $(heart).css('color', '#f06292');
                         countLikes++;
                     } else if (status === 2) {
-                        $(heart).css('color', '#555');
                         countLikes--;
                     } else if (status === 3) {
-                        $(heart).css('color', '#f06292');
-                        var hatesObj = $(heart).prev();
-                        var hates = hatesObj.find(".hate-value");
-                        var countHates = hates.text();
-                        countHates--;
-                        if (countHates <= 0) {
-                            hates.text('');
-                        } else
-                            hates.text(countHates);
-                        $(hatesObj).css('color', '#555');
-                        countLikes++;
+                        countLikes = countLikes + 2;
                     }
-                    if (countLikes <= 0) {
-                        numLikes.text('');
-                    } else {
-                        numLikes.text(countLikes);
-                    }
-                } else {
-                    if (status === 1)
-                        $(heart).css('color', '#f06292');
-                    if (status === 2)
-                        $(heart).css('color', '#555');
+                    numLikes.text(countLikes);
+                }
+                if (status === 1) {
+                    $(heart).removeClass('white');
+                    $(heart).addClass('green');
+                    $(heart).addClass('lighten-3');
+                } else if (status === 2) {
+                    $(heart).removeClass('green');
+                    $(heart).removeClass('lighten-3');
+                    $(heart).addClass('white');
+                } else if (status === 3) {
+                    let hateObj = $(heart).closest('.score-controls').find('.hate-comment');
+                    $(heart).removeClass('white');
+                    $(heart).addClass('green');
+                    $(heart).addClass('lighten-3');
+                    $(hateObj).removeClass('red');
+                    $(hateObj).removeClass('lighten-3');
+                    $(hateObj).addClass('white');
                 }
             } else {
                 swal({
@@ -1034,40 +1040,36 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
             var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numHates = $(heart).find(".hate-value");
+            var numHates = $(heart).closest('.score-controls').find('.score-comment');
             var countHates = numHates.text();
             if (response === true) {
                 if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
+                    countHates = parseInt(countHates);
                     if (status === statusOk) {
-                        $(heart).css('color', '#ba68c8');
-                        countHates++;
-                    } else if (status === statusNo) {
-                        $(heart).css('color', '#555');
                         countHates--;
-                    } else if (status === statusInLike) {
-                        $(heart).css('color', '#ba68c8');
-                        countHates++;
-                        var likesObj = $(heart).next();
-                        var likes = likesObj.find(".like-value");
-                        var countLikes = likes.text();
-                        countLikes--;
-                        if (countLikes <= 0) {
-                            likes.text('');
-                        } else
-                            likes.text(countLikes);
-                        $(likesObj).css('color', '#555');
-                    }
-                    if (countHates <= 0) {
-                        numHates.text("");
-                    } else {
-                        numHates.text(countHates);
-                    }
-                } else {
-                    if (status === statusOk) {
-                        $(heart).css('color', '#ba68c8');
                     } else if (status === statusNo) {
-                        $(heart).css('color', '#555');
+                        countHates++;
+                    } else if (status === statusInLike) {
+                        countHates = countHates - 2;
                     }
+                    numHates.text(countHates);
+                }
+                if (status === statusOk) {
+                    $(heart).removeClass('white');
+                    $(heart).addClass('red');
+                    $(heart).addClass('lighten-3');
+                } else if (status === statusNo) {
+                    $(heart).removeClass('red');
+                    $(heart).removeClass('lighten-3');
+                    $(heart).addClass('white');
+                } else if (status === statusInLike) {
+                    let likesObj = $(heart).closest('.score-controls').find('.like-comment');
+                    $(heart).removeClass('white');
+                    $(heart).addClass('red');
+                    $(heart).addClass('lighten-3');
+                    $(likesObj).removeClass('green');
+                    $(likesObj).removeClass('lighten-3');
+                    $(likesObj).addClass('white');
                 }
             } else {
                 swal({
@@ -1154,7 +1156,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
 
             var parsed = $.parseHTML(data.content);
 
-            for(var i = 0; i < parsed.length; i++) {
+            for (var i = 0; i < parsed.length; i++) {
                 var pub_id = $(parsed[i]).attr('id');
                 var element = $('#' + pub_id);
                 if (element.length) {

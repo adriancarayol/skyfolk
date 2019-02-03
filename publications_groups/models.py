@@ -95,6 +95,9 @@ class PublicationGroup(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+        self.hates = 0
+        self.likes = 0
+
         data = {
             'type': 'pub',
             'id': self.id,

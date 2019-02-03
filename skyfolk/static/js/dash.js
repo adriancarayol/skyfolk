@@ -105,7 +105,7 @@ $(document).ready(function () {
         return false;
     });
     
-    $(this).on('click', '.plugin .pagination a', function(e) {
+    $(this).on('click', '.plugin .service-pin a', function(e) {
         e.preventDefault();
         let serviceId = $(this).closest('.plugin').attr('data-entry-id');
         let page = $(this).attr('href');
@@ -117,6 +117,22 @@ $(document).ready(function () {
 
             success: function (data) {
                 wrapper.html(data.content);
+            }
+        });
+    });
+
+    $(this).on('click', '.plugin .follow-pin a', function(e) {
+        e.preventDefault();
+        let pinId = $(this).closest('.plugin').attr('data-entry-id');
+        let page = $(this).attr('href');
+        let wrapper = $(this).closest('.infinite-following');
+
+        $.ajax({
+            url: '/dashboard/pin/follows/' + pinId + '/' + page,
+            type: 'GET',
+
+            success: function (data) {
+                wrapper.replaceWith(data.content);
             }
         });
     });

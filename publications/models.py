@@ -189,6 +189,9 @@ class Publication(PublicationBase):
         return hasattr(self, 'extra_content')
 
     def send_notification(self, request, is_edited=False):
+        self.hates = 0
+        self.likes = 0
+
         data = {
             'type': 'pub',
             'id': self.id,
