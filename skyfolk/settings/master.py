@@ -7,7 +7,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 
 ALLOWED_HOSTS += ['127.0.0.1']
 SECRET_KEY = os.environ.get('SECRET_KEY', 'NO-SECRET')
-SECURE_SSL_REDIRECT = True
 
 # S3 + CDN
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
