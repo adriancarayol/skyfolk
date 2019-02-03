@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.rss_feed',
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.statistics',
+    'dash.contrib.plugins.follows',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
     'dash.contrib.plugins.poll',

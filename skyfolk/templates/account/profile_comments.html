@@ -19,15 +19,7 @@
                                             <div class="usr-img img-responsive" {% if user.id == node.author.id %}title="¡Eres el autor!"
                                              style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>{% avatar node.author %}</div>
                                         </div>
-                                        <div class="row center score-controls">
-                                            <button class="{% if node.have_like %}green lighten-3{% else %}white{% endif %} waves-effect waves-light btn black-text like-comment">
-                                                <i class="material-icons md-24">keyboard_arrow_up</i>
-                                            </button>
-                                            <p class="score-comment" style="font-size: 20px;">{{ node.likes|subtract:node.hates }}</p>
-                                            <button class="{% if node.have_hate %}red lighten-3{% else %}white{% endif %} waves-effect waves-light btn black-text hate-comment">
-                                                <i class="material-icons md-24">keyboard_arrow_down</i>
-                                            </button>
-                                        </div>
+                                        {% include "publications_base/publication_score.html" %}
                                     </div>
                                     <div class="col l11 s10">
                                         <h2 class="h22"><a

@@ -66,14 +66,14 @@ $(document).ready(function () {
 
 
     /* Añadir me gusta a comentario */
-    $(tab_messages).on('click', '.options_comentarios .like-comment', function () {
+    $(tab_messages).on('click', '.like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
         AJAX_add_like_video_group_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(tab_messages).on('click', '.options_comentarios .hate-comment', function () {
+    $(tab_messages).on('click', '.hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
         AJAX_add_hate_video_group_gallery(caja_publicacion, heart, "publication");
@@ -247,39 +247,36 @@ function AJAX_add_like_video_group_gallery(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = heart.find('.like-value');
+            var numLikes = $(heart).closest('.score-controls').find('.score-comment');
             var countLikes = numLikes.text();
-            if (response == true) {
+            if (response === true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
-                    if (status == 1) {
-                        heart.css('color', '#f06292');
+                    countLikes = parseInt(countLikes);
+                    if (status === 1) {
                         countLikes++;
-                    } else if (status == 2) {
-                        heart.css('color', '#555');
+                    } else if (status === 2) {
                         countLikes--;
-                    } else if (status == 3) {
-                        heart.css('color', '#f06292');
-                        var hatesObj = heart.prev();
-                        var hates = hatesObj.find(".hate-value");
-                        var countHates = hates.text();
-                        countHates--;
-                        if (countHates <= 0) {
-                            hates.text('');
-                        } else
-                            hates.text(countHates);
-                        $(hatesObj).css('color', '#555');
-                        countLikes++;
+                    } else if (status === 3) {
+                        countLikes = countLikes + 2;
                     }
-                    if (countLikes <= 0) {
-                        numLikes.text('');
-                    } else {
-                        numLikes.text(countLikes);
-                    }
-                } else {
-                    if (status == 1)
-                        heart.css('color', '#f06292');
-                    if (status == 2)
-                        heart.css('color', '#555');
+                    numLikes.text(countLikes);
+                }
+                if (status === 1) {
+                    $(heart).removeClass('white');
+                    $(heart).addClass('green');
+                    $(heart).addClass('lighten-3');
+                } else if (status === 2) {
+                    $(heart).removeClass('green');
+                    $(heart).removeClass('lighten-3');
+                    $(heart).addClass('white');
+                } else if (status === 3) {
+                    let hateObj = $(heart).closest('.score-controls').find('.hate-comment');
+                    $(heart).removeClass('white');
+                    $(heart).addClass('green');
+                    $(heart).addClass('lighten-3');
+                    $(hateObj).removeClass('red');
+                    $(hateObj).removeClass('lighten-3');
+                    $(hateObj).addClass('white');
                 }
             } else {
                 swal({
@@ -328,40 +325,36 @@ function AJAX_add_hate_video_group_gallery(caja_publicacion, heart, type) {
             var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numHates = heart.find(".hate-value");
+            var numHates = $(heart).closest('.score-controls').find('.score-comment');
             var countHates = numHates.text();
-            if (response == true) {
+            if (response === true) {
                 if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
+                    countHates = parseInt(countHates);
                     if (status === statusOk) {
-                        heart.css('color', '#ba68c8');
-                        countHates++;
-                    } else if (status === statusNo) {
-                        heart.css('color', '#555');
                         countHates--;
-                    } else if (status === statusInLike) {
-                        heart.css('color', '#ba68c8');
-                        countHates++;
-                        var likesObj = heart.next();
-                        var likes = likesObj.find(".like-value");
-                        var countLikes = likes.text();
-                        countLikes--;
-                        if (countLikes <= 0) {
-                            likes.text('');
-                        } else
-                            likes.text(countLikes);
-                        $(likesObj).css('color', '#555');
-                    }
-                    if (countHates <= 0) {
-                        numHates.text("");
-                    } else {
-                        numHates.text(countHates);
-                    }
-                } else {
-                    if (status === statusOk) {
-                        heart.css('color', '#ba68c8');
                     } else if (status === statusNo) {
-                        heart.css('color', '#555');
+                        countHates++;
+                    } else if (status === statusInLike) {
+                        countHates = countHates - 2;
                     }
+                    numHates.text(countHates);
+                }
+                if (status === statusOk) {
+                    $(heart).removeClass('white');
+                    $(heart).addClass('red');
+                    $(heart).addClass('lighten-3');
+                } else if (status === statusNo) {
+                    $(heart).removeClass('red');
+                    $(heart).removeClass('lighten-3');
+                    $(heart).addClass('white');
+                } else if (status === statusInLike) {
+                    let likesObj = $(heart).closest('.score-controls').find('.like-comment');
+                    $(heart).removeClass('white');
+                    $(heart).addClass('red');
+                    $(heart).addClass('lighten-3');
+                    $(likesObj).removeClass('green');
+                    $(likesObj).removeClass('lighten-3');
+                    $(likesObj).addClass('white');
                 }
             } else {
                 swal({

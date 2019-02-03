@@ -3,7 +3,7 @@ from publications.models import Publication
 from user_profile.models import LikeProfile
 from ....base import BaseDashboardPluginWidget
 
-__title__ = 'dash.contrib.plugins.statistics.dash_widgets'
+__title__ = 'dash.contrib.plugins.follows.dash_widgets'
 
 __all__ = (
     'BaseStatisticsWidget',
@@ -37,7 +37,7 @@ class BaseStatisticsWidget(BaseDashboardPluginWidget):
 
 
 class Statistics1x1Widget(BaseStatisticsWidget):
-    """statistics plugin 1x1 widget."""
+    """follows plugin 1x1 widget."""
 
     plugin_uid = 'statistics_1x1'
 

@@ -1,0 +1,35 @@
+{% load avatar_tags %}
+<div class="row center infinite-following">
+                {% for item in friends_top12 %}
+                    <div class="item-followed col s12">
+                        <div class="following-item" id="friend-{{ item.to_profile.user.id }}">
+                            <div class="usr-img img-responsive">{% avatar item.to_profile.user %}</div>
+                            <a class="name"
+                               href="/profile/{{ item.to_profile.user.username }}">@{{ item.to_profile.user.username }} {{ item.to_profile.user.first_name }} {{ item.to_profile.user.last_name }} </a>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="col s12">
+                    {% if friends_top12.has_other_pages %}
+                        <ul class="pagination follow-pin">
+                            {% if friends_top12.has_previous %}
+                                <li><a href="?page={{ friends_top12.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+                            {% for i in friends_top12.paginator.page_range %}
+                                {% if friends_top12.number == i %}
+                                    <li class="active"><span>{{ i }}</span></li>
+                                {% else %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if friends_top12.has_next %}
+                                <li><a href="?page={{ friends_top12.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>

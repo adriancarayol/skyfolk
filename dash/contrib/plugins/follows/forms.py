@@ -5,12 +5,12 @@ from ....base import DashboardPluginFormBase
 
 __title__ = 'dash.contrib.plugins.follows.forms'
 __all__ = (
-    'StatisticsForm',
+    'FollowsForm',
 )
 
 
-class StatisticsForm(DashboardEntryMixin, DashboardPluginFormBase):
-    """StatisticsForm for ``BaseStatisticsPlugin`` plugin."""
+class FollowsForm(DashboardEntryMixin, DashboardPluginFormBase):
+    """FollowsForm for ``BaseFollowsPlugin`` plugin."""
 
     plugin_data_fields = [
         ("title", ""),
@@ -19,4 +19,4 @@ class StatisticsForm(DashboardEntryMixin, DashboardPluginFormBase):
     title = forms.CharField(label=_("Title"), required=True)
 
     def __init__(self, *args, **kwargs):
-        super(StatisticsForm, self).__init__(*args, **kwargs)
+        super(FollowsForm, self).__init__(*args, **kwargs)

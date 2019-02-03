@@ -97,6 +97,8 @@ class PublicationTheme(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+        self.hates = 0
+        self.likes = 0
 
         group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
             id=self.board_theme.board_group_id)
