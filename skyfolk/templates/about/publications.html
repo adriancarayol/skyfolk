@@ -1,7 +1,17 @@
-{% extends "about/base_about.html" %}
+{% extends "account/base.html" %}
 {% load static %}
+{% block head_title %}Blog{% endblock %}
+{% block menu %}
+{% endblock %}
+
 {% block content %}
     <div id="blog-publications" class="container">
+        <div class="row center">
+            <div class="col s12">
+                <h3><b>{</b> Blog <b>}</b> - Últimas publicaciones.</h3>
+                <div class="divider"></div>
+            </div>
+        </div>
         {% include "about/entry_list_page.html" %}
     </div>
     {% block js %}

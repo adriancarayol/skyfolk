@@ -1,0 +1,39 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load emoji_tags %}
+{% block head_title %}{{ object.title|truncatechars:20 }}{% endblock %}
+{% block menu %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row center">
+    <a class="btn waves-effect blue" href="{% url "about:blog" %}">Volver al blog</a>
+    </div>
+    <div class="row">
+    <div class="col s12">
+          <div class="card">
+            <div class="card-content clearfix grey-text text-darken-2">
+              <h4 class="center grey-text text-darken-2"><a href="">{{ object.title|safe|emoji_replace }}</a></h4>
+              <div class="divider"></div>
+              <p class="flow-text">{{ object.content|safe|emoji_replace|truncatechars_html:120 }}</p>
+              <span class="card-title">
+                  {% for tag in object.tags.all %}
+                  <span class="chip">
+                    {{ tag.name }}
+                  </span>
+                  {% endfor %}
+              </span>
+              <br><br>
+                {% if objectimage %}
+                    <img src="{{ object.image.url }}" width="300" height="300">
+                {% endif %}
+            </div>
+            <div class="card-action">
+              <a class="white-text blue btn" href="{% url 'user_profile:profile' object.author.username %}">@{{ object.author.username }}</a>
+                <b class="right">{{ object.created }}</b>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
