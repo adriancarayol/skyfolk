@@ -47,7 +47,7 @@ urlpatterns = [
     # url mensajes privados
 
     # About skyfolk
-    re_path(r'^', include('about.urls')),
+    re_path(r'^', include('about.urls', namespace="about")),
     # Recomendacion password para usuarios
     re_path(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),

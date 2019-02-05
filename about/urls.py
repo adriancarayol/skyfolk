@@ -1,8 +1,12 @@
 from django.conf.urls import url
+from django.urls import path
+from about.views import EntryListView, PublicationBlogDetailView
 
-from about.views import EntryListView
+app_name = 'about'
 
 urlpatterns = [
-    url(r'^blog/$', EntryListView.as_view(),
+    path('blog/', EntryListView.as_view(),
         name='blog'),
+    path('blog/publication/<int:pk>/', PublicationBlogDetailView.as_view(),
+        name='publication-blog'),
 ]
