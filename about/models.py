@@ -18,6 +18,7 @@ class PublicationBlog(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
+    title = models.CharField(max_length=128, default="")
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply', on_delete=models.CASCADE)

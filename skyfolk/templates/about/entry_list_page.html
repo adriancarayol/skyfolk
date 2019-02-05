@@ -4,17 +4,20 @@
 <br>
 <div class="row">
     {% for pub in publications_blog %}
-        <div class="col s12">
+        <div class="col l6 s12">
           <div class="card">
-            <div class="card-content blue lighten-2 clearfix">
-              <p class="flow-text">{{ pub.content|safe|emoji_replace }}</p>
+            <div class="card-content clearfix grey-text text-darken-2">
+              <h4 class="grey-text text-darken-2"><a href="{% url "about:publication-blog" pub.pk %}">{{ pub.title|safe|emoji_replace }}</a></h4>
+              <div class="divider"></div>
+              <p class="flow-text">{{ pub.content|safe|emoji_replace|truncatechars_html:120 }}</p>
               <span class="card-title">
                   {% for tag in pub.tags.all %}
                   <span class="chip">
                     {{ tag.name }}
                   </span>
                   {% endfor %}
-              </span><br><br>
+              </span>
+              <br><br>
                 {% if pub.image %}
                     <img src="{{ pub.image.url }}" width="300" height="300">
                 {% endif %}

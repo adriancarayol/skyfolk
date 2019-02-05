@@ -1,4 +1,5 @@
 from el_pagination.views import AjaxListView
+from django.views.generic.detail import DetailView
 
 from .models import PublicationBlog
 
@@ -10,3 +11,7 @@ class EntryListView(AjaxListView):
 
     def get_queryset(self):
         return PublicationBlog.objects.all().order_by('-created')
+
+class PublicationBlogDetailView(DetailView):
+    model = PublicationBlog
+    template_name = 'about/publication_detail.html'
