@@ -5,54 +5,40 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 {% load avatar_tags %}
 {% load humanize %}
 {% load static %}
-    <div class="col l3 m10 s12 offset-m2 z-depth-1">
-        <div class="user-card card">
-                <div class="col s12 user-avatar" style="background: {% if user_profile.back_image %}
-                    url({{ user_profile.back_image.url }})
-                    {% else %}
-                    url({% static "dist/img/nuevo_back.jpg" %})
-                    {% endif %} no-repeat center center; background-size: cover;">
-                </div>
-            <div class="col s12 user-stats">
-                    <div class="col l3 s4">
-                        <div class="tooltipped user-pic-wrapper" data-position="bottom" 
-                            data-tooltip="{% if user_profile.online %} Online {%else%} Offline {% endif %}"
-                            style="{% if user_profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
-                                -moz-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
-                                box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);{% else %}
-                                -webkit-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
-                                -moz-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
-                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile.user css_class="responsive-img" %}</div>
-                    </div>
-                    <div class="col l9 s8">
-                        <ul class="profile-info">
-                            <li><a href="/profile/{{user_profile.user.username }}/" id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.user.username }}">@{{ user_profile.user.username }}</a> {% if user_profile.first_name or user_profile.last_name %}
-                                ({{ user_profile.first_name }} {{ user_profile.last_name }}) {% endif %}
-                                {% if isFollower %}
-                                <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
-                                {% if user_profile.status %}
-                                    <li class="status">{{ user_profile.status }}</li>
-                                {% endif %}
-                        </ul>
-                        <ul class="profile-items">
-                            <li>
-                                {% if user_profile.tags %}
-                                <div class="interests tooltipped" data-position="bottom"
-                                data-username="{{ user_profile.user.username }}"
-                                data-tooltip="">
-                                    {% for i in user_profile.tags.all %}
-                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
-                                    {% endfor %}
-                                    {% with user_profile.tags.all|length as profile_interest_returned %}
-                                        {% if profile_interest_returned < profile_interests_total %}
-                                            +{% reduce profile_interests_total profile_interest_returned %}
-                                        {% endif %}
-                                    {% endwith %}
-                                </div>
-                            {% endif %}
-                            </li>
-                        </ul>
-                    </div>
+<div class="col l3 s12">
+    <div class="personal-card">
+        <div class="header">
+            {% if user_profile.back_image %}
+                <img class="back-profile-user" src="{{ user_profile.back_image.url }}">
+            {% else %}
+                <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
+            {% endif %}
+            <i class="material-icons like-him">person</i>
+            <div class="bg-user">
+                <div onclick="location.href='/profile/{{ user_profile.user.username }}'"
+                     class="profile-user-bg">{% avatar user_profile.user %}</div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div style="cursor: default" class="name-friend">
+                    <a href="{% url "user_profile:profile" username=user_profile.user.username %}">@{{ user_profile.user.username }}</a>
+                    <p>{{ user_profile.user.firstname }} {{ user_profile.user.lastname }}</p>
+                    {% if user_profile.status %}
+                        <p>{{ user_profile.status }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 center">
+                <div class="chip">{{ user_profile.user.badges.all|length }} logros conseguidos.</div>
+                <br><br>
+                {% for i in user_profile.tags.all|slice:":10" %}
+                    <a class="blue-text"
+                       href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
