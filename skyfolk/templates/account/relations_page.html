@@ -2,8 +2,8 @@
 {% load avatar_tags %}
 {% load static %}
 {% if following %}
-{% for item in following %}
-{% comment %}
+    {% for item in following %}
+        {% comment %}
     <div class="col l3 m10 s12 offset-m2">
         <div class="personal-card">
             <div class="row">
@@ -33,14 +33,18 @@
         </div>
     </div>
     {% endcomment %}
-    {% with item.to_profile as user_profile %}
-        {% include "user_profile/skyfolk-card.html" %}
-    {% endwith %}
-{% endfor %}
+        <div class="col l3 s12">
+            {% with item.to_profile as user_profile %}
+                {% include "user_profile/skyfolk-card.html" %}
+            {% endwith %}
+        </div>
+    {% endfor %}
 {% elif followers %}
-{% for item in followers %}
-    {% with item.from_profile as user_profile %}
-        {% include "user_profile/skyfolk-card.html" %}
-    {% endwith %}
-{% endfor %}
+    {% for item in followers %}
+        <div class="col l3 s12">
+            {% with item.from_profile as user_profile %}
+                {% include "user_profile/skyfolk-card.html" %}
+            {% endwith %}
+        </div>
+    {% endfor %}
 {% endif %}

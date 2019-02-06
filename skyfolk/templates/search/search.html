@@ -96,26 +96,9 @@ Template para las busquedas
                 {% for item in page_obj.object_list %}
                     {% if item.model_name == 'profile' %}
                         <div class="grid-item infinite-item">
-                            <div class="personal-card">
-                                <div class="header">
-                                    {% if item.object.back_image %}
-                                        <img class="back-profile-user" src="{{ item.object.back_image.url }}">
-                                    {% else %}
-                                        <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
-                                    {% endif %}
-                                    <i class="material-icons like-him">person</i>
-                                    <div class="bg-user">
-                                        <div onclick="location.href='/profile/{{ item.username }}'"
-                                             class="profile-user-bg">{% avatar item.object.user %}</div>
-                                    </div>
-                                </div>
-                                <div class="col s12">
-                                    <div style="cursor: default" class="name-friend">
-                                        <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
-                                        <p>{{ item.firstname }} {{ item.lastname }}</p>
-                                    </div>
-                                </div>
-                            </div>
+                            {% with item.object as user_profile %}
+                                {% include "user_profile/skyfolk-card.html" %}
+                            {% endwith %}
                         </div>
                     {% elif item.model_name == 'usergroups' %}
                         <div class="grid-item infinite-item">
@@ -130,6 +113,7 @@ Template para las busquedas
                                     <div class="bg-user">
                                         <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
                                              class="profile-user-bg"><img src="
+
                                                 {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
                                                                           alt="Imagen de {{ item.name }}"
                                                                           title="Imagen de {{ item.name }}"/></div>
@@ -196,6 +180,7 @@ Template para las busquedas
                                                 <div class="card small">
                                                     <div class="card-image">
                                                         <img src="
+
                                                                 {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                         <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
                                                     </div>
@@ -227,6 +212,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     <img src="
+
                                             {% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                          alt="{{ item.title }}" title="{{ item.title }}"
                                          onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
@@ -332,6 +318,7 @@ Template para las busquedas
                                 <div class="bg-user">
                                     <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
                                          class="profile-user-bg"><img src="
+
                                             {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
                                                                       alt="Imagen de {{ item.name }}"
                                                                       title="Imagen de {{ item.name }}"/></div>
@@ -428,6 +415,7 @@ Template para las busquedas
                                                                 <div class="card-image">
                                                                     <img src="
 
+
                                                                             {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                                     <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
                                                                 </div>
@@ -512,6 +500,7 @@ Template para las busquedas
                                                                 <div class="card-image">
                                                                     <img src="
 
+
                                                                             {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                                     <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
                                                                 </div>
@@ -566,6 +555,7 @@ Template para las busquedas
                                                 <div class="card-image">
                                                     <img src="
 
+
                                                             {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
                                                     <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
                                                 </div>
@@ -602,6 +592,7 @@ Template para las busquedas
                                     </div>
                                 {% endif %}
                                 <img src="
+
                                         {% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                      alt="{{ item.title }}" title="{{ item.title }}"
                                      onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">

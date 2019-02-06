@@ -31,9 +31,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.urls import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
-from django.db.models import Count
-from django.db.models import Q
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Prefetch
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -42,11 +41,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from el_pagination.views import AjaxListView
 from haystack.generic_views import SearchView
 from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
-from rest_framework import generics
-from rest_framework.renderers import JSONRenderer
 from django.http import Http404
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
@@ -76,7 +72,7 @@ from user_profile.models import (
 )
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from utils.lists import union_without_duplicates
-from .serializers import UserSerializer
+from taggit.models import TaggedItem
 from .utils import crop_image, make_pagination_html
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -1188,7 +1184,7 @@ class FollowersListView(ListView):
                 type=FOLLOWING,
             )
                 .select_related("from_profile", "from_profile__user")
-                .prefetch_related("from_profile__tags")
+                .prefetch_related("from_profile__tags").prefetch_related("from_profile__user__badges")
         )
 
     def get_context_data(self, **kwargs):
@@ -1222,7 +1218,7 @@ class FollowingListView(ListView):
                 from_profile__user__username=username, type=FOLLOWING
             )
                 .select_related("to_profile", "to_profile__user")
-                .prefetch_related("to_profile__tags")
+                .prefetch_related("to_profile__tags").prefetch_related("to_profile__user__badges")
         )
 
     def get_context_data(self, **kwargs):
