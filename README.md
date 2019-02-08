@@ -38,7 +38,6 @@ Para ver las variables de entorno existentes, podemos entrar a manage.py y segú
 Comenzamos con las migraciones y ponemos en marcha el proyecto.
 ```
 python manage.py collectstatic --noinput
-python manage.py install_labels
 python manage.py makemigrations
 python manage.py makemigrations badgify
 python manage.py migrate badgify
@@ -46,7 +45,6 @@ python manage.py migrate
 python manage.py badgify_sync badges
 python manage.py badgify_sync badges --update
 python manage.py rebuild_index --noinput
-python manage.py create_initial_services
 daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:application
 ```
 ### Lanzar celery
@@ -84,7 +82,14 @@ Reiniciamos el servidor postfix con:
 ```
 systemctl restart postfix
 ```
-Y listo.
+
+Lanzar app de go
+```
+export GOPATH=/var/www/skyfolk.net/run/app
+cd ${GOPATH}/src/skyfolk_services && dep ensure
+exec /usr/bin/go run ${GOPATH}/src/skyfolk_services/cmd/main/main.go
+
+```
 
 ### Problemas con ASCII
 Instalar es_ES-UTF-8 y setearlo por defecto.
