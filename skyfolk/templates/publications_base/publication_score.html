@@ -1,34 +1,10 @@
 {% load app_filters %}
 {% load humanize %}
 
-<style>
-.arrow-up {
-  width: 0; 
-  height: 0; 
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 20px solid;
-  margin: auto auto 10px auto;
-  overflow: hidden;
-  cursor: pointer;
-  opacity: 0.8;
-}
-
-.arrow-down {
-  width: 0; 
-  height: 0; 
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 20px solid;
-  margin: 10px auto;
-  overflow: hidden;
-  cursor: pointer;
-  opacity: 0.8;
-}
-
-</style>
 <div class="row center score-controls">
-    <div class="arrow-up like-comment"></div>
+    <div class="arrow-up like-comment"
+         {% if node.have_like %}style="border-bottom: 20px solid #66bb6a;"{% endif %}></div>
     <p class="score-comment" style="font-size: 20px;">{{ node.likes|subtract:node.hates|intword }}</p>
-    <div class="arrow-down hate-comment"></div>
+    <div class="arrow-down hate-comment"
+         {% if node.have_hate %}style="border-top: 20px solid #ef5350;"{% endif %}></div>
 </div>
