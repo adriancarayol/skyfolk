@@ -418,8 +418,8 @@ function AJAX_mark_all_read() {
 
 /* Para marcar una notificacion como leida */
 function AJAX_mark_read(obj) {
-    var slug = obj.getAttribute('data-notification');
-    var url_ = '/inbox/notifications/mark-as-read/' + slug + '/';
+    let slug = obj.getAttribute('data-notification');
+    let url_ = '/inbox/notifications/mark-as-read/' + slug + '/';
     $.ajax({
         url: url_,
         data: {
@@ -428,7 +428,7 @@ function AJAX_mark_read(obj) {
         type: 'POST',
         success: function () {
             $(obj).parent().fadeOut("fast");
-            var currentValue = document.getElementById('live_notify_badge');
+            let currentValue = $('#live_notify_badge').find('b');
             if (parseInt($(currentValue).html()) > 0)
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
         },
