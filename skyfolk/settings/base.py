@@ -91,6 +91,7 @@ THIRD_PARTY_APPS = (
     'django_extensions',
     'debug_toolbar',
     'cookielaw',
+    'ckeditor',
 )
 
 FIRST_PARTY_APPS = (
