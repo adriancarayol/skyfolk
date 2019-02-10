@@ -24,3 +24,6 @@ class PublicationBlog(PublicationBase):
                                related_name='reply', on_delete=models.CASCADE)
 
     objects = PublicationBlogManager()
+
+    def parse_content(self):
+        pass
