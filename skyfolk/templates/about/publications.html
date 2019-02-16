@@ -1,6 +1,30 @@
 {% extends "account/base.html" %}
 {% load static %}
 {% block head_title %}Blog{% endblock %}
+
+{% block extra_head %}
+    <style>
+        .grid {
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            width: 500px;
+            margin-bottom: 10px;
+            float: left;
+        }
+
+        .card .card-title {
+            font-size: inherit;
+        }
+        .active {
+            background-color: #1e88e5 !important;
+        }
+    </style>
+    <script src="{% static "js/masonry.pkgd.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/imagesloaded.pkgd.min.js" %}" type="text/javascript"></script>
+{% endblock %}
+
 {% block menu %}
 {% endblock %}
 
@@ -16,12 +40,20 @@
     </div>
     {% block js %}
         {{ block.super }}
-        <script src="{% static "js/el-pagination.js" %}"></script>
         <script>
-            $.endlessPaginate({
-                paginateOnScroll: true,
-                paginateOnScrollMargin: 200
+        $(window).on('load', function () {
+            var $grid = $('.grid').imagesLoaded(function () {
+                $grid.masonry({
+                    itemSelector: '.grid-item',
+                    columnWidth: 500,
+                    gutter: 20,
+                    fitWidth: true,
+                    horizontalOrder: true,
+                    transitionDuration: '0.3s'
+                });
             });
+              
+        });
         </script>
     {% endblock %}
 {% endblock %}
