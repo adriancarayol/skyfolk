@@ -25,6 +25,19 @@
         .card .card-title {
             font-size: inherit;
         }
+        #cover {
+            position: fixed; 
+            height: 100%; 
+            width: 100%;
+            top:0; 
+            left: 0;
+            background: grey;
+            z-index: 9999;
+            padding-top: 200px;
+            opacity: 0.95;
+            text-align: center;
+            color: #fff;
+        }
     </style>
 {% endblock %}
 {% block extra-js %}
@@ -33,6 +46,19 @@
     {% endfor %}
 {% endblock %}
 {% block content %}
+    <div id="cover">
+        <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div><div class="gap-patch">
+            <div class="circle"></div>
+        </div><div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+        </div>
+  </div>
+    </div>
     <div class="container" id="my-feed">
         <div class="wrapper-news">
             <div class="row">
@@ -273,6 +299,11 @@
                 });
             });
 
+            $('#cover').fadeOut(200, function() {
+                $grid.masonry('reloadItems');
+                $grid.masonry('layout');
+            });
+
             var infinite = new Waypoint.Infinite({
                 element: $('#stream-publications'),
                 offset: 'bottom-in-view',
@@ -288,6 +319,11 @@
                 }
             });
         });
+        function fakeLoad()
+        {
+            $(window).load();
+        }
+        setTimeout(fakeLoad, 6000);
     </script>
     <script>
         UTILS_E.init([{{ user.pk }}]);
