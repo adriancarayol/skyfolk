@@ -287,7 +287,7 @@ AUTO_LOGOUT_DELAY = 60
 # Configuracion para django-el-pagination
 
 EL_PAGINATION_LOADING = """<img src="/static/img/ripple.gif" alt="loading" />"""
-EL_PAGINATION_PER_PAGE = 20
+EL_PAGINATION_PER_PAGE = 2
 
 ROOT_URLCONF = 'skyfolk.urls'
 
@@ -422,6 +422,14 @@ WEBPACK_LOADER = {
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
     }
+}
+
+# CKEDITOR
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': 'auto',
+    },
 }
 
 # LOGGING
