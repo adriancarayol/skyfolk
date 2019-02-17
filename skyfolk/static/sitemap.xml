@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://skyfolk.net/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/accounts/password/reset/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/information/privacy/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/feedback/contact</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/accounts/login/?next=/inicio/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/publication/5/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/?next=/profile/adrian/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/publication/4/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/publication/3/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/?next=/profile/lostcitizen/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/publication/2/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://skyfolk.net/blog/publication/1/</loc>
+  <lastmod>2019-02-17T08:27:12+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
+</urlset>
