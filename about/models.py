@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
-
+from django.template.defaultfilters import truncatechars_html
+from django.utils.html import format_html
 from publications.models import PublicationBase
 
 
@@ -24,3 +25,11 @@ class PublicationBlog(PublicationBase):
                                related_name='reply', on_delete=models.CASCADE)
 
     objects = PublicationBlogManager()
+
+    @property
+    def short_content(self):
+        return truncatechars_html(format_html(self.content), 100)
+
+    
+    def parse_content(self):
+        pass

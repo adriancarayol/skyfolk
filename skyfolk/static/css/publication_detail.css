@@ -239,7 +239,7 @@ a.fontawesome-cog:hover {
     cursor: pointer;
 }
 
-.options_comentarios ul .like-comment, .quote-comment, .reply-comment, .remove-timeline, .add-timeline, .hate-comment, .trash-comment {
+.options_comentarios ul .quote-comment, .reply-comment, .remove-timeline, .add-timeline, .trash-comment {
     margin-left: 3%;
 }
 
@@ -249,9 +249,6 @@ a.fontawesome-cog:hover {
     -webkit-transition: all 0.1s ease-in-out;
 }
 
-.options_comentarios ul .like-comment:hover {
-    color: #f06292;
-}
 
 .options_comentarios ul .fa-quote-left:hover {
     color: grey;
@@ -275,9 +272,7 @@ a.fontawesome-cog:hover {
     font-size: 80%;
 }
 
-.options_comentarios ul .hate-comment:hover {
-    color: #3f51b5;
-}
+
 
 /* RESPUESTAS A COMENTARIOS */
 .wrapper-reply {

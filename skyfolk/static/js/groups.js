@@ -379,22 +379,14 @@ $(function () {
                         if (_in_hate === true) {
                             countLikes = countLikes + 2;
                             let hateObj = $($parent_btn).closest('.score-controls').find('.hate-comment');
-                            $($parent_btn).removeClass('white');
-                            $($parent_btn).addClass('green');
-                            $($parent_btn).addClass('lighten-3');
-                            $(hateObj).removeClass('red');
-                            $(hateObj).removeClass('lighten-3');
-                            $(hateObj).addClass('white');
+                            $($parent_btn).css('border-bottom', "20px solid #66bb6a");
+                            $(hateObj).css('border-top', "20px solid");
                         } else if (_status === 2) {
                             countLikes++;
-                            $($parent_btn).removeClass('white');
-                            $($parent_btn).addClass('green');
-                            $($parent_btn).addClass('lighten-3');
+                            $($parent_btn).css('border-bottom', "20px solid #66bb6a");
                         } else if (_status === 1) {
                             countLikes--;
-                            $($parent_btn).removeClass('green');
-                            $($parent_btn).removeClass('lighten-3');
-                            $($parent_btn).addClass('white');
+                            $($parent_btn).css('border-bottom', "20px solid");
                         }
                         $like_btn.text(countLikes);
                     }
@@ -439,22 +431,14 @@ $(function () {
                         if (_in_like === true) {
                             countHates = countHates - 2;
                             let likesObj = $($parent_btn).closest('.score-controls').find('.like-comment');
-                            $($parent_btn).removeClass('white');
-                            $($parent_btn).addClass('red');
-                            $($parent_btn).addClass('lighten-3');
-                            $(likesObj).removeClass('green');
-                            $(likesObj).removeClass('lighten-3');
-                            $(likesObj).addClass('white');
+                            $($parent_btn).css('border-top', "20px solid #ef5350");
+                            $(likesObj).css('border-bottom', "20px solid");
                         } else if (_status === 2) {
                             countHates--;
-                            $($parent_btn).removeClass('white');
-                            $($parent_btn).addClass('red');
-                            $($parent_btn).addClass('lighten-3');
+                            $($parent_btn).css('border-top', "20px solid #ef5350");
                         } else if (_status === 1) {
                             countHates++;
-                            $($parent_btn).removeClass('red');
-                            $($parent_btn).removeClass('lighten-3');
-                            $($parent_btn).addClass('white');
+                            $($parent_btn).css('border-top', "20px solid");
                         }
                         $hate_btn.text(countHates);
                     }
@@ -984,21 +968,13 @@ function AJAX_add_like_group_publication(caja_publicacion, heart, type) {
                     numLikes.text(countLikes);
                 }
                 if (status === 1) {
-                    $(heart).removeClass('white');
-                    $(heart).addClass('green');
-                    $(heart).addClass('lighten-3');
+                    $(heart).css('border-bottom', "20px solid #66bb6a");
                 } else if (status === 2) {
-                    $(heart).removeClass('green');
-                    $(heart).removeClass('lighten-3');
-                    $(heart).addClass('white');
+                    $(heart).css('border-bottom', "20px solid");
                 } else if (status === 3) {
                     let hateObj = $(heart).closest('.score-controls').find('.hate-comment');
-                    $(heart).removeClass('white');
-                    $(heart).addClass('green');
-                    $(heart).addClass('lighten-3');
-                    $(hateObj).removeClass('red');
-                    $(hateObj).removeClass('lighten-3');
-                    $(hateObj).addClass('white');
+                    $(heart).css('border-bottom', "20px solid #66bb6a");
+                    $(hateObj).css('border-top', "20px solid");
                 }
             } else {
                 swal({
@@ -1055,21 +1031,13 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
                     numHates.text(countHates);
                 }
                 if (status === statusOk) {
-                    $(heart).removeClass('white');
-                    $(heart).addClass('red');
-                    $(heart).addClass('lighten-3');
+                    $(heart).css('border-top', "20px solid #ef5350");
                 } else if (status === statusNo) {
-                    $(heart).removeClass('red');
-                    $(heart).removeClass('lighten-3');
-                    $(heart).addClass('white');
+                    $(heart).css('border-top', "20px solid");
                 } else if (status === statusInLike) {
                     let likesObj = $(heart).closest('.score-controls').find('.like-comment');
-                    $(heart).removeClass('white');
-                    $(heart).addClass('red');
-                    $(heart).addClass('lighten-3');
-                    $(likesObj).removeClass('green');
-                    $(likesObj).removeClass('lighten-3');
-                    $(likesObj).addClass('white');
+                    $(heart).css('border-top', "20px solid #ef5350");
+                    $(likesObj).css('border-bottom', "20px solid");
                 }
             } else {
                 swal({

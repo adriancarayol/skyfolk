@@ -47,6 +47,9 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+a:visited {
+  color: inherit !important; }
+
 .emoji {
   width: 20px !important;
   height: 20px !important; }
@@ -153,6 +156,11 @@ body > .container {
   margin-top: 7em;
   margin-bottom: 1em; }
 
+@media screen and (max-width: 480px) {
+  .arrow-up, .arrow-down {
+    -ms-transform: scale(0.5, 0.5);
+    -webkit-transform: scale(0.5, 0.5);
+    transform: scale(0.5, 0.5); } }
 @media only screen and (min-width: 641px) and (max-width: 959px) {
   body > .container {
     margin: 1em; } }
@@ -280,8 +288,9 @@ body > .container {
   -webkit-transition: all 0.1s linear;
   -moz-transition: all 0.1s linear;
   transition: all 0.1s linear; }
-  .nav-vertical-and-chat li a, .nav-vertical-and-chat li a:visited {
-    color: inherit;
+  .nav-vertical-and-chat li a {
+    color: #1e88e5;
+    text-decoration: none;
     padding: 0;
     display: inline-block;
     height: 0;
@@ -510,5 +519,27 @@ ul#vertical-menu .userView .background {
 
 .pagination li.active {
   background-color: #1e88e5 !important; }
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid;
+  margin: auto auto 10px auto;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.8; }
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid;
+  margin: 10px auto;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.8; }
 
 /*# sourceMappingURL=core.css.map */

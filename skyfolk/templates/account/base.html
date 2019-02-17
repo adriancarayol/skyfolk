@@ -6,8 +6,7 @@
 <!-- codigo del modulo allauth -->
 <head>
     <title>Skyfolk // {% block head_title %}{% endblock %}</title>
-    {% block extra_head %}
-    {% endblock %}
+    
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <link rel="stylesheet" type="text/css" href="{% static "css/setup.css" %}">
     <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection"/>
@@ -42,6 +41,8 @@
 
       gtag('config', 'UA-72424818-1');
     </script>
+    {% block extra_head %}
+    {% endblock %}
 </head>
 <body>
 {% block body %}
