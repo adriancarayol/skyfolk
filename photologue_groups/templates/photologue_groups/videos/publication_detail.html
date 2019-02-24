@@ -90,7 +90,7 @@
                                     <div class="row">
                                         <div class="parrafo comment">
                                             <p
-                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}{% if node.edition_date %}<i> - Editado</i>{% endif %}</p>
+                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}{% if node.edition_date %}<i> - Editado ({{ node.edition_date|naturaltime }})</i>{% endif %}</p>
                                             <div class="wrp-comment">{{ node.content|safe|emoji_replace }}</div>
                                         </div>
                                         <div class="show-more" id="show-comment-{{ node.pk }}">
