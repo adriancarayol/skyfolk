@@ -1185,6 +1185,8 @@ class FollowersListView(ListView):
             )
                 .select_related("from_profile", "from_profile__user")
                 .prefetch_related("from_profile__tags").prefetch_related("from_profile__user__badges")
+                .annotate(n_likes=Count("from_profile__to_like"))
+                .annotate(followers=Count("from_profile__to_profile"))
         )
 
     def get_context_data(self, **kwargs):
@@ -1213,13 +1215,17 @@ class FollowingListView(ListView):
 
     def get_queryset(self):
         username = self.kwargs.get("username", None)
-        return (
+        qs = (
             RelationShipProfile.objects.filter(
                 from_profile__user__username=username, type=FOLLOWING
             )
                 .select_related("to_profile", "to_profile__user")
                 .prefetch_related("to_profile__tags").prefetch_related("to_profile__user__badges")
+                .annotate(n_likes=Count("to_profile__to_like"))
+                .annotate(followers=Count("to_profile__to_profile"))
         )
+
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)

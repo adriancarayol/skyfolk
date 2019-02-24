@@ -33,18 +33,26 @@
         </div>
     </div>
     {% endcomment %}
-        <div class="col l3 s12">
-            {% with item.to_profile as user_profile %}
-                {% include "user_profile/skyfolk-card.html" %}
+        <div class="col l4 s12 z-depth-1-half" style="border-radius: 7px;">
+        {% with item.followers as followers %}
+            {% with item.n_likes as n_likes %}
+                {% with item.to_profile as user_profile %}
+                    {% include "user_profile/skyfolk-card.html" %}
+                {% endwith %}
             {% endwith %}
+        {% endwith %}
         </div>
     {% endfor %}
 {% elif followers %}
     {% for item in followers %}
-        <div class="col l3 s12">
-            {% with item.from_profile as user_profile %}
-                {% include "user_profile/skyfolk-card.html" %}
+        <div class="col l4 s12 z-depth-1-half" style="border-radius: 7px;">
+        {% with item.followers as followers %}
+            {% with item.n_likes as n_likes %}
+                {% with item.from_profile as user_profile %}
+                    {% include "user_profile/skyfolk-card.html" %}
+                {% endwith %}
             {% endwith %}
+        {% endwith %}
         </div>
     {% endfor %}
 {% endif %}

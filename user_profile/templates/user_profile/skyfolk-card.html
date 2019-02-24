@@ -6,39 +6,65 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 {% load humanize %}
 {% load static %}
 
-<div class="personal-card">
-    <div class="header">
-        {% if user_profile.back_image %}
-            <img class="back-profile-user" src="{{ user_profile.back_image.url }}">
-        {% else %}
-            <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
-        {% endif %}
-        <i class="material-icons like-him">person</i>
-        <div class="bg-user">
-            <div onclick="location.href='/profile/{{ user_profile.user.username }}'"
-                 class="profile-user-bg">{% avatar user_profile.user %}</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12">
-            <div style="cursor: default" class="name-friend">
-                <a href="{% url "user_profile:profile" username=user_profile.user.username %}">@{{ user_profile.user.username }}</a>
-                <p>{{ user_profile.user.firstname }} {{ user_profile.user.lastname }}</p>
-                {% if user_profile.status %}
-                    <p>{{ user_profile.status }}</p>
-                {% endif %}
+        <div class="user-card card">
+                <div class="col s12 user-avatar" style="background: {% if user_profile.back_image %}
+                    url({{ user_profile.back_image.url }})
+                    {% else %}
+                    url({% static "dist/img/nuevo_back.jpg" %})
+                    {% endif %} no-repeat center center; background-size: cover;">
+                </div>
+            <div class="col s12 user-stats">
+                    <div class="col l2 s4">
+                        <div class="tooltipped user-pic-wrapper" data-position="bottom" 
+                            data-tooltip="{% if user_profile.online %} Online {%else%} Offline {% endif %}"
+                            style="{% if user_profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);{% else %}
+                                -webkit-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                -moz-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
+                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile.user.username css_class="responsive-img" %}</div>
+                    </div>
+                    <div class="col l10 s8">
+                        <ul class="profile-info">
+                            <li><a id="info-user-name-profile" class="info-user-name" href="{% url "user_profile:profile" user_profile.user.username %}">@{{ user_profile.user.username }}</a> {% if user_profile.first_name or user_profile.last_name %}
+                                ({{ user_profile.user.first_name }} {{ user_profile.user.last_name }}) {% endif %}
+                                {% if isFollower %}
+                                <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
+                                {% if user_profile.status %}
+                                    <li class="status">{{ user_profile.status }}</li>
+                                {% endif %}
+                        </ul>
+                        <ul class="profile-items">
+                            <li>
+                                <a href="/followers/{{ user_profile.user.username }}"><b
+                                id="followers-stats" class="blue-text">{% if followers %}{{ followers|intword }}{% else %}0{% endif %}</b> Seguidores</a>
+                            </li>
+                            <li>
+                                <a id="likes"
+                                href="{% url "user_profile:like_list" username=user_profile.user.username %}"><b class="likes-number blue-text">{% if n_likes %}{{ n_likes|intword }}{% else %}0{% endif %}</b>
+                                Me gusta
+                                </a>
+                            </li>
+                            <li>
+                                <a class="to_gallery"
+                                href="/multimedia/{{ user_profile.user.username }}/"><b class="blue-text">{{ multimedia_count|intword }}</b> Fotos y vídeos</a>
+                            </li>
+                            <li>
+                                {% if profile_interests %}
+                                <div class="interests tooltipped" data-position="bottom"
+                                data-username="{{ user_profile.user.username }}"
+                                data-tooltip="">
+                                    {% for i in profile_interests %}
+                                    <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
+                                    {% endfor %}
+                                    {% with profile_interests|length as profile_interest_returned %}
+                                        {% if profile_interest_returned < profile_interests_total %}
+                                            +{% reduce profile_interests_total profile_interest_returned %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            {% endif %}
+                            </li>
+                        </ul>
+                    </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12 center">
-            <div class="chip">{{ user_profile.user.badges.all|length }} logros conseguidos.</div>
-            <br><br>
-            {% for i in user_profile.tags.all|slice:":10" %}
-                <a class="blue-text"
-                   href="{% url "user_profile:category-search" option="all" %}?q={{ i }}"><b>#{{ i }}</b></a>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
