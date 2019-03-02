@@ -1223,6 +1223,8 @@ class FollowingListView(ListView):
                 .prefetch_related("to_profile__tags").prefetch_related("to_profile__user__badges")
                 .annotate(n_likes=Count("to_profile__to_like"))
                 .annotate(followers=Count("to_profile__to_profile"))
+                .annotate(photos=Count("to_profile__user__user_photos"))
+                .annotate(videos=Count("to_profile__user__user_videos"))
         )
 
         return qs

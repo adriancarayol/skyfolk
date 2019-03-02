@@ -47,7 +47,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             </li>
                             <li>
                                 <a class="to_gallery"
-                                href="/multimedia/{{ user_profile.user.username }}/"><b class="blue-text">{{ multimedia_count|intword }}</b> Fotos y vídeos</a>
+                                href="/multimedia/{{ user_profile.user.username }}/"><b class="blue-text">{{ photos|add:videos|intword }}</b> Fotos y vídeos</a>
                             </li>
                             <li>
                                 {% if profile_interests %}
