@@ -21,7 +21,8 @@ from publications.views import logger
 from publications_gallery.forms import PublicationVideoForm, PublicationVideoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationVideo
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery.media_processor import optimize_publication_media, check_num_images, check_image_property
 

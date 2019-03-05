@@ -7,7 +7,8 @@ from django.views.generic import ListView
 from dash.models import DashboardEntry
 from photologue.models import Photo, Video
 from publications.models import Publication
-from user_profile.models import Profile, RelationShipProfile, BLOCK
+from user_profile.models import Profile, RelationShipProfile
+from user_profile.constants import BLOCK
 from dash.base import get_layout
 
 

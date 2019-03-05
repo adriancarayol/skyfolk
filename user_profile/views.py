@@ -2,6 +2,8 @@ import json
 import logging
 import random
 import uuid
+
+from django.contrib.contenttypes.models import ContentType
 from elasticsearch.exceptions import RequestError
 import numpy as np
 from allauth.account import app_settings
@@ -15,6 +17,7 @@ from allauth.account.views import (
 from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from formtools.wizard.views import SessionWizardView
+from badgify.models import Award, Badge
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
@@ -31,8 +34,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.urls import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Prefetch
-from django.contrib.contenttypes.models import ContentType
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Sum, Prefetch
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -65,11 +67,10 @@ from user_profile.models import (
     Request,
     Profile,
     RelationShipProfile,
-    FOLLOWING,
     NotificationSettings,
-    BLOCK,
     LikeProfile,
 )
+from user_profile.constants import FOLLOWING, BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from utils.lists import union_without_duplicates
 from taggit.models import TaggedItem
@@ -1164,35 +1165,79 @@ def remove_request_follow(request):
     return HttpResponse(json.dumps(response), content_type="application/javascript")
 
 
-class FollowersListView(ListView):
+class FollowersListView(TemplateView):
     """
     Lista de seguidores del usuario
     """
-
-    context_object_name = "followers"
     template_name = "account/relations.html"
-    paginate_by = 25
 
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return (
-            RelationShipProfile.objects.filter(
-                to_profile__user__username=self.kwargs.get("username", None),
-                type=FOLLOWING,
-            )
-                .select_related("from_profile", "from_profile__user")
-                .prefetch_related("from_profile__tags").prefetch_related("from_profile__user__badges")
-                .annotate(n_likes=Count("from_profile__to_like"))
-                .annotate(followers=Count("from_profile__to_profile"))
-        )
+    def _get_relation_ships(self):
+        username = self.kwargs.get("username", None)
+        page = self.request.GET.get('page', 1)
+
+        try:
+            profile = Profile.objects.get(user__username=username)
+        except ObjectDoesNotExist:
+            raise Http404()
+
+        paginator = Paginator(RelationShipProfile.objects.filter(to_profile=profile, type=FOLLOWING).select_related(
+            'from_profile__user'), 25)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)
+
+        return users
+
+    def get_followers(self):
+        qs = self._get_relation_ships()
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.from_profile.id for result in qs]
+
+        following_result = []
+
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count')
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count')
+        followers_result = RelationShipProfile.objects.filter(from_profile__id__in=ids).annotate(
+            follower_count=Count('from_profile')).values('follower_count', 'from_profile_id')
+        likes = LikeProfile.objects.filter(from_profile__id__in=ids).annotate(likes_count=Count('from_profile')).values(
+            'from_profile_id', 'likes_count')
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count')
+
+        for follow in qs:
+            result_object = {'profile': follow.from_profile,
+                             'tags': [tag for tag in tagged_items if tag.object_id == follow.from_profile.id],
+                             'videos': next(iter([video['videos_count'] for video in videos if
+                                                  video['owner__profile__id'] == follow.from_profile.id] or []), 0),
+                             'photos': next(iter([photo['photos_count'] for photo in photos if
+                                                  photo['owner__profile__id'] == follow.from_profile.id] or []), 0),
+                             'followers': next(iter([follower['follower_count'] for follower in followers_result if
+                                                     follower['from_profile_id'] == follow.from_profile.id] or []), 0),
+                             'likes': next(
+                                 iter([like['likes_count'] for like in likes if
+                                       like['from_profile_id'] == follow.from_profile.id] or []), 0),
+                             'exp': next(iter([exp['exp_count'] for exp in total_exp if
+                                               exp['user_id'] == follow.from_profile.id] or []), 0)}
+            following_result.append(result_object)
+
+        return following_result
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         context["url_name"] = "followers"
-        context["component"] = "followers_react.js"
+        context['followers'] = self.get_followers()
+        # context["component"] = "followers_react.js"
         context["username"] = self.kwargs.get("username", None)
         return context
 
@@ -1200,39 +1245,79 @@ class FollowersListView(ListView):
 followers = login_required(FollowersListView.as_view())
 
 
-class FollowingListView(ListView):
+class FollowingListView(TemplateView):
     """
     Lista de seguidos del usuario
     """
-
-    context_object_name = "following"
     template_name = "account/relations.html"
-    paginate_by = 25
 
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
+    def _get_relation_ships(self):
         username = self.kwargs.get("username", None)
-        qs = (
-            RelationShipProfile.objects.filter(
-                from_profile__user__username=username, type=FOLLOWING
-            )
-                .select_related("to_profile", "to_profile__user")
-                .prefetch_related("to_profile__tags").prefetch_related("to_profile__user__badges")
-                .annotate(n_likes=Count("to_profile__to_like"))
-                .annotate(followers=Count("to_profile__to_profile"))
-                .annotate(photos=Count("to_profile__user__user_photos"))
-                .annotate(videos=Count("to_profile__user__user_videos"))
-        )
+        page = self.request.GET.get('page', 1)
 
-        return qs
+        try:
+            profile = Profile.objects.get(user__username=username)
+        except ObjectDoesNotExist:
+            raise Http404()
+
+        paginator = Paginator(RelationShipProfile.objects.filter(from_profile=profile, type=FOLLOWING).select_related(
+            'to_profile__user'), 25)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)
+
+        return users
+
+    def get_following(self):
+        qs = self._get_relation_ships()
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.to_profile.id for result in qs]
+
+        following_result = []
+
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count')
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count')
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).annotate(
+            follower_count=Count('to_profile')).values('follower_count', 'to_profile_id')
+        likes = LikeProfile.objects.filter(to_profile__id__in=ids).annotate(likes_count=Count('to_profile')).values(
+            'to_profile_id', 'likes_count')
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count')
+
+        for follow in qs:
+            result_object = {'profile': follow.to_profile,
+                             'tags': [tag for tag in tagged_items if tag.object_id == follow.to_profile.id],
+                             'videos': next(iter([video['videos_count'] for video in videos if
+                                                  video['owner__profile__id'] == follow.to_profile.id] or []), 0),
+                             'photos': next(iter([photo['photos_count'] for photo in photos if
+                                                  photo['owner__profile__id'] == follow.to_profile.id] or []), 0),
+                             'followers': next(iter([follower['follower_count'] for follower in followers_result if
+                                                     follower['to_profile_id'] == follow.to_profile.id] or []), 0),
+                             'likes': next(
+                                 iter([like['likes_count'] for like in likes if
+                                       like['to_profile_id'] == follow.to_profile.id] or []), 0),
+                             'exp': next(iter([exp['exp_count'] for exp in total_exp if
+                                               exp['user_id'] == follow.to_profile.id] or []), 0)}
+            following_result.append(result_object)
+
+        return following_result
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         context["url_name"] = "following"
-        context["component"] = "following_react.js"
+        context["following"] = self.get_following()
+        # context["component"] = "following_react.js"
         context["username"] = self.kwargs.get("username", None)
         return context
 

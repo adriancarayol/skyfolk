@@ -32,7 +32,8 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import Photo, Video

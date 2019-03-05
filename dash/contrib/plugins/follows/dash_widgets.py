@@ -1,6 +1,7 @@
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from user_profile.models import RelationShipProfile, FOLLOWING
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING
 from ....base import BaseDashboardPluginWidget
 
 __title__ = 'dash.contrib.plugins.follows.dash_widgets'

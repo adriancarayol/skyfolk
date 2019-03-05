@@ -7,7 +7,8 @@ from django.dispatch import receiver
 from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
 from requests.exceptions import MissingSchema
-from user_profile.models import FOLLOWING, RelationShipProfile
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING
 from notifications.signals import notify
 
 from publications_gallery_groups.models import PublicationGroupMediaPhoto, ExtraContentPubPhoto, ExtraContentPubVideo

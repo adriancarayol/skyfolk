@@ -97,7 +97,7 @@ Template para las busquedas
                     {% if item.model_name == 'profile' %}
                         <div class="grid-item infinite-item">
                             {% with item.object as user_profile %}
-                                {% include "user_profile/skyfolk-card.html" %}
+                                {{ item.object }}
                             {% endwith %}
                         </div>
                     {% elif item.model_name == 'usergroups' %}
