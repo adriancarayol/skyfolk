@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = (
     'guardian',
     'embed_video',
     'haystack',
+    'django_elasticsearch_dsl',
     'badgify',
     'invitations',
     'webpack_loader',
@@ -408,6 +409,14 @@ POSTMAN_DISABLE_USER_EMAILING = True
 # HAYSTACK REALTIME SIGNAL
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
+
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': ELASTIC_URL
+    },
+}
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None
