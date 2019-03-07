@@ -411,7 +411,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
 
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
-ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
+# ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': ELASTIC_URL

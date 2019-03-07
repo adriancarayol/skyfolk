@@ -93,14 +93,14 @@ Template para las busquedas
         {% endif %}
         {% if s == 'all' %}
             <div class="grid row">
-                {% for item in page_obj.object_list %}
-                    {% if item.model_name == 'profile' %}
+                {% for item in object_list %}
+                    {% if item|classname == 'Profile' %}
                         <div class="grid-item infinite-item">
-                            {% with item.object as user_profile %}
-                                {{ item.object }}
+                            {% with item as user_profile %}
+                                {% comment %}{% include "search/skyfolk-card-search-item.html" %}{% endcomment %}
                             {% endwith %}
                         </div>
-                    {% elif item.model_name == 'usergroups' %}
+                    {% elif item|classname == 'UserGroups' %}
                         <div class="grid-item infinite-item">
                             <div class="personal-card">
                                 <div class="header">
@@ -127,7 +127,7 @@ Template para las busquedas
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'publication' %}
+                    {% elif item|classname == 'Publication' %}
                         <div class="grid-item infinite-item">
                             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                                 <div class="col s3 img">
@@ -198,41 +198,39 @@ Template para las busquedas
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'photo' %}
+                    {% elif item|classname == 'Photo' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
                              data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
                                         <div class="tags-content">
-                                            {% for tag in item.tags %}
+                                            {% for tag in item.tags.all %}
                                                 <blockquote
-                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.owner.username tag.slug %}'">{{ tag }}</blockquote>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img src="
-
-                                            {% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                    <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                                          alt="{{ item.title }}" title="{{ item.title }}"
-                                         onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                         onclick="location.href='{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
-                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                        {% avatar item.owner.username %}
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
-                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-photo" username=item.author slug=item.slug %}"
+                                        <a href="/profile/{{ item.owner.username }}">@{{ item.owner.username }}</a>
+                                        <a href="{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}"
                                            class="photo-title truncate">{{ item.title }}</a>
                                         <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
+                                                class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}
                                         </i>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'video' %}
+                    {% elif item|classname == 'Video' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
                              data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
@@ -257,7 +255,7 @@ Template para las busquedas
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
-                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                        {% avatar item.owner.username %}
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
