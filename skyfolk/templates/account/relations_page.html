@@ -3,48 +3,15 @@
 {% load static %}
 {% if following %}
     {% for item in following %}
-        {% comment %}
-    <div class="col l3 m10 s12 offset-m2">
-        <div class="personal-card">
-            <div class="row">
-                <div class="col s12">
-                    <div class="header">
-                        {% if item.to_profile.back_image %}
-                            <img class="back-profile-user lazyload" data-src="{{ item.to_profile.back_image.url }}">
-                        {% else %}
-                            <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.jpg" %}">
-                        {% endif %}
-                        <i class="material-icons like-him">person</i>
-                        <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.to_profile.user.username }}'"
-                                 class="profile-user-bg">{% avatar item.to_profile.user.username %}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <div class="name-friend">
-                        <a href="/profile/{{ item.to_profile.user.username }}">@{{ item.to_profile.user.username }} </a><br><br>
-                        <p>{{ item.to_profile.user.first_name }} {{ item.to_profile.user.last_name }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endcomment %}
-        <div class="col l3 s12">
-            {% with item.to_profile as user_profile %}
-                {% include "user_profile/skyfolk-card.html" %}
-            {% endwith %}
+        <div class="col l3 s12 z-depth-1-half" style="border-radius: 7px; margin: 10px;">
+            {% include "user_profile/skyfolk-card.html" %}
         </div>
     {% endfor %}
 {% elif followers %}
+
     {% for item in followers %}
-        <div class="col l3 s12">
-            {% with item.from_profile as user_profile %}
-                {% include "user_profile/skyfolk-card.html" %}
-            {% endwith %}
+        <div class="col l3 s12 z-depth-1-half" style="border-radius: 7px; margin: 10px;">
+            {% include "user_profile/skyfolk-card.html" %}
         </div>
     {% endfor %}
 {% endif %}

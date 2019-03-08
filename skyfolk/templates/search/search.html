@@ -5,7 +5,6 @@ Template para las busquedas
 {% load app_filters %}
 {% load avatar_tags %}
 {% load humanize %}
-{% load highlight %}
 {% load embed_video_tags %}
 {% load emoji_tags %}
 {% load static %}
@@ -93,19 +92,19 @@ Template para las busquedas
         {% endif %}
         {% if s == 'all' %}
             <div class="grid row">
-                {% for item in page_obj.object_list %}
-                    {% if item.model_name == 'profile' %}
+                {% for item in object_list %}
+                    {% if item|classname == 'SkyfolkCardIdentifier' %}
                         <div class="grid-item infinite-item">
-                            {% with item.object as user_profile %}
-                                {% include "user_profile/skyfolk-card.html" %}
+                            {% with item.profile as user_profile %}
+                                {% include "search/skyfolk-card-search-item.html" %}
                             {% endwith %}
                         </div>
-                    {% elif item.model_name == 'usergroups' %}
+                    {% elif item|classname == 'UserGroups' %}
                         <div class="grid-item infinite-item">
                             <div class="personal-card">
                                 <div class="header">
-                                    {% if item.object.back_image %}
-                                        <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                                    {% if item.back_image %}
+                                        <img class="back-profile-user" src="{{ item.back_image.url }}">
                                     {% else %}
                                         <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
                                     {% endif %}
@@ -113,8 +112,7 @@ Template para las busquedas
                                     <div class="bg-user">
                                         <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
                                              class="profile-user-bg"><img src="
-
-                                                {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                {% if item.avatar %}{{ item.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
                                                                           alt="Imagen de {{ item.name }}"
                                                                           title="Imagen de {{ item.name }}"/></div>
                                     </div>
@@ -127,37 +125,37 @@ Template para las busquedas
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'publication' %}
+                    {% elif item|classname == 'Publication' %}
                         <div class="grid-item infinite-item">
                             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                                 <div class="col s3 img">
-                                    {% avatar item.object.author %}
+                                    {% avatar item.author %}
                                 </div>
                                 <div class="col l9 m9 s8 author">
                                     <div class="row">
                                         <span><a
-                                                href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
-                                        <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
+                                                href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.author.first_name }} {{ item.author.last_name }}</i></span>
+                                        <span><a href="/publication/{{ item.id }}" title="Ver publicación"><i
                                                 class="material-icons md-18 right"
                                                 aria-hidden="true">open_in_new</i></a></span>
-                                        <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
+                                        <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                                     </div>
                                     <div class="row" style="word-wrap: break-word;">
                                         <p>{{ item.content|safe|emoji_replace|truncatechars_html:"150"|safe }}</p>
-                                        {% with item.object.shared_publication as shared_publication %}
+                                        {% with item.shared_publication as shared_publication %}
                                             {% include "account/shared_publication.html" %}
                                         {% endwith %}
-                                        {% with item.object.shared_group_publication as shared_publication %}
+                                        {% with item.shared_group_publication as shared_publication %}
                                             {% include "account/shared_publication.html" %}
                                         {% endwith %}
-                                        {% for i in item.object.images.all %}
+                                        {% for i in item.images.all %}
                                             <div class="col s12">
                                                 <img class="materialboxed" src="{{ i.image.url }}"
                                                      alt="{{ item.author }}" width="100%"
                                                      height="100%"/>
                                             </div>
                                         {% endfor %}
-                                        {% with item.object.videos.all as videos %}
+                                        {% with item.videos.all as videos %}
                                             {% if videos %}
                                                 <div class="row videos">
                                                     {% for video in videos %}
@@ -170,26 +168,24 @@ Template para las busquedas
                                                 </div>
                                             {% endif %}
                                         {% endwith %}
-                                        {% if item.object.extra_content %}
-                                            {% if item.object.extra_content.video %}
-                                                {% video item.object.extra_content.video as my_video %}
+                                        {% if item.extra_content %}
+                                            {% if item.extra_content.video %}
+                                                {% video item.extra_content.video as my_video %}
                                                 {% video my_video "100% x 100%" is_secure=True %}
                                                 {% endvideo %}
                                             {% else %}
                                                 {% comment %} Para publicaciones con URL {% endcomment %}
                                                 <div class="card small">
                                                     <div class="card-image">
-                                                        <img src="
-
-                                                                {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
-                                                        <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                        <img src="{% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ item.extra_content.title }}</span>
                                                     </div>
                                                     <div class="card-content">
-                                                        <p>{{ item.object.extra_content.description }}</p>
+                                                        <p>{{ item.extra_content.description }}</p>
                                                     </div>
                                                     <div class="card-action">
                                                         <a class="white-text blue right btn right" target="_blank"
-                                                           href="{{ item.object.extra_content.url }}">Ver</a>
+                                                           href="{{ item.extra_content.url }}">Ver</a>
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -198,74 +194,74 @@ Template para las busquedas
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'photo' %}
+                    {% elif item|classname == 'Photo' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
                              data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
                                         <div class="tags-content">
-                                            {% for tag in item.tags %}
+                                            {% for tag in item.tags.all %}
                                                 <blockquote
-                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.owner.username tag.slug %}'">{{ tag }}</blockquote>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img src="
-
-                                            {% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                    <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
                                          alt="{{ item.title }}" title="{{ item.title }}"
-                                         onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
+                                         onclick="location.href='{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
-                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                        {% avatar item.owner.username %}
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
-                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-photo" username=item.author slug=item.slug %}"
+                                        <a href="/profile/{{ item.owner.username }}">@{{ item.owner.username }}</a>
+                                        <a href="{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}"
                                            class="photo-title truncate">{{ item.title }}</a>
                                         <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
+                                                class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}
                                         </i>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% elif item.model_name == 'video' %}
+                    {% elif item|classname == 'Video' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
                              data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
                                         <div class="tags-content">
-                                            {% for tag in item.tags %}
+                                            {% for tag in item.tags.all %}
                                                 <blockquote
-                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.owner.username tag.slug %}'">{{ tag }}</blockquote>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img src="{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}"
-                                             onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
+                                        <img src="{{ item.thumbnail.url }}" alt="{{ item.name }}" title="{{ item.name }}"
+                                             onclick="location.href='{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
-                                            <source src="{{ item.video }}" type="video/mp4">
-                                            Your browser does not support the video tag.
+                                            {% if item.video %}
+                                                <source src="{{ item.video.url }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            {% endif %}
                                         </video>
                                     {% endif %}
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
-                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                        {% avatar item.owner.username %}
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
-                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
+                                        <a href="/profile/{{ item.owner.username}}">@{{ item.owner.username }}</a>
+                                        <a href="{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}"
                                            class="photo-title truncate">
                                             {{ item.name }}</a>
                                         <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
+                                                class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}
                                         </i>
                                     </div>
                                 </div>
@@ -274,264 +270,77 @@ Template para las busquedas
                     {% endif %}
                 {% endfor %}
             </div>
-        {% endif %}
-        {% if s == 'accounts' %}
+        {% elif s == 'accounts' %}
+            <div class="grid row">
+                {% for item in object_list %}
+                    {% with item.profile as user_profile %}
+                        {% include "search/skyfolk-card-search-item.html" %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        {% elif s == "groups" %}
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item infinite-item">
-                        <div class="personal-card">
-                            <div class="header">
-                                {% if item.object.back_image %}
-                                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
-                                {% else %}
-                                    <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
-                                {% endif %}
-                                <i class="material-icons like-him">person</i>
-                                <div class="bg-user">
-                                    <div onclick="location.href='/profile/{{ item.username }}'"
-                                         class="profile-user-bg">{% avatar item.object.user %}</div>
+                            <div class="personal-card">
+                                <div class="header">
+                                    {% if item.back_image %}
+                                        <img class="back-profile-user" src="{{ item.back_image.url }}">
+                                    {% else %}
+                                        <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
+                                    {% endif %}
+                                    <i class="material-icons like-him">group</i>
+                                    <div class="bg-user">
+                                        <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
+                                             class="profile-user-bg"><img src="
+                                                {% if item.avatar %}{{ item.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                                          alt="Imagen de {{ item.name }}"
+                                                                          title="Imagen de {{ item.name }}"/></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col s12">
-                                <div style="cursor: default" class="name-friend">
-                                    <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
-                                    <p>{{ item.firstname }} {{ item.lastname }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% if s == "groups" %}
-            <div class="grid row">
-                {% for item in object_list %}
-                    <div class="grid-item infinite-item">
-                        <div class="personal-card">
-                            <div class="header">
-                                {% if item.object.back_image %}
-                                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
-                                {% else %}
-                                    <img class="back-profile-user" src="{% static "img/nuevo_back.jpg" %}">
-                                {% endif %}
-                                <i class="material-icons like-him">group</i>
-                                <div class="bg-user">
-                                    <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                         class="profile-user-bg"><img src="
-
-                                            {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                                      alt="Imagen de {{ item.name }}"
-                                                                      title="Imagen de {{ item.name }}"/></div>
-                                </div>
-                            </div>
-                            <div class="col s12">
-                                <div style="cursor: default" class="name-friend">
-                                    <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
-                                    <p class="truncate">{{ item.description|truncatechars:"100" }}</p>
+                                <div class="col s12">
+                                    <div style="cursor: default" class="name-friend">
+                                        <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
+                                        <p class="truncate">{{ item.description|truncatechars:100 }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 {% endfor %}
             </div>
-        {% endif %}
-        {% if s == 'publications' %}
+        {% elif s == 'publications' %}
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item infinite-item">
                         <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                             <div class="col s3 img">
-                                {% avatar item.object.author %}
+                                {% avatar item.author %}
                             </div>
                             <div class="col l9 m9 s8 author">
                                 <div class="row">
                                     <span><a
-                                            href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
-                                    <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
+                                            href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.author.first_name }} {{ item.author.last_name }}</i></span>
+                                    <span><a href="/publication/{{ item.id }}" title="Ver publicación"><i
                                             class="material-icons md-18 right">open_in_new</i></a></span>
-                                    <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
+                                    <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                                 </div>
                                 <div class="row" style="word-wrap: break-word;">
                                     <p>{{ item.content|safe|emoji_replace|truncatechars_html:"150"|safe }}</p>
                                     <br>
-                                    {% if node.shared_publication %}
-                                        {% if node.shared_publication.deleted %}
-                                            <div class="row">
-                                                <div class="col s12 m5">
-                                                    <div class="card-panel blue">
-                                                        <span class="white-text">Esta publicación no está disponible.</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% else %}
-                                            {% comment %} Para publicaciones que contienen citas {% endcomment %}
-                                            <div class="card grey lighten-5">
-                                                <div class="card-content black-text">
-                                                    {% avatar node.shared_publication.author %}<br>
-                                                    <p class="card-title-md-18"><a
-                                                            href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
-                                                        <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i>
-                                                    </p>
-                                                    <p>{{ node.shared_publication.content|safe|emoji_replace }}</p>
-                                                    {% with node.shared_publication.images.all as images %}
-                                                        {% if images %}<br>
-                                                            <div class="row">
-                                                                {% for image in images %}
-                                                                    {% if image.image %}
-                                                                        <div class="col s12">
-                                                                            <img class="materialboxed responsive-img z-depth-1"
-                                                                                 src="{{ image.image.url }}"
-                                                                                 alt="Imagen de: {{ node.author }}"
-                                                                                 title="Imagen de: {{ node.author }}">
-                                                                        </div>
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                    {% with node.shared_publication.videos.all as videos %}
-                                                        {% if videos %}<br>
-                                                            <div class="row">
-                                                                {% for video in videos %}
-                                                                    <div class="col s12">
-                                                                        <video class="responsive-video" controls
-                                                                               loop>
-                                                                            <source src="{{ video.video.url }}"
-                                                                                    type="video/mp4">
-                                                                        </video>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                    {% if node.shared_publication.extra_content %}
-                                                        {% comment %} Para publicaciones con URL {% endcomment %}
-                                                        {% if  node.shared_publication.extra_content.video %}
-                                                            {% video node.shared_publication.extra_content.video as my_video %}
-                                                            {% video my_video "100% x 100%" is_secure=True %}
-                                                            {% endvideo %}
-                                                        {% else %}
-                                                            <div class="card small">
-                                                                <div class="card-image">
-                                                                    <img src="
-
-
-                                                                            {% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
-                                                                    <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
-                                                                </div>
-                                                                <div class="card-content">
-                                                                    <p>{{ node.shared_publication.extra_content.description }}.</p>
-                                                                </div>
-                                                                <div class="card-action">
-                                                                    <a class="white-text blue right btn right"
-                                                                       target="_blank"
-                                                                       href="{{ node.shared_publication.extra_content.url }}">Ver</a>
-                                                                </div>
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endif %}
-                                                </div>
-                                                <div class="card-action">
-                                                    <a class="white-text blue right btn right"
-                                                       target="_blank"
-                                                       href="/publication/{{ node.shared_publication.pk }}">Ver</a>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if item.object.shared_group_publication %}
-                                        {% if item.object.shared_group_publication.deleted %}
-                                            <div class="row">
-                                                <div class="col s12 m5">
-                                                    <div class="card-panel blue">
-                                                        <span class="white-text">Esta publicación no está disponible.</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% else %}
-                                            {% comment %} Para publicaciones que contienen citas {% endcomment %}
-                                            <div class="card grey lighten-5">
-                                                <div class="card-content black-text">
-                                                    {% avatar item.object.shared_group_publication.author %}<br>
-                                                    <p class="card-title-md-18"><a
-                                                            href="{% url 'user_profile:profile' item.object.shared_group_publication.author %}">@{{ item.object.shared_group_publication.author }}</a>
-                                                        <i class="blue-textº text-darken-2"> {{ item.object.shared_group_publication.created|naturaltime }}</i>
-                                                    </p>
-                                                    <p>{{ item.object.shared_group_publication.content|safe|emoji_replace }}</p>
-                                                    {% with item.object.shared_group_publication.images.all as images %}
-                                                        {% if images %}<br>
-                                                            <div class="row">
-                                                                {% for image in images %}
-                                                                    {% if image.image %}
-                                                                        <div class="col s12">
-                                                                            <img class="materialboxed responsive-img z-depth-1"
-                                                                                 src="{{ image.image.url }}"
-                                                                                 alt="Imagen de: {{ node.author }}"
-                                                                                 title="Imagen de: {{ node.author }}">
-                                                                        </div>
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                    {% with item.object.shared_group_publication.videos.all as videos %}
-                                                        {% if videos %}<br>
-                                                            <div class="row">
-                                                                {% for video in videos %}
-                                                                    <div class="col s12">
-                                                                        <video class="responsive-video" controls
-                                                                               loop>
-                                                                            <source src="{{ video.video.url }}"
-                                                                                    type="video/mp4">
-                                                                        </video>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                    {% if item.object.shared_group_publication.extra_content %}
-                                                        {% comment %} Para publicaciones con URL {% endcomment %}
-                                                        {% if  item.object.shared_group_publication.extra_content.video %}
-                                                            {% video item.object.shared_group_publication.extra_content.video as my_video %}
-                                                            {% video my_video "100% x 100%" is_secure=True %}
-                                                            {% endvideo %}
-                                                        {% else %}
-                                                            <div class="card small">
-                                                                <div class="card-image">
-                                                                    <img src="
-
-
-                                                                            {% if item.object.shared_group_publication.extra_content.image %}{{ item.object.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
-                                                                    <span class="card-title white-text">{{ item.object.shared_group_publication.extra_content.title }}</span>
-                                                                </div>
-                                                                <div class="card-content">
-                                                                    <p>{{ item.object.shared_group_publication.extra_content.description }}.</p>
-                                                                </div>
-                                                                <div class="card-action">
-                                                                    <a class="white-text blue right btn right"
-                                                                       target="_blank"
-                                                                       href="{{ item.object.shared_group_publication.extra_content.url }}">Ver</a>
-                                                                </div>
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endif %}
-                                                </div>
-                                                <div class="card-action">
-                                                    <a class="white-text blue right btn right"
-                                                       target="_blank"
-                                                       href="{% url "publications_groups:detail_group_publication" pk=item.object.shared_group_publication.pk %}">Ver</a>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% for i in item.object.images.all %}
+                                    {% with item.shared_publication as shared_publication %}
+                                        {% include "account/shared_publication.html" %}
+                                    {% endwith %}
+                                    {% with item.shared_group_publication as shared_publication %}
+                                        {% include "account/shared_publication.html" %}
+                                    {% endwith %}
+                                    {% for i in item.images.all %}
                                         <div class="col s12">
                                             <img class="materialboxed" src="{{ i.image.url }}" alt="{{ item.author }}"
                                                  width="100%"
                                                  height="100%"/>
                                         </div>
                                     {% endfor %}
-                                    {% with item.object.videos.all as videos %}
+                                    {% with item.videos.all as videos %}
                                         {% if videos %}
                                             <div class="row videos">
                                                 {% for video in videos %}
@@ -544,27 +353,24 @@ Template para las busquedas
                                             </div>
                                         {% endif %}
                                     {% endwith %}
-                                    {% if item.object.extra_content %}
-                                        {% if item.object.extra_content.video %}
-                                            {% video item.object.extra_content.video as my_video %}
+                                    {% if item.extra_content %}
+                                        {% if item.extra_content.video %}
+                                            {% video item.extra_content.video as my_video %}
                                             {% video my_video "100% x 100%" is_secure=True %}
                                             {% endvideo %}
                                         {% else %}
                                             {% comment %} Para publicaciones con URL {% endcomment %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img src="
-
-
-                                                            {% if item.object.extra_content.image %}{{ item.object.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
-                                                    <span class="card-title white-text">{{ item.object.extra_content.title }}</span>
+                                                    <img src="{% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.jpg" %}{% endif %}">
+                                                    <span class="card-title white-text">{{ item.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
-                                                    <p>{{ item.object.extra_content.description }}</p>
+                                                    <p>{{ item.extra_content.description }}</p>
                                                 </div>
                                                 <div class="card-action">
                                                     <a class="white-text blue right btn right" target="_blank"
-                                                       href="{{ item.object.extra_content.url }}">Ver</a>
+                                                       href="{{ item.extra_content.url }}">Ver</a>
                                                 </div>
                                             </div>
                                         {% endif %}
@@ -575,94 +381,92 @@ Template para las busquedas
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}
-        {% if s == 'images' %}
+        {% elif s == 'images' %}
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                         data-tooltip="{{ item.description|truncatechars:"150" }}">
-                        <div class="container-image">
-                            <div class="principal-content">
-                                {% if item.tags %}
-                                    <div class="tags-content">
-                                        {% for tag in item.tags %}
-                                            <blockquote
-                                                    onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                                <img src="
-
-                                        {% if item.thumbnail %}{{ item.thumbnail }}{% elif item.url_image %}{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
-                                     alt="{{ item.title }}" title="{{ item.title }}"
-                                     onclick="location.href='{% url "photologue:pl-photo" username=item.author slug=item.slug %}'">
-                            </div>
-                            <div class="col s12 legend-content">
-                                <div class="legend-user-image">
-                                    <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
+                            <div class="container-image">
+                                <div class="principal-content">
+                                    {% if item.tags %}
+                                        <div class="tags-content">
+                                            {% for tag in item.tags.all %}
+                                                <blockquote
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.owner.username tag.slug %}'">{{ tag }}</blockquote>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% elif item.image %}{{ item.image.url }}{% else %}{{ item.url_image }}{% endif %}"
+                                         alt="{{ item.title }}" title="{{ item.title }}"
+                                         onclick="location.href='{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}'">
                                 </div>
-                                <div class="col l8 m8 s8 legend-user-data">
-                                    <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                    <i class="photo-title truncate">{{ item.title }}</i>
-                                    <i class="truncate photo-date"><i
-                                            class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
-                                    </i>
+                                <div class="col s12 legend-content">
+                                    <div class="legend-user-image">
+                                        {% avatar item.owner.username %}
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ item.owner.username }}">@{{ item.owner.username }}</a>
+                                        <a href="{% url "photologue:pl-photo" username=item.owner.username slug=item.slug %}"
+                                           class="photo-title truncate">{{ item.title }}</a>
+                                        <i class="truncate photo-date"><i
+                                                class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}
+                                        </i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 {% endfor %}
             </div>
-        {% endif %}
-        {% if s == 'videos' %}
+        {% elif s == 'videos' %}
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                         data-tooltip="{{ item.description|truncatechars:"150" }}">
-                        <div class="container-image">
-                            <div class="principal-content">
-                                {% if item.tags %}
-                                    <div class="tags-content">
-                                        {% for tag in item.tags %}
-                                            <blockquote
-                                                    onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                                {% if item.thumbnail %}
-                                    <img src="{{ item.thumbnail }}"
-                                         alt="{{ item.name }}" title="{{ item.name }}"
-                                         onclick="location.href='{% url "photologue:pl-video" username=item.author slug=item.slug %}'">
-                                {% else %}
-                                    <video controls style="width: 100%; height: 100%; outline: none;">
-                                        <source src="{{ item.video }}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                {% endif %}
-                            </div>
-                            <div class="col s12 legend-content">
-                                <div class="legend-user-image">
-                                    <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
+                            <div class="container-image">
+                                <div class="principal-content">
+                                    {% if item.tags %}
+                                        <div class="tags-content">
+                                            {% for tag in item.tags.all %}
+                                                <blockquote
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.owner.username tag.slug %}'">{{ tag }}</blockquote>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if item.thumbnail %}
+                                        <img src="{{ item.thumbnail.url }}" alt="{{ item.name }}" title="{{ item.name }}"
+                                             onclick="location.href='{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}'">
+                                    {% else %}
+                                        <video controls style="width: 100%; height: 100%; outline: none;">
+                                            {% if item.video %}
+                                                <source src="{{ item.video.url }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            {% endif %}
+                                        </video>
+                                    {% endif %}
                                 </div>
-                                <div class="col l8 m8 s8 legend-user-data">
-                                    <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                    <a href="{% url "photologue:pl-video" username=item.author slug=item.slug %}"
-                                       class="photo-title truncate">
-                                        {{ item.name }}</a>
-                                    <i class="truncate photo-date"><i
-                                            class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
-                                    </i>
+                                <div class="col s12 legend-content">
+                                    <div class="legend-user-image">
+                                        {% avatar item.owner.username %}
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ item.owner.username}}">@{{ item.owner.username }}</a>
+                                        <a href="{% url "photologue:pl-video" username=item.owner.username slug=item.slug %}"
+                                           class="photo-title truncate">
+                                            {{ item.name }}</a>
+                                        <i class="truncate photo-date"><i
+                                                class="material-icons md-18">access_time</i> {{ item.date_added|naturaltime }}
+                                        </i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 {% endfor %}
             </div>
         {% endif %}
         <div class="row">
-            {% if page_obj.has_next %}
+            {% if object_list.has_next %}
                 <a class="infinite-more-link hidden"
-                   href="?page={{ page_obj.next_page_number }}&q={{ q }}"></a>
+                   href="?page={{ object_list.next_page_number }}&q={{ q }}"></a>
             {% endif %}
             <div class="progress loading_search" style="display: none">
                 <div class="indeterminate blue darken-1"></div>

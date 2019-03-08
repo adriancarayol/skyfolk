@@ -29,7 +29,8 @@ from publications_gallery_groups.forms import PublicationPhotoForm, PublicationP
 from publications.forms import SharedPublicationForm
 from publications_gallery_groups.models import PublicationGroupMediaPhoto, PublicationGroupMediaVideo
 from user_groups.decorators import user_can_view_group_info
-from user_profile.models import RelationShipProfile, BLOCK
+from user_profile.models import RelationShipProfile
+from user_profile.constants import BLOCK
 
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo

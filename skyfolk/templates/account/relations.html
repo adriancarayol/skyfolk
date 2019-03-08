@@ -3,27 +3,22 @@
 Template para los seguidores de un perfil
 {% endcomment %}
 {% load static %}
-{% load render_bundle from webpack_loader %}
+{% comment %}{% load render_bundle from webpack_loader %}{% endcomment %}
 {% block title %}{% if url_name == "followers" %}Seguidores de{% else %}
     Seguidos{% endif %} {{ username }}{% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}">
+    <style>
+        .user-card  {
+            height: 300px;
+        }
+        .user-avatar {
+            height: 80% !important;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <div class="container">
-
         <div class="row">
-            {% comment %}
-            <div class="col l12 m10 s12 container-responsive">
-                {% if user.username == username %}
-                    <div class="row">
-                        <div id="by_affinity">
-
-                        </div>
-                        <div class="divider"></div>
-                    </div>
-                {% endif %}
-                {% endcomment %}
             <div class="row">
                 {% include "account/relations_page.html" %}
             </div>
@@ -66,5 +61,5 @@ Template para los seguidores de un perfil
             $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
         </script>
     {% endif %}
-    {% render_bundle component %}
+    {% comment %}{% render_bundle component %}{% endcomment %}
 {% endblock %}

@@ -11,20 +11,8 @@ from django.db import transaction
 from django.utils.http import urlencode
 from taggit.managers import TaggableManager
 from photologue.models import Photo, Video
-
-REQUEST_FOLLOWING = 1
-REQUEST_BLOCKED = 3
-REQUEST_STATUSES = (
-    (REQUEST_FOLLOWING, 'Following'),
-    (REQUEST_BLOCKED, 'Blocked'),
-)
-
-FOLLOWING = 1
-BLOCK = 3
-RELATIONSHIP_STATUSES = (
-    (FOLLOWING, 1),
-    (BLOCK, 3)
-)
+from user_profile.constants import REQUEST_FOLLOWING, REQUEST_STATUSES, FOLLOWING, BLOCK, RELATIONSHIP_STATUSES
+from user_profile.managers import ProfileManager, RelationShipProfileManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,46 +20,6 @@ logger = logging.getLogger(__name__)
 
 def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
-
-
-class RelationShipProfileManager(models.Manager):
-    def get_total_following(self, profile_id):
-        """
-        Return total following of profile_id
-        :param profile_id: Profile
-        :return: Total following
-        """
-        qs = self.get_queryset()
-        return qs.filter(from_profile=profile_id, type=FOLLOWING).count()
-
-    def get_total_followers(self, profile_id):
-        """
-        Return total followers of profile_id
-        :param profile_id: Profile
-        :return: Total followers
-        """
-        qs = self.get_queryset()
-        return qs.filter(to_profile=profile_id, type=FOLLOWING).count()
-
-    def is_follow(self, to_profile, from_profile):
-        """
-        Return if from_profile follow to_profile
-        :param to_profile:
-        :param from_profile:
-        :return:
-        """
-        qs = self.get_queryset()
-        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=FOLLOWING).exists()
-
-    def is_blocked(self, to_profile, from_profile):
-        """
-        Return if from_profile blocks to_profile
-        :param to_profile:
-        :param from_profile:
-        :return:
-        """
-        qs = self.get_queryset()
-        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=BLOCK).exists()
 
 
 class RelationShipProfile(models.Model):
@@ -132,6 +80,7 @@ class Profile(models.Model):
     accepted_policy = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)
     reindex_related = ('user',)
+    objects = ProfileManager()
 
     class Meta:
         ordering = ['-user__date_joined']
@@ -268,7 +217,6 @@ class Profile(models.Model):
             return "all"
 
         return None
-
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):

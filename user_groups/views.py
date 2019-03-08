@@ -50,7 +50,8 @@ from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
 from user_groups.forms import EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .decorators import user_can_view_group, user_can_view_group_info
 from .forms import FormUserGroup, GroupThemeForm

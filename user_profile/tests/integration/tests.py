@@ -4,11 +4,10 @@ from django.db import IntegrityError
 from django.urls import reverse
 from user_profile.models import (
     RelationShipProfile,
-    FOLLOWING,
-    BLOCK,
     LikeProfile,
     Profile,
 )
+from user_profile.constants import FOLLOWING, BLOCK
 from publications.models import Publication
 from django.core.management import call_command
 

@@ -81,17 +81,18 @@ THIRD_PARTY_APPS = (
     'corsheaders',
     'guardian',
     'embed_video',
-    'haystack',
+    # 'haystack',
+    # 'django_elasticsearch_dsl',
     'badgify',
     'invitations',
     'webpack_loader',
     'user_guide',
     'graphene_django',
-    'celery_haystack',
+    # 'celery_haystack',
     'django_extensions',
-    'debug_toolbar',
     'cookielaw',
     'ckeditor',
+    'debug_toolbar',
 )
 
 FIRST_PARTY_APPS = (
@@ -287,7 +288,7 @@ AUTO_LOGOUT_DELAY = 60
 # Configuracion para django-el-pagination
 
 EL_PAGINATION_LOADING = """<img src="/static/img/ripple.gif" alt="loading" />"""
-EL_PAGINATION_PER_PAGE = 2
+EL_PAGINATION_PER_PAGE = 50
 
 ROOT_URLCONF = 'skyfolk.urls'
 
@@ -406,8 +407,16 @@ POSTMAN_AUTO_MODERATE_AS = True
 POSTMAN_DISABLE_USER_EMAILING = True
 
 # HAYSTACK REALTIME SIGNAL
-HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
+# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+# HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
+
+# ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+# ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': ELASTIC_URL
+#     },
+# }
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None

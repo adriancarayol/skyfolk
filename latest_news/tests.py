@@ -1,7 +1,8 @@
 from django.db.models import Q
 from django.test import TestCase
 from django.contrib.auth.models import User
-from user_profile.models import RelationShipProfile, FOLLOWING, BLOCK
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING, BLOCK
 from publications.models import Publication
 
 

@@ -18,7 +18,8 @@ from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupp
 from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery_groups.utils import optimize_publication_media, check_num_images, check_image_property
 

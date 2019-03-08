@@ -30,7 +30,8 @@ from model_utils import Choices
 from jsonfield.fields import JSONField
 from django.contrib.auth.models import Group
 from asgiref.sync import async_to_sync
-from user_profile.models import RelationShipProfile, BLOCK, FOLLOWING
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING, BLOCK
 
 channel_layer = get_channel_layer()
 

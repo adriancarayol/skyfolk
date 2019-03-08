@@ -26,7 +26,8 @@ from publications.views import logger
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images, check_image_property
 

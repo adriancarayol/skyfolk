@@ -7,6 +7,15 @@ DEBUG = True
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_USE_TLS = False
 
+
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -30,10 +39,10 @@ ALLOWED_HOSTS = ['*']
 # ELASTICSEARCH CONFIGURATION
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
-        'INDEX_NAME': 'haystack',
-    },
-}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+#         'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
+#         'INDEX_NAME': 'haystack',
+#     },
+# }

@@ -12,8 +12,8 @@ from .models import (
     RelationShipProfile,
     NotificationSettings,
     LikeProfile,
-    FOLLOWING,
 )
+from user_profile.constants import FOLLOWING
 from notifications.signals import notify
 from user_guide.models import Guide, GuideInfo
 from badgify.models import Award, Badge

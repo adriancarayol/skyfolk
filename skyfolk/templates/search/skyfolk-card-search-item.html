@@ -14,39 +14,39 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 </div>
             <div class="col s12 user-stats">
                     <div class="col l3 s4">
-                        <div class="tooltipped user-pic-wrapper" data-position="bottom" 
-                            data-tooltip="{% if item.profile.online %} Online {%else%} Offline {% endif %}"
-                            style="{% if item.profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
+                        <div class="tooltipped user-pic-wrapper" data-position="bottom"
+                            data-tooltip="{% if user_profile.online %} Online {%else%} Offline {% endif %}"
+                            style="{% if user_profile.online %}-webkit-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
                                 -moz-box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);
                                 box-shadow: 0 0 5px 0 rgba(70, 241, 118, 0.75);{% else %}
                                 -webkit-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
                                 -moz-box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);
-                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar item.profile.user.username css_class="responsive-img" %}</div>
+                                box-shadow: 0 0 5px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile.user.username css_class="responsive-img" %}</div>
                     </div>
                     <div class="col l9 s8">
                         <ul class="profile-info">
-                            <li><a id="info-user-name-profile" class="info-user-name" href="{% url "user_profile:profile" item.profile.user.username %}">@{{ item.profile.user.username }}</a> {% if item.profile.first_name or item.profile.last_name %}
-                                ({{ item.profile.user.first_name }} {{ item.profile.user.last_name }}) {% endif %}
+                            <li><a id="info-user-name-profile" class="info-user-name" href="{% url "user_profile:profile" user_profile.user.username %}">@{{ user_profile.user.username }}</a> {% if user_profile.first_name or user_profile.last_name %}
+                                ({{ user_profile.user.first_name }} {{ user_profile.user.last_name }}) {% endif %}
                                 {% if isFollower %}
                                 <i class="material-icons">favorite</i>¡Te sigue!{% endif %}</li>
-                                {% if item.profile.status %}
-                                    <li class="status">{{ item.profile.status }}</li>
+                                {% if user_profile.status %}
+                                    <li class="status">{{ user_profilee.status }}</li>
                                 {% endif %}
                         </ul>
                         <ul class="profile-items">
                             <li>
-                                <a href="/followers/{{ item.profile.user.username }}"><b
+                                <a href="/followers/{{ user_profile.user.username }}"><b
                                 id="followers-stats" class="blue-text">{% if item.followers %}{{ item.followers|intword }}{% else %}0{% endif %}</b> Seguidores</a>
                             </li>
                             <li>
                                 <a id="likes"
-                                href="{% url "user_profile:like_list" username=item.profile.user.username %}"><b class="likes-number blue-text">{% if item.likes %}{{ item.likes|intword }}{% else %}0{% endif %}</b>
+                                href="{% url "user_profile:like_list" username=user_profile.user.username %}"><b class="likes-number blue-text">{% if item.likes %}{{ item.likes|intword }}{% else %}0{% endif %}</b>
                                 Me gusta
                                 </a>
                             </li>
                             <li>
                                 <a class="to_gallery"
-                                href="/multimedia/{{ item.profile.user.username }}/"><b class="blue-text">{{ item.photos|add:item.videos|intword }}</b> Fotos y vídeos</a>
+                                href="/multimedia/{{ user_profile.user.username }}/"><b class="blue-text">{{ item.photos|add:item.videos|intword }}</b> Fotos y vídeos</a>
                             </li>
                             <li>
                                 {% if item.tags %}

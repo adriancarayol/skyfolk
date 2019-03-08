@@ -13,7 +13,7 @@ urlpatterns = [
         name="salad_user_content"),
     # url(r'^user-search/$', user_profile_views.search),
     url(r'^user-search/$',
-        user_profile_views.SearchUsuarioView.as_view(),
+        user_profile_views.SearchView.as_view(),
         name='general-search'),
     # url(r'^follow/by_affinity/$', login_required(
     #     user_profile_views.FollowingByAffinityList.as_view()),
@@ -23,7 +23,7 @@ urlpatterns = [
     #     name='followers-by-affinity'),
     # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
     url(r'^user-search/(?P<option>[\w]*)/$',
-        user_profile_views.SearchUsuarioView.as_view(),
+        user_profile_views.SearchView.as_view(),
         name='category-search'),
     url(r'^user-search-advanced/$', user_profile_views.advanced_view,
         name='advanced_view'),

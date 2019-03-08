@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
-from user_profile.models import BLOCK, RelationShipProfile, FOLLOWING
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING, BLOCK
 from user_profile.tasks import send_email
 from django.contrib.auth.models import Group
 

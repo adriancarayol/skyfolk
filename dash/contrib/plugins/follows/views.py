@@ -7,7 +7,8 @@ from django.http import Http404, HttpResponseForbidden
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dash.models import DashboardEntry
 from django.utils.decorators import method_decorator
-from user_profile.models import Profile, RelationShipProfile, FOLLOWING
+from user_profile.models import Profile, RelationShipProfile
+from user_profile.constants import FOLLOWING
 from django.template.loader import render_to_string
 
 

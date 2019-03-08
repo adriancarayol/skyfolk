@@ -26,7 +26,8 @@ from django.views.generic.edit import CreateView
 from mptt.templatetags.mptt_tags import cache_tree_children
 from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
-from user_profile.models import RelationShipProfile, BLOCK, Profile
+from user_profile.models import RelationShipProfile, Profile
+from user_profile.constants import BLOCK
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from .models import Publication, PublicationImage, PublicationVideo
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin

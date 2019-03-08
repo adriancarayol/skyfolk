@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse_lazy
-from user_profile.models import FOLLOWING, RelationShipProfile
+from user_profile.models import RelationShipProfile
+from user_profile.constants import FOLLOWING
 from embed_video.backends import detect_backend, EmbedVideoException
 from requests.exceptions import MissingSchema
 
