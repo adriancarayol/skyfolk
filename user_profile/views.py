@@ -17,7 +17,8 @@ from allauth.account.views import (
 from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from formtools.wizard.views import SessionWizardView
-from badgify.models import Award, Badge
+
+from badgify.models import Award
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
@@ -34,7 +35,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.urls import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Sum, Prefetch, CharField
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -43,8 +44,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from haystack.generic_views import SearchView
-from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from django.http import Http404
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
@@ -54,6 +53,7 @@ from publications.forms import PublicationForm, PublicationEdit, SharedPublicati
 from publications.models import Publication
 from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
+from user_profile.factories.card_user import FactorySkyfolkCardIdentifier
 from user_profile.forms import AdvancedSearchForm, EmailForm, UsernameForm
 from user_profile.forms import (
     ProfileForm,
@@ -1214,7 +1214,7 @@ class FollowersListView(TemplateView):
             likes_count=Count('to_profile_id')).order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
-        print(likes)
+
         for follow in qs:
             result_object = {'profile': follow.from_profile,
                              'tags': [tag for tag in tagged_items if tag.object_id == follow.from_profile.id],
@@ -1719,21 +1719,18 @@ def autocomplete(request):
     """
     Autocompletado de usuarios
     """
-    user = request.user
     q = request.GET.get("q", "")
 
     try:
-        sqs = (
-            SearchQuerySet()
-                .models(Profile)
-                .filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-        )
+        sqs = Profile.objects.filter(Q(user__username__istartswith=q) | Q(user__last_name__istartswith=q) | Q(
+            user__first_name__istartswith=q)).values('user__username', 'user__last_name',
+                                                     'user__first_name').distinct()[:7]
         suggestions = [
             {
-                "username": result.username,
-                "first_name": result.firstname,
-                "last_name": result.lastname,
-                "avatar": avatar(result.username),
+                "username": result['user__username'],
+                "first_name": result['user__first_name'],
+                "last_name": result['user__last_name'],
+                "avatar": avatar(result['user__username']),
             }
             for result in sqs
         ]
@@ -1745,7 +1742,7 @@ def autocomplete(request):
     return HttpResponse(the_data, content_type="application/json")
 
 
-class SearchUsuarioView(TemplateView):
+class SearchView(TemplateView):
     template_name = "search/search.html"
     form_class = SearchForm
 
@@ -1775,10 +1772,11 @@ class SearchUsuarioView(TemplateView):
         if criteria == "groups":
             self.models.append(UserGroups)
 
-        return super(SearchUsuarioView, self).dispatch(request, *args, **kwargs)
+        return super(SearchView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         q = self.request.GET.get("q", "")
+        page = self.request.GET.get("page", 1)
         profile = Profile.objects.get(user_id=self.request.user.id)
 
         users_not_blocked_me = RelationShipProfile.objects.filter(
@@ -1799,102 +1797,121 @@ class SearchUsuarioView(TemplateView):
         publications_results = []
 
         for model in self.models:
-            fields = [x for x in model._meta.fields if isinstance(x, CharField)]
-            search_queries = [Q(**{x.name + "__contains": q}) for x in fields]
-            q_object = Q()
-
-            for query in search_queries:
-                q_object = q_object | query
-            print(fields)
             if model == Photo:
-                photo_results = self._get_photos(followers, following, users_not_blocked_me, q_object)
+                photo_results = self._get_photos(followers, following, users_not_blocked_me, q)
             elif model == Video:
-                video_results = self._get_videos(followers, following, users_not_blocked_me, q_object)
+                video_results = self._get_videos(followers, following, users_not_blocked_me, q)
             elif model == Profile:
-                profile_results = self._get_profiles(q_object)
+                profile_results = self._get_profiles(q)
             elif model == UserGroups:
-                groups_results = self._get_groups(q_object)
+                groups_results = self._get_groups(q)
             elif model == Publication:
-                publications_results = self._get_publications(followers, following, users_not_blocked_me, q_object)
+                publications_results = self._get_publications(followers, following, users_not_blocked_me, q)
 
-        return list(chain(photo_results, video_results, profile_results, groups_results, publications_results))
+        result = list(sorted(chain(photo_results, video_results, profile_results, groups_results, publications_results),
+                             key=lambda objects: objects.id, reverse=True))
+        paginator = Paginator(result, 50)
 
-    def _get_publications(self, followers, following, users_not_blocked_me, q_object):
+        try:
+            results = paginator.page(page)
+        except PageNotAnInteger:
+            results = paginator.page(1)
+        except EmptyPage:
+            results = paginator.page(paginator.num_pages)
+
+        return results
+
+    def _get_publications(self, followers, following, users_not_blocked_me, q):
+        q_object = Q(content__icontains=q) | Q(author__username__iexact=q)
         return Publication.objects.filter(q_object &
-            (
-                    Q(board_owner_id=self.request.user.id)
-                    | Q(author_id=self.request.user.id)
-            )
-            | (
-                    (
-                            ~Q(board_owner__profile__in=users_not_blocked_me)
-                            & ~Q(board_owner__profile__privacity="N")
-                            & ~Q(author__profile__in=users_not_blocked_me)
-                    )
-                    & (
-                            (
-                                    Q(board_owner__profile__privacity="A")
-                                    | (
-                                            (
-                                                    Q(board_owner__profile__privacity="OF")
-                                                    & Q(board_owner__profile__in=following)
-                                            )
-                                            | (
-                                                    Q(board_owner__profile__privacity="OFAF")
-                                                    & (
-                                                            Q(board_owner__profile__in=following)
-                                                            | Q(board_owner__profile__in=followers)
-                                                    )
-                                            )
-                                    )
-                                    & (
-                                            (
-                                                    Q(author__profile__privacity="OF")
-                                                    & Q(author__profile__in=following)
-                                            )
-                                            | (
-                                                    Q(author__profile__privacity="OFAF")
-                                                    & (
-                                                            Q(author__profile__in=following)
-                                                            | Q(author__profile__in=followers)
-                                                    )
-                                            )
-                                            | Q(author__profile__privacity="A")
-                                    )
-                            )
-                            | (
-                                    Q(author__profile__privacity="A")
-                                    | (
-                                            (
-                                                    Q(author__profile__privacity="OF")
-                                                    & Q(author__profile__in=following)
-                                            )
-                                            | (
-                                                    Q(author__profile__privacity="OFAF")
-                                                    & (
-                                                            Q(author__profile__in=following)
-                                                            | Q(author__profile__in=followers)
-                                                    )
-                                            )
-                                    )
-                                    & (
-                                            (
-                                                    Q(board_owner__profile__privacity="OF")
-                                                    & Q(board_owner__profile__in=following)
-                                            )
-                                            | (
-                                                    Q(board_owner__profile__privacity="OFAF")
-                                                    & (
-                                                            Q(board_owner__profile__in=following)
-                                                            | Q(board_owner__profile__in=followers)
-                                                    )
-                                            )
-                                            | Q(board_owner__profile__privacity="A")
-                                    )
-                            )
-                    )
-            )
-        ).select_related(
+                                          ((
+                                                   Q(board_owner_id=self.request.user.id)
+                                                   | Q(author_id=self.request.user.id)
+                                           )
+                                           | (
+                                                   (
+                                                           ~Q(board_owner__profile__in=users_not_blocked_me)
+                                                           & ~Q(board_owner__profile__privacity="N")
+                                                           & ~Q(author__profile__in=users_not_blocked_me)
+                                                   )
+                                                   & (
+                                                           (
+                                                                   Q(board_owner__profile__privacity="A")
+                                                                   | (
+                                                                           (
+                                                                                   Q(
+                                                                                       board_owner__profile__privacity="OF")
+                                                                                   & Q(
+                                                                               board_owner__profile__in=following)
+                                                                           )
+                                                                           | (
+                                                                                   Q(
+                                                                                       board_owner__profile__privacity="OFAF")
+                                                                                   & (
+                                                                                           Q(
+                                                                                               board_owner__profile__in=following)
+                                                                                           | Q(
+                                                                                       board_owner__profile__in=followers)
+                                                                                   )
+                                                                           )
+                                                                   )
+                                                                   & (
+                                                                           (
+                                                                                   Q(author__profile__privacity="OF")
+                                                                                   & Q(author__profile__in=following)
+                                                                           )
+                                                                           | (
+                                                                                   Q(author__profile__privacity="OFAF")
+                                                                                   & (
+                                                                                           Q(
+                                                                                               author__profile__in=following)
+                                                                                           | Q(
+                                                                                       author__profile__in=followers)
+                                                                                   )
+                                                                           )
+                                                                           | Q(author__profile__privacity="A")
+                                                                   )
+                                                           )
+                                                           | (
+                                                                   Q(author__profile__privacity="A")
+                                                                   | (
+                                                                           (
+                                                                                   Q(author__profile__privacity="OF")
+                                                                                   & Q(author__profile__in=following)
+                                                                           )
+                                                                           | (
+                                                                                   Q(author__profile__privacity="OFAF")
+                                                                                   & (
+                                                                                           Q(
+                                                                                               author__profile__in=following)
+                                                                                           | Q(
+                                                                                       author__profile__in=followers)
+                                                                                   )
+                                                                           )
+                                                                   )
+                                                                   & (
+                                                                           (
+                                                                                   Q(
+                                                                                       board_owner__profile__privacity="OF")
+                                                                                   & Q(
+                                                                               board_owner__profile__in=following)
+                                                                           )
+                                                                           | (
+                                                                                   Q(
+                                                                                       board_owner__profile__privacity="OFAF")
+                                                                                   & (
+                                                                                           Q(
+                                                                                               board_owner__profile__in=following)
+                                                                                           | Q(
+                                                                                       board_owner__profile__in=followers)
+                                                                                   )
+                                                                           )
+                                                                           | Q(board_owner__profile__privacity="A")
+                                                                   )
+                                                           )
+                                                   )
+                                           ))
+                                          ).select_related(
             "author",
             "board_owner",
             "shared_publication",
@@ -1913,68 +1930,122 @@ class SearchUsuarioView(TemplateView):
             "shared_group_publication__extra_content",
             "shared_publication__videos",
             "shared_publication__extra_content",
-        ).filter(deleted=False)
+        ).filter(deleted=False).distinct().order_by('-created')[:3000]
 
-    def _get_groups(self, q_object):
-        return UserGroups.objects.all()
+    def _get_groups(self, q):
+        q_object = Q(name__icontains=q) | Q(description__icontains=q) | Q(tags__name=q)
+        return UserGroups.objects.filter(q_object).distinct()[:3000]
 
-    def _get_profiles(self, q_object):
-        return Profile.objects.filter(Q(user__is_active=True) & ~Q(privacity="N"))
+    def _get_profiles(self, q):
+        q_object = Q(user__username__iexact=q) | Q(user__first_name__icontains=q) | Q(user__last_name__icontains=q) | Q(
+            tags__name=q)
+        qs = Profile.objects.filter(q_object & (Q(user__is_active=True) & ~Q(privacity="N"))).distinct()[:3000]
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.id for result in qs]
 
-    def _get_videos(self, followers, following, users_not_blocked_me, q_object):
-        return Video.objects.filter(
-            Q(owner_id=self.request.user.id)
-            | (
-                    (
-                            ~Q(owner__profile__privacity="N")
-                            & ~Q(owner__profile__in=users_not_blocked_me)
-                    )
-                    & (
-                            (
-                                    Q(owner__profile__privacity="OF")
-                                    & Q(owner__profile__in=following)
-                                    & Q(is_public=True)
-                            )
-                            | (Q(owner__profile__privacity="A") & Q(is_public=True))
-                            | (
-                                    Q(owner__profile__privacity="OFAF")
-                                    & (
-                                            Q(owner__profile__in=following)
-                                            | Q(owner__profile__in=followers)
-                                    )
-                            )
-                    )
-            )
-        ).select_related("owner").prefetch_related("tags")
+        following_result = []
 
-    def _get_photos(self, followers, following, users_not_blocked_me, q_object):
-        return Photo.objects.filter(
-            Q(owner_id=self.request.user.id)
-            | (
-                    (
-                            ~Q(owner__profile__privacity="N")
-                            & ~Q(owner__profile__in=users_not_blocked_me)
-                    )
-                    & (
-                            (
-                                    Q(owner__profile__privacity="OF")
-                                    & Q(owner__profile__in=following)
-                                    & Q(is_public=True)
-                            )
-                            | (Q(owner__profile__privacity="A") & Q(is_public=True))
-                            | (
-                                    Q(owner__profile__privacity="OFAF")
-                                    & (
-                                            Q(owner__profile__in=following)
-                                            | Q(owner__profile__in=followers)
-                                    )
-                            )
-                    )
-            )
-        ).select_related("owner").prefetch_related("tags")
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).annotate(
+            follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
+        likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            likes_count=Count('to_profile_id')).order_by()
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+
+        for follow in qs:
+            tags = [tag for tag in tagged_items if tag.object_id == follow.id]
+            count_videos = next(iter([video['videos_count'] for video in videos if
+                                      video['owner__profile__id'] == follow.id] or []), 0)
+
+            count_photos = next(iter([photo['photos_count'] for photo in photos if
+                                      photo['owner__profile__id'] == follow.id] or []), 0)
+
+            followers = next(iter([follower['follower_count'] for follower in followers_result if
+                                   follower['to_profile_id'] == follow.id] or []), 0)
+            count_likes = next(
+                iter([like['likes_count'] for like in likes if
+                      like['to_profile_id'] == follow.id] or []), 0)
+
+            exp = next(iter([exp['exp_count'] for exp in total_exp if
+                             exp['user_id'] == follow.id] or []), 0)
+
+            skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
+            skyfolk_card_id.id = follow.id
+            skyfolk_card_id.profile = follow
+            skyfolk_card_id.tags = tags
+            skyfolk_card_id.videos = count_videos
+            skyfolk_card_id.photos = count_photos
+            skyfolk_card_id.likes = count_likes
+            skyfolk_card_id.followers = followers
+            skyfolk_card_id.exp = exp
+
+            following_result.append(skyfolk_card_id)
+
+        return following_result
+
+    def _get_videos(self, followers, following, users_not_blocked_me, q):
+        q_object = Q(owner__username__iexact=q) | Q(owner__first_name__iexact=q) | Q(owner__last_name__icontains=q) | Q(
+            name__icontains=q) | Q(tags__name=q)
+        return Video.objects.filter(q_object & (
+                Q(owner_id=self.request.user.id)
+                | (
+                        (
+                                ~Q(owner__profile__privacity="N")
+                                & ~Q(owner__profile__in=users_not_blocked_me)
+                        )
+                        & (
+                                (
+                                        Q(owner__profile__privacity="OF")
+                                        & Q(owner__profile__in=following)
+                                        & Q(is_public=True)
+                                )
+                                | (Q(owner__profile__privacity="A") & Q(is_public=True))
+                                | (
+                                        Q(owner__profile__privacity="OFAF")
+                                        & (
+                                                Q(owner__profile__in=following)
+                                                | Q(owner__profile__in=followers)
+                                        )
+                                )
+                        )
+                ))
+                                    ).select_related("owner").prefetch_related("tags").order_by(
+            '-date_added').distinct()[:3000]
+
+    def _get_photos(self, followers, following, users_not_blocked_me, q):
+        q_object = Q(owner__username__iexact=q) | Q(owner__first_name__iexact=q) | Q(owner__last_name__icontains=q) | Q(
+            title__icontains=q) | Q(tags__name=q)
+        return Photo.objects.filter(q_object & (
+                Q(owner_id=self.request.user.id)
+                | (
+                        (
+                                ~Q(owner__profile__privacity="N")
+                                & ~Q(owner__profile__in=users_not_blocked_me)
+                        )
+                        & (
+                                (
+                                        Q(owner__profile__privacity="OF")
+                                        & Q(owner__profile__in=following)
+                                        & Q(is_public=True)
+                                )
+                                | (Q(owner__profile__privacity="A") & Q(is_public=True))
+                                | (
+                                        Q(owner__profile__privacity="OFAF")
+                                        & (
+                                                Q(owner__profile__in=following)
+                                                | Q(owner__profile__in=followers)
+                                        )
+                                )
+                        )
+                ))).select_related("owner").prefetch_related("tags").order_by('-date_added').distinct()[:3000]
 
     def get_context_data(self, **kwargs):
-        ctx = super(SearchUsuarioView, self).get_context_data(**kwargs)
+        ctx = super(SearchView, self).get_context_data(**kwargs)
 
         try:
             ctx["tab"] = self.kwargs["option"]

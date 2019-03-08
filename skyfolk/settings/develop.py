@@ -39,10 +39,10 @@ ALLOWED_HOSTS = ['*']
 # ELASTICSEARCH CONFIGURATION
 ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
-        'INDEX_NAME': 'haystack',
-    },
-}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+#         'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
+#         'INDEX_NAME': 'haystack',
+#     },
+# }
