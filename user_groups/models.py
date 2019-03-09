@@ -152,7 +152,6 @@ class LikeGroup(models.Model):
     """
 
     class Meta:
-        get_latest_by = 'created'
         unique_together = ('from_like', 'to_like')
 
     from_like = models.ForeignKey(User, related_name='from_likegroup', on_delete=models.CASCADE)

@@ -1,17 +1,8 @@
 {% load app_filters %}
 {% load avatar_tags %}
 {% load static %}
-{% if following %}
-    {% for item in following %}
-        <div class="col l3 s12 z-depth-1-half" style="border-radius: 7px; margin: 10px;">
-            {% include "user_profile/skyfolk-card.html" %}
-        </div>
-    {% endfor %}
-{% elif followers %}
-
-    {% for item in followers %}
-        <div class="col l3 s12 z-depth-1-half" style="border-radius: 7px; margin: 10px;">
-            {% include "user_profile/skyfolk-card.html" %}
-        </div>
-    {% endfor %}
-{% endif %}
+{% for item in object_list %}
+    <div class="col l3 s12 z-depth-1-half" style="border-radius: 7px; margin: 10px;">
+        {% include "user_profile/skyfolk-card.html" %}
+    </div>
+{% endfor %}

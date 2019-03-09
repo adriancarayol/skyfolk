@@ -1196,8 +1196,7 @@ class FollowersListView(TemplateView):
 
         return users
 
-    def get_followers(self):
-        qs = self._get_relation_ships()
+    def get_followers(self, qs):
         ct = ContentType.objects.get_for_model(Profile)
         ids = [result.from_profile.id for result in qs]
 
@@ -1208,7 +1207,7 @@ class FollowersListView(TemplateView):
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
-        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).annotate(
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
         likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             likes_count=Count('to_profile_id')).order_by()
@@ -1236,7 +1235,9 @@ class FollowersListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         context["url_name"] = "followers"
-        context['followers'] = self.get_followers()
+        relation_ships = self._get_relation_ships()
+        context['relation_ships'] = relation_ships
+        context['object_list'] = self.get_followers(relation_ships)
         # context["component"] = "followers_react.js"
         context["username"] = self.kwargs.get("username", None)
         return context
@@ -1276,8 +1277,7 @@ class FollowingListView(TemplateView):
 
         return users
 
-    def get_following(self):
-        qs = self._get_relation_ships()
+    def get_following(self, qs):
         ct = ContentType.objects.get_for_model(Profile)
         ids = [result.to_profile.id for result in qs]
 
@@ -1288,7 +1288,7 @@ class FollowingListView(TemplateView):
             videos_count=Count('id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             photos_count=Count('id')).values('owner__profile__id', 'photos_count').order_by()
-        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).annotate(
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             follower_count=Count('to_profile')).values('follower_count', 'to_profile_id').order_by()
         likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             likes_count=Count('to_profile')).values(
@@ -1317,7 +1317,9 @@ class FollowingListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         context["url_name"] = "following"
-        context["following"] = self.get_following()
+        relation_ships = self._get_relation_ships()
+        context['relation_ships'] = relation_ships
+        context["object_list"] = self.get_following(relation_ships)
         # context["component"] = "following_react.js"
         context["username"] = self.kwargs.get("username", None)
         return context
@@ -1681,15 +1683,11 @@ class RecommendationUsers(ListView):
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url="/")
 
 
-class LikeListUsers(ListView):
+class LikeListUsers(TemplateView):
     """
     Lista de usuarios que han dado like a un perfil
     """
-
-    model = User
     template_name = "account/like_list.html"
-    context_object_name = "object_list"
-    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(LikeListUsers, self).__init__(*args, **kwargs)
@@ -1699,15 +1697,80 @@ class LikeListUsers(ListView):
     def dispatch(self, request, *args, **kwargs):
         return super(LikeListUsers, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        username = self.kwargs["username"]
-        profile = Profile.objects.get(user__username=username)
-        return LikeProfile.objects.filter(to_profile=profile).select_related(
+    def _get_skyfolk_card_of_like_profiles(self, users):
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.from_profile.id for result in users]
+
+        following_result = []
+
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
+        likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            likes_count=Count('to_profile_id')).order_by()
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+
+        for like_profile in users:
+            tags = [tag for tag in tagged_items if tag.object_id == like_profile.from_profile.id]
+            count_videos = next(iter([video['videos_count'] for video in videos if
+                                      video['owner__profile__id'] == like_profile.from_profile.id] or []), 0)
+
+            count_photos = next(iter([photo['photos_count'] for photo in photos if
+                                      photo['owner__profile__id'] == like_profile.from_profile.id] or []), 0)
+
+            followers = next(iter([follower['follower_count'] for follower in followers_result if
+                                   follower['to_profile_id'] == like_profile.from_profile.id] or []), 0)
+            count_likes = next(
+                iter([like['likes_count'] for like in likes if
+                      like['to_profile_id'] == like_profile.from_profile.id] or []), 0)
+
+            exp = next(iter([exp['exp_count'] for exp in total_exp if
+                             exp['user_id'] == like_profile.from_profile.id] or []), 0)
+
+            skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
+            skyfolk_card_id.id = like_profile.from_profile.id
+            skyfolk_card_id.profile = like_profile.from_profile
+            skyfolk_card_id.tags = tags
+            skyfolk_card_id.videos = count_videos
+            skyfolk_card_id.photos = count_photos
+            skyfolk_card_id.likes = count_likes
+            skyfolk_card_id.followers = followers
+            skyfolk_card_id.exp = exp
+
+            following_result.append(skyfolk_card_id)
+
+        return following_result
+
+    def _get_like_profile(self, page, username):
+        try:
+            profile = Profile.objects.get(user__username=username)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        paginator = Paginator(LikeProfile.objects.filter(to_profile=profile).select_related(
             "from_profile", "from_profile__user"
-        )
+        ), 25)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)
+        return users
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        username = self.kwargs.get('username')
+        likes_profile = self._get_like_profile(page, username)
+        context['object_list'] = self._get_skyfolk_card_of_like_profiles(likes_profile)
+        context['likes_profile'] = likes_profile
         context["user_profile"] = self.kwargs["username"]
         return context
 
@@ -1950,7 +2013,7 @@ class SearchView(TemplateView):
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
-        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).annotate(
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
         likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
             likes_count=Count('to_profile_id')).order_by()

@@ -20,7 +20,7 @@ from django.db.models import (
     IntegerField,
     OuterRef,
     Subquery,
-)
+    Sum)
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
@@ -29,7 +29,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import six
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 from guardian.shortcuts import remove_perm
@@ -37,8 +37,12 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.template.loader import render_to_string
+from taggit.models import TaggedItem
+
+from badgify.models import Award
 from notifications.models import Notification
 from notifications.signals import notify
+from photologue.models import Video, Photo
 from publications.forms import SharedPublicationForm
 from publications.models import Publication
 from publications_groups.forms import (
@@ -50,7 +54,8 @@ from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
 from user_groups.forms import EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
-from user_profile.models import RelationShipProfile, Profile
+from user_profile.factories.card_user import FactorySkyfolkCardIdentifier
+from user_profile.models import RelationShipProfile, Profile, LikeProfile
 from user_profile.constants import BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .decorators import user_can_view_group, user_can_view_group_info
@@ -171,7 +176,7 @@ class UserGroupList(ListView):
         return super(UserGroupList, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.request.user.user_groups.all()
+        return self.request.user.user_groups.all().prefetch_related('tags', 'users')
 
 
 @user_can_view_group
@@ -208,16 +213,16 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
 
         theme_publications = (
             PublicationTheme.objects.filter(board_theme=OuterRef("pk"), deleted=False)
-            .order_by()
-            .values("board_theme")
+                .order_by()
+                .values("board_theme")
         )
 
         total_theme_publications = theme_publications.annotate(c=Count("*")).values("c")
 
         themes = (
             GroupTheme.objects.filter(board_group_id=group_profile.id)
-            .annotate(likes=Count("like_theme"), hates=Count("hate_theme"))
-            .annotate(
+                .annotate(likes=Count("like_theme"), hates=Count("hate_theme"))
+                .annotate(
                 have_like=Count(
                     Case(
                         When(like_theme__by_user_id=user.id, then=Value(1)),
@@ -225,7 +230,7 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
                     )
                 )
             )
-            .annotate(
+                .annotate(
                 have_hate=Count(
                     Case(
                         When(hate_theme__by_user_id=user.id, then=Value(1)),
@@ -233,12 +238,12 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
                     )
                 )
             )
-            .annotate(
+                .annotate(
                 total_pubs=Subquery(
                     total_theme_publications, output_field=IntegerField()
                 )
             )
-            .select_related("owner")
+                .select_related("owner")
         )
 
         paginator = Paginator(themes, 20)
@@ -257,8 +262,8 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
         Publication.objects.filter(
             shared_group_publication__id=OuterRef("pk"), deleted=False
         )
-        .order_by()
-        .values("shared_group_publication__id")
+            .order_by()
+            .values("shared_group_publication__id")
     )
 
     total_shared_publications = shared_publications.annotate(c=Count("*")).values("c")
@@ -288,19 +293,19 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
                 )
             ),
         )
-        .annotate(
+            .annotate(
             total_shared=Subquery(
                 total_shared_publications, output_field=IntegerField()
             )
         )
-        .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
-        .filter(
+            .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+            .filter(
             Q(board_group=group_profile)
             & Q(deleted=False)
             & Q(level__lte=0)
             & ~Q(author__profile__in=users_not_blocked_me)
         )
-        .prefetch_related(
+            .prefetch_related(
             "extra_content",
             "images",
             "videos",
@@ -308,7 +313,7 @@ def group_profile(request, groupname, template="groups/group_profile.html"):
             "user_give_me_hate",
             "tags",
         )
-        .select_related("author", "board_group", "parent")
+            .select_related("author", "board_group", "parent")
     )
 
     paginator = Paginator(publications, 20)
@@ -503,58 +508,182 @@ def like_group(request):
     return JsonResponse({"response": "error"})
 
 
-class FollowersGroup(ListView):
+class FollowersGroup(TemplateView):
     """
     Vista con los seguidores (usuarios) de un grupo
     """
 
-    context_object_name = "user_list"
     template_name = "groups/followers.html"
-    paginate_by = 25
-
-    def __init__(self, *args, **kwargs):
-        super(FollowersGroup, self).__init__(*args, **kwargs)
-        self.group = None
 
     @method_decorator(user_can_view_group_info)
     def dispatch(self, request, *args, **kwargs):
+        try:
+            self.group = UserGroups.objects.get(slug=self.kwargs.pop("groupname", None))
+        except ObjectDoesNotExist:
+            raise Http404
+
         return super(FollowersGroup, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        self.group = UserGroups.objects.get(slug=self.kwargs["groupname"])
-        return self.group.users.all()
+    def _get_like_group(self, page):
+        qs = self.group.users.filter(is_active=True).select_related('profile').order_by()
+
+        paginator = Paginator(qs, 25)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)
+
+        return users
+
+    def _get_skyfolk_card_of_like_profiles(self, users):
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.profile.id for result in users]
+
+        following_result = []
+
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
+        likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            likes_count=Count('to_profile_id')).order_by()
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+
+        for member in users:
+            tags = [tag for tag in tagged_items if tag.object_id == member.profile.id]
+            count_videos = next(iter([video['videos_count'] for video in videos if
+                                      video['owner__profile__id'] == member.profile.id] or []), 0)
+
+            count_photos = next(iter([photo['photos_count'] for photo in photos if
+                                      photo['owner__profile__id'] == member.profile.id] or []), 0)
+
+            followers = next(iter([follower['follower_count'] for follower in followers_result if
+                                   follower['to_profile_id'] == member.profile.id] or []), 0)
+            count_likes = next(
+                iter([like['likes_count'] for like in likes if
+                      like['to_profile_id'] == member.profile.id] or []), 0)
+
+            exp = next(iter([exp['exp_count'] for exp in total_exp if
+                             exp['user_id'] == member.profile.id] or []), 0)
+
+            skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
+            skyfolk_card_id.id = member.profile.id
+            skyfolk_card_id.profile = member.profile
+            skyfolk_card_id.tags = tags
+            skyfolk_card_id.videos = count_videos
+            skyfolk_card_id.photos = count_photos
+            skyfolk_card_id.likes = count_likes
+            skyfolk_card_id.followers = followers
+            skyfolk_card_id.exp = exp
+
+            following_result.append(skyfolk_card_id)
+
+        return following_result
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
         user = self.request.user
+        page = self.request.GET.get('page', 1)
+        results = self._get_like_group(page)
+        context["members"] = results
+        context["object_list"] = self._get_skyfolk_card_of_like_profiles(results)
         context["group"] = self.group
         context["enable_kick_btn"] = user.has_perm("kick_member", self.group)
         return context
 
 
-class LikeListGroup(ListView):
+class LikeListGroup(TemplateView):
     """
     Vista con los usuarios que han dado like a un grupo
     """
-
-    context_object_name = "like_list"
     template_name = "groups/user_likes.html"
-    paginate_by = 25
-
-    def __init__(self, *args, **kwargs):
-        super(LikeListGroup, self).__init__(*args, **kwargs)
-        self.group = None
 
     @method_decorator(user_can_view_group_info)
     def dispatch(self, request, *args, **kwargs):
+        try:
+            self.group = UserGroups.objects.get(slug=self.kwargs.pop("groupname", None))
+        except ObjectDoesNotExist:
+            raise Http404
+
         return super(LikeListGroup, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        self.group = UserGroups.objects.get(slug=self.kwargs.pop("groupname", None))
-        return LikeGroup.objects.filter(to_like_id=self.group.id)
+    def _get_like_group(self, page):
+        qs = LikeGroup.objects.filter(to_like_id=self.group.id).select_related('from_like__profile').order_by('-id',
+                                                                                                              '-created')
+
+        paginator = Paginator(qs, 25)
+
+        try:
+            users = paginator.page(page)
+        except PageNotAnInteger:
+            users = paginator.page(1)
+        except EmptyPage:
+            users = paginator.page(paginator.num_pages)
+
+        return users
+
+    def _get_skyfolk_card_of_like_profiles(self, users):
+        ct = ContentType.objects.get_for_model(Profile)
+        ids = [result.from_like.profile.id for result in users]
+
+        following_result = []
+
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
+        photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
+            photos_count=Count('owner__profile__id')).values('owner__profile__id', 'photos_count').order_by()
+        followers_result = RelationShipProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            follower_count=Count('to_profile_id')).values('follower_count', 'to_profile_id').order_by()
+        likes = LikeProfile.objects.filter(to_profile__id__in=ids).values('to_profile_id').annotate(
+            likes_count=Count('to_profile_id')).order_by()
+        total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
+            exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+
+        for like_profile in users:
+            tags = [tag for tag in tagged_items if tag.object_id == like_profile.from_like.profile.id]
+            count_videos = next(iter([video['videos_count'] for video in videos if
+                                      video['owner__profile__id'] == like_profile.from_like.profile.id] or []), 0)
+
+            count_photos = next(iter([photo['photos_count'] for photo in photos if
+                                      photo['owner__profile__id'] == like_profile.from_like.profile.id] or []), 0)
+
+            followers = next(iter([follower['follower_count'] for follower in followers_result if
+                                   follower['to_profile_id'] == like_profile.from_like.profile.id] or []), 0)
+            count_likes = next(
+                iter([like['likes_count'] for like in likes if
+                      like['to_profile_id'] == like_profile.from_like.profile.id] or []), 0)
+
+            exp = next(iter([exp['exp_count'] for exp in total_exp if
+                             exp['user_id'] == like_profile.from_like.profile.id] or []), 0)
+
+            skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
+            skyfolk_card_id.id = like_profile.from_like.profile.id
+            skyfolk_card_id.profile = like_profile.from_like.profile
+            skyfolk_card_id.tags = tags
+            skyfolk_card_id.videos = count_videos
+            skyfolk_card_id.photos = count_photos
+            skyfolk_card_id.likes = count_likes
+            skyfolk_card_id.followers = followers
+            skyfolk_card_id.exp = exp
+
+            following_result.append(skyfolk_card_id)
+
+        return following_result
 
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        results = self._get_like_group(page)
+        context["like_users"] = results
+        context["object_list"] = self._get_skyfolk_card_of_like_profiles(results)
         context["group"] = self.group
         return context
 
@@ -687,8 +816,8 @@ class ProfileGroups(APIView):
 
         queryset = (
             UserGroups.objects.filter(id__in=user.user_groups.all())
-            .annotate(members=Count("users"))
-            .order_by("-created")
+                .annotate(members=Count("users"))
+                .order_by("-created")
         )
 
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
@@ -869,11 +998,11 @@ class GroupThemeView(DetailView):
 
         return (
             GroupTheme.objects.filter(slug=self.kwargs["slug"])
-            .annotate(
+                .annotate(
                 likes=Count("like_theme", distinct=True),
                 hates=Count("hate_theme", distinct=True),
             )
-            .annotate(
+                .annotate(
                 have_like=Count(
                     Case(
                         When(like_theme__by_user_id=user.id, then=Value(1)),
@@ -881,7 +1010,7 @@ class GroupThemeView(DetailView):
                     )
                 )
             )
-            .annotate(
+                .annotate(
                 have_hate=Count(
                     Case(
                         When(hate_theme__by_user_id=user.id, then=Value(1)),
@@ -889,7 +1018,7 @@ class GroupThemeView(DetailView):
                     )
                 )
             )
-            .select_related("owner", "board_group")
+                .select_related("owner", "board_group")
         )
 
     def get_context_data(self, **kwargs):
@@ -914,9 +1043,9 @@ class GroupThemeView(DetailView):
                     )
                 ),
             )
-            .filter(board_theme=self.object, deleted=False)
-            .select_related("author", "board_theme", "parent", "parent__author")
-            .order_by("created")
+                .filter(board_theme=self.object, deleted=False)
+                .select_related("author", "board_theme", "parent", "parent__author")
+                .order_by("created")
         )
 
         paginator = Paginator(publications, 25)
@@ -959,7 +1088,7 @@ class DeleteGroupTheme(DeleteView):
         group = UserGroups.objects.get(id=self.object.board_group_id)
 
         if self.object.owner_id != user.id and (
-            user != group.owner_id and not user.has_perm("delete_publication", group)
+                user != group.owner_id and not user.has_perm("delete_publication", group)
         ):
             return JsonResponse(data)
 

@@ -2,49 +2,58 @@
 {% comment %}
   Lista de usuarios que han dado like al perfil pasado como parametro de la url.
   {% endcomment %}
-  {% load static %}
-  {% block title %}Likes de {{ user_profile }}{% endblock %}
-  {% block extra-css %}
-  <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
-  <link rel="stylesheet" href="{% static "css/profile.css" %}" onload="if(media!='all')media='all'">
-  {% endblock %}
-  {% block content %}
-  <div class="container">
-    <div class="row">
-        <div class="col l12 m10 s12 container-responsive">
-            <div class="row">
-                {% include "account/like_entries.html" %}
+{% load static %}
+{% block title %}Likes de {{ user_profile }}{% endblock %}
+{% block extra-css %}
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{% static "css/profile.css" %}" onload="if(media!='all')media='all'">
+    <style>
+        .user-card {
+            height: 300px;
+        }
+
+        .user-avatar {
+            height: 80% !important;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m10 s12 container-responsive">
+                <div class="row">
+                    {% include "account/like_entries.html" %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        {% if is_paginated %}
-        <ul class="pagination center">
-            {% if page_obj.has_previous %}
-            <li><a href="?page={{ page_obj.previous_page_number }}"><i
-                class="material-icons">chevron_left</i></a>
-            </li>
-            {% else %}
-            <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
-            {% endif %}
-            {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
-            {% else %}
-            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <li><a href="?page={{ page_obj.next_page_number }}">
-                <i class="material-icons">chevron_right</i>
-            </a></li>
-            {% else %}
-            <li class="disabled"><span>
+        <div class="row">
+            {% if likes_profile.has_other_pages %}
+                <ul class="pagination center">
+                    {% if likes_profile.has_previous %}
+                        <li><a href="?page={{ likes_profile.previous_page_number }}"><i
+                                class="material-icons">chevron_left</i></a>
+                        </li>
+                    {% else %}
+                        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+                    {% endif %}
+                    {% for i in likes_profile.paginator.page_range %}
+                        {% if likes_profile.number == i %}
+                            <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
+                        {% else %}
+                            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if likes_profile.has_next %}
+                        <li><a href="?page={{ likes_profile.next_page_number }}">
+                            <i class="material-icons">chevron_right</i>
+                        </a></li>
+                    {% else %}
+                        <li class="disabled"><span>
                 <i class="material-icons">chevron_right</i>
             </span></li>
+                    {% endif %}
+                </ul>
             {% endif %}
-        </ul>
-        {% endif %}
+        </div>
     </div>
-</div> 
 {% endblock %}

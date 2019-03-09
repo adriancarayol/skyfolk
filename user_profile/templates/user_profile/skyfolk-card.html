@@ -53,7 +53,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 <div class="interests tooltipped" data-position="bottom"
                                 data-username="{{ user_profile.user.username }}"
                                 data-tooltip="">
-                                    {% for i in item.tags %}
+                                    {% for i in item.tags.all %}
                                         <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i.tag.name }}"><b>#{{ i.tag.name }}</b></a>
                                     {% endfor %}
                                 </div>
