@@ -24,26 +24,25 @@ Template para los seguidores de un perfil
             </div>
         </div>
     </div>
-
     <div class="row">
-        {% if is_paginated %}
+        {% if relation_ships.has_other_pages %}
             <ul class="pagination center">
-                {% if page_obj.has_previous %}
-                    <li><a href="?page={{ page_obj.previous_page_number }}"><i
+                {% if relation_ships.has_previous %}
+                    <li><a href="?page={{ relation_ships.previous_page_number }}"><i
                             class="material-icons">chevron_left</i></a>
                     </li>
                 {% else %}
                     <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
                 {% endif %}
-                {% for i in paginator.page_range %}
-                    {% if page_obj.number == i %}
+                {% for i in relation_ships.paginator.page_range %}
+                    {% if relation_ships.number == i %}
                         <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
                     {% else %}
                         <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
-                {% if page_obj.has_next %}
-                    <li><a href="?page={{ page_obj.next_page_number }}">
+                {% if relation_ships.has_next %}
+                    <li><a href="?page={{ relation_ships.next_page_number }}">
                         <i class="material-icons">chevron_right</i>
                     </a></li>
                 {% else %}
@@ -53,7 +52,6 @@ Template para los seguidores de un perfil
                 {% endif %}
             </ul>
         {% endif %}
-    </div>
     </div>
     <script src="{% static "js/friends.js" %}"></script>
     {% if url_name == "following" %}

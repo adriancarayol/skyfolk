@@ -6,6 +6,15 @@ Template para los seguidores de un perfil
 {% block title %}Usuarios de {{ group.name }}{% endblock %}
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
+    <style>
+        .user-card {
+            height: 300px;
+        }
+
+        .user-avatar {
+            height: 80% !important;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -17,24 +26,24 @@ Template para los seguidores de un perfil
             </div>
         </div>
         <div class="row">
-            {% if is_paginated %}
+            {% if like_users.has_other_pages %}
                 <ul class="pagination center">
-                    {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}"><i
+                    {% if like_users.has_previous %}
+                        <li><a href="?page={{ like_users.previous_page_number }}"><i
                                 class="material-icons">chevron_left</i></a>
                         </li>
                     {% else %}
                         <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
                     {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
+                    {% for i in like_users.paginator.page_range %}
+                        {% if like_users.number == i %}
                             <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
                         {% else %}
                             <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
                         {% endif %}
                     {% endfor %}
-                    {% if page_obj.has_next %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">
+                    {% if like_users.has_next %}
+                        <li><a href="?page={{ like_users.next_page_number }}">
                             <i class="material-icons">chevron_right</i>
                         </a></li>
                     {% else %}
