@@ -1,5 +1,4 @@
 import json
-import logging
 import random
 import uuid
 
@@ -18,6 +17,7 @@ from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from formtools.wizard.views import SessionWizardView
 
+from awards.models import UserRank
 from badgify.models import Award
 from dash.helpers import iterable_to_dict
 from user_groups.models import LikeGroup
@@ -76,6 +76,7 @@ from utils.lists import union_without_duplicates
 from taggit.models import TaggedItem
 from .utils import crop_image, make_pagination_html
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from loguru import logger
 
 
 def load_profile_publications(request, page, profile):
@@ -162,7 +163,7 @@ def load_profile_publications(request, page, profile):
 
     except Exception as e:
         publications = []
-        logging.info(e)
+        logger.info(e)
 
     return publications
 
@@ -198,7 +199,7 @@ def fill_profile_dashboard(request, user, username, context):
 
     registered_plugins = get_user_plugins(user)
     user_plugin_uids = [uid for uid, repr in registered_plugins]
-    logging.debug(user_plugin_uids)
+    logger.debug(user_plugin_uids)
 
     entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
 
@@ -280,7 +281,7 @@ def profile_view(request, username, template="account/profile.html"):
             to_profile__user__username=username
         ).count()
     except Exception as e:
-        logging.info(e)
+        logger.info(e)
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
@@ -457,7 +458,7 @@ def config_privacity(request):
     except ObjectDoesNotExist:
         raise Http404
 
-    logging.info(">>>>> PETICION CONFIG - User: {}".format(user.username))
+    logger.info(">>>>> PETICION CONFIG - User: {}".format(user.username))
     if request.POST:
         privacity_form = PrivacityForm(data=request.POST)
         if privacity_form.is_valid():
@@ -467,10 +468,10 @@ def config_privacity(request):
                     profile.privacity = privacity
                     profile.save()
             except Exception:
-                logging.info(
+                logger.info(
                     ">>>> PETICION CONFIG - User: {} - ERROR".format(user.username)
                 )
-            logging.info(
+            logger.info(
                 ">>>> PETICION CONFIG - User: {} - CAMBIOS GUARDADOS CORRECTAMENTE".format(
                     user.username
                 )
@@ -496,10 +497,10 @@ def config_privacity(request):
 @login_required(login_url="/")
 def config_profile(request):
     user_profile = Profile.objects.select_related("user").get(user=request.user)
-    logging.info(">>>>>>>  PETICION CONFIG")
+    logger.info(">>>>>>>  PETICION CONFIG")
     if request.POST:
         # formulario enviado
-        logging.info(">>>>>>>  paso 1" + str(request.FILES))
+        logger.info(">>>>>>>  paso 1" + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
         perfil_form = ProfileForm(request.POST, request.FILES or None, request=request)
         if user_form.is_valid() and perfil_form.is_valid():
@@ -518,7 +519,7 @@ def config_profile(request):
                     user_profile.status = perfil_form.clean_status()
                     user_profile.save()
                     user_form.save()
-                    logging.info(">>>>>>  save")
+                    logger.info(">>>>>>  save")
                     data = {
                         "result": True,
                         "state": 200,
@@ -527,7 +528,7 @@ def config_profile(request):
                     }
                     return JsonResponse({"data": data})
             except Exception as e:
-                logging.info(
+                logger.info(
                     "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(
                         request.user.username
                     )
@@ -540,7 +541,7 @@ def config_profile(request):
         user_form = UserForm(instance=request.user)
         perfil_form = ProfileForm(initial={"status": user_profile.status})
 
-    logging.Manager(">>>>>>>  paso x")
+    logger.Manager(">>>>>>>  paso x")
     context = {
         "showPerfilButtons": True,
         "user_profile": user_profile,
@@ -689,7 +690,7 @@ def add_friend_by_username_or_pin(request):
     """
     Funcion para añadir usuario por nombre de usuario y perfil
     """
-    logging.info("ADD FRIEND BY USERNAME OR PIN")
+    logger.info("ADD FRIEND BY USERNAME OR PIN")
     response = "no_added_friend"
     friend = None
     data = {"response": response, "friend": friend}
@@ -758,7 +759,7 @@ def add_friend_by_username_or_pin(request):
                     )
                     data["response"] = "added_friend"
                 except Exception as e:
-                    logging.info(e)
+                    logger.info(e)
                     return HttpResponse(
                         json.dumps(data), content_type="application/javascript"
                     )
@@ -851,7 +852,7 @@ def like_profile(request):
             except Exception as e:
                 pass
 
-        logging.info(
+        logger.info(
             "Response like_function (to_like: {} from_like: {}) response = {}".format(
                 m.user, n.user, response
             )
@@ -866,7 +867,7 @@ def request_friend(request):
     """
     Funcion para solicitudes de amistad
     """
-    logging.info(">>>>>>> peticion amistad ")
+    logger.info(">>>>>>> peticion amistad ")
     response = "null"
     if request.method == "POST":
         user = request.user
@@ -926,7 +927,7 @@ def request_friend(request):
                         )
                     response = "added_friend"
                 except Exception as e:
-                    logging.info(e)
+                    logger.info(e)
                     response = "no_added_friend"
 
                 return HttpResponse(
@@ -968,7 +969,7 @@ def request_friend(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-        logging.info(response)
+        logger.info(response)
 
     return HttpResponse(json.dumps(response), content_type="application/javascript")
 
@@ -1024,14 +1025,14 @@ def respond_friend_request(request):
                     )
 
                 response = "added_friend"
-                logging.info(
+                logger.info(
                     "user.profile: {} emitter_profile: {}".format(
                         user.username, recipient.id
                     )
                 )
                 # enviamos notificacion informando del evento
             except Exception as e:
-                logging.info(e)
+                logger.info(e)
                 response = "rejected"
 
         elif request_status == "rejected":
@@ -1083,7 +1084,7 @@ def remove_relationship(request):
                 ).delete()
                 response = True
             except Exception as e:
-                logging.info(e)
+                logger.info(e)
                 response = None
 
     return HttpResponse(json.dumps(response), content_type="application/javascript")
@@ -1122,10 +1123,10 @@ def remove_blocked(request):
                 ).delete()
                 response = True
             else:
-                logging.info("%s no tiene bloqueado a %s" % (m.username, n.username))
+                logger.info("%s no tiene bloqueado a %s" % (m.username, n.username))
                 response = False
         except Exception as e:
-            logging.info(e)
+            logger.info(e)
             response = False
 
     return HttpResponse(json.dumps(response), content_type="application/javascript")
@@ -1148,7 +1149,7 @@ def remove_request_follow(request):
     if user.id == slug:
         return HttpResponseBadRequest()
 
-    logging.info("REMOVE REQUEST FOLLOW: u1: {} - u2: {}".format(user.id, slug))
+    logger.info("REMOVE REQUEST FOLLOW: u1: {} - u2: {}".format(user.id, slug))
     if request.method == "POST":
         if status == "cancel":
             try:
@@ -1161,7 +1162,7 @@ def remove_request_follow(request):
             response = True
         else:
             response = False
-        logging.info("Response -> " + str(response))
+        logger.info("Response -> " + str(response))
     return HttpResponse(json.dumps(response), content_type="application/javascript")
 
 
@@ -1202,7 +1203,7 @@ class FollowersListView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1213,10 +1214,16 @@ class FollowersListView(TemplateView):
             likes_count=Count('to_profile_id')).order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
 
         for follow in qs:
             result_object = {'profile': follow.from_profile,
-                             'tags': [tag for tag in tagged_items if tag.object_id == follow.from_profile.id],
+                             'tags': [tag.tag for tag in tagged_items if tag.object_id == follow.from_profile.id],
                              'videos': next(iter([video['videos_count'] for video in videos if
                                                   video['owner__profile__id'] == follow.from_profile.id] or []), 0),
                              'photos': next(iter([photo['photos_count'] for photo in photos if
@@ -1226,6 +1233,8 @@ class FollowersListView(TemplateView):
                              'likes': next(
                                  iter([like['likes_count'] for like in likes if
                                        like['to_profile_id'] == follow.from_profile.id] or []), 0),
+                             'last_rank': next(iter([last_rank for last_rank in last_ranks if
+                                                     follow.from_profile.user_id == last_rank['users__id']] or []), {}),
                              'exp': next(iter([exp['exp_count'] for exp in total_exp if
                                                exp['user_id'] == follow.from_profile.id] or []), 0)}
             following_result.append(result_object)
@@ -1283,7 +1292,7 @@ class FollowingListView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1295,16 +1304,24 @@ class FollowingListView(TemplateView):
             'to_profile_id', 'likes_count').order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
 
         for follow in qs:
             result_object = {'profile': follow.to_profile,
-                             'tags': [tag for tag in tagged_items if tag.object_id == follow.to_profile.id],
+                             'tags': [tag.tag for tag in tagged_items if tag.object_id == follow.to_profile.id],
                              'videos': next(iter([video['videos_count'] for video in videos if
                                                   video['owner__profile__id'] == follow.to_profile.id] or []), 0),
                              'photos': next(iter([photo['photos_count'] for photo in photos if
                                                   photo['owner__profile__id'] == follow.to_profile.id] or []), 0),
                              'followers': next(iter([follower['follower_count'] for follower in followers_result if
                                                      follower['to_profile_id'] == follow.to_profile.id] or []), 0),
+                             'last_rank': next(iter([last_rank for last_rank in last_ranks if
+                                                     follow.to_profile.user_id == last_rank['users__id']] or []), {}),
                              'likes': next(
                                  iter([like['likes_count'] for like in likes if
                                        like['to_profile_id'] == follow.to_profile.id] or []), 0),
@@ -1404,7 +1421,7 @@ class DeactivateAccount(FormView):
                         user.is_active = is_active
                         user.save()
                 except Exception as e:
-                    logging.info(
+                    logger.info(
                         "La cuenta de: {} no se pudo desactivar".format(user.username)
                     )
 
@@ -1493,7 +1510,7 @@ def bloq_user(request):
                     ).delete()
                 status = "isfollow"
             except Exception as e:
-                logging.info(e)
+                logger.info(e)
                 response = False
                 data = {"response": response, "haslike": haslike, "status": status}
                 return HttpResponse(json.dumps(data), content_type="application/json")
@@ -1525,7 +1542,7 @@ def bloq_user(request):
                         to_profile=recipient, from_profile=emitter, type=FOLLOWING
                     ).delete()
             except Exception as e:
-                logging.info(e)
+                logger.info(e)
                 response = False
                 data = {"response": response, "haslike": haslike, "status": status}
                 return HttpResponse(json.dumps(data), content_type="application/json")
@@ -1535,7 +1552,7 @@ def bloq_user(request):
                 to_profile=recipient, from_profile=emitter, type=BLOCK
             )
         except Exception as e:
-            logging.info(e)
+            logger.info(e)
             response = False
             data = {"response": response, "haslike": haslike, "status": status}
             return HttpResponse(json.dumps(data), content_type="application/json")
@@ -1703,7 +1720,7 @@ class LikeListUsers(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1714,9 +1731,15 @@ class LikeListUsers(TemplateView):
             likes_count=Count('to_profile_id')).order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
 
         for like_profile in users:
-            tags = [tag for tag in tagged_items if tag.object_id == like_profile.from_profile.id]
+            tags = [tag.tag for tag in tagged_items if tag.object_id == like_profile.from_profile.id]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == like_profile.from_profile.id] or []), 0)
 
@@ -1732,10 +1755,14 @@ class LikeListUsers(TemplateView):
             exp = next(iter([exp['exp_count'] for exp in total_exp if
                              exp['user_id'] == like_profile.from_profile.id] or []), 0)
 
+            last_rank = next(iter([last_rank for last_rank in last_ranks if
+                                    like_profile.from_profile.user_id == last_rank['users__id']] or []), {})
+
             skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
             skyfolk_card_id.id = like_profile.from_profile.id
             skyfolk_card_id.profile = like_profile.from_profile
             skyfolk_card_id.tags = tags
+            skyfolk_card_id.last_rank = last_rank
             skyfolk_card_id.videos = count_videos
             skyfolk_card_id.photos = count_photos
             skyfolk_card_id.likes = count_likes
@@ -1800,7 +1827,7 @@ def autocomplete(request):
         the_data = json.dumps({"results": suggestions})
     except RequestError as e:
         the_data = json.dumps({"results": []})
-        logging.info("Error al buscar q: {} - ERROR: {}".format(q, e))
+        logger.info("Error al buscar q: {} - ERROR: {}".format(q, e))
 
     return HttpResponse(the_data, content_type="application/json")
 
@@ -2008,7 +2035,7 @@ class SearchView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -2019,9 +2046,15 @@ class SearchView(TemplateView):
             likes_count=Count('to_profile_id')).order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
 
         for follow in qs:
-            tags = [tag for tag in tagged_items if tag.object_id == follow.id]
+            tags = [tag.tag for tag in tagged_items if tag.object_id == follow.id]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == follow.id] or []), 0)
 
@@ -2037,10 +2070,14 @@ class SearchView(TemplateView):
             exp = next(iter([exp['exp_count'] for exp in total_exp if
                              exp['user_id'] == follow.id] or []), 0)
 
+            last_rank = next(iter([last_rank for last_rank in last_ranks if
+                                   follow.user_id == last_rank['users__id']] or []), {})
+
             skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
             skyfolk_card_id.id = follow.id
             skyfolk_card_id.profile = follow
             skyfolk_card_id.tags = tags
+            skyfolk_card_id.last_rank = last_rank
             skyfolk_card_id.videos = count_videos
             skyfolk_card_id.photos = count_photos
             skyfolk_card_id.likes = count_likes

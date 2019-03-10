@@ -54,15 +54,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 data-username="{{ user_profile.user.username }}"
                                 data-tooltip="">
                                     {% for i in item.tags %}
-                                        <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i.tag.name }}"><b>#{{ i.tag.name }}</b></a>
+                                        <a class="blue-text" href="{% url "user_profile:category-search" option="all" %}?q={{ i.name }}"><b>#{{ i.name }}</b></a>
                                     {% endfor %}
                                 </div>
                             {% endif %}
                             </li>
                             <li class="divider"></li>
                             <li>
+                                 {% if item.last_rank %}
+                                    <p><b>{{ item.last_rank.name }}</b>: {{ item.last_rank.description }}</p>
+                                {% endif %}
                                 <p><b>{{ item.exp|intword }} XP</b></p>
-                                <p>{{ item.last_award|truncatechars_html:"150" }}</p>
                             </li>
                         </ul>
                     </div>

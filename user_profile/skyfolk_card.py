@@ -2,6 +2,7 @@ class SkyfolkCardIdentifier:
     def __init__(self):
         self.id = 0
         self.profile = None
+        self.last_rank = None
         self.videos = 0
         self.photos = 0
         self.tags = None
