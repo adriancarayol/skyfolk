@@ -39,6 +39,7 @@ from rest_framework.views import APIView
 from django.template.loader import render_to_string
 from taggit.models import TaggedItem
 
+from awards.models import UserRank
 from badgify.models import Award
 from notifications.models import Notification
 from notifications.signals import notify
@@ -544,7 +545,7 @@ class FollowersGroup(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -555,9 +556,15 @@ class FollowersGroup(TemplateView):
             likes_count=Count('to_profile_id')).order_by()
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
 
         for member in users:
-            tags = [tag for tag in tagged_items if tag.object_id == member.profile.id]
+            tags = [tag.tag for tag in tagged_items if tag.object_id == member.profile.id]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == member.profile.id] or []), 0)
 
@@ -573,10 +580,14 @@ class FollowersGroup(TemplateView):
             exp = next(iter([exp['exp_count'] for exp in total_exp if
                              exp['user_id'] == member.profile.id] or []), 0)
 
+            last_rank = next(iter([last_rank for last_rank in last_ranks if
+                                   member.id == last_rank['users__id']] or []), {})
+
             skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
             skyfolk_card_id.id = member.profile.id
             skyfolk_card_id.profile = member.profile
             skyfolk_card_id.tags = tags
+            skyfolk_card_id.last_rank = last_rank
             skyfolk_card_id.videos = count_videos
             skyfolk_card_id.photos = count_photos
             skyfolk_card_id.likes = count_likes
@@ -635,7 +646,7 @@ class LikeListGroup(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids)[:10]
+        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -647,8 +658,15 @@ class LikeListGroup(TemplateView):
         total_exp = Award.objects.filter(user__profile__id__in=ids).values('user_id').annotate(
             exp_count=Sum('badge__points')).values('user_id', 'exp_count').order_by()
 
+        last_ranks = UserRank.objects.filter(users__id__in=ids).values('users__id').order_by('-reached_with') \
+            .values('users__id', 'name', 'description')
+
+        seen = set()
+        last_ranks = [last_rank for last_rank in last_ranks if [last_rank['users__id'] not in seen, seen.add(
+            last_rank['users__id'])][0]]
+
         for like_profile in users:
-            tags = [tag for tag in tagged_items if tag.object_id == like_profile.from_like.profile.id]
+            tags = [tag.tag for tag in tagged_items if tag.object_id == like_profile.from_like.profile.id]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == like_profile.from_like.profile.id] or []), 0)
 
@@ -664,10 +682,14 @@ class LikeListGroup(TemplateView):
             exp = next(iter([exp['exp_count'] for exp in total_exp if
                              exp['user_id'] == like_profile.from_like.profile.id] or []), 0)
 
+            last_rank = next(iter([last_rank for last_rank in last_ranks if
+                                   like_profile.from_like.id == last_rank['users__id']] or []), {})
+
             skyfolk_card_id = FactorySkyfolkCardIdentifier.create()
             skyfolk_card_id.id = like_profile.from_like.profile.id
             skyfolk_card_id.profile = like_profile.from_like.profile
             skyfolk_card_id.tags = tags
+            skyfolk_card_id.last_rank = last_rank
             skyfolk_card_id.videos = count_videos
             skyfolk_card_id.photos = count_photos
             skyfolk_card_id.likes = count_likes

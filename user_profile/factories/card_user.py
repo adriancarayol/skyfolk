@@ -9,6 +9,7 @@ class FactorySkyfolkCardIdentifier(object):
         skyfolk_card_identifier.likes = 0
         skyfolk_card_identifier.followers = 0
         skyfolk_card_identifier.profile = None
+        skyfolk_card_identifier.last_rank = None
         skyfolk_card_identifier.exp = 0
         skyfolk_card_identifier.videos = 0
         skyfolk_card_identifier.photos = 0

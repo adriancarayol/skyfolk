@@ -5,14 +5,7 @@
         <div class="divider"></div>
     </div>
     <div class="row">
-        {% for category, points in type_of_user.items %}
-        <div class="col l3 m6 s12">
-            {% trans category %}
-            <div class="progress">
-                <div class="determinate" style="width: {{ points }}%"></div>
-            </div>
-        </div>
-        {% endfor %}
+        <p class="flow-text"><b>{{ last_rank.name }}</b>: {{ last_rank.description }}</p>
     </div>
 </div>
 <div class="row">
