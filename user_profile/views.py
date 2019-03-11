@@ -541,7 +541,7 @@ def config_profile(request):
         user_form = UserForm(instance=request.user)
         perfil_form = ProfileForm(initial={"status": user_profile.status})
 
-    logger.Manager(">>>>>>>  paso x")
+    logger.info(">>>>>>>  paso x")
     context = {
         "showPerfilButtons": True,
         "user_profile": user_profile,
@@ -1203,7 +1203,6 @@ class FollowersListView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1222,8 +1221,9 @@ class FollowersListView(TemplateView):
             last_rank['users__id'])][0]]
 
         for follow in qs:
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=follow.from_profile.id).select_related('tag')[:10]
             result_object = {'profile': follow.from_profile,
-                             'tags': [tag.tag for tag in tagged_items if tag.object_id == follow.from_profile.id],
+                             'tags': [tag.tag for tag in tagged_items],
                              'videos': next(iter([video['videos_count'] for video in videos if
                                                   video['owner__profile__id'] == follow.from_profile.id] or []), 0),
                              'photos': next(iter([photo['photos_count'] for photo in photos if
@@ -1292,7 +1292,6 @@ class FollowingListView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1312,8 +1311,9 @@ class FollowingListView(TemplateView):
             last_rank['users__id'])][0]]
 
         for follow in qs:
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=follow.to_profile.id).select_related('tag')[:10]
             result_object = {'profile': follow.to_profile,
-                             'tags': [tag.tag for tag in tagged_items if tag.object_id == follow.to_profile.id],
+                             'tags': [tag.tag for tag in tagged_items],
                              'videos': next(iter([video['videos_count'] for video in videos if
                                                   video['owner__profile__id'] == follow.to_profile.id] or []), 0),
                              'photos': next(iter([photo['photos_count'] for photo in photos if
@@ -1720,7 +1720,6 @@ class LikeListUsers(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -1739,7 +1738,8 @@ class LikeListUsers(TemplateView):
             last_rank['users__id'])][0]]
 
         for like_profile in users:
-            tags = [tag.tag for tag in tagged_items if tag.object_id == like_profile.from_profile.id]
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=like_profile.from_profile.id).select_related('tag')[:10]
+            tags = [tag.tag for tag in tagged_items]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == like_profile.from_profile.id] or []), 0)
 
@@ -2035,7 +2035,6 @@ class SearchView(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -2054,7 +2053,8 @@ class SearchView(TemplateView):
             last_rank['users__id'])][0]]
 
         for follow in qs:
-            tags = [tag.tag for tag in tagged_items if tag.object_id == follow.id]
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=follow.id).select_related('tag')[:10]
+            tags = [tag.tag for tag in tagged_items]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == follow.id] or []), 0)
 
