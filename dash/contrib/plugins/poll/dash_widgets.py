@@ -30,6 +30,20 @@ class BasePollWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
+        from_path = None
+
+        if request:
+            path = request.path
+            path = path.split('/')
+
+            if path and len(path) > 1:
+                from_path = path[1]
+        
+        is_profile = False
+
+        if from_path == 'profile':
+            is_profile = True
+
         poll = DashboardEntry.objects.get(workspace=self.plugin.workspace, plugin_uid=self.plugin_uid,
                                           position=self.plugin.position, layout_uid=self.layout_uid)
         form = PollResponseForm(initial={'pk': poll.id})
@@ -38,7 +52,7 @@ class BasePollWidget(BaseDashboardPluginWidget):
             'no': np.size(poll_responses) - np.count_nonzero(poll_responses),
             'si': np.count_nonzero(poll_responses)
         }
-        context = {'plugin': self.plugin, 'form': form, 'responses': responses}
+        context = {'plugin': self.plugin, 'form': form, 'responses': responses, 'is_profile': is_profile}
         return render_to_string('poll/render.html', context, request=self.plugin.request)
 
 

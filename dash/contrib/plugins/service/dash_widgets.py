@@ -25,12 +25,26 @@ class BaseServiceWidget(BaseDashboardPluginWidget):
     def render(self, request=None):
         """Render."""
         # TODO: Optimize this, get entry id directly.
+        from_path = None
+
+        if request:
+            path = request.path
+            path = path.split('/')
+
+            if path and len(path) > 1:
+                from_path = path[1]
+        
+        is_profile = False
+
+        if from_path == 'profile':
+            is_profile = True
+
         entry = DashboardEntry._default_manager \
             .filter(user=self.plugin.user,
                     layout_uid=self.plugin.layout_uid,
                     position=self.plugin.position,
                     workspace=self.plugin.workspace).first()
-        context = {'plugin': self.plugin, 'id': entry.pk}
+        context = {'plugin': self.plugin, 'id': entry.pk, 'is_profile': is_profile}
         return render_to_string('service/render.html', context)
 
 

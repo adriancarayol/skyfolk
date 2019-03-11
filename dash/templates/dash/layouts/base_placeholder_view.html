@@ -12,11 +12,7 @@
             {% endcomment %}
         </div>
         <div class="plugin-content-wrapper">
-            {% with plugin.render as rendered %}
-                {% if rendered %}
-                    {{ rendered }}
-                {% endif %}
-            {% endwith %}
+            {% render_plugin_view plugin %}
         </div>
     </div>
 {% endfor %}

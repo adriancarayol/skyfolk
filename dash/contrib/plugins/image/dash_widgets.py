@@ -40,14 +40,29 @@ class BaseImageWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
+        from_path = None
+
+        if request:
+            path = request.path
+            path = path.split('/')
+
+            if path and len(path) > 1:
+                from_path = path[1]
+        
+        is_profile = False
+
+        if from_path == 'profile':
+            is_profile = True
+
         im = DashImageModel.objects.get(id=self.plugin.data.image)
         context = {
             'plugin': self.plugin,
             'image': im,
+            'is_profile': is_profile,
             'MEDIA_URL': settings.MEDIA_URL,
         }
-
         return render_to_string('image/render.html', context)
+
 
 # **********************************************************************
 # ************************** Specific widgets **************************
