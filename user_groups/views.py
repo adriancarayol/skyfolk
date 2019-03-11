@@ -545,7 +545,6 @@ class FollowersGroup(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -564,7 +563,8 @@ class FollowersGroup(TemplateView):
             last_rank['users__id'])][0]]
 
         for member in users:
-            tags = [tag.tag for tag in tagged_items if tag.object_id == member.profile.id]
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=member.profile.id).select_related('tag')[:10]
+            tags = [tag.tag for tag in tagged_items]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == member.profile.id] or []), 0)
 
@@ -646,7 +646,6 @@ class LikeListGroup(TemplateView):
 
         following_result = []
 
-        tagged_items = TaggedItem.objects.filter(content_type=ct, object_id__in=ids).select_related('tag')[:10]
         videos = Video.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
             videos_count=Count('owner__profile__id')).values('owner__profile__id', 'videos_count').order_by()
         photos = Photo.objects.filter(owner__profile__id__in=ids).values('owner__profile__id').annotate(
@@ -666,7 +665,8 @@ class LikeListGroup(TemplateView):
             last_rank['users__id'])][0]]
 
         for like_profile in users:
-            tags = [tag.tag for tag in tagged_items if tag.object_id == like_profile.from_like.profile.id]
+            tagged_items = TaggedItem.objects.filter(content_type=ct, object_id=like_profile.from_like.profile.id).select_related('tag')[:10]
+            tags = [tag.tag for tag in tagged_items]
             count_videos = next(iter([video['videos_count'] for video in videos if
                                       video['owner__profile__id'] == like_profile.from_like.profile.id] or []), 0)
 
