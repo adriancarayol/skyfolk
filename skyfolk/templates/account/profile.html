@@ -161,15 +161,13 @@ Template para el perfil de cada usuario
                     <div class="row">
                         {% if request.user == user_profile %}
                             {% for placeholder in placeholders %}
-                                <div id="{{ placeholder.html_id }}"
-                                     class="placeholder">
+                                <div id="{{ placeholder.html_id }}" class="placeholder">
                                     {{ placeholder.render_for_edit|safe }}
                                 </div>
                             {% endfor %}
                         {% else %}
                             {% for placeholder in placeholders %}
-                                <div id="{{ placeholder.html_id }}"
-                                     class="placeholder">
+                                <div id="{{ placeholder.html_id }}" class="placeholder">
                                     {{ placeholder.render_for_view|safe }}
                                 </div>
                             {% endfor %}

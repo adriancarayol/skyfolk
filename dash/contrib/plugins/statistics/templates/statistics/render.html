@@ -4,7 +4,8 @@
             <div class="widget-wr">
                 <div class="row widget-title blue white-text">
                     <div class="col s12">
-                        <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
+                        <h4 class="flow-text">{{ plugin.data.title }} 
+                        {% if not is_profile %}// <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a>{% endif %}</h4>
                     </div>
                 </div>
                 <div class="row center">

@@ -29,7 +29,20 @@ class BaseWeatherWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
-        context = {'plugin': self.plugin}
+        from_path = None
+
+        if request:
+            path = request.path
+            path = path.split('/')
+
+            if path and len(path) > 1:
+                from_path = path[1]
+        
+        is_profile = False
+
+        if from_path == 'profile':
+            is_profile = True
+        context = {'plugin': self.plugin, 'is_profile': is_profile}
         return render_to_string('weather/render.html', context)
 
 # **********************************************************************

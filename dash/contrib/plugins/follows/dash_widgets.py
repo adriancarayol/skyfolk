@@ -23,6 +23,20 @@ class BaseFollowsWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
+        from_path = None
+
+        if request:
+            path = request.path
+            path = path.split('/')
+
+            if path and len(path) > 1:
+                from_path = path[1]
+        
+        is_profile = False
+
+        if from_path == 'profile':
+            is_profile = True
+
         user = self.plugin.user
         follows = RelationShipProfile.objects.filter(
             from_profile__user=user, type=FOLLOWING
@@ -40,6 +54,7 @@ class BaseFollowsWidget(BaseDashboardPluginWidget):
         context = {
             'plugin': self.plugin,
             'friends_top12': following,
+            'is_profile': is_profile
         }
         return render_to_string('follows/render.html', context)
 

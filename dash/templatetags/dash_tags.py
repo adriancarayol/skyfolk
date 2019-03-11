@@ -397,6 +397,7 @@ def render_plugin_view(context, plugin):
         request = context['request']
     except KeyError:
         return 'Error al mostrar la información del widget'
+
     return plugin.render(request=request)
 
 
