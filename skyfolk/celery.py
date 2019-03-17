@@ -47,6 +47,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute=1),
         'options': {'queue': 'low'}
     },
+    'periodic_checking_ranks': {
+        'task': 'tasks.periodic_checking_ranks',
+        'schedule': crontab(hour=1),
+        'options': {'queue': 'background'}
+    }
 }
 
 """

@@ -37,6 +37,7 @@ Para ver las variables de entorno existentes, podemos entrar a manage.py y segú
 ### Lanzar la aplicación
 Comenzamos con las migraciones y ponemos en marcha el proyecto.
 ```
+find . -name "*.pyc" -exec rm -f {} \;
 python manage.py collectstatic --noinput
 python manage.py makemigrations
 python manage.py makemigrations badgify
@@ -44,7 +45,7 @@ python manage.py migrate badgify
 python manage.py migrate
 python manage.py badgify_sync badges
 python manage.py badgify_sync badges --update
-python manage.py rebuild_index --noinput
+python manage.py sync_ranks
 daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:application
 ```
 ### Lanzar celery

@@ -11,4 +11,4 @@ done
 
 rm celerybeat.pid
 
-celery -A skyfolk beat -l info
+celery -A skyfolk beat -l debug
