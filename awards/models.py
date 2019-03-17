@@ -9,6 +9,10 @@ class UserRank(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=128)
 
+    class Meta:
+        unique_together = ("name", "reached_with")
+
+
     def __repr__(self):
         return "<UserRank reached_with={} created={} name={} description={}".format(self.reached_with,
                                                                                     self.created,

@@ -10,4 +10,4 @@ done
 >&2 echo "Postgres is up - executing command"
 
 
-celery -A skyfolk worker -l info
+celery -A skyfolk worker -l debug
