@@ -127,7 +127,7 @@ func (twitter *TwitterResult) InsertTweetsInRedis(id string, statuses []anaconda
 		}
 
 		tweet := TwitterResult{TwitterID: status.Id,
-			UserAccount: status.User.ScreenName, FullText: status.FullText,
+			UserAccount: status.User.ScreenName, FullText: status.Text,
 			Link: status.Source, CreatedAt: status.CreatedAt, ProfileURL: status.User.URL, MediaURLs: mediaUrls}
 		tweets = append(tweets, tweet)
 	}
