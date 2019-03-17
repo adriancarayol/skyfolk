@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"skyfolk_services/pkg/cache"
 	"skyfolk_services/pkg/services/dao/psql"
+	"skyfolk_services/tools"
 	"strconv"
 	"time"
 )
@@ -21,10 +22,12 @@ type TwitterResult struct {
 	FullText    string `json:"fullText"`
 	Link        string `json:"link"`
 	CreatedAt   string `json:"createAt"`
+	MediaURLs	[]string `json:"media"`
 }
 
-const ConsumerKey = "ICxk7pSKDmUffHxEVyP2bqQ2l";
-const ConsumerSecret = "ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR";
+var ConsumerKey = tools.GetEnv("TWITTER_CONSUMER_TOKEN", "ICxk7pSKDmUffHxEVyP2bqQ2l");
+
+var ConsumerSecret = tools.GetEnv("TWITTER_CONSUMER_SECRET", "ptzwzgTHzR0jj2jrvibTgKnFTuPdICY2HBUeVCAgiTHREa2evR");
 
 func (twitter *TwitterResult) GetAPI(auth_token string, auth_token_secret string) *anaconda.TwitterApi {
 	api := anaconda.NewTwitterApiWithCredentials(auth_token,
@@ -116,9 +119,16 @@ func (twitter *TwitterResult) InsertTweetsInRedis(id string, statuses []anaconda
 	var tweets []TwitterResult
 
 	for _, status := range statuses {
+		entities := status.Entities
+		var mediaUrls []string
+
+		for _, media := range entities.Media {
+			mediaUrls = append(mediaUrls, media.Media_url_https)
+		}
+
 		tweet := TwitterResult{TwitterID: status.Id,
 			UserAccount: status.User.ScreenName, FullText: status.FullText,
-			Link: status.Source, CreatedAt: status.CreatedAt, ProfileURL: status.User.URL}
+			Link: status.Source, CreatedAt: status.CreatedAt, ProfileURL: status.User.URL, MediaURLs: mediaUrls}
 		tweets = append(tweets, tweet)
 	}
 
@@ -138,7 +148,6 @@ func CheckIfNeedUpdate(redis *cache.RedisClient, id string) bool {
 
 	i, err := strconv.ParseInt(timestamp, 10, 64)
 
-
 	if err != nil {
 		return true
 	}
@@ -146,7 +155,6 @@ func CheckIfNeedUpdate(redis *cache.RedisClient, id string) bool {
 	if err != nil {
 		return true
 	}
-
 
 	if result == "" {
 		return true

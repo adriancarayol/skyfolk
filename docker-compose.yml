@@ -108,6 +108,8 @@ services:
       - "1800:1800"
     networks:
       - skyfolknetwork
+    env_file:
+      - web-variables.env
     restart: on-failure
     depends_on:
       - redis

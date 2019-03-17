@@ -1,5 +1,6 @@
 {% extends "service/base_result.html" %}
 {% load dash_tags %}
+{% load humanize %}
 {% block rendered_results %}
     {% for result in results %}
         <div class="row">
@@ -7,14 +8,27 @@
                 <div class="card white">
                     <div class="card-content black-text">
                         <div class="row">
-                            <p>{{ result.fullText }}</p>
-                        </div>
-                        <div class="row">
-                            <a class="btn blue right"
-                               href="https://twitter.com/{{ result.userAccount }}/">@{{ result.userAccount }}</a>
-                        </div>
-                        <div class="row right">
-                            <b>{{ result.createAt|parse_rfc822_datetime }}</b>
+                            <p class="flow-text">
+                                <b>
+                                    <a href="https://twitter.com/{{ result.userAccount }}/">@{{ result.userAccount }}</a> {{ result.createAt|parse_rfc822_datetime|naturaltime }}:
+                                </b>
+                                {{ result.fullText }}
+                            </p>
+                            <div class="row"></div>
+                            <div class="divider"></div>
+                            {% for media in result.media %}
+                                {% if media %}
+                                    <div class="col s12">
+                                        <img src="{{ media }}" class="responsive-img"
+                                             title="Multimedia del Tweet {{ result.fullText|truncatechars_html:"20" }}"
+                                             alt="Multimedia del Tweet {{ result.fullText|truncatechars_html:"20" }}"/>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="row right">
+                                <a class="btn btn-info white-text blue" href="https://twitter.com/statuses/{{ result.twitterId }}">Ver
+                                    tweet</a>
+                            </div>
                         </div>
                     </div>
                 </div>

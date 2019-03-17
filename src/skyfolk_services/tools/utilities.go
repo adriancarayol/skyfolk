@@ -23,5 +23,18 @@ func GetConfiguration() (configs.Configuration, error) {
 		return config, err
 	}
 
+	config.Server = GetEnv("DB_PORT_5432_TCP_ADDR", "localhost");
+	config.Port = GetEnv("DB_PORT_5432_TCP_PORT", "5432");
+	config.User = GetEnv("DB_ENV_POSTGRES_USER", "skyfolk");
+	config.Password = GetEnv("DB_ENV_POSTGRES_PASSWORD", "skyf0lk_p4ssword@");
+	config.Database = GetEnv("DB_ENV_DB", "skyfolk_db");
+
 	return config, err
+}
+
+func GetEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

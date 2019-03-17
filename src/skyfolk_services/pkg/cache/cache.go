@@ -6,6 +6,7 @@ import (
 	"github.com/go-redis/redis"
 	"io/ioutil"
 	"log"
+	"skyfolk_services/tools"
 	"time"
 )
 
@@ -23,7 +24,7 @@ type RedisClient struct {
 func InitRedisClient() (*RedisClient, error) {
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
+		Addr:     tools.GetEnv("REDIS_PORT_6379_TCP_ADDR", "localhost") + ":6379",
 		Password: "",
 		DB:       0,
 	})
