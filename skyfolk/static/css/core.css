@@ -47,9 +47,6 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-a:visited {
-  color: inherit !important; }
-
 .emoji {
   width: 20px !important;
   height: 20px !important; }
@@ -541,5 +538,12 @@ ul#vertical-menu .userView .background {
   overflow: hidden;
   cursor: pointer;
   opacity: 0.8; }
+
+.plugin img {
+  display: block;
+  max-width: 500px !important;
+  max-height: 500px !important;
+  width: auto !important;
+  height: auto !important; }
 
 /*# sourceMappingURL=core.css.map */
