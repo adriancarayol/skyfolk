@@ -2,7 +2,7 @@
 {% load avatar_tags %}
 {% load static %}
 {% for item in object_list %}
-    <div id="member-{{ item.profile.user.id }}" class="col l3 s12 z-depth-1-half"
+    <div id="member-{{ item.profile.user.id }}" class="grid-item"
          style="border-radius: 7px; margin: 10px;">
         {% include "user_profile/skyfolk-card.html" %}
         {% if enable_kick_btn %}

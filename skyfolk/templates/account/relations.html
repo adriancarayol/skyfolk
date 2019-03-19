@@ -8,18 +8,36 @@ Template para los seguidores de un perfil
     Seguidos{% endif %} {{ username }}{% endblock %}
 {% block extra-css %}
     <style>
-        .user-card  {
-            height: 300px;
+        .grid {
+            margin: 0 auto;
         }
-        .user-avatar {
-            height: 80% !important;
+
+        .grid-item {
+            width: 400px;
+            margin-bottom: 10px;
+            float: left;
+            background-color: #fff;
+        }
+
+        .photo-date {
+            display: initial;
+        }
+
+        .grid-item .img {
+            border-radius: 3px;
+            box-shadow: 0 1px 5px #1e88e5;
+        }
+
+        .grid-item .img > img {
+            width: 100%;
+            height: 100%;
         }
     </style>
 {% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="row">
+            <div class="grid row">
                 {% include "account/relations_page.html" %}
             </div>
         </div>
@@ -59,5 +77,35 @@ Template para los seguidores de un perfil
             $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
         </script>
     {% endif %}
+    <script>
+
+        $(window).on('load', function () {
+            var $grid = $('.grid').imagesLoaded(function () {
+                $grid.masonry({
+                    itemSelector: '.grid-item',
+                    columnWidth: 400,
+                    gutter: 20,
+                    fitWidth: true,
+                    horizontalOrder: true,
+                    transitionDuration: '0.3s'
+                });
+            });
+
+            var infinite = new Waypoint.Infinite({
+                element: $('.grid'),
+                offset: 'bottom-in-view',
+                onBeforePageLoad: function () {
+                    $('.loading_search').show();
+                },
+                onAfterPageLoad: function () {
+                    $('.loading_search').hide();
+                    $grid.imagesLoaded().progress(function () {
+                        $grid.masonry('reloadItems');
+                        $grid.masonry('layout');
+                    });
+                }
+            });
+        });
+    </script>
     {% comment %}{% render_bundle component %}{% endcomment %}
 {% endblock %}
