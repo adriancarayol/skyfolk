@@ -9,11 +9,10 @@
         }
 
         .grid-item {
-            width: 300px;
-            margin-bottom: 10px;
-            float: left;
+            width: 400px;
             background-color: #fff;
-            word-break: break-word;
+            box-shadow: 5px 5px 5px #f0f0f0;
+            margin: 10px;
         }
 
         .photo-date {
@@ -54,11 +53,8 @@
             var $grid = $('.grid').imagesLoaded(function () {
                 $grid.masonry({
                     itemSelector: '.grid-item',
-                    columnWidth: 300,
-                    gutter: 20,
                     fitWidth: true,
                     horizontalOrder: true,
-                    transitionDuration: '0.3s'
                 });
             });
               
