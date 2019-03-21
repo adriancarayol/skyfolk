@@ -540,10 +540,6 @@ ul#vertical-menu .userView .background {
   opacity: 0.8; }
 
 .plugin img {
-  display: block;
-  max-width: 500px !important;
-  max-height: 500px !important;
-  width: auto !important;
-  height: auto !important; }
+  width: 100%; }
 
 /*# sourceMappingURL=core.css.map */
