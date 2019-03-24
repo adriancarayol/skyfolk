@@ -5,6 +5,7 @@
 {% load embed_video_tags %}
 {% load emoji_tags %}
 {% load static %}
+
 <div class="row row-pub infinite-item" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
     <div class="col s12">
         <div class="row">
@@ -109,7 +110,7 @@
                                                               placeholder="Escribe el contenido del nuevo mensaje"
                                                               id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 10.9969px;">{{ node.content }}</textarea>
+                                                              style="height: 10.9969px;">{{ node.content|inner_text_between_html_tags }}</textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">

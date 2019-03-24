@@ -1,6 +1,7 @@
 {% load group_utils %}
 {% load avatar_tags %}
 {% load emoji_tags %}
+{% load decorators %}
 {% load app_filters %}
 {% load embed_video_tags %}
 {% load humanize %}
@@ -137,7 +138,7 @@
                                                       placeholder="Escribe el contenido del nuevo mensaje"
                                                       id="id_caption-{{ pub.pk }}" cols="40" maxlength="500"
                                                       name="content" rows="10" required="required"
-                                                      style="height: 11px;">{{ pub.content }}</textarea>
+                                                      style="height: 11px;">{{ pub.content|inner_text_between_html_tags }}</textarea>
                                             <label for="id_caption-{{ pub.pk }}">Editar comentario</label>
                                         </div>
                                         <div class="row">
