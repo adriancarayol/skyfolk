@@ -5,6 +5,7 @@
 {% load group_utils %}
 {% load emoji_tags %}
 {% load static %}
+{% load decorators %}
     {% for node in publications %}
         <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ group_profile.pk }}">
                 <div class="wrapper"
@@ -117,7 +118,7 @@
                                                           placeholder="Escribe el contenido del nuevo mensaje"
                                                           id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                           name="content" rows="10" required="required"
-                                                          style="height: 11px;">{{ node.content }}</textarea>
+                                                          style="height: 11px;">{{ node.content|inner_text_between_html_tags }}</textarea>
                                                 <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                             </div>
                                             <div class="row">
