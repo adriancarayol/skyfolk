@@ -1,10 +1,11 @@
 from celery.utils.log import get_task_logger
+from django.db.models import Count, Q
+
 from mailer.mailer import Mailer
 from skyfolk.celery import app
-from user_profile.models import Profile
-from django.db.models import Count, Q
-from user_profile.models import RelationShipProfile
 from user_profile.constants import FOLLOWING
+from user_profile.models import Profile
+from user_profile.models import RelationShipProfile
 
 logger = get_task_logger(__name__)
 

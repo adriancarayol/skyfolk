@@ -1,23 +1,21 @@
-import json
 import os
-import uuid
 
 import moviepy.editor as mp
+from asgiref.sync import async_to_sync
 from celery.utils.log import get_task_logger
 from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.db import IntegrityError
 from django.template.loader import render_to_string
-from celery import shared_task
+
+from notifications.models import Notification
 from publications.models import Publication, PublicationDeleted
 from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
 from user_profile.utils import group_name, notification_channel
 from .models import PublicationVideo
-from .utils import generate_path_video, convert_video_to_mp4, get_channel_name
-from notifications.models import Notification
-from django.db import IntegrityError
-from asgiref.sync import async_to_sync
+from .utils import convert_video_to_mp4, get_channel_name
 
 logger = get_task_logger(__name__)
 

@@ -1,8 +1,9 @@
 import pytest
-from publications.views import publication_new_view
-from publications.models import Publication
-from django.urls import reverse
 from django.core.management import call_command
+from django.urls import reverse
+
+from publications.models import Publication
+from publications.views import publication_new_view
 
 """
   Integration test for create new publications

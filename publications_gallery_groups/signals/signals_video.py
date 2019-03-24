@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse_lazy
+from requests import RequestException
+
 from user_profile.models import RelationShipProfile
 from user_profile.constants import FOLLOWING
 from embed_video.backends import detect_backend, EmbedVideoException
@@ -90,7 +92,8 @@ def add_extra_content(instance):
         url = link_url[-1]  # Get last url
         try:
             response = requests.get(url)
-        except MissingSchema:
+        except RequestException as e:
+            logger.error(e)
             return
         soup = BeautifulSoup(response.text, "html5lib")
 

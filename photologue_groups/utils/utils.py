@@ -6,6 +6,7 @@ from io import BytesIO
 from django.conf import settings
 from urllib.parse import urlparse
 from django.core.files.base import ContentFile
+from requests import RequestException
 
 
 def split_url(url):
@@ -28,8 +29,11 @@ def pil_to_django(image, format="JPEG"):
 
 
 def retrieve_image(url):
-    response = requests.get(url)
-    return BytesIO(response.content)
+    try:
+        response = requests.get(url)
+        return BytesIO(response.content)
+    except RequestException:
+        return BytesIO()
 
 
 def generate_path_video(ext='mp4'):

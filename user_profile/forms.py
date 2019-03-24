@@ -1,17 +1,19 @@
 # encoding:utf-8
 import logging
 import re
+
 from PIL import Image
 from allauth.account.forms import LoginForm
 from django import forms
 from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 from ipware.ip import get_real_ip, get_ip
-from django.contrib.auth.forms import UserCreationForm
+
 from mailer.mailer import Mailer
 from user_profile.models import AuthDevices
 from .validators import validate_file_extension

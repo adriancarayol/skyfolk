@@ -1,8 +1,9 @@
 import os
 import subprocess
 import uuid
-import magic
+
 import bleach
+import magic
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 

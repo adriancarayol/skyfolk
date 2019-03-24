@@ -2,7 +2,6 @@ import datetime
 import hashlib
 import logging
 
-from badgify.models import Award, Badge
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -10,6 +9,8 @@ from django.db import models
 from django.db import transaction
 from django.utils.http import urlencode
 from taggit.managers import TaggableManager
+
+from badgify.models import Award, Badge
 from photologue.models import Photo, Video
 from user_profile.constants import REQUEST_FOLLOWING, REQUEST_STATUSES, FOLLOWING, BLOCK, RELATIONSHIP_STATUSES
 from user_profile.managers import ProfileManager, RelationShipProfileManager
