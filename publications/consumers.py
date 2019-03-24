@@ -1,9 +1,11 @@
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.core.exceptions import PermissionDenied
+
 from user_profile.models import Profile
 from .models import Publication
 from .utils import get_channel_name
-from channels.db import database_sync_to_async
+
 
 @database_sync_to_async
 def get_profile(user_id):

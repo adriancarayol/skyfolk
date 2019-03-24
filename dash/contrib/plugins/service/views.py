@@ -1,5 +1,6 @@
 import json
 import requests
+from requests.exceptions import MissingSchema, RequestException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -12,7 +13,8 @@ from django.utils.decorators import method_decorator
 from user_profile.models import Profile
 from django.template.loader import render_to_string
 from external_services.factory import ServiceFormFactory
-from external_services.models import UserService, Services
+from external_services.models import UserService
+from loguru import logger
 
 
 class LoadDynamicallyFormGivenService(APIView):
@@ -75,7 +77,12 @@ class RetrieveInfoForServicePin(APIView):
         service_name = user_service.service.name.lower()
         template_name = 'service/{}/service_result.html'.format(service_name)
 
-        response = requests.get('http://go_skyfolk:1800/service/{}/{}'.format(service_name, pin_id))
+        try:
+            response = requests.get('http://go_skyfolk:1800/service/{}/{}'.format(service_name, pin_id))
+        except RequestException as e:
+            logger.error(e)
+            return Response({'content': ''})
+
         if response.status_code == 200:
             try:
                 response_json = json.loads(response.json())

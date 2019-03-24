@@ -1,5 +1,5 @@
 import logging
-from bs4 import BeautifulSoup
+
 from django import forms
 
 from publications.models import Publication

@@ -1,19 +1,20 @@
 import logging
 
 import requests
-from badgify.models import Award, Badge
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
+from django.db.models import Count, When, Case, Value, Q
 from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
-from requests.exceptions import MissingSchema
-from user_profile.models import RelationShipProfile
-from user_profile.constants import FOLLOWING
+from requests import RequestException
+
+from badgify.models import Award, Badge
 from notifications.signals import notify
+from user_profile.constants import FOLLOWING
+from user_profile.models import RelationShipProfile
 from .models import Publication, ExtraContent
-from django.db.models import Count, When, Case, Value, Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -116,10 +117,13 @@ def add_extra_content(instance):
     # Si no existe el backend
     elif link_url and len(link_url) > 0:
         url = link_url[-1]  # Get last url
+
         try:
-            response = requests.get(url)
-        except MissingSchema:
+            response = requests.get(url, verify=True)
+        except RequestException as e:
+            logger.error(e)
             return
+
         soup = BeautifulSoup(response.text, "html5lib")
 
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={

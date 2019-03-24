@@ -1,12 +1,12 @@
+from django.contrib.auth.models import User
 from django.db.models import Sum
 from django_elasticsearch_dsl import DocType, Index, fields
 from taggit.models import TaggedItem
-from django.contrib.auth.models import User
 
 from badgify.models import Award, Badge
-from user_profile.models import Profile, LikeProfile, RelationShipProfile
-from user_profile.constants import FOLLOWING
 from photologue.models import Video, Photo
+from user_profile.constants import FOLLOWING
+from user_profile.models import Profile, LikeProfile, RelationShipProfile
 
 user_profile = Index('user_profiles')
 user_profile.settings(

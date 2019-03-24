@@ -1,15 +1,16 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.core.management import call_command
 from django.db import IntegrityError
+from django.test import TestCase
 from django.urls import reverse
+
+from publications.models import Publication
+from user_profile.constants import FOLLOWING, BLOCK
 from user_profile.models import (
     RelationShipProfile,
     LikeProfile,
     Profile,
 )
-from user_profile.constants import FOLLOWING, BLOCK
-from publications.models import Publication
-from django.core.management import call_command
 
 
 class RelationShipTestClass(TestCase):

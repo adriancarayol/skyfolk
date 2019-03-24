@@ -1,15 +1,15 @@
 import re
 
 from allauth.account.adapter import DefaultAccountAdapter
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.account.models import EmailAddress
-from allauth.exceptions import ImmediateHttpResponse
+from allauth.account.signals import user_signed_up
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import Profile
-from allauth.account.signals import user_signed_up
+
 from invitations.app_settings import app_settings
+from user_profile.models import Profile
 
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):

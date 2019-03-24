@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import truncatechars_html
 from django.utils.html import format_html
+
 from publications.models import PublicationBase
 
 

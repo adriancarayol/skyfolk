@@ -1,10 +1,12 @@
-from user_profile.views import remove_relationship
-from django.test import TestCase
-from user_profile.models import RelationShipProfile, LikeProfile
-from django.contrib.auth.models import User
-from django.urls import reverse
 from unittest import mock
+
+from django.contrib.auth.models import User
+from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
+
+from user_profile.models import RelationShipProfile, LikeProfile
+from user_profile.views import remove_relationship
 
 
 class FollowUserTest(TestCase):

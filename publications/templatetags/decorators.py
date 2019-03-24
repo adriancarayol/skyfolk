@@ -1,6 +1,7 @@
-from django import template
-from publications.models import Publication
 from bs4 import BeautifulSoup
+from django import template
+
+from publications.models import Publication
 
 register = template.Library()
 

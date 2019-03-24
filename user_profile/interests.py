@@ -1,9 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
-from user_profile.models import Profile
 from django.http import Http404, HttpResponseForbidden
+from rest_framework import authentication
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from user_profile.models import Profile
 
 
 class ProfileInterests(APIView):

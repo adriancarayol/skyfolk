@@ -6,17 +6,18 @@ from django.core.cache import cache
 from django.db import transaction
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
+
+from badgify.models import Award, Badge
 from dash.models import DashboardSettings
+from notifications.signals import notify
+from user_guide.models import Guide, GuideInfo
+from user_profile.constants import FOLLOWING
 from .models import (
     Profile,
     RelationShipProfile,
     NotificationSettings,
     LikeProfile,
 )
-from user_profile.constants import FOLLOWING
-from notifications.signals import notify
-from user_guide.models import Guide, GuideInfo
-from badgify.models import Award, Badge
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

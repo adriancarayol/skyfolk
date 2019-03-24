@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from django.urls import path
 
-from user_profile import views as user_profile_views
 from user_profile import interests as interests_views
+from user_profile import views as user_profile_views
 
 app_name = 'user_profile'
 

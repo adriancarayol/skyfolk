@@ -1,9 +1,8 @@
-import json
-import os
 import re
 import uuid
 
 import bleach
+from asgiref.sync import async_to_sync
 from bleach.linkifier import Linker
 from channels.layers import get_channel_layer
 from django.conf import settings
@@ -15,13 +14,13 @@ from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
+
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video, set_link_class
 from user_profile.utils import group_name
-from .utils import get_channel_name
 from .managers import PublicationManager
-from asgiref.sync import async_to_sync
+from .utils import get_channel_name
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS

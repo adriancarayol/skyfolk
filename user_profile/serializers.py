@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
 from django.templatetags.static import static
+from rest_framework import serializers
 
 from avatar.templatetags.avatar_tags import avatar_url
 

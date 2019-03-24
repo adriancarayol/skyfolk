@@ -1,5 +1,5 @@
-from django.conf.urls import url
 from django.urls import path
+
 from about.views import EntryListView, PublicationBlogDetailView
 
 app_name = 'about'

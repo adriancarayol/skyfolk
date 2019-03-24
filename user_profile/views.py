@@ -1,11 +1,11 @@
 import json
 import random
 import uuid
+from itertools import chain, zip_longest
 
-from django.contrib.contenttypes.models import ContentType
-from elasticsearch.exceptions import RequestError
 import numpy as np
 from allauth.account import app_settings
+from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.account.views import (
     PasswordChangeView,
     EmailView,
@@ -13,45 +13,49 @@ from allauth.account.views import (
     CloseableSignupMixin,
     sensitive_post_parameters_m,
 )
-from allauth.account.utils import get_next_redirect_url, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import transaction, IntegrityError
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Sum
+from django.http import Http404
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.list import ListView
+from elasticsearch.exceptions import RequestError
 from formtools.wizard.views import SessionWizardView
+from loguru import logger
+from taggit.models import TaggedItem
 
+from avatar.templatetags.avatar_tags import avatar, avatar_url
 from awards.models import UserRank
 from badgify.models import Award
-from dash.helpers import iterable_to_dict
-from user_groups.models import LikeGroup
-from dash.models import DashboardEntry
-from itertools import chain, zip_longest
 from dash.base import get_layout
+from dash.helpers import iterable_to_dict
+from dash.models import DashboardEntry
 from dash.utils import (
     get_user_plugins,
     get_workspaces,
     get_public_dashboard_url,
     get_dashboard_settings,
 )
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
-from django.urls import reverse_lazy
-from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery, Count, Q, Sum
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.generic import TemplateView
-from django.views.generic.edit import FormView, UpdateView
-from django.views.generic.list import ListView
-from django.http import Http404
-from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo, Video
 from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication
+from user_groups.models import LikeGroup
 from user_groups.models import UserGroups
+from user_profile.constants import FOLLOWING, BLOCK
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.factories.card_user import FactorySkyfolkCardIdentifier
 from user_profile.forms import AdvancedSearchForm, EmailForm, UsernameForm
@@ -70,13 +74,9 @@ from user_profile.models import (
     NotificationSettings,
     LikeProfile,
 )
-from user_profile.constants import FOLLOWING, BLOCK
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from utils.lists import union_without_duplicates
-from taggit.models import TaggedItem
 from .utils import crop_image, make_pagination_html
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from loguru import logger
 
 
 def load_profile_publications(request, page, profile):
