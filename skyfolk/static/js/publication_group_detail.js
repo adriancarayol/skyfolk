@@ -54,6 +54,7 @@ $(document).ready(function () {
     /* EDIT COMMENT */
 
     $thread.on('click', '.edit-comment', function () {
+        Materialize.updateTextFields();
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });

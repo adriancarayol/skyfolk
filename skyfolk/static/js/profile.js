@@ -125,6 +125,7 @@ $(document).ready(function () {
 
     /* Editar comentario */
     $(tab_comentarios).on('click', '.edit-comment', function () {
+        Materialize.updateTextFields();
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });

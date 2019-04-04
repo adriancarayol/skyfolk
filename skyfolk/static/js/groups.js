@@ -137,6 +137,7 @@ $(function () {
     /* EDIT COMMENT */
 
     $tab_commentarios.on('click', '.edit-comment', function () {
+        Materialize.updateTextFields();
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
@@ -607,6 +608,7 @@ $(function () {
     });
 
     $('.theme-publications').on('click', '.edit-comment', function () {
+        Materialize.updateTextFields();
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
