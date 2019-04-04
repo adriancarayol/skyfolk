@@ -103,6 +103,7 @@ $(document).ready(function () {
 
     /* Editar comentario */
     $(tab_messages).on('click', '.edit-comment', function () {
+        Materialize.updateTextFields();
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
