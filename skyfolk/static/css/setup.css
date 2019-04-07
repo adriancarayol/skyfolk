@@ -40,8 +40,8 @@ body {
   left: 50%;
   cursor: pointer;
   color: #555 !important;
-  font-size: 1.7em;
-  letter-spacing: 0.2 p; }
+  font-size: 1.3em;
+  white-space: nowrap; }
   .display-info-reset-password .logotipo_skyfolk > span {
     color: #1e88e5;
     text-shadow: 1px 1px 1px #ccc; }
