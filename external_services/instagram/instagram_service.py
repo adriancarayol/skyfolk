@@ -7,8 +7,8 @@ from django.db import IntegrityError
 
 
 class InstagramService(object):
-    client_id = os.environ.get('INSTAGRAM_CLIENT_ID', '8d08509d6ba6416d8420e2de472e5f51')
-    client_secret = os.environ.get('INSTAGRAM_CLIENT_SECRET', '4826451fd2294d8e902e583fbc90f95a')
+    client_id = os.environ.get('INSTAGRAM_CLIENT_ID', 'f6c17abf61f64a7b9d64f8a0ddabd1b3')
+    client_secret = os.environ.get('INSTAGRAM_CLIENT_SECRET', '78697d9c463d48ef81096baee8756c24')
 
     def __init__(self, **kwargs):
         self.callback = reverse('external_services:instagram-service:callback-instagram-service')
