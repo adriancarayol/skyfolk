@@ -15,9 +15,8 @@ class YouTubeService(object):
     api_version = 'v3'
 
     def __init__(self, **kwargs):
-        # self.callback = reverse('external_services:youtube-service:callback-youtube-service')
-        #TODO: Change this...
-        self.callback = 'https://skyfolk.net/external/services/youtube/callback/'
+        self.callback = reverse('external_services:youtube-service:callback-youtube-service')
+        # self.callback = 'https://skyfolk.net/external/services/youtube/callback/'
 
     @staticmethod
     def get_auth_url():
