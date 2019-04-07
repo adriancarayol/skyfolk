@@ -63,3 +63,6 @@ ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 #         'INDEX_NAME': 'haystack',
 #     },
 # }
+
+# SSL SETTINGS
+SECURE_SSL_REDIRECT = True
