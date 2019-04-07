@@ -7,8 +7,8 @@
             <div class="card-content clearfix grey-text text-darken-2">
               <div class="row">
                 <h4 class="grey-text text-darken-2"><a href="{% url "about:publication-blog" pub.pk %}">{{ pub.title|safe|emoji_replace }}</a></h4>
-                <p>
-                  <b class="left">{{ pub.created }}</b>
+                <p class="left">
+                  Por <a href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a> a {{ pub.created }}
                 </p>
               </div>
               <div class="divider"></div>
@@ -25,9 +25,6 @@
                 {% if pub.image %}
                     <img src="{{ pub.image.url }}" width="300" height="300">
                 {% endif %}
-            </div>
-            <div class="card-action">
-              <a class="white-text blue btn" href="{% url 'user_profile:profile' pub.author.username %}">@{{ pub.author.username }}</a>
             </div>
           </div>
         </div>
