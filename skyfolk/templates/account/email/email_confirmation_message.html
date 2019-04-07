@@ -1,6 +1,6 @@
 {% extends "emails/base_email.html" %}{% load account %}{% user_display user as user_display %}{% load i18n %}{% block header_content %}¡Hola, {{ user_display }}!{% endblock %}{% block title %}Te damos la bienvenida a Skyfolk.{% endblock %}{% block content %}{% autoescape off %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Hello from {{ site_name }}!
 
-<p>You're receiving this e-mail because user {{ user_display }} has given yours as an e-mail address to connect their account.</p>
+You're receiving this e-mail because user {{ user_display }} has given yours as an e-mail address to connect their account.
 
 To confirm this is correct, go to {{ activate_url }}
 {% endblocktrans %}{% endautoescape %}

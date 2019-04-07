@@ -1,0 +1,30 @@
+{
+    "include": [
+        "about",
+        "avatar",
+        "awards",
+        "badgify",
+        "dash",
+        "emoji",
+        "feedback",
+        "information",
+        "invitations",
+        "latest_news",
+        "mailer",
+        "notifications",
+        "photologue",
+        "photologue_groups",
+        "postman",
+        "publications",
+        "publications_gallery",
+        "publications_gallery_groups",
+        "publications_groups",
+        "skyfolk",
+        "support",
+        "user_groups",
+        "user_guide",
+        "user_profile",
+        "utils"
+    ],
+    "reportMissingTypeStubs": true
+}
