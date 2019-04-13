@@ -4,7 +4,7 @@ from external_services.models import Services, UserService
 from django.urls import reverse
 from django.db import IntegrityError
 from django.conf import settings
-
+from utils.requests import build_https_absolute_uri
 CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, "client_secret.json")
 
 
@@ -26,6 +26,7 @@ class YouTubeService(object):
 
     def get_request_token(self, request):
         callback = request.build_absolute_uri(self.callback)
+        callback = build_https_absolute_uri(callback)
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=self.scopes)
         flow.redirect_uri = callback
@@ -41,6 +42,7 @@ class YouTubeService(object):
 
     def callback_oauth1(self, request):
         callback = request.build_absolute_uri(self.callback)
+        callback = build_https_absolute_uri(callback)
         state = request.session['request_token']
         del request.session['request_token']
 
@@ -49,6 +51,8 @@ class YouTubeService(object):
 
         flow.redirect_uri = callback
         authorization_response = request.build_absolute_uri()
+        authorization_response = build_https_absolute_uri(authorization_response)
+
         flow.fetch_token(authorization_response=authorization_response)
         credentials = flow.credentials
 
