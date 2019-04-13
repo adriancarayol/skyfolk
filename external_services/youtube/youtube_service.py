@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.db import IntegrityError
 from django.conf import settings
 from utils.requests import build_https_absolute_uri
+from loguru import logger
+
+
 CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, "client_secret.json")
 
 
@@ -66,13 +69,17 @@ class YouTubeService(object):
             user_service.auth_token = credentials.token
             user_service.refresh_token = credentials.refresh_token
             user_service.save()
-        except UserService.DoesNotExist as e:
+            logger.info("{} created".format(user_service))
+
+        except UserService.DoesNotExist:
+            refresh_token = credentials.refresh_token or ''
             try:
-                UserService.objects.create(user=request.user, service=service,
+                user_service = UserService.objects.create(user=request.user, service=service,
                                            auth_token=credentials.token,
-                                           refresh_token=credentials.refresh_token,
+                                           refresh_token=refresh_token,
                                            auth_token_secret='')
+                logger.info("{} created".format(user_service))
             except IntegrityError as e:
-                pass
+                logger.error(e)
 
         return reverse('external_services:all-external-services')

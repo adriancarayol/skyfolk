@@ -4,6 +4,7 @@ import json
 from external_services.models import Services, UserService
 from django.urls import reverse
 from django.db import IntegrityError
+from loguru import logger
 
 
 class InstagramService(object):
@@ -40,7 +41,7 @@ class InstagramService(object):
     def get_request_token(self, request):
         callback = request.build_absolute_uri(self.callback)
         auth_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}' \
-                   '&redirect_uri={redirect_url}&response_type=code'.format(
+                   '&redirect_uri={redirect_url}&response_type=code&hl=en'.format(
                     client_id=self.client_id, redirect_url=callback)
         return auth_url
 
@@ -59,12 +60,15 @@ class InstagramService(object):
             user_service = UserService.objects.get(user=request.user, service=service)
             user_service.auth_token = data.get('access_token')
             user_service.save()
-        except UserService.DoesNotExist as e:
+            logger.info("{} created".format(user_service))                
+        except UserService.DoesNotExist:
             try:
-                UserService.objects.create(user=request.user, service=service,
+                user_service = UserService.objects.create(user=request.user, service=service,
                                            auth_token=data.get('access_token'),
+                                           refresh_token='',
                                            auth_token_secret='')
+                logger.info("{} created".format(user_service))                
             except IntegrityError as e:
-                pass
+                logger.error(e)
 
         return reverse('external_services:all-external-services')
