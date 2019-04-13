@@ -41,7 +41,7 @@ class InstagramService(object):
         callback = request.build_absolute_uri(self.callback)
         auth_url = 'https://api.instagram.com/oauth/authorize/?client_id={client_id}' \
                    '&redirect_uri={redirect_url}&response_type=code'.format(
-                    client_id='dec537046acd40ea8c5365d36a8ee7a3', redirect_url=callback)
+                    client_id=self.client_id, redirect_url=callback)
         return auth_url
 
     def callback_oauth1(self, request):
