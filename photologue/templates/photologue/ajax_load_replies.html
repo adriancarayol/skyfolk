@@ -79,7 +79,9 @@
                         {% if node.publication_photo_extra_content %}
                         {% if node.publication_photo_extra_content.video %}
                         {% video node.publication_photo_extra_content.video as my_video %}
+                        <div class="videoWrapper">
                         {% video my_video "100% x 100%" is_secure=True %}
+                        </div>
                         {% endvideo %}
                         {% else %}
                         {% comment %} Para publicaciones con URL {% endcomment %}
