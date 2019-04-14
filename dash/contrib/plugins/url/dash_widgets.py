@@ -2,16 +2,11 @@ from django.template.loader import render_to_string
 
 from ....base import BaseDashboardPluginWidget
 
-__title__ = 'dash.contrib.plugins.url.dash_widgets'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = (
-    'BaseBookmarkWidget',
-    'BaseURLWidget',
-    'URL1x1Widget',
-    'URL2x2Widget',
-)
+__title__ = "dash.contrib.plugins.url.dash_widgets"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("BaseBookmarkWidget", "BaseURLWidget", "URL1x1Widget", "URL2x2Widget")
 
 # **********************************************************************
 # ************************* Base URL widget plugin *********************
@@ -27,18 +22,19 @@ class BaseURLWidget(BaseDashboardPluginWidget):
 
         if request:
             path = request.path
-            path = path.split('/')
+            path = path.split("/")
 
             if path and len(path) > 1:
                 from_path = path[1]
-        
+
         is_profile = False
 
-        if from_path == 'profile':
+        if from_path == "profile":
             is_profile = True
 
-        context = {'plugin': self.plugin, 'is_profile': is_profile}
-        return render_to_string('url/render.html', context)
+        context = {"plugin": self.plugin, "is_profile": is_profile}
+        return render_to_string("url/render.html", context)
+
 
 # **********************************************************************
 # ************************* Base Bookmark widget plugin ****************
@@ -50,8 +46,9 @@ class BaseBookmarkWidget(BaseDashboardPluginWidget):
 
     def render(self, request=None):
         """Render."""
-        context = {'plugin': self.plugin}
-        return render_to_string('url/render.html', context)
+        context = {"plugin": self.plugin}
+        return render_to_string("url/render.html", context)
+
 
 # **********************************************************************
 # ************************** Specific widgets **************************
@@ -61,12 +58,12 @@ class BaseBookmarkWidget(BaseDashboardPluginWidget):
 class URL1x1Widget(BaseURLWidget):
     """URL plugin 1x1 widget."""
 
-    plugin_uid = 'url_1x1'
+    plugin_uid = "url_1x1"
 
 
 class URL2x2Widget(BaseURLWidget):
     """URL plugin 2x2 widget."""
 
-    plugin_uid = 'url_2x2'
+    plugin_uid = "url_2x2"
     cols = 2
     rows = 2

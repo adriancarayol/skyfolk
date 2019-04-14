@@ -10,11 +10,11 @@ from nine.versions import DJANGO_GTE_1_7
 
 from .conf import get_setting
 
-__title__ = 'dash.discover'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('autodiscover',)
+__title__ = "dash.discover"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("autodiscover",)
 
 logger = logging.getLogger(__file__)
 
@@ -26,16 +26,12 @@ logger = logging.getLogger(__file__)
 if DJANGO_GTE_1_7:
     from django.utils.module_loading import autodiscover_modules
 else:
+
     def autodiscover_modules(module_name):
         for app in settings.INSTALLED_APPS:
             try:
                 app = str(app)
-                app_path = __import__(
-                    app,
-                    {},
-                    {},
-                    [app.split('.')[-1]]
-                ).__path__
+                app_path = __import__(app, {}, {}, [app.split(".")[-1]]).__path__
             except (AttributeError, TypeError) as e:
                 logger.debug(str(e))
                 continue
@@ -45,7 +41,7 @@ else:
             except ImportError as e:
                 logger.debug(str(e))
                 continue
-            __import__('{0}.{1}'.format(app, module_name))
+            __import__("{0}.{1}".format(app, module_name))
 
 
 def autodiscover():
@@ -59,8 +55,8 @@ def autodiscover():
     if six.PY3 and recursion_limit > default_recursion_limit:
         sys.setrecursionlimit(recursion_limit)
 
-    PLUGINS_MODULE_NAME = get_setting('PLUGINS_MODULE_NAME')
-    LAYOUTS_MODULE_NAME = get_setting('LAYOUTS_MODULE_NAME')
+    PLUGINS_MODULE_NAME = get_setting("PLUGINS_MODULE_NAME")
+    LAYOUTS_MODULE_NAME = get_setting("LAYOUTS_MODULE_NAME")
 
     # Discover plugins
     autodiscover_modules(PLUGINS_MODULE_NAME)

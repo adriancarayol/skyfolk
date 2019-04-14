@@ -8,12 +8,11 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('external_services', '0002_userservice_auth_token_secret'),
+        ("external_services", "0002_userservice_auth_token_secret"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='userservice',
-            unique_together={('service', 'user')},
-        ),
+            name="userservice", unique_together={("service", "user")}
+        )
     ]

@@ -6,13 +6,13 @@ from .models import UserGroups, GroupTheme
 
 
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ('owner', 'name')
-    list_filter = ('owner',)
+    list_display = ("owner", "name")
+    list_filter = ("owner",)
 
 
 class ThemeGroupAdmin(admin.ModelAdmin):
-    list_display = ('title', 'owner', 'description', 'image')
-    list_filter = ('board_group', 'owner')
+    list_display = ("title", "owner", "description", "image")
+    list_filter = ("board_group", "owner")
 
 
 admin.site.register(UserGroups, GroupAdmin)

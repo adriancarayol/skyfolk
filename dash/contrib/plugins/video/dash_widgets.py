@@ -2,17 +2,17 @@ from django.template.loader import render_to_string
 
 from ....base import BaseDashboardPluginWidget
 
-__title__ = 'dash.contrib.plugins.video.dash_widgets'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.contrib.plugins.video.dash_widgets"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'BaseVideoWidget',
-    'Video1x1Widget',
-    'Video2x2Widget',
-    'Video3x3Widget',
-    'Video4x4Widget',
-    'Video5x5Widget'
+    "BaseVideoWidget",
+    "Video1x1Widget",
+    "Video2x2Widget",
+    "Video3x3Widget",
+    "Video4x4Widget",
+    "Video5x5Widget",
 )
 
 # **********************************************************************
@@ -23,9 +23,7 @@ __all__ = (
 class BaseVideoWidget(BaseDashboardPluginWidget):
     """Base video plugin widget."""
 
-    media_css = (
-        'css/dash_plugin_video.css',
-    )
+    media_css = ("css/dash_plugin_video.css",)
 
     def render(self, request=None):
         """Render."""
@@ -33,17 +31,18 @@ class BaseVideoWidget(BaseDashboardPluginWidget):
 
         if request:
             path = request.path
-            path = path.split('/')
+            path = path.split("/")
 
             if path and len(path) > 1:
                 from_path = path[1]
-        
+
         is_profile = False
 
-        if from_path == 'profile':
+        if from_path == "profile":
             is_profile = True
-        context = {'plugin': self.plugin, 'is_profile': is_profile}
-        return render_to_string('video/render.html', context)
+        context = {"plugin": self.plugin, "is_profile": is_profile}
+        return render_to_string("video/render.html", context)
+
 
 # **********************************************************************
 # ************************** Specific widgets **************************
@@ -53,13 +52,13 @@ class BaseVideoWidget(BaseDashboardPluginWidget):
 class Video1x1Widget(BaseVideoWidget):
     """Video plugin 1x1 widget."""
 
-    plugin_uid = 'video_1x1'
+    plugin_uid = "video_1x1"
 
 
 class Video2x2Widget(BaseVideoWidget):
     """Video plugin 2x2 widget."""
 
-    plugin_uid = 'video_2x2'
+    plugin_uid = "video_2x2"
     cols = 2
     rows = 2
 
@@ -67,7 +66,7 @@ class Video2x2Widget(BaseVideoWidget):
 class Video3x3Widget(BaseVideoWidget):
     """Video plugin 3x3 widget."""
 
-    plugin_uid = 'video_3x3'
+    plugin_uid = "video_3x3"
     cols = 3
     rows = 3
 
@@ -75,7 +74,7 @@ class Video3x3Widget(BaseVideoWidget):
 class Video4x4Widget(BaseVideoWidget):
     """Video plugin 4x4 widget."""
 
-    plugin_uid = 'video_4x4'
+    plugin_uid = "video_4x4"
     cols = 4
     rows = 4
 
@@ -83,6 +82,6 @@ class Video4x4Widget(BaseVideoWidget):
 class Video5x5Widget(BaseVideoWidget):
     """Video plugin 5x5 widget."""
 
-    plugin_uid = 'video_5x5'
+    plugin_uid = "video_5x5"
     cols = 5
     rows = 5

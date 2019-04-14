@@ -1,3 +1,3 @@
-default_app_config = 'dash.contrib.plugins.follows.apps.Config'
+default_app_config = "dash.contrib.plugins.follows.apps.Config"
 
-UID = 'follows'
+UID = "follows"

@@ -7,11 +7,11 @@ from ....factory import plugin_factory
 
 from .forms import VideoForm
 
-__title__ = 'dash.contrib.plugins.video.dash_plugins'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('BaseVideoPlugin',)
+__title__ = "dash.contrib.plugins.video.dash_plugins"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("BaseVideoPlugin",)
 
 
 # ***************************************************************************
@@ -25,24 +25,18 @@ class BaseVideoPlugin(BaseDashboardPlugin):
     name = _("Video")
     group = _("Internet")
     form = VideoForm
-    html_classes = ['video']
+    html_classes = ["video"]
 
     def post_processor(self):
         """Post process."""
         self.data.embed_code = render_video(self.data.url)
+
 
 # ***************************************************************************
 # ********** Generating and registering the plugins using factory ***********
 # ***************************************************************************
 
 
-sizes = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6)
-)
+sizes = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6))
 
-plugin_factory(BaseVideoPlugin, 'video', sizes)
+plugin_factory(BaseVideoPlugin, "video", sizes)

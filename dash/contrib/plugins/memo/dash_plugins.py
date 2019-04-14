@@ -4,11 +4,11 @@ from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
 from .forms import MemoForm, TinyMCEMemoForm
 
-__title__ = 'dash.contrib.plugins.memo.dash_plugins'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('BaseMemoPlugin', 'BaseTinyMCEMemoPlugin',)
+__title__ = "dash.contrib.plugins.memo.dash_plugins"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("BaseMemoPlugin", "BaseTinyMCEMemoPlugin")
 
 # ****************************************************************************
 # ******************************* Base memo plugin ***************************
@@ -27,16 +27,9 @@ class BaseMemoPlugin(BaseDashboardPlugin):
 # ********** Generating and registering the plugins using factory ************
 # ****************************************************************************
 
-sizes = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6)
-)
+sizes = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6))
 
-plugin_factory(BaseMemoPlugin, 'memo', sizes)
+plugin_factory(BaseMemoPlugin, "memo", sizes)
 
 # ****************************************************************************
 # ******************************* Base TinyMCE memo plugin *******************
@@ -56,12 +49,6 @@ class BaseTinyMCEMemoPlugin(BaseDashboardPlugin):
 # ********** Generating and registering the plugins using factory ************
 # ****************************************************************************
 
-sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6)
-)
+sizes = ((2, 2), (3, 3), (4, 4), (5, 5), (6, 6))
 
-plugin_factory(BaseTinyMCEMemoPlugin, 'tinymce_memo', sizes)
+plugin_factory(BaseTinyMCEMemoPlugin, "tinymce_memo", sizes)

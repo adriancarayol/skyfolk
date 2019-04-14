@@ -17,13 +17,12 @@ class BaseTwitchPlugin(BaseDashboardPlugin):
     form = TwitchForm
     html_classes = []
 
+
 # ***************************************************************************
 # ********** Generating and registering the plugins using factory ***********
 # ***************************************************************************
 
 
-sizes = (
-    (1, 1),
-)
+sizes = ((1, 1),)
 
-plugin_factory(BaseTwitchPlugin, 'twitch', sizes)
+plugin_factory(BaseTwitchPlugin, "twitch", sizes)

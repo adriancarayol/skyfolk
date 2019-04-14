@@ -11,11 +11,11 @@ from .defaults import (
     DEFAULT_TRUNCATE_AFTER,
 )
 
-__title__ = 'dash.contrib.plugins.rss_feed.forms'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('ReadRSSFeedForm',)
+__title__ = "dash.contrib.plugins.rss_feed.forms"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("ReadRSSFeedForm",)
 
 
 class ReadRSSFeedForm(DashboardEntryMixin, DashboardPluginFormBase):
@@ -27,21 +27,22 @@ class ReadRSSFeedForm(DashboardEntryMixin, DashboardPluginFormBase):
         ("show_feed_title", DEFAULT_SHOW_TITLE),
         ("max_items", DEFAULT_MAX_FEED_ITEMS),
         ("truncate_after", DEFAULT_TRUNCATE_AFTER),
-        ("cache_for", DEFAULT_CACHE_FOR)
+        ("cache_for", DEFAULT_CACHE_FOR),
     ]
     feed_url = forms.URLField(label=_("Feed URL"), required=True)
-    custom_feed_title = forms.CharField(label=_("Custom feed title"),
-                                        required=False)
-    show_feed_title = forms.BooleanField(label=_("Show feed title?"),
-                                         required=False,
-                                         initial=DEFAULT_SHOW_TITLE,
-                                         widget=BooleanRadioSelect)
-    max_items = forms.IntegerField(label=_("Max feed items to show"),
-                                   required=True,
-                                   initial=DEFAULT_MAX_FEED_ITEMS)
-    truncate_after = forms.IntegerField(label=_("Truncate after"),
-                                        required=False,
-                                        initial=DEFAULT_TRUNCATE_AFTER)
-    cache_for = forms.IntegerField(label=_("Cache for"),
-                                   required=True,
-                                   initial=DEFAULT_CACHE_FOR)
+    custom_feed_title = forms.CharField(label=_("Custom feed title"), required=False)
+    show_feed_title = forms.BooleanField(
+        label=_("Show feed title?"),
+        required=False,
+        initial=DEFAULT_SHOW_TITLE,
+        widget=BooleanRadioSelect,
+    )
+    max_items = forms.IntegerField(
+        label=_("Max feed items to show"), required=True, initial=DEFAULT_MAX_FEED_ITEMS
+    )
+    truncate_after = forms.IntegerField(
+        label=_("Truncate after"), required=False, initial=DEFAULT_TRUNCATE_AFTER
+    )
+    cache_for = forms.IntegerField(
+        label=_("Cache for"), required=True, initial=DEFAULT_CACHE_FOR
+    )

@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('external_services', '0001_initial'),
-    ]
+    dependencies = [("external_services", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='userservice',
-            name='auth_token_secret',
-            field=models.CharField(default='', max_length=255),
+            model_name="userservice",
+            name="auth_token_secret",
+            field=models.CharField(default="", max_length=255),
             preserve_default=False,
-        ),
+        )
     ]

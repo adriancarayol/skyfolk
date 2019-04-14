@@ -5,7 +5,7 @@ from dash.base import layout_registry
 class ProfileMainPlaceholder(BaseDashboardPlaceholder):
     """Main placeholder."""
 
-    uid = 'main'
+    uid = "main"
     cols = 1
     rows = 4
     cell_width = 90
@@ -15,7 +15,7 @@ class ProfileMainPlaceholder(BaseDashboardPlaceholder):
 class ProfileShortcutsPlaceholder(BaseDashboardPlaceholder):
     """Shortcuts placeholder."""
 
-    uid = 'shortcuts'
+    uid = "shortcuts"
     cols = 1
     rows = 10
     cell_width = 60
@@ -25,16 +25,13 @@ class ProfileShortcutsPlaceholder(BaseDashboardPlaceholder):
 class ProfileLayout(BaseDashboardLayout):
     """Profile layout."""
 
-    uid = 'profile'
-    name = 'Profile'
-    view_template_name = 'profile/view_layout.html'
-    edit_template_name = 'profile/edit_layout.html'
+    uid = "profile"
+    name = "Profile"
+    view_template_name = "profile/view_layout.html"
+    edit_template_name = "profile/edit_layout.html"
     placeholders = [ProfileMainPlaceholder]
-    cell_units = '%'
-    media_css = (
-        'css/dash_dotted_borders.css',
-        'css/dash_layout_profile.css',
-    )
+    cell_units = "%"
+    media_css = ("css/dash_dotted_borders.css", "css/dash_layout_profile.css")
     # media_js = ('js/dash_layout_android.js',)
 
 

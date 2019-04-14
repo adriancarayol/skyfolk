@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class DashConfiguration(AppConfig):
-    name = 'dash'
+    name = "dash"
 
     def ready(self):
         super(DashConfiguration, self).ready()

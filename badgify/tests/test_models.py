@@ -14,8 +14,8 @@ class BadgeTestCase(TestCase):
     """
 
     def test_autocreate_slug(self):
-        badge = Badge.objects.create(name='Super Chouette')
-        self.assertEqual(badge.slug, 'super-chouette')
+        badge = Badge.objects.create(name="Super Chouette")
+        self.assertEqual(badge.slug, "super-chouette")
 
 
 class AwardTestCase(TestCase, UserFixturesMixin):
@@ -27,11 +27,10 @@ class AwardTestCase(TestCase, UserFixturesMixin):
         self.create_users()
 
     def test_create(self):
-        badge = Badge.objects.create(name='Super Chouette')
+        badge = Badge.objects.create(name="Super Chouette")
         Award.objects.create(user=self.user1, badge=badge)
         Award.objects.create(user=self.user2, badge=badge)
         self.assertEqual(badge.users.count(), 2)
-        self.assertRaises(IntegrityError, Award.objects.create, **{
-            'user': self.user1,
-            'badge': badge
-        })
+        self.assertRaises(
+            IntegrityError, Award.objects.create, **{"user": self.user1, "badge": badge}
+        )

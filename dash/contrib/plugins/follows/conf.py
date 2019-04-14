@@ -2,6 +2,7 @@ from django.conf import settings
 
 from . import defaults
 
+
 def get_setting(setting, override=None):
     """Get setting.
 
@@ -15,7 +16,7 @@ def get_setting(setting, override=None):
         None.
     :return: Setting value.
     """
-    attr_name = 'DASH_PLUGIN_STATISTICS_{0}'.format(setting)
+    attr_name = "DASH_PLUGIN_STATISTICS_{0}".format(setting)
     if hasattr(settings, attr_name):
         return getattr(settings, attr_name)
     else:

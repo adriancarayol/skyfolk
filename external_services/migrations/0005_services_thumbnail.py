@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('external_services', '0004_userservice_refresh_token'),
-    ]
+    dependencies = [("external_services", "0004_userservice_refresh_token")]
 
     operations = [
         migrations.AddField(
-            model_name='services',
-            name='thumbnail',
-            field=models.ImageField(null=True, upload_to='service/'),
-        ),
+            model_name="services",
+            name="thumbnail",
+            field=models.ImageField(null=True, upload_to="service/"),
+        )
     ]

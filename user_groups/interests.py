@@ -10,17 +10,23 @@ class GroupInterests(APIView):
     """
     List interests of user profile
     """
-    authentication_classes = (authentication.SessionAuthentication,
-                              authentication.BasicAuthentication)
+
+    authentication_classes = (
+        authentication.SessionAuthentication,
+        authentication.BasicAuthentication,
+    )
 
     def get(self, request, group_slug):
         try:
             user_group = UserGroups.objects.get(slug=group_slug)
 
-            if not user_group.is_public and not user_group.users.filter(id=request.user.id).exists():
+            if (
+                not user_group.is_public
+                and not user_group.users.filter(id=request.user.id).exists()
+            ):
                 return HttpResponseForbidden()
 
             interests = user_group.tags.names()[10:]
             return Response(interests)
         except UserGroups.DoesNotExist:
-            raise Http404('El grupo {} no existe'.format(group_slug))
+            raise Http404("El grupo {} no existe".format(group_slug))

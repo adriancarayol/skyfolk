@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from .models import Notification
 from .utils import slug2id
 
-if StrictVersion(get_version()) >= StrictVersion('1.7.0'):
+if StrictVersion(get_version()) >= StrictVersion("1.7.0"):
     from django.http import JsonResponse
 else:
     # Django 1.6 doesn't have a proper JsonResponse
@@ -18,22 +18,21 @@ else:
     from django.http import HttpResponse
 
     def date_handler(obj):
-        return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+        return obj.isoformat() if hasattr(obj, "isoformat") else obj
 
     def JsonResponse(data):
         return HttpResponse(
-            json.dumps(data, default=date_handler),
-            content_type="application/json")
+            json.dumps(data, default=date_handler), content_type="application/json"
+        )
 
 
 class NotificationViewList(ListView):
-    template_name = 'notifications/list.html'
-    context_object_name = 'notifications'
+    template_name = "notifications/list.html"
+    context_object_name = "notifications"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        return super(NotificationViewList, self).dispatch(
-            request, *args, **kwargs)
+        return super(NotificationViewList, self).dispatch(request, *args, **kwargs)
 
 
 class AllNotificationsList(NotificationViewList):
@@ -42,7 +41,7 @@ class AllNotificationsList(NotificationViewList):
     """
 
     def get_queryset(self):
-        if getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False):
+        if getattr(settings, "NOTIFICATIONS_SOFT_DELETE", False):
             qs = self.request.user.notifications.active()
         else:
             qs = self.request.user.notifications.all()
@@ -50,7 +49,6 @@ class AllNotificationsList(NotificationViewList):
 
 
 class UnreadNotificationsList(NotificationViewList):
-
     def get_queryset(self):
         return self.request.user.notifications.unread()
 
@@ -59,91 +57,86 @@ class UnreadNotificationsList(NotificationViewList):
 def mark_all_as_read(request):
     request.user.notifications.mark_all_as_read()
 
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 @login_required
 def mark_as_read(request, slug=None):
     id = slug2id(slug)
 
-    notification = get_object_or_404(
-        Notification, recipient=request.user, id=id)
+    notification = get_object_or_404(Notification, recipient=request.user, id=id)
     notification.mark_as_read()
 
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
 
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 @login_required
 def mark_all_as_deleted(request):
     request.user.notifications.mark_all_as_deleted()
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 @login_required
 def mark_all_as_unread(request):
     request.user.notifications.mark_all_as_unread()
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 @login_required
 def mark_as_unread(request, slug=None):
     id = slug2id(slug)
 
-    notification = get_object_or_404(
-        Notification, recipient=request.user, id=id)
+    notification = get_object_or_404(Notification, recipient=request.user, id=id)
     notification.mark_as_unread()
 
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
 
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 @login_required
 def delete(request, slug=None):
     _id = slug2id(slug)
 
-    notification = get_object_or_404(
-        Notification, recipient=request.user, id=_id)
+    notification = get_object_or_404(Notification, recipient=request.user, id=_id)
 
-    if getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False):
+    if getattr(settings, "NOTIFICATIONS_SOFT_DELETE", False):
         notification.deleted = True
         notification.save()
     else:
         notification.delete()
 
-    _next = request.GET.get('next')
+    _next = request.GET.get("next")
 
     if _next:
         return redirect(_next)
 
-    return redirect('notifications:all')
+    return redirect("notifications:all")
 
 
 def live_unread_notification_count(request):
     if not request.user.is_authenticated:
-        data = {'unread_count': 0}
+        data = {"unread_count": 0}
     else:
-        data = {
-            'unread_count': request.user.notifications.unread().count(),
-        }
+        data = {"unread_count": request.user.notifications.unread().count()}
     return JsonResponse(data)

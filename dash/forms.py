@@ -5,14 +5,14 @@ from .base import get_registered_layouts
 from .constants import ACTION_CHOICES
 from .models import DashboardWorkspace, DashboardSettings, DashboardPlugin
 
-__title__ = 'dash.forms'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.forms"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'BulkChangeDashboardPluginsForm',
-    'DashboardSettingsForm',
-    'DashboardWorkspaceForm'
+    "BulkChangeDashboardPluginsForm",
+    "DashboardSettingsForm",
+    "DashboardWorkspaceForm",
 )
 
 
@@ -20,8 +20,10 @@ class DashboardWorkspaceForm(forms.ModelForm):
     """Dashboard workspace form."""
 
     layout_uid = forms.TypedChoiceField(
-        label=_('Layout'),
-        choices=[layout for layout in get_registered_layouts() if layout[0] != 'profile'],
+        label=_("Layout"),
+        choices=[
+            layout for layout in get_registered_layouts() if layout[0] != "profile"
+        ],
         empty_value=None,
     )
 
@@ -29,42 +31,47 @@ class DashboardWorkspaceForm(forms.ModelForm):
         """Meta."""
 
         model = DashboardWorkspace
-        fields = ('layout_uid', 'user', 'name', 'is_public', 'is_clonable')
+        fields = ("layout_uid", "user", "name", "is_public", "is_clonable")
 
     def __init__(self, *args, **kwargs):
-        different_layouts = kwargs.pop('different_layouts', False)
+        different_layouts = kwargs.pop("different_layouts", False)
         super(DashboardWorkspaceForm, self).__init__(*args, **kwargs)
-        self.fields['user'].widget = forms.widgets.HiddenInput()
-        self.fields['name'].widget = forms.TextInput(attrs={'id': 'workspace_name'})
-        self.fields['is_public'].widget = forms.CheckboxInput(attrs={'id': 'workspace_is_public'})
+        self.fields["user"].widget = forms.widgets.HiddenInput()
+        self.fields["name"].widget = forms.TextInput(attrs={"id": "workspace_name"})
+        self.fields["is_public"].widget = forms.CheckboxInput(
+            attrs={"id": "workspace_is_public"}
+        )
 
         if not different_layouts:
-            self.fields['layout_uid'].widget = forms.widgets.HiddenInput()
+            self.fields["layout_uid"].widget = forms.widgets.HiddenInput()
 
     def clean_layout_uid(self):
-        layout_id = self.cleaned_data['layout_uid']
-        if layout_id == 'profile':
-            raise forms.ValidationError('No puedes crear un workspace con este layout.')
+        layout_id = self.cleaned_data["layout_uid"]
+        if layout_id == "profile":
+            raise forms.ValidationError("No puedes crear un workspace con este layout.")
 
         return layout_id
 
 
 class DashboardSettingsForm(forms.ModelForm):
     """Dashboard settings form."""
+
     """No se utiliza"""
 
     class Meta(object):
         """Meta."""
 
         model = DashboardSettings
-        fields = ('user', 'layout_uid', 'title', 'is_public')
+        fields = ("user", "layout_uid", "title", "is_public")
 
     layout_uid = forms.ChoiceField(choices=get_registered_layouts())
 
     def __init__(self, *args, **kwargs):
         super(DashboardSettingsForm, self).__init__(*args, **kwargs)
-        self.fields['user'].widget = forms.widgets.HiddenInput()
-        self.fields['is_public'].widget = forms.CheckboxInput(attrs={'id': 'dashboard_is_public'})
+        self.fields["user"].widget = forms.widgets.HiddenInput()
+        self.fields["is_public"].widget = forms.CheckboxInput(
+            attrs={"id": "dashboard_is_public"}
+        )
 
 
 class BulkChangeDashboardPluginsForm(forms.ModelForm):
@@ -77,40 +84,41 @@ class BulkChangeDashboardPluginsForm(forms.ModelForm):
     - `groups_action` (int): For indicating whether the groups shall be
       appended to the dashboard plugins or replaced.
     """
+
     selected_dashboard_plugins = forms.CharField(
         required=True,
         label=_("Selected dashboard plugins"),
-        widget=forms.widgets.HiddenInput
+        widget=forms.widgets.HiddenInput,
     )
     users_action = forms.ChoiceField(
         required=False,
         label=_("Users action"),
         choices=ACTION_CHOICES,
-        help_text=_("If set to ``replace``, the groups are replaced; "
-                    "otherwise - appended.")
+        help_text=_(
+            "If set to ``replace``, the groups are replaced; " "otherwise - appended."
+        ),
     )
     groups_action = forms.ChoiceField(
         required=False,
         label=_("Groups action"),
         choices=ACTION_CHOICES,
-        help_text=_("If set to ``replace``, the groups are replaced; "
-                    "otherwise - appended.")
+        help_text=_(
+            "If set to ``replace``, the groups are replaced; " "otherwise - appended."
+        ),
     )
 
     class Meta(object):
         """Meta."""
 
         model = DashboardPlugin
-        fields = ('groups', 'groups_action', 'users', 'users_action',)
+        fields = ("groups", "groups_action", "users", "users_action")
 
     class Media(object):
         """Media."""
 
-        css = {
-            'all': ('css/admin_custom.css',)
-        }
+        css = {"all": ("css/admin_custom.css",)}
 
     def __init__(self, *args, **kwargs):
         super(BulkChangeDashboardPluginsForm, self).__init__(*args, **kwargs)
-        self.fields['users'].required = False
-        self.fields['groups'].required = False
+        self.fields["users"].required = False
+        self.fields["groups"].required = False

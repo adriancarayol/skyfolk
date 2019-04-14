@@ -9,4 +9,4 @@ class PostAdminForm(forms.ModelForm):
 
     class Meta:
         model = PublicationBlog
-        fields = '__all__'
+        fields = "__all__"

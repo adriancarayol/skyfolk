@@ -12,48 +12,157 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='PhotoGroup',
+            name="PhotoGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(null=True, upload_to=photologue.models.get_storage_path, validators=[photologue.validators.validate_file_extension], verbose_name='image')),
-                ('date_taken', models.DateTimeField(blank=True, help_text='Date image was taken; is obtained from the image EXIF data.', null=True, verbose_name='date taken')),
-                ('view_count', models.PositiveIntegerField(default=0, editable=False, verbose_name='view count')),
-                ('crop_from', models.CharField(blank=True, choices=[('top', 'Top'), ('right', 'Right'), ('bottom', 'Bottom'), ('left', 'Left'), ('center', 'Center (Default)')], default='center', max_length=10, verbose_name='crop from')),
-                ('title', models.CharField(max_length=60, verbose_name='title')),
-                ('slug', models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250, unique=True, verbose_name='slug')),
-                ('caption', models.TextField(blank=True, max_length=1000, verbose_name='caption')),
-                ('date_added', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date added')),
-                ('url_image', models.URLField(blank=True, default='', max_length=255)),
-                ('thumbnail', models.ImageField(blank=True, null=True, upload_to=photologue_groups.models.get_storage_path, verbose_name='thumbnail')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        null=True,
+                        upload_to=photologue.models.get_storage_path,
+                        validators=[photologue.validators.validate_file_extension],
+                        verbose_name="image",
+                    ),
+                ),
+                (
+                    "date_taken",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Date image was taken; is obtained from the image EXIF data.",
+                        null=True,
+                        verbose_name="date taken",
+                    ),
+                ),
+                (
+                    "view_count",
+                    models.PositiveIntegerField(
+                        default=0, editable=False, verbose_name="view count"
+                    ),
+                ),
+                (
+                    "crop_from",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("top", "Top"),
+                            ("right", "Right"),
+                            ("bottom", "Bottom"),
+                            ("left", "Left"),
+                            ("center", "Center (Default)"),
+                        ],
+                        default="center",
+                        max_length=10,
+                        verbose_name="crop from",
+                    ),
+                ),
+                ("title", models.CharField(max_length=60, verbose_name="title")),
+                (
+                    "slug",
+                    models.SlugField(
+                        help_text='A "slug" is a unique URL-friendly title for an object.',
+                        max_length=250,
+                        unique=True,
+                        verbose_name="slug",
+                    ),
+                ),
+                (
+                    "caption",
+                    models.TextField(
+                        blank=True, max_length=1000, verbose_name="caption"
+                    ),
+                ),
+                (
+                    "date_added",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date added"
+                    ),
+                ),
+                ("url_image", models.URLField(blank=True, default="", max_length=255)),
+                (
+                    "thumbnail",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=photologue_groups.models.get_storage_path,
+                        verbose_name="thumbnail",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'photo',
-                'verbose_name_plural': 'photos',
-                'ordering': ['-date_added'],
-                'get_latest_by': 'date_added',
+                "verbose_name": "photo",
+                "verbose_name_plural": "photos",
+                "ordering": ["-date_added"],
+                "get_latest_by": "date_added",
             },
         ),
         migrations.CreateModel(
-            name='VideoGroup',
+            name="VideoGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=60, verbose_name='name')),
-                ('slug', models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250, unique=True, verbose_name='slug')),
-                ('caption', models.TextField(blank=True, max_length=1000, verbose_name='caption')),
-                ('date_added', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date added')),
-                ('video', models.FileField(upload_to=photologue_groups.models.upload_video, validators=[photologue_groups.validators.validate_video], verbose_name='video')),
-                ('thumbnail', models.ImageField(blank=True, upload_to=photologue_groups.models.upload_thumbnail_video, verbose_name='thumbnail')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=60, verbose_name="name")),
+                (
+                    "slug",
+                    models.SlugField(
+                        help_text='A "slug" is a unique URL-friendly title for an object.',
+                        max_length=250,
+                        unique=True,
+                        verbose_name="slug",
+                    ),
+                ),
+                (
+                    "caption",
+                    models.TextField(
+                        blank=True, max_length=1000, verbose_name="caption"
+                    ),
+                ),
+                (
+                    "date_added",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date added"
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(
+                        upload_to=photologue_groups.models.upload_video,
+                        validators=[photologue_groups.validators.validate_video],
+                        verbose_name="video",
+                    ),
+                ),
+                (
+                    "thumbnail",
+                    models.ImageField(
+                        blank=True,
+                        upload_to=photologue_groups.models.upload_thumbnail_video,
+                        verbose_name="thumbnail",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'video',
-                'verbose_name_plural': 'videos',
-                'ordering': ['-date_added'],
-                'get_latest_by': 'date_added',
+                "verbose_name": "video",
+                "verbose_name_plural": "videos",
+                "ordering": ["-date_added"],
+                "get_latest_by": "date_added",
             },
         ),
     ]

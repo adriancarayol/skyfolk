@@ -14,18 +14,24 @@ class SupportPasswordView(FormView, AjaxableResponseMixin):
     cuando el usuario tiene problemas con su
     password.
     """
+
     template_name = "support/password-contact.html"
     form_class = SupportPasswordForm
-    success_url = '/'
+    success_url = "/"
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        username_or_email = form.cleaned_data['username_or_email']
+        username_or_email = form.cleaned_data["username_or_email"]
 
         try:
-            user = User.objects.get(Q(username__iexact=username_or_email) | Q(email=username_or_email))
+            user = User.objects.get(
+                Q(username__iexact=username_or_email) | Q(email=username_or_email)
+            )
         except ObjectDoesNotExist:
-            form.add_error('username_or_email', 'No hay ninguna cuenta asociada a ese nombre de usuario o email')
+            form.add_error(
+                "username_or_email",
+                "No hay ninguna cuenta asociada a ese nombre de usuario o email",
+            )
             return super().form_invalid(form)
 
         obj.user = user
@@ -35,11 +41,11 @@ class SupportPasswordView(FormView, AjaxableResponseMixin):
         return super(SupportPasswordView, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('support:support-password-submitted')
+        return reverse_lazy("support:support-password-submitted")
 
 
 class AfterSubmitSupportPasswordView(TemplateView):
-    template_name = 'support/submitted_form.html'
+    template_name = "support/submitted_form.html"
 
 
 support_view = SupportPasswordView.as_view()

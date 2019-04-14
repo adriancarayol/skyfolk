@@ -17,12 +17,19 @@ class UserAwards(APIView):
     @staticmethod
     def get_points_and_last_rank(profile):
         user_id = profile.user_id
-        points = Badge.objects.filter(users__id=user_id).aggregate(total_points=Sum('points'))['total_points'] or 0
-        last_rank = UserRank.objects.filter(users__id=user_id).order_by('-reached_with').first()
+        points = (
+            Badge.objects.filter(users__id=user_id).aggregate(
+                total_points=Sum("points")
+            )["total_points"]
+            or 0
+        )
+        last_rank = (
+            UserRank.objects.filter(users__id=user_id).order_by("-reached_with").first()
+        )
         return points, last_rank
 
     def get(self, request, *args, **kwargs):
-        user_id = kwargs.pop('user_id', None)
+        user_id = kwargs.pop("user_id", None)
 
         if not user_id:
             raise Http404
@@ -35,13 +42,13 @@ class UserAwards(APIView):
 
         privacity = profile.is_visible(request_user)
 
-        if privacity and privacity != 'all':
+        if privacity and privacity != "all":
             return HttpResponseForbidden()
 
         queryset = Award.objects.filter(user_id=profile.user_id)
         paginator = Paginator(queryset, 12)
 
-        page = request.GET.get('page', 1)
+        page = request.GET.get("page", 1)
 
         try:
             awards = paginator.page(page)
@@ -52,4 +59,11 @@ class UserAwards(APIView):
 
         points, last_rank = self.get_points_and_last_rank(profile)
 
-        return Response({'awards': awards, 'user_id': user_id, 'total_points': points, 'last_rank': last_rank})
+        return Response(
+            {
+                "awards": awards,
+                "user_id": user_id,
+                "total_points": points,
+                "last_rank": last_rank,
+            }
+        )

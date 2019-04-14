@@ -1,27 +1,28 @@
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 
-__title__ = 'dash.decorators'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.decorators"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'all_permissions_required',
-    'any_permission_required',
-    'DEFAULT_SATISFY',
-    'edit_dashboard_permission_required',
-    'permissions_required',
-    'SATISFY_ALL',
-    'SATISFY_ANY',
+    "all_permissions_required",
+    "any_permission_required",
+    "DEFAULT_SATISFY",
+    "edit_dashboard_permission_required",
+    "permissions_required",
+    "SATISFY_ALL",
+    "SATISFY_ANY",
 )
 
-SATISFY_ANY = 'any'
-SATISFY_ALL = 'all'
+SATISFY_ANY = "any"
+SATISFY_ALL = "all"
 DEFAULT_SATISFY = SATISFY_ALL
 
 
-def permissions_required(perms, satisfy=DEFAULT_SATISFY, login_url=None,
-                         raise_exception=False):
+def permissions_required(
+    perms, satisfy=DEFAULT_SATISFY, login_url=None, raise_exception=False
+):
     """Check for the permissions given based on the strategy chosen.
 
     :param iterable perms:
@@ -60,6 +61,7 @@ def permissions_required(perms, satisfy=DEFAULT_SATISFY, login_url=None,
                 raise PermissionDenied
             # As the last resort, show the login form
             return False
+
     else:
         # ``SATISFY_ANY`` case
         def check_perms(user):
@@ -97,10 +99,7 @@ def all_permissions_required(perms, login_url=None, raise_exception=False):
     >>>     # your code
     """
     return permissions_required(
-        perms,
-        satisfy=SATISFY_ALL,
-        login_url=login_url,
-        raise_exception=raise_exception
+        perms, satisfy=SATISFY_ALL, login_url=login_url, raise_exception=raise_exception
     )
 
 
@@ -124,10 +123,7 @@ def any_permission_required(perms, login_url=None, raise_exception=False):
     >>>     # your code
     """
     return permissions_required(
-        perms,
-        satisfy=SATISFY_ANY,
-        login_url=login_url,
-        raise_exception=raise_exception
+        perms, satisfy=SATISFY_ANY, login_url=login_url, raise_exception=raise_exception
     )
 
 
@@ -155,21 +151,19 @@ def edit_dashboard_permission_required(login_url=None, raise_exception=False):
     """
     return permissions_required(
         perms=[
-            'dash.add_dashboardentry',
-            'dash.change_dashboardentry',
-            'dash.delete_dashboardentry',
-
-            'dash.add_dashboardworkspace',
-            'dash.change_dashboardworkspace',
-            'dash.delete_dashboardworkspace',
-
-            'dash.add_dashboardsettings',
-            'dash.change_dashboardsettings',
-            'dash.delete_dashboardsettings',
+            "dash.add_dashboardentry",
+            "dash.change_dashboardentry",
+            "dash.delete_dashboardentry",
+            "dash.add_dashboardworkspace",
+            "dash.change_dashboardworkspace",
+            "dash.delete_dashboardworkspace",
+            "dash.add_dashboardsettings",
+            "dash.change_dashboardsettings",
+            "dash.delete_dashboardsettings",
         ],
         satisfy=SATISFY_ANY,
         login_url=login_url,
-        raise_exception=raise_exception
+        raise_exception=raise_exception,
     )
 
 
@@ -189,11 +183,8 @@ def use_clipboard_permission_required(login_url=None, raise_exception=False):
     >>>     # your code
     """
     return permissions_required(
-        perms=[
-            'dash.add_dashboardentry',
-            'dash.delete_dashboardentry'
-        ],
+        perms=["dash.add_dashboardentry", "dash.delete_dashboardentry"],
         satisfy=SATISFY_ALL,
         login_url=login_url,
-        raise_exception=raise_exception
+        raise_exception=raise_exception,
     )

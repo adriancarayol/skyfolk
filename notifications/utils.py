@@ -5,7 +5,7 @@ import sys
 import user_profile
 from avatar.models import Avatar
 
-if sys.version > '3':
+if sys.version > "3":
     long = int
 
 

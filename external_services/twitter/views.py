@@ -8,7 +8,7 @@ class AuthTwitterServiceView(View):
     def get(self, request, *args, **kwargs):
         twitter_service = TwitterService()
         return redirect(twitter_service.auth(request))
-    
+
 
 class CreateTwitterServiceView(View):
     def get(self, request, *args, **kwargs):

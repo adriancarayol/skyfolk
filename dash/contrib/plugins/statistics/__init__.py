@@ -1,3 +1,3 @@
-default_app_config = 'dash.contrib.plugins.statistics.apps.Config'
+default_app_config = "dash.contrib.plugins.statistics.apps.Config"
 
-UID = 'statistics'
+UID = "statistics"

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import logging
 
-logger = logging.getLogger('badgify')
+logger = logging.getLogger("badgify")
 
 
 class BadgifyRegistry(object):
@@ -38,7 +38,7 @@ class BadgifyRegistry(object):
         """
 
         if not isinstance(recipe, (list, tuple)):
-            recipe = [recipe, ]
+            recipe = [recipe]
 
         for item in recipe:
             recipe = self.get_recipe_instance_from_class(item)
@@ -64,6 +64,7 @@ class BadgifyRegistry(object):
         If badge has not been registered, raises ``exceptions.BadgeNotFound``.
         """
         from .exceptions import BadgeNotFound
+
         if badge in self._registry:
             return self.recipes[badge]
         raise BadgeNotFound()
@@ -114,6 +115,7 @@ class BadgifyRegistry(object):
         Returns recipe instance from the given class ``klass``.
         """
         from .recipe import BaseRecipe
+
         assert issubclass(klass, BaseRecipe)
         return klass()
 
@@ -134,10 +136,10 @@ def _autodiscover(recipes):
         mod = import_module(app)
         try:
             before_import_recipes = copy.copy(recipes)
-            import_module('%s.badgify_recipes' % app)
+            import_module("%s.badgify_recipes" % app)
         except:
             recipes = before_import_recipes
-            if module_has_submodule(mod, 'badgify_recipes'):
+            if module_has_submodule(mod, "badgify_recipes"):
                 raise
 
 

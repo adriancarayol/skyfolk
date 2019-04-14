@@ -7,11 +7,11 @@ from ....factory import plugin_factory
 from .forms import URLForm, BookmarkForm
 from .models import Bookmark
 
-__title__ = 'dash.contrib.plugins.image.dash_plugins'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('BaseURLPlugin',)
+__title__ = "dash.contrib.plugins.image.dash_plugins"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("BaseURLPlugin",)
 
 # ****************************************************************************
 # ********************************* URL plugin *******************************
@@ -34,17 +34,15 @@ class BaseURLPlugin(BaseDashboardPlugin):
         html_class = super(BaseURLPlugin, self).html_class
         return html_class
 
+
 # ****************************************************************************
 # ********** Generating and registering the URL plugins using factory ********
 # ****************************************************************************
 
 
-sizes = (
-    (1, 1),
-    (2, 2)
-)
+sizes = ((1, 1), (2, 2))
 
-plugin_factory(BaseURLPlugin, 'url', sizes)
+plugin_factory(BaseURLPlugin, "url", sizes)
 
 
 # ****************************************************************************
@@ -67,7 +65,7 @@ class BaseBookmarkPlugin(BaseDashboardPlugin):
         """
         html_class = super(BaseBookmarkPlugin, self).html_class
         if self.data.image:
-            html_class += ' iconic-url'
+            html_class += " iconic-url"
         return html_class
 
     def update_plugin_data(self, dashboard_entry):
@@ -83,13 +81,14 @@ class BaseBookmarkPlugin(BaseDashboardPlugin):
 
         if bookmark:
             data = {
-                'bookmark': bookmark.pk,
-                'title': bookmark.title,
-                'url': bookmark.url,
-                'external': bookmark.external,
-                'image': bookmark.image
+                "bookmark": bookmark.pk,
+                "title": bookmark.title,
+                "url": bookmark.url,
+                "external": bookmark.external,
+                "image": bookmark.image,
             }
             return data
+
 
 # ****************************************************************************
 # ******* Generating and registering the Bookmark plugins using factory ******
@@ -101,4 +100,4 @@ sizes = (
     # (2, 2)
 )
 
-plugin_factory(BaseBookmarkPlugin, 'bookmark', sizes)
+plugin_factory(BaseBookmarkPlugin, "bookmark", sizes)

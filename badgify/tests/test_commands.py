@@ -49,16 +49,18 @@ class CommandsTestCase(TestCase):
         registry.register([Recipe1, Recipe2])
         commands.sync_badges()
 
-        Recipe1.name = 'Howdy'
+        Recipe1.name = "Howdy"
         commands.sync_badges(update=True)
 
-        self.assertEqual(Badge.objects.get(slug='recipe1').name, 'Howdy')
-        Recipe1.name = 'Recipe 1'
+        self.assertEqual(Badge.objects.get(slug="recipe1").name, "Howdy")
+        Recipe1.name = "Recipe 1"
 
     def test_sync_count(self):
         settings.AUTO_DENORMALIZE = False
 
-        user = get_user_model().objects.create_user('user', 'user@example.com', '$ecret')
+        user = get_user_model().objects.create_user(
+            "user", "user@example.com", "$ecret"
+        )
         registry.register([Recipe1, Recipe2])
         commands.sync_badges()
         updated, unchanged = commands.sync_counts()
@@ -66,7 +68,7 @@ class CommandsTestCase(TestCase):
         self.assertEqual(len(updated), 0)
         self.assertEqual(len(unchanged), 2)
 
-        Award.objects.create(user=user, badge=Badge.objects.get(slug='recipe1'))
+        Award.objects.create(user=user, badge=Badge.objects.get(slug="recipe1"))
         updated, unchanged = commands.sync_counts()
 
         self.assertEqual(len(updated), 1)
@@ -75,10 +77,12 @@ class CommandsTestCase(TestCase):
     def test_sync_awards_auto_denormalize_false(self):
         settings.AUTO_DENORMALIZE = False
 
-        user = get_user_model().objects.create_user('user', 'user@example.com', '$ecret')
+        user = get_user_model().objects.create_user(
+            "user", "user@example.com", "$ecret"
+        )
         registry.register(Recipe1)
         created = commands.sync_badges()
-        recipe = registry.get_recipe_instance('recipe1')
+        recipe = registry.get_recipe_instance("recipe1")
 
         self.assertEqual(len(created), 1)
         self.assertEqual(recipe.badge.users.count(), 0)
@@ -95,10 +99,12 @@ class CommandsTestCase(TestCase):
     def test_sync_awards_auto_denormalize_true(self):
         settings.AUTO_DENORMALIZE = True
 
-        user = get_user_model().objects.create_user('user1', 'user1@example.com', '$ecret')
+        user = get_user_model().objects.create_user(
+            "user1", "user1@example.com", "$ecret"
+        )
         registry.register(Recipe1)
         commands.sync_badges()
-        recipe = registry.get_recipe_instance('recipe1')
+        recipe = registry.get_recipe_instance("recipe1")
 
         user.love_python = True
         user.save()
@@ -119,10 +125,12 @@ class CommandsTestCase(TestCase):
     def test_sync_awards_disable_signals(self):
         settings.AUTO_DENORMALIZE = True
 
-        user = get_user_model().objects.create_user('user', 'user@example.com', '$ecret')
+        user = get_user_model().objects.create_user(
+            "user", "user@example.com", "$ecret"
+        )
         registry.register(Recipe1)
         created = commands.sync_badges()
-        recipe = registry.get_recipe_instance('recipe1')
+        recipe = registry.get_recipe_instance("recipe1")
 
         self.assertEqual(len(created), 1)
         self.assertEqual(self.post_save_count, 0)
@@ -131,7 +139,7 @@ class CommandsTestCase(TestCase):
         user.love_python = True
         user.save()
 
-        commands.sync_awards(**{'disable_signals': True})
+        commands.sync_awards(**{"disable_signals": True})
 
         self.assertEqual(recipe.badge.users_count, 0)
         self.assertEqual(self.post_save_count, 0)

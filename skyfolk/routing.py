@@ -1,13 +1,18 @@
 from latest_news.consumers import MyFeedConsumer
 from photologue.consumers import PhotoConsumer, VideoConsumer
 from publications.consumers import PublicationConsumer
-from publications_gallery.consumers import PublicationPhotoConsumer, PublicationVideoConsumer
+from publications_gallery.consumers import (
+    PublicationPhotoConsumer,
+    PublicationVideoConsumer,
+)
 from user_profile.consumers import BlogConsumer, NotificationConsumer
 from user_groups.consumers import GroupConsumer, ThemeConsumer
 from publications_groups.consumers import GroupPublicationConsumer
 from photologue_groups.consumers import PhotoMediaGroupConsumer, VideoMediaGroupConsumer
-from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, \
-    PublicationGroupGalleryVideoConsumer
+from publications_gallery_groups.consumers import (
+    PublicationGroupGalleryPhotoConsumer,
+    PublicationGroupGalleryVideoConsumer,
+)
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path, re_path
@@ -19,27 +24,60 @@ from django.urls import path, re_path
 # While this is under stream/ compared to the HTML page, we could have it on the
 # same URL if we wanted; Daphne separates by protocol as it negotiates with a browser.
 
-application = ProtocolTypeRouter({
-    "websocket": AuthMiddlewareStack(
-        URLRouter([
-            path('profile/<username>/stream/', BlogConsumer),
-            path('inicio/news/', MyFeedConsumer),
-            re_path(r'^.*/notification/$', NotificationConsumer),
-            re_path(r'^publication/(?P<pubid>\d+)/stream/$', PublicationConsumer),
-            re_path(r'^group/(?P<groupname>[\w-]+)/stream/$', GroupConsumer),
-            re_path(r'^group/publication/(?P<pk>\d+)/stream/$', GroupPublicationConsumer),
-            re_path(r'^groups/theme/(?P<slug>[\w-]+)/stream/$', ThemeConsumer),
-            re_path(r'^multimedia/(?P<username>[\w-]+)/photo/(?P<slug>[\-\d\w]+)/stream/$', PhotoConsumer),
-            re_path(r'^multimedia/(?P<username>[\w-]+)/video/(?P<slug>[\-\d\w]+)/stream/$', VideoConsumer),
-            re_path(r'^photo/publication/(?P<pubid>\d+)/stream/$', PublicationPhotoConsumer),
-            re_path(r'^video/publication/(?P<pubid>\d+)/stream/$', PublicationVideoConsumer),
-            re_path(r'^group/photo/(?P<slug>[\w-]+)/stream/$', PhotoMediaGroupConsumer),
-            re_path(r'^group/video/(?P<slug>[\w-]+)/stream/$', VideoMediaGroupConsumer),
-            re_path(r'^group/multimedia/publication/detail/(?P<id>\d+)/stream/$', PublicationGroupGalleryPhotoConsumer),
-            re_path(r'^group/multimedia/video/publication/detail/(?P<id>\d+)/stream/$', PublicationGroupGalleryVideoConsumer),
-        ])
-    ),
-})
+application = ProtocolTypeRouter(
+    {
+        "websocket": AuthMiddlewareStack(
+            URLRouter(
+                [
+                    path("profile/<username>/stream/", BlogConsumer),
+                    path("inicio/news/", MyFeedConsumer),
+                    re_path(r"^.*/notification/$", NotificationConsumer),
+                    re_path(
+                        r"^publication/(?P<pubid>\d+)/stream/$", PublicationConsumer
+                    ),
+                    re_path(r"^group/(?P<groupname>[\w-]+)/stream/$", GroupConsumer),
+                    re_path(
+                        r"^group/publication/(?P<pk>\d+)/stream/$",
+                        GroupPublicationConsumer,
+                    ),
+                    re_path(r"^groups/theme/(?P<slug>[\w-]+)/stream/$", ThemeConsumer),
+                    re_path(
+                        r"^multimedia/(?P<username>[\w-]+)/photo/(?P<slug>[\-\d\w]+)/stream/$",
+                        PhotoConsumer,
+                    ),
+                    re_path(
+                        r"^multimedia/(?P<username>[\w-]+)/video/(?P<slug>[\-\d\w]+)/stream/$",
+                        VideoConsumer,
+                    ),
+                    re_path(
+                        r"^photo/publication/(?P<pubid>\d+)/stream/$",
+                        PublicationPhotoConsumer,
+                    ),
+                    re_path(
+                        r"^video/publication/(?P<pubid>\d+)/stream/$",
+                        PublicationVideoConsumer,
+                    ),
+                    re_path(
+                        r"^group/photo/(?P<slug>[\w-]+)/stream/$",
+                        PhotoMediaGroupConsumer,
+                    ),
+                    re_path(
+                        r"^group/video/(?P<slug>[\w-]+)/stream/$",
+                        VideoMediaGroupConsumer,
+                    ),
+                    re_path(
+                        r"^group/multimedia/publication/detail/(?P<id>\d+)/stream/$",
+                        PublicationGroupGalleryPhotoConsumer,
+                    ),
+                    re_path(
+                        r"^group/multimedia/video/publication/detail/(?P<id>\d+)/stream/$",
+                        PublicationGroupGalleryVideoConsumer,
+                    ),
+                ]
+            )
+        )
+    }
+)
 
 # channel_routing = [
 #     # Consumidor para el perfil del usuario

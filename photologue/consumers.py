@@ -10,14 +10,17 @@ def get_profile(user_id):
     profile = Profile.objects.get(user_id=user_id)
     return profile
 
+
 @database_sync_to_async
 def get_photo(slug):
-    photo = Photo.objects.select_related('owner').get(slug__exact=slug)
+    photo = Photo.objects.select_related("owner").get(slug__exact=slug)
     return photo
+
 
 @database_sync_to_async
 def is_visible(from_profile, to_profile):
     return from_profile.is_visible(to_profile)
+
 
 class PhotoConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -31,7 +34,7 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         user = self.scope["user"]
-        slug = self.scope['url_route']['kwargs']['slug']
+        slug = self.scope["url_route"]["kwargs"]["slug"]
 
         if user.is_anonymous:
             await self.close()
@@ -44,15 +47,17 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
 
                 visibility = await is_visible(m, n)
 
-                if visibility and visibility != 'all':
+                if visibility and visibility != "all":
                     raise PermissionDenied(
-                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
+                        "{} no tiene permisos para conectarse a esta channel: {}".fornmat(
+                            user, slug
+                        )
+                    )
 
                 self.photo_channel = photo.group_name
 
                 await self.channel_layer.group_add(
-                    self.photo_channel,
-                    self.channel_name,
+                    self.photo_channel, self.channel_name
                 )
                 await self.accept()
             except (Photo.DoesNotExist, Profile.DoesNotExist) as e:
@@ -61,7 +66,7 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
                 await self.close()
 
     async def new_publication(self, event):
-        message = event['message']
+        message = event["message"]
         # Send message to WebSocket
         await self.send_json(message)
 
@@ -71,8 +76,9 @@ class PhotoConsumer(AsyncJsonWebsocketConsumer):
 
 @database_sync_to_async
 def get_video(slug):
-    video = Video.objects.select_related('owner').get(slug__exact=slug)
+    video = Video.objects.select_related("owner").get(slug__exact=slug)
     return video
+
 
 class VideoConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -86,7 +92,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         user = self.scope["user"]
-        slug = self.scope['url_route']['kwargs']['slug']
+        slug = self.scope["url_route"]["kwargs"]["slug"]
 
         if user.is_anonymous:
             await self.close()
@@ -99,15 +105,17 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
 
                 visibility = await is_visible(m, n)
 
-                if visibility and visibility != 'all':
+                if visibility and visibility != "all":
                     raise PermissionDenied(
-                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, slug))
+                        "{} no tiene permisos para conectarse a esta channel: {}".fornmat(
+                            user, slug
+                        )
+                    )
 
                 self.video_channel = video.group_name
 
                 await self.channel_layer.group_add(
-                    self.video_channel,
-                    self.channel_name,
+                    self.video_channel, self.channel_name
                 )
                 await self.accept()
             except (Video.DoesNotExist, Profile.DoesNotExist) as e:
@@ -116,7 +124,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
                 await self.close()
 
     async def new_publication(self, event):
-        message = event['message']
+        message = event["message"]
         # Send message to WebSocket
         await self.send_json(message)
 

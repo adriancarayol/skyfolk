@@ -2,11 +2,11 @@ from django.conf import settings
 
 from . import defaults
 
-__title__ = 'dash.conf'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('get_setting',)
+__title__ = "dash.conf"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("get_setting",)
 
 
 def get_setting(setting, override=None):
@@ -21,7 +21,7 @@ def get_setting(setting, override=None):
         None.
     :return: Setting value.
     """
-    attr_name = 'DASH_{0}'.format(setting)
+    attr_name = "DASH_{0}".format(setting)
     if hasattr(settings, attr_name):
         return getattr(settings, attr_name)
     else:

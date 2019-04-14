@@ -14,27 +14,29 @@ class Award(models.Model):
     """
     An Award.
     """
+
     user = models.ForeignKey(
         compat.AUTH_USER_MODEL,
-        verbose_name=_('user'),
-        related_name='badges', on_delete=models.CASCADE)
+        verbose_name=_("user"),
+        related_name="badges",
+        on_delete=models.CASCADE,
+    )
 
     badge = models.ForeignKey(
-        get_model_string('Badge'),
-        verbose_name=_('badge'),
-        related_name='awards', on_delete=models.CASCADE)
+        get_model_string("Badge"),
+        verbose_name=_("badge"),
+        related_name="awards",
+        on_delete=models.CASCADE,
+    )
 
-    awarded_at = models.DateTimeField(
-        verbose_name=_('awarded at'),
-        auto_now_add=True)
-
+    awarded_at = models.DateTimeField(verbose_name=_("awarded at"), auto_now_add=True)
 
     class Meta:
         abstract = True
-        app_label = 'badgify'
-        verbose_name = _('award')
-        verbose_name_plural = _('awards')
-        unique_together = (('user', 'badge'),)
+        app_label = "badgify"
+        verbose_name = _("award")
+        verbose_name_plural = _("awards")
+        unique_together = (("user", "badge"),)
 
     def __str__(self):
-        return '%s earned %s' % (self.user, self.badge.name)
+        return "%s earned %s" % (self.user, self.badge.name)

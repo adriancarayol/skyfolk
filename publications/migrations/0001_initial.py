@@ -14,64 +14,173 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='ExtraContent',
+            name="ExtraContent",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(default='', max_length=64)),
-                ('description', models.CharField(default='', max_length=256)),
-                ('image', models.URLField(blank=True, null=True)),
-                ('url', models.URLField()),
-                ('video', embed_video.fields.EmbedVideoField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(default="", max_length=64)),
+                ("description", models.CharField(default="", max_length=256)),
+                ("image", models.URLField(blank=True, null=True)),
+                ("url", models.URLField()),
+                ("video", embed_video.fields.EmbedVideoField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Publication',
+            name="Publication",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(max_length=10000)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('edition_date', models.DateTimeField(blank=True, null=True)),
-                ('deleted', models.BooleanField(blank=True, default=False)),
-                ('event_type', models.IntegerField(choices=[(1, 'publication'), (2, 'new_relation'), (3, 'link'), (4, 'relevant'), (5, 'imagen'), (6, 'shared')], default=1)),
-                ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('board_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='board_owner', to=settings.AUTH_USER_MODEL)),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply', to='publications.Publication')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(max_length=10000)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("edition_date", models.DateTimeField(blank=True, null=True)),
+                ("deleted", models.BooleanField(blank=True, default=False)),
+                (
+                    "event_type",
+                    models.IntegerField(
+                        choices=[
+                            (1, "publication"),
+                            (2, "new_relation"),
+                            (3, "link"),
+                            (4, "relevant"),
+                            (5, "imagen"),
+                            (6, "shared"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                ("lft", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("rght", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("tree_id", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("level", models.PositiveIntegerField(db_index=True, editable=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "board_owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="board_owner",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "parent",
+                    mptt.fields.TreeForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reply",
+                        to="publications.Publication",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationDeleted',
+            name="PublicationDeleted",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(max_length=500, null=True)),
-                ('created', models.DateTimeField(null=True)),
-                ('type_publication', models.IntegerField(choices=[(1, 'skyline'), (2, 'foto')], default=1)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(max_length=500, null=True)),
+                ("created", models.DateTimeField(null=True)),
+                (
+                    "type_publication",
+                    models.IntegerField(
+                        choices=[(1, "skyline"), (2, "foto")], default=1
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationImage',
+            name="PublicationImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=publications.models.upload_image_publication)),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='publications.Publication')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to=publications.models.upload_image_publication
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="publications.Publication",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationVideo',
+            name="PublicationVideo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video', models.FileField(upload_to=publications.models.upload_video_publication, validators=[publications.utils.validate_video])),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videos', to='publications.Publication')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(
+                        upload_to=publications.models.upload_video_publication,
+                        validators=[publications.utils.validate_video],
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="videos",
+                        to="publications.Publication",
+                    ),
+                ),
             ],
         ),
     ]

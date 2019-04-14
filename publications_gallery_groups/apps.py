@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class PublicationGroupGalleryAppConfig(AppConfig):
-    name = 'publications_gallery_groups'
+    name = "publications_gallery_groups"
 
     def ready(self):
         super(PublicationGroupGalleryAppConfig, self).ready()

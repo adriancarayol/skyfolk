@@ -9,21 +9,18 @@ class Command(BaseCommand):
     """
     Commands that resets awards.
     """
-    help = 'Resets awards'
+
+    help = "Resets awards"
 
     def add_arguments(self, parser):
         """
         Command arguments.
         """
-        parser.add_argument('--badges',
-                            action='store',
-                            dest='badges',
-                            type=str)
+        parser.add_argument("--badges", action="store", dest="badges", type=str)
 
-        parser.add_argument('--exclude-badges',
-                            action='store',
-                            dest='exclude_badges',
-                            type=str)
+        parser.add_argument(
+            "--exclude-badges", action="store", dest="exclude_badges", type=str
+        )
 
     def handle(self, **options):
         """

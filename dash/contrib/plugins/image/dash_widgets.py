@@ -5,25 +5,25 @@ from ....base import BaseDashboardPluginWidget
 from .models import DashImageModel
 from .settings import FIT_METHOD_FIT_WIDTH, FIT_METHOD_FIT_HEIGHT
 
-__title__ = 'dash.contrib.plugins.image.dash_widgets'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.contrib.plugins.image.dash_widgets"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'BaseImageWidget',
-    'Image1x1Widget',
-    'Image1x2Widget',
-    'Image2x1Widget',
-    'Image2x2Widget',
-    'Image2x3Widget',
-    'Image3x2Widget',
-    'Image3x3Widget',
-    'Image3x4Widget',
-    'Image4x3Widget',
-    'Image4x4Widget',
-    'Image4x5Widget',
-    'Image5x4Widget',
-    'Image5x5Widget',
+    "BaseImageWidget",
+    "Image1x1Widget",
+    "Image1x2Widget",
+    "Image2x1Widget",
+    "Image2x2Widget",
+    "Image2x3Widget",
+    "Image3x2Widget",
+    "Image3x3Widget",
+    "Image3x4Widget",
+    "Image4x3Widget",
+    "Image4x4Widget",
+    "Image4x5Widget",
+    "Image5x4Widget",
+    "Image5x5Widget",
 )
 
 # **********************************************************************
@@ -34,9 +34,7 @@ __all__ = (
 class BaseImageWidget(BaseDashboardPluginWidget):
     """Base image plugin widget."""
 
-    media_css = (
-        'css/dash_plugin_image.css',
-    )
+    media_css = ("css/dash_plugin_image.css",)
 
     def render(self, request=None):
         """Render."""
@@ -44,24 +42,24 @@ class BaseImageWidget(BaseDashboardPluginWidget):
 
         if request:
             path = request.path
-            path = path.split('/')
+            path = path.split("/")
 
             if path and len(path) > 1:
                 from_path = path[1]
-        
+
         is_profile = False
 
-        if from_path == 'profile':
+        if from_path == "profile":
             is_profile = True
 
         im = DashImageModel.objects.get(id=self.plugin.data.image)
         context = {
-            'plugin': self.plugin,
-            'image': im,
-            'is_profile': is_profile,
-            'MEDIA_URL': settings.MEDIA_URL,
+            "plugin": self.plugin,
+            "image": im,
+            "is_profile": is_profile,
+            "MEDIA_URL": settings.MEDIA_URL,
         }
-        return render_to_string('image/render.html', context)
+        return render_to_string("image/render.html", context)
 
 
 # **********************************************************************
@@ -72,7 +70,7 @@ class BaseImageWidget(BaseDashboardPluginWidget):
 class Image1x1Widget(BaseImageWidget):
     """Image1x1 plugin widget."""
 
-    plugin_uid = 'image_1x1'
+    plugin_uid = "image_1x1"
 
 
 class Image1x2Widget(BaseImageWidget):
@@ -80,7 +78,7 @@ class Image1x2Widget(BaseImageWidget):
 
     cols = 1
     rows = 2
-    plugin_uid = 'image_1x2'
+    plugin_uid = "image_1x2"
 
 
 class Image2x1Widget(BaseImageWidget):
@@ -88,7 +86,7 @@ class Image2x1Widget(BaseImageWidget):
 
     cols = 2
     rows = 1
-    plugin_uid = 'image_2x1'
+    plugin_uid = "image_2x1"
 
 
 class Image2x2Widget(BaseImageWidget):
@@ -96,7 +94,7 @@ class Image2x2Widget(BaseImageWidget):
 
     cols = 2
     rows = 2
-    plugin_uid = 'image_2x2'
+    plugin_uid = "image_2x2"
 
 
 class Image2x3Widget(BaseImageWidget):
@@ -104,7 +102,7 @@ class Image2x3Widget(BaseImageWidget):
 
     cols = 2
     rows = 3
-    plugin_uid = 'image_2x3'
+    plugin_uid = "image_2x3"
 
 
 class Image3x2Widget(BaseImageWidget):
@@ -112,7 +110,7 @@ class Image3x2Widget(BaseImageWidget):
 
     cols = 3
     rows = 2
-    plugin_uid = 'image_3x2'
+    plugin_uid = "image_3x2"
 
 
 class Image3x3Widget(BaseImageWidget):
@@ -120,7 +118,7 @@ class Image3x3Widget(BaseImageWidget):
 
     cols = 3
     rows = 3
-    plugin_uid = 'image_3x3'
+    plugin_uid = "image_3x3"
 
 
 class Image3x4Widget(BaseImageWidget):
@@ -128,7 +126,7 @@ class Image3x4Widget(BaseImageWidget):
 
     cols = 3
     rows = 4
-    plugin_uid = 'image_3x4'
+    plugin_uid = "image_3x4"
 
 
 class Image4x4Widget(BaseImageWidget):
@@ -136,7 +134,7 @@ class Image4x4Widget(BaseImageWidget):
 
     cols = 4
     rows = 4
-    plugin_uid = 'image_4x4'
+    plugin_uid = "image_4x4"
 
 
 class Image4x5Widget(BaseImageWidget):
@@ -144,7 +142,7 @@ class Image4x5Widget(BaseImageWidget):
 
     cols = 4
     rows = 5
-    plugin_uid = 'image_4x5'
+    plugin_uid = "image_4x5"
 
 
 class Image5x4Widget(BaseImageWidget):
@@ -152,7 +150,7 @@ class Image5x4Widget(BaseImageWidget):
 
     cols = 5
     rows = 4
-    plugin_uid = 'image_5x4'
+    plugin_uid = "image_5x4"
 
 
 class Image5x5Widget(BaseImageWidget):
@@ -160,4 +158,4 @@ class Image5x5Widget(BaseImageWidget):
 
     cols = 5
     rows = 5
-    plugin_uid = 'image_5x5'
+    plugin_uid = "image_5x5"

@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('user_profile', '0002_auto_20180930_2300'),
-    ]
+    dependencies = [("user_profile", "0002_auto_20180930_2300")]
 
     operations = [
         migrations.AddField(
-            model_name='relationshipprofile',
-            name='weight',
+            model_name="relationshipprofile",
+            name="weight",
             field=models.PositiveIntegerField(default=0),
-        ),
+        )
     ]

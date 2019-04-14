@@ -14,8 +14,8 @@ def pre_delete_user_service(sender, instance, *args, **kwargs):
     for user_service in user_services:
         data = json.loads(user_service.plugin_data)
 
-        if 'service' not in data:
+        if "service" not in data:
             continue
 
-        if data['service'] == user_service_id:
+        if data["service"] == user_service_id:
             user_service.delete()

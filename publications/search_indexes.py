@@ -24,8 +24,8 @@
 #     def index_queryset(self, using=None):
 #         return self.get_model().objects.filter(created__lte=timezone.now())
 
-        # def index_queryset(self, using=None):
-    #     return self.get_model().objects.all()
+# def index_queryset(self, using=None):
+#     return self.get_model().objects.all()
 
 
 # class VideosIndex(indexes.SearchIndex, indexes.Indexable):

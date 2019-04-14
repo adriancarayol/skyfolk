@@ -1,12 +1,10 @@
 from django.db import models
 
-__title__ = 'dash.fields'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = (
-    'OrderField',
-)
+__title__ = "dash.fields"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("OrderField",)
 
 
 class OrderField(models.IntegerField):
@@ -45,14 +43,12 @@ class OrderField(models.IntegerField):
     def pre_save(self, model_instance, add):
         # if the model is new and not an update
         if model_instance.pk is None:
-            records = model_instance.__class__.objects.aggregate(
-                models.Max(self.name)
-            )
+            records = model_instance.__class__.objects.aggregate(models.Max(self.name))
             if records:
                 # get the maximum attribute from the first record and add
                 # 1 to it
                 try:
-                    value = records['{0}__max'.format(self.name)] + 1
+                    value = records["{0}__max".format(self.name)] + 1
                 except TypeError:
                     value = 1
             else:
@@ -70,13 +66,8 @@ class OrderField(models.IntegerField):
 # For south
 try:
     from south.modelsinspector import add_introspection_rules
-    rules = [
-        (
-            (OrderField,),
-            [],
-            {},  # takes widget only, which is standard
-        ),
-    ]
+
+    rules = [((OrderField,), [], {})]  # takes widget only, which is standard
 
     add_introspection_rules(rules, ["^dash\.fields"])
 except ImportError:

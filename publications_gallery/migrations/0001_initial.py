@@ -14,122 +14,358 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('photologue', '0001_initial'),
-        ('taggit', '0002_auto_20150616_2121'),
+        ("photologue", "0001_initial"),
+        ("taggit", "0002_auto_20150616_2121"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ExtraContentPubPhoto',
+            name="ExtraContentPubPhoto",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(default='', max_length=64)),
-                ('description', models.CharField(default='', max_length=256)),
-                ('image', models.URLField(blank=True, null=True)),
-                ('url', models.URLField()),
-                ('video', embed_video.fields.EmbedVideoField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(default="", max_length=64)),
+                ("description", models.CharField(default="", max_length=256)),
+                ("image", models.URLField(blank=True, null=True)),
+                ("url", models.URLField()),
+                ("video", embed_video.fields.EmbedVideoField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='ExtraContentPubVideo',
+            name="ExtraContentPubVideo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(default='', max_length=64)),
-                ('description', models.CharField(default='', max_length=256)),
-                ('image', models.URLField(blank=True, null=True)),
-                ('url', models.URLField()),
-                ('video', embed_video.fields.EmbedVideoField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(default="", max_length=64)),
+                ("description", models.CharField(default="", max_length=256)),
+                ("image", models.URLField(blank=True, null=True)),
+                ("url", models.URLField()),
+                ("video", embed_video.fields.EmbedVideoField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationPhoto',
+            name="PublicationPhoto",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(max_length=10000)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('edition_date', models.DateTimeField(blank=True, null=True)),
-                ('deleted', models.BooleanField(blank=True, default=False)),
-                ('event_type', models.IntegerField(choices=[(1, 'publication'), (2, 'new_relation'), (3, 'link'), (4, 'relevant'), (5, 'imagen'), (6, 'shared')], default=1)),
-                ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('board_photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='board_photo', to='photologue.Photo')),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply_photo', to='publications_gallery.PublicationPhoto')),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
-                ('user_give_me_hate', models.ManyToManyField(blank=True, related_name='hate_photo_me', to=settings.AUTH_USER_MODEL)),
-                ('user_give_me_like', models.ManyToManyField(blank=True, related_name='likes_photo_me', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(max_length=10000)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("edition_date", models.DateTimeField(blank=True, null=True)),
+                ("deleted", models.BooleanField(blank=True, default=False)),
+                (
+                    "event_type",
+                    models.IntegerField(
+                        choices=[
+                            (1, "publication"),
+                            (2, "new_relation"),
+                            (3, "link"),
+                            (4, "relevant"),
+                            (5, "imagen"),
+                            (6, "shared"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                ("lft", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("rght", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("tree_id", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("level", models.PositiveIntegerField(db_index=True, editable=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "board_photo",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="board_photo",
+                        to="photologue.Photo",
+                    ),
+                ),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reply_photo",
+                        to="publications_gallery.PublicationPhoto",
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        blank=True,
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
+                (
+                    "user_give_me_hate",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="hate_photo_me",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user_give_me_like",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="likes_photo_me",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='PublicationPhotoImage',
+            name="PublicationPhotoImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=publications_gallery.models.upload_image_photo_publication)),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='publications_gallery.PublicationPhoto')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to=publications_gallery.models.upload_image_photo_publication
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="publications_gallery.PublicationPhoto",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationPhotoVideo',
+            name="PublicationPhotoVideo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video', models.FileField(upload_to=publications_gallery.models.upload_video_photo_publication, validators=[publications.utils.validate_video])),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videos', to='publications_gallery.PublicationPhoto')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(
+                        upload_to=publications_gallery.models.upload_video_photo_publication,
+                        validators=[publications.utils.validate_video],
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="videos",
+                        to="publications_gallery.PublicationPhoto",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationVideo',
+            name="PublicationVideo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(max_length=10000)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('edition_date', models.DateTimeField(blank=True, null=True)),
-                ('deleted', models.BooleanField(blank=True, default=False)),
-                ('event_type', models.IntegerField(choices=[(1, 'publication'), (2, 'new_relation'), (3, 'link'), (4, 'relevant'), (5, 'imagen'), (6, 'shared')], default=1)),
-                ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('board_video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='board_video', to='photologue.Video')),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply_photo', to='publications_gallery.PublicationVideo')),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
-                ('user_give_me_hate', models.ManyToManyField(blank=True, related_name='hate_video_me', to=settings.AUTH_USER_MODEL)),
-                ('user_give_me_like', models.ManyToManyField(blank=True, related_name='likes_video_me', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(max_length=10000)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("edition_date", models.DateTimeField(blank=True, null=True)),
+                ("deleted", models.BooleanField(blank=True, default=False)),
+                (
+                    "event_type",
+                    models.IntegerField(
+                        choices=[
+                            (1, "publication"),
+                            (2, "new_relation"),
+                            (3, "link"),
+                            (4, "relevant"),
+                            (5, "imagen"),
+                            (6, "shared"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                ("lft", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("rght", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("tree_id", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("level", models.PositiveIntegerField(db_index=True, editable=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "board_video",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="board_video",
+                        to="photologue.Video",
+                    ),
+                ),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reply_photo",
+                        to="publications_gallery.PublicationVideo",
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        blank=True,
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
+                (
+                    "user_give_me_hate",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="hate_video_me",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user_give_me_like",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="likes_video_me",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='PublicationVideoImage',
+            name="PublicationVideoImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=publications_gallery.models.upload_image_photo_publication)),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='publications_gallery.PublicationVideo')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to=publications_gallery.models.upload_image_photo_publication
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="publications_gallery.PublicationVideo",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PublicationVideoVideo',
+            name="PublicationVideoVideo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video', models.FileField(upload_to=publications_gallery.models.upload_video_photo_publication, validators=[publications.utils.validate_video])),
-                ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videos', to='publications_gallery.PublicationVideo')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(
+                        upload_to=publications_gallery.models.upload_video_photo_publication,
+                        validators=[publications.utils.validate_video],
+                    ),
+                ),
+                (
+                    "publication",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="videos",
+                        to="publications_gallery.PublicationVideo",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='extracontentpubvideo',
-            name='publication',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='publication_video_extra_content', to='publications_gallery.PublicationVideo'),
+            model_name="extracontentpubvideo",
+            name="publication",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="publication_video_extra_content",
+                to="publications_gallery.PublicationVideo",
+            ),
         ),
         migrations.AddField(
-            model_name='extracontentpubphoto',
-            name='publication',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='publication_photo_extra_content', to='publications_gallery.PublicationPhoto'),
+            model_name="extracontentpubphoto",
+            name="publication",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="publication_photo_extra_content",
+                to="publications_gallery.PublicationPhoto",
+            ),
         ),
     ]

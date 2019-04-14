@@ -14,24 +14,23 @@ from .settings import (
     IMAGES_UPLOAD_DIR,
 )
 
-__title__ = 'dash.contrib.plugins.image.helpers'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.contrib.plugins.image.helpers"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'clone_file',
-    'delete_file',
-    'ensure_unique_filename',
-    'get_crop_filter',
-    'handle_uploaded_file',
+    "clone_file",
+    "delete_file",
+    "ensure_unique_filename",
+    "get_crop_filter",
+    "handle_uploaded_file",
 )
 
 
 logger = logging.getLogger(__file__)
 
 
-IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_ROOT,
-                                               IMAGES_UPLOAD_DIR)
+IMAGES_UPLOAD_DIR_ABSOLUTE_PATH = os.path.join(settings.MEDIA_ROOT, IMAGES_UPLOAD_DIR)
 
 if not os.path.exists(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH):
     os.makedirs(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH)
@@ -68,7 +67,7 @@ def handle_uploaded_file(image_file):
             os.path.join(IMAGES_UPLOAD_DIR_ABSOLUTE_PATH, image_file.name)
         )
         image_filename = image_file.name
-        with open(destination_path, 'wb+') as destination:
+        with open(destination_path, "wb+") as destination:
             image_filename = os.path.basename(destination.name)
             for chunk in image_file.chunks():
                 destination.write(chunk)
@@ -112,10 +111,8 @@ def clone_file(source_filename, relative_path=True):
     try:
         shutil.copyfile(source_filename, destination_filename)
         if relative_path:
-            destination_filename = destination_filename.replace(
-                settings.MEDIA_ROOT, ''
-            )
-            if destination_filename.startswith('/'):
+            destination_filename = destination_filename.replace(settings.MEDIA_ROOT, "")
+            if destination_filename.startswith("/"):
                 destination_filename = destination_filename[1:]
         return destination_filename
     except Exception as err:

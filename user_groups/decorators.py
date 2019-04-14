@@ -11,11 +11,13 @@ from user_groups.models import UserGroups, RequestGroup, LikeGroup
 def user_can_view_group(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
-        groupname = kwargs.get('groupname', None)
+        groupname = kwargs.get("groupname", None)
         user = request.user
 
         try:
-            group_profile = UserGroups.objects.select_related('owner').get(slug=groupname)
+            group_profile = UserGroups.objects.select_related("owner").get(
+                slug=groupname
+            )
         except UserGroups.DoesNotExist:
             raise Http404
 
@@ -27,20 +29,23 @@ def user_can_view_group(function):
         if not is_member:
             try:
                 friend_request = RequestGroup.objects.get_follow_request(
-                    from_profile=user.id, to_group=group_profile)
+                    from_profile=user.id, to_group=group_profile
+                )
             except ObjectDoesNotExist:
                 friend_request = None
 
             context = {
-                'group_profile': group_profile,
-                'interests': group_profile.tags.all(),
-                'friend_request': friend_request,
-                'likes': LikeGroup.objects.filter(to_like=group_profile).count(),
-                'user_like_group': LikeGroup.objects.has_like(group_id=group_profile, user_id=user),
-                'users_in_group': group_profile.users.count()
+                "group_profile": group_profile,
+                "interests": group_profile.tags.all(),
+                "friend_request": friend_request,
+                "likes": LikeGroup.objects.filter(to_like=group_profile).count(),
+                "user_like_group": LikeGroup.objects.has_like(
+                    group_id=group_profile, user_id=user
+                ),
+                "users_in_group": group_profile.users.count(),
             }
 
-            return render(request, 'groups/group_profile_no_member.html', context)
+            return render(request, "groups/group_profile_no_member.html", context)
 
         return function(request, *args, **kwargs)
 
@@ -65,22 +70,28 @@ def user_can_view_group_info(function):
 
     @wraps(function)
     def inner(request, *args, **kwargs):
-        groupname = kwargs.get('groupname', None)
+        groupname = kwargs.get("groupname", None)
 
         if not groupname:
-            groupname = kwargs.get('slug', None)
+            groupname = kwargs.get("slug", None)
 
         user = request.user
 
         try:
-            group_profile = UserGroups.objects.select_related('owner').get(slug=groupname)
+            group_profile = UserGroups.objects.select_related("owner").get(
+                slug=groupname
+            )
         except UserGroups.DoesNotExist:
             raise Http404
 
         if not group_profile.is_public and group_profile.owner_id != user.id:
             is_member = user.user_groups.filter(id=group_profile.id).exists()
             if not is_member:
-                return redirect(reverse('user_groups:group-profile', kwargs={'groupname': groupname}))
+                return redirect(
+                    reverse(
+                        "user_groups:group-profile", kwargs={"groupname": groupname}
+                    )
+                )
 
         return function(request, *args, **kwargs)
 

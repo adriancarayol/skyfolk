@@ -22,11 +22,20 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from photologue.models import ImageModel
-from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
+from photologue.utils.utils import (
+    split_url,
+    get_url_tail,
+    retrieve_image,
+    pil_to_django,
+)
 from user_groups.models import UserGroups
 from .tasks import generate_thumbnails, generate_video_thumbnail
-from .validators import validate_video, image_exists, valid_image_mimetype, \
-    valid_image_size
+from .validators import (
+    validate_video,
+    image_exists,
+    valid_image_mimetype,
+    valid_image_size,
+)
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -43,53 +52,65 @@ except ImportError:
         from PIL import ImageEnhance
     except ImportError:
         raise ImportError(
-            'Photologue was unable to import the Python Imaging Library. Please confirm it`s installed and available '
-            'on your current Python path.')
+            "Photologue was unable to import the Python Imaging Library. Please confirm it`s installed and available "
+            "on your current Python path."
+        )
 
 from .managers import PhotoQuerySet
 
-logger = logging.getLogger('photologue.models')
+logger = logging.getLogger("photologue.models")
 
 # Default limit for publications_gallery.latest
-LATEST_LIMIT = getattr(settings, 'PHOTOLOGUE_GALLERY_LATEST_LIMIT', None)
+LATEST_LIMIT = getattr(settings, "PHOTOLOGUE_GALLERY_LATEST_LIMIT", None)
 
 # Number of random images from the publications_gallery to display.
-SAMPLE_SIZE = getattr(settings, 'PHOTOLOGUE_GALLERY_SAMPLE_SIZE', 5)
+SAMPLE_SIZE = getattr(settings, "PHOTOLOGUE_GALLERY_SAMPLE_SIZE", 5)
 
 # max_length setting for the ImageModel ImageField
-IMAGE_FIELD_MAX_LENGTH = getattr(settings, 'PHOTOLOGUE_IMAGE_FIELD_MAX_LENGTH', 100)
+IMAGE_FIELD_MAX_LENGTH = getattr(settings, "PHOTOLOGUE_IMAGE_FIELD_MAX_LENGTH", 100)
 
 # Path to sample image
-SAMPLE_IMAGE_PATH = getattr(settings, 'PHOTOLOGUE_SAMPLE_IMAGE_PATH', os.path.join(
-    os.path.dirname(__file__), 'res', 'sample.jpg'))
+SAMPLE_IMAGE_PATH = getattr(
+    settings,
+    "PHOTOLOGUE_SAMPLE_IMAGE_PATH",
+    os.path.join(os.path.dirname(__file__), "res", "sample.jpg"),
+)
 
 # Modify image file buffer size.
-ImageFile.MAXBLOCK = getattr(settings, 'PHOTOLOGUE_MAXBLOCK', 256 * 2 ** 10)
+ImageFile.MAXBLOCK = getattr(settings, "PHOTOLOGUE_MAXBLOCK", 256 * 2 ** 10)
 
 # Photologue image path relative to media root
-PHOTOLOGUE_DIR = getattr(settings, 'PHOTOLOGUE_DIR', 'photologue')
+PHOTOLOGUE_DIR = getattr(settings, "PHOTOLOGUE_DIR", "photologue")
 
 # Look for user function to define file paths
-PHOTOLOGUE_PATH = getattr(settings, 'PHOTOLOGUE_PATH', None)
+PHOTOLOGUE_PATH = getattr(settings, "PHOTOLOGUE_PATH", None)
 if PHOTOLOGUE_PATH is not None:
     if callable(PHOTOLOGUE_PATH):
         get_storage_path = PHOTOLOGUE_PATH
     else:
-        parts = PHOTOLOGUE_PATH.split('.')
-        module_name = '.'.join(parts[:-1])
+        parts = PHOTOLOGUE_PATH.split(".")
+        module_name = ".".join(parts[:-1])
         module = import_module(module_name)
         get_storage_path = getattr(module, parts[-1])
 else:
+
     def get_storage_path(instance, filename):
-        fn = unicodedata.normalize('NFKD', force_text(filename)).encode('ascii', 'ignore').decode('ascii')
-        return os.path.join(PHOTOLOGUE_DIR, 'photos/groups', fn)
+        fn = (
+            unicodedata.normalize("NFKD", force_text(filename))
+            .encode("ascii", "ignore")
+            .decode("ascii")
+        )
+        return os.path.join(PHOTOLOGUE_DIR, "photos/groups", fn)
+
 
 # Support CACHEDIR.TAG spec for backups for ignoring cache dir.
 # See http://www.brynosaurus.com/cachedir/spec.html
 PHOTOLOGUE_CACHEDIRTAG = os.path.join(PHOTOLOGUE_DIR, "photos", "cache", "CACHEDIR.TAG")
 if not default_storage.exists(PHOTOLOGUE_CACHEDIRTAG):
-    default_storage.save(PHOTOLOGUE_CACHEDIRTAG, ContentFile(
-        "Signature: 8a477f597d28d172789f06886806bc55".encode('utf-8')))
+    default_storage.save(
+        PHOTOLOGUE_CACHEDIRTAG,
+        ContentFile("Signature: 8a477f597d28d172789f06886806bc55".encode("utf-8")),
+    )
 
 # Exif Orientation values
 # Value 0thRow	0thColumn
@@ -113,47 +134,49 @@ IMAGE_EXIF_ORIENTATION_MAP = {
 
 # Quality options for JPEG images
 JPEG_QUALITY_CHOICES = (
-    (30, _('Very Low')),
-    (40, _('Low')),
-    (50, _('Medium-Low')),
-    (60, _('Medium')),
-    (70, _('Medium-High')),
-    (80, _('High')),
-    (90, _('Very High')),
+    (30, _("Very Low")),
+    (40, _("Low")),
+    (50, _("Medium-Low")),
+    (60, _("Medium")),
+    (70, _("Medium-High")),
+    (80, _("High")),
+    (90, _("Very High")),
 )
 
 # choices for new crop_anchor field in Photo
 CROP_ANCHOR_CHOICES = (
-    ('top', _('Top')),
-    ('right', _('Right')),
-    ('bottom', _('Bottom')),
-    ('left', _('Left')),
-    ('center', _('Center (Default)')),
+    ("top", _("Top")),
+    ("right", _("Right")),
+    ("bottom", _("Bottom")),
+    ("left", _("Left")),
+    ("center", _("Center (Default)")),
 )
 
 IMAGE_TRANSPOSE_CHOICES = (
-    ('FLIP_LEFT_RIGHT', _('Flip left to right')),
-    ('FLIP_TOP_BOTTOM', _('Flip top to bottom')),
-    ('ROTATE_90', _('Rotate 90 degrees counter-clockwise')),
-    ('ROTATE_270', _('Rotate 90 degrees clockwise')),
-    ('ROTATE_180', _('Rotate 180 degrees')),
+    ("FLIP_LEFT_RIGHT", _("Flip left to right")),
+    ("FLIP_TOP_BOTTOM", _("Flip top to bottom")),
+    ("ROTATE_90", _("Rotate 90 degrees counter-clockwise")),
+    ("ROTATE_270", _("Rotate 90 degrees clockwise")),
+    ("ROTATE_180", _("Rotate 180 degrees")),
 )
 
-WATERMARK_STYLE_CHOICES = (
-    ('tile', _('Tile')),
-    ('scale', _('Scale')),
-)
+WATERMARK_STYLE_CHOICES = (("tile", _("Tile")), ("scale", _("Scale")))
 
 # Prepare a list of image filters
 filter_names = []
 for n in dir(ImageFilter):
     klass = getattr(ImageFilter, n)
-    if isclass(klass) and issubclass(klass, ImageFilter.BuiltinFilter) and \
-            hasattr(klass, 'name'):
+    if (
+        isclass(klass)
+        and issubclass(klass, ImageFilter.BuiltinFilter)
+        and hasattr(klass, "name")
+    ):
         filter_names.append(klass.__name__)
-IMAGE_FILTERS_HELP_TEXT = _('Chain multiple filters using the following pattern "FILTER_ONE->FILTER_TWO->FILTER_THREE"'
-                            '. Image filters will be applied in order. The following filters are available: %s.'
-                            % (', '.join(filter_names)))
+IMAGE_FILTERS_HELP_TEXT = _(
+    'Chain multiple filters using the following pattern "FILTER_ONE->FILTER_TWO->FILTER_THREE"'
+    ". Image filters will be applied in order. The following filters are available: %s."
+    % (", ".join(filter_names))
+)
 
 size_method_map = {}
 
@@ -164,46 +187,53 @@ class TagField(models.CharField):
     """
 
     def __init__(self, **kwargs):
-        default_kwargs = {'max_length': 255, 'blank': True}
+        default_kwargs = {"max_length": 255, "blank": True}
         default_kwargs.update(kwargs)
         super(TagField, self).__init__(**default_kwargs)
 
     def get_internal_type(self):
-        return 'CharField'
+        return "CharField"
 
 
 @python_2_unicode_compatible
 class PhotoGroup(ImageModel):
-    title = models.CharField(_('title'),
-                             max_length=60)
-    slug = models.SlugField(_('slug'),
-                            unique=True,
-                            max_length=250,
-                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
+    title = models.CharField(_("title"), max_length=60)
+    slug = models.SlugField(
+        _("slug"),
+        unique=True,
+        max_length=250,
+        help_text=_('A "slug" is a unique URL-friendly title for an object.'),
+    )
 
-    caption = models.TextField(_('caption'),
-                               blank=True, max_length=1000)
+    caption = models.TextField(_("caption"), blank=True, max_length=1000)
 
-    date_added = models.DateTimeField(_('date added'),
-                                      default=now)
+    date_added = models.DateTimeField(_("date added"), default=now)
 
     tags = TaggableManager(blank=True)
 
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos', on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        related_name="user_group_photos",
+        on_delete=models.CASCADE,
+    )
 
-    url_image = models.URLField(max_length=255, default='', blank=True)
+    url_image = models.URLField(max_length=255, default="", blank=True)
 
-    thumbnail = models.ImageField(_('thumbnail'),
-                                  upload_to=get_storage_path,
-                                  null=True, blank=True)
+    thumbnail = models.ImageField(
+        _("thumbnail"), upload_to=get_storage_path, null=True, blank=True
+    )
 
-    group = models.ForeignKey(UserGroups, related_name="group_photos", on_delete=models.CASCADE)
+    group = models.ForeignKey(
+        UserGroups, related_name="group_photos", on_delete=models.CASCADE
+    )
 
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ["-date_added"]
+        get_latest_by = "date_added"
         verbose_name = _("photo")
         verbose_name_plural = _("photos")
 
@@ -220,15 +250,19 @@ class PhotoGroup(ImageModel):
     def save(self, *args, **kwargs):
         self.slug = orig = slugify(str(self.owner_id) + self.title)
         for x in itertools.count(1):
-            if not PhotoGroup.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+            if (
+                not PhotoGroup.objects.filter(slug=self.slug)
+                .exclude(id=self.id)
+                .exists()
+            ):
                 try:
                     self.get_remote_image()
                     super(PhotoGroup, self).save(*args, **kwargs)
                     break
                 except IntegrityError:
                     if x > 50:
-                        raise Exception('Cant save image: {}'.format(self.title))
-            self.slug = '%s-%d' % (orig, x)
+                        raise Exception("Cant save image: {}".format(self.title))
+            self.slug = "%s-%d" % (orig, x)
 
     def get_remote_image(self):
         """
@@ -241,14 +275,18 @@ class PhotoGroup(ImageModel):
         if self.url_image and not self.image:
 
             if len(self.url_image) > 255:
-                raise ValueError('URL is very long.')
+                raise ValueError("URL is very long.")
 
             else:
                 domain, path = split_url(self.url_image)
                 filename = get_url_tail(path)
 
                 if not image_exists(self.url_image):
-                    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+                    raise ValidationError(
+                        _(
+                            "Couldn't retreive image. (There was an error reaching the server)"
+                        )
+                    )
 
                 fobject = retrieve_image(self.url_image)
 
@@ -266,7 +304,7 @@ class PhotoGroup(ImageModel):
                 self.image.save(filename, django_file)
 
     def get_absolute_url(self):
-        return reverse('photologue_groups:pl-photo', args=[self.slug])
+        return reverse("photologue_groups:pl-photo", args=[self.slug])
 
     def public_galleries(self):
         """Return the public galleries to which this photo belongs."""
@@ -279,7 +317,7 @@ class PhotoGroup(ImageModel):
 
         photos = PhotoGroup.objects.filter(group=self.group)
         if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
+            raise ValueError("Photo does not belong to publications_gallery.")
         previous = None
         for photo in photos:
             if photo == self:
@@ -293,7 +331,7 @@ class PhotoGroup(ImageModel):
         """
         photos = PhotoGroup.objects.filter(group=self.group)
         if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
+            raise ValueError("Photo does not belong to publications_gallery.")
         matched = False
         for photo in photos:
             if matched:
@@ -309,9 +347,9 @@ def upload_video(instance, filename):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photologue/videos/groups', filename)
+    return os.path.join("photologue/videos/groups", filename)
 
 
 def upload_thumbnail_video(instance, filename):
@@ -320,36 +358,49 @@ def upload_thumbnail_video(instance, filename):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photologue/videos/thumbnails/groups', filename)
+    return os.path.join("photologue/videos/thumbnails/groups", filename)
 
 
 class VideoGroup(models.Model):
-    name = models.CharField(_('name'),
-                            max_length=60)
-    slug = models.SlugField(_('slug'),
-                            unique=True,
-                            max_length=250,
-                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
-    caption = models.TextField(_('caption'),
-                               blank=True, max_length=1000)
+    name = models.CharField(_("name"), max_length=60)
+    slug = models.SlugField(
+        _("slug"),
+        unique=True,
+        max_length=250,
+        help_text=_('A "slug" is a unique URL-friendly title for an object.'),
+    )
+    caption = models.TextField(_("caption"), blank=True, max_length=1000)
 
-    date_added = models.DateTimeField(_('date added'),
-                                      default=now)
+    date_added = models.DateTimeField(_("date added"), default=now)
     tags = TaggableManager(blank=True)
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_videos', on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        related_name="user_group_videos",
+        on_delete=models.CASCADE,
+    )
 
-    video = models.FileField(_('video'), upload_to=upload_video,
-                             max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
+    video = models.FileField(
+        _("video"),
+        upload_to=upload_video,
+        max_length=IMAGE_FIELD_MAX_LENGTH,
+        validators=[validate_video],
+    )
 
-    thumbnail = models.ImageField(_('thumbnail'), upload_to=upload_thumbnail_video, blank=True)
+    thumbnail = models.ImageField(
+        _("thumbnail"), upload_to=upload_thumbnail_video, blank=True
+    )
 
-    group = models.ForeignKey(UserGroups, related_name="group_videos", on_delete=models.CASCADE)
+    group = models.ForeignKey(
+        UserGroups, related_name="group_videos", on_delete=models.CASCADE
+    )
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ["-date_added"]
+        get_latest_by = "date_added"
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
@@ -364,19 +415,23 @@ class VideoGroup(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photologue_groups:pl-video', args=[self.slug])
+        return reverse("photologue_groups:pl-video", args=[self.slug])
 
     def save(self, *args, **kwargs):
         self.slug = orig = slugify(str(self.owner_id) + self.name)
         for x in itertools.count(1):
-            if not VideoGroup.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+            if (
+                not VideoGroup.objects.filter(slug=self.slug)
+                .exclude(id=self.id)
+                .exists()
+            ):
                 try:
                     super(VideoGroup, self).save(*args, **kwargs)
                     break
                 except IntegrityError:
                     if x > 50:
-                        raise Exception('Cant save image: {}'.format(self.name))
-            self.slug = '%s-%d' % (orig, x)
+                        raise Exception("Cant save image: {}".format(self.name))
+            self.slug = "%s-%d" % (orig, x)
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -385,7 +440,7 @@ class VideoGroup(models.Model):
 
         videos = VideoGroup.objects.filter(group=self.group)
         if self not in videos:
-            raise ValueError('Photo does not belong to publications_gallery.')
+            raise ValueError("Photo does not belong to publications_gallery.")
         previous = None
         for photo in videos:
             if photo == self:
@@ -399,7 +454,7 @@ class VideoGroup(models.Model):
         """
         videos = VideoGroup.objects.filter(group=self.group)
         if self not in videos:
-            raise ValueError('Photo does not belong to publications_gallery.')
+            raise ValueError("Photo does not belong to publications_gallery.")
         matched = False
         for photo in videos:
             if matched:
@@ -426,7 +481,9 @@ def generate_video_thumb(instance, created, **kwargs):
     :return:
     """
     if created:
-        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
+        transaction.on_commit(
+            lambda: generate_video_thumbnail.delay(instance=instance.pk)
+        )
 
 
 # post_save.connect(add_default_site, sender=PhotoGroup)

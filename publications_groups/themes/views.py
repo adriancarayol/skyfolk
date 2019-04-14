@@ -10,7 +10,12 @@ from django.views import View
 from django.views.generic import CreateView, UpdateView
 
 from emoji import Emoji
-from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
+from publications.exceptions import (
+    MaxFilesReached,
+    SizeIncorrect,
+    MediaNotSupported,
+    CantOpenMedia,
+)
 from publications_groups.forms import PublicationThemeForm, ThemePublicationEdit
 from publications_groups.themes.models import PublicationTheme
 from publications_groups.themes.utils import optimize_publication_media
@@ -25,6 +30,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
     Crear una publicación para una imagen de
     la galeria de un usuario.
     """
+
     form_class = PublicationThemeForm
     model = PublicationTheme
 
@@ -37,50 +43,67 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
         return super(PublicationThemeView, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse_lazy('user_profile:profile', kwargs={'username': self.request.user.username})
+        return reverse_lazy(
+            "user_profile:profile", kwargs={"username": self.request.user.username}
+        )
 
     def form_valid(self, form, msg=None):
         user = self.request.user
         form.instance.author = user
 
         try:
-            group_id = GroupTheme.objects.values_list('board_group_id', flat=True).get(id=form.instance.board_theme.id)
+            group_id = GroupTheme.objects.values_list("board_group_id", flat=True).get(
+                id=form.instance.board_theme.id
+            )
             group = UserGroups.objects.get(id=group_id)
         except ObjectDoesNotExist:
-            form.add_error('board_theme', 'El tema especificado no existe.')
+            form.add_error("board_theme", "El tema especificado no existe.")
             return super(PublicationThemeView, self).form_invalid(form)
 
         if not group.is_public and not user.user_groups.filter(id=group_id).exists():
-            form.add_error('board_theme',
-                           'Para comentar en este tema debes ser miembro del grupo {0}.'.format(group.name))
+            form.add_error(
+                "board_theme",
+                "Para comentar en este tema debes ser miembro del grupo {0}.".format(
+                    group.name
+                ),
+            )
             return super(PublicationThemeView, self).form_invalid(form)
 
         if form.instance.parent:
-            if RelationShipProfile.objects.is_blocked(to_profile=user.profile,
-                                                      from_profile=form.instance.parent.author.profile):
-                form.add_error('parent',
-                               'El autor de la publicación te ha bloqueado.'.format(group.name))
+            if RelationShipProfile.objects.is_blocked(
+                to_profile=user.profile,
+                from_profile=form.instance.parent.author.profile,
+            ):
+                form.add_error(
+                    "parent",
+                    "El autor de la publicación te ha bloqueado.".format(group.name),
+                )
                 return super(PublicationThemeView, self).form_invalid(form)
 
-        media = self.request.FILES.getlist('image')
+        media = self.request.FILES.getlist("image")
 
         try:
             check_num_images(media)
         except MaxFilesReached:
-            form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+            form.add_error(
+                "content", "El número máximo de imágenes que puedes subir es 5."
+            )
             return self.form_invalid(form=form)
 
         for file in media:
             check_image_property(file)
 
         try:
-            exts = [magic.from_buffer(x.read(), mime=True).split('/') for x in media]
+            exts = [magic.from_buffer(x.read(), mime=True).split("/") for x in media]
         except magic.MagicException as e:
-            form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+            form.add_error("content", "No hemos podido procesar los archivos adjuntos.")
             return self.form_invalid(form=form)
 
         have_video = False
-        if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
+        if any(
+            word in "gif video"
+            for word in set([item for sublist in exts for item in sublist])
+        ):
             have_video = True
 
         try:
@@ -93,20 +116,25 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                 if not have_video:
                     saved = super(PublicationThemeView, self).form_valid(form)
                 else:
-                    saved = super(PublicationThemeView, self).form_valid(form,
-                                                                         msg=u"Estamos procesando tus videos, te avisamos "
-                                                                             u"cuando la publicación esté lista.")
+                    saved = super(PublicationThemeView, self).form_valid(
+                        form,
+                        msg=u"Estamos procesando tus videos, te avisamos "
+                        u"cuando la publicación esté lista.",
+                    )
                 transaction.on_commit(
-                    lambda: optimize_publication_media(form.instance, media, exts))
-                transaction.on_commit(lambda: form.instance.send_notification(self.request))
+                    lambda: optimize_publication_media(form.instance, media, exts)
+                )
+                transaction.on_commit(
+                    lambda: form.instance.send_notification(self.request)
+                )
 
         except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
-            form.add_error('content', str(ex))
+            form.add_error("content", str(ex))
             form.instance.delete()
             return self.form_invalid(form=form)
 
         except IntegrityError as e:
-            form.add_error('content', str(e))
+            form.add_error("content", str(e))
             return self.form_invalid(form=form)
 
         return saved
@@ -119,19 +147,15 @@ class AddLikePublicationTheme(View):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        data = {
-            'response': False,
-            'status': None,
-            'in_hate': False
-        }
+        data = {"response": False, "status": None, "in_hate": False}
         try:
-            publication = PublicationTheme.objects.get(id=request.POST['pk'])
+            publication = PublicationTheme.objects.get(id=request.POST["pk"])
         except ObjectDoesNotExist:
             raise Http404
 
         in_hate = in_like = False
         try:
-            with transaction.atomic(using='default'):
+            with transaction.atomic(using="default"):
                 if publication.user_give_me_hate.filter(id=user.id).exists():
                     publication.user_give_me_hate.remove(user)
                     in_hate = True
@@ -146,17 +170,17 @@ class AddLikePublicationTheme(View):
                         publication.user_give_me_like.remove(user)
                     except IntegrityError:
                         return JsonResponse(data)
-                    data['status'] = 1
+                    data["status"] = 1
                 else:
-                    data['status'] = 2
+                    data["status"] = 2
 
             if in_hate:
-                data['in_hate'] = True
+                data["in_hate"] = True
 
         except IntegrityError:
             return JsonResponse(data)
 
-        data['response'] = True
+        data["response"] = True
 
         return JsonResponse(data)
 
@@ -168,19 +192,15 @@ class AddHatePublicationTheme(View):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        data = {
-            'response': False,
-            'status': None,
-            'in_like': False
-        }
+        data = {"response": False, "status": None, "in_like": False}
         try:
-            publication = PublicationTheme.objects.get(id=request.POST['pk'])
+            publication = PublicationTheme.objects.get(id=request.POST["pk"])
         except ObjectDoesNotExist:
             raise Http404
 
         in_hate = in_like = False
         try:
-            with transaction.atomic(using='default'):
+            with transaction.atomic(using="default"):
                 if publication.user_give_me_like.filter(id=user.id).exists():
                     publication.user_give_me_like.remove(user)
                     in_like = True
@@ -195,17 +215,17 @@ class AddHatePublicationTheme(View):
                         publication.user_give_me_hate.remove(user)
                     except IntegrityError:
                         return JsonResponse(data)
-                    data['status'] = 1
+                    data["status"] = 1
                 else:
-                    data['status'] = 2
+                    data["status"] = 2
 
             if in_like:
-                data['in_like'] = True
+                data["in_like"] = True
 
         except IntegrityError:
             return JsonResponse(data)
 
-        data['response'] = True
+        data["response"] = True
 
         return JsonResponse(data)
 
@@ -219,7 +239,7 @@ class DeletePublicationTheme(UpdateView):
 
     def get_object(self, queryset=None):
         try:
-            return self.model.objects.get(pk=self.request.POST.get('pk'))
+            return self.model.objects.get(pk=self.request.POST.get("pk"))
         except ObjectDoesNotExist:
             return None
 
@@ -227,25 +247,30 @@ class DeletePublicationTheme(UpdateView):
         response = False
         self.object = self.get_object()
         if not self.object:
-            return JsonResponse({'response': False})
+            return JsonResponse({"response": False})
 
         user = request.user
 
-        group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
-            id=self.object.board_theme.board_group_id)
+        group_owner_id = UserGroups.objects.values_list("owner_id", flat=True).get(
+            id=self.object.board_theme.board_group_id
+        )
 
-        if self.object.author_id != user.id and user.id != group_owner_id and self.object.board_theme.owner_id != user.id:
+        if (
+            self.object.author_id != user.id
+            and user.id != group_owner_id
+            and self.object.board_theme.owner_id != user.id
+        ):
             return HttpResponseForbidden()
 
         self.object.deleted = True
         try:
-            self.object.save(update_fields=['deleted'])
+            self.object.save(update_fields=["deleted"])
             self.object.get_descendants().update(deleted=True)
             response = True
         except IntegrityError:
             pass
 
-        return JsonResponse({'response': response})
+        return JsonResponse({"response": response})
 
 
 class EditThemePublication(UpdateView):
@@ -266,10 +291,10 @@ class EditThemePublication(UpdateView):
 
     def form_valid(self, form):
         user = self.request.user
-        data = {'response': False}
+        data = {"response": False}
 
-        content = form.cleaned_data['content']
-        pk = form.cleaned_data['pk']
+        content = form.cleaned_data["content"]
+        pk = form.cleaned_data["pk"]
 
         try:
             publication = PublicationTheme.objects.get(id=pk)
@@ -288,13 +313,17 @@ class EditThemePublication(UpdateView):
             publication.edition_date = datetime.datetime.now()
             publication._edited = True
             with transaction.atomic(using="default"):
-                publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
-                transaction.on_commit(lambda: publication.send_notification(self.request, is_edited=True))
-            data['response'] = True
+                publication.save(
+                    update_fields=["content"]
+                )  # Guardamos la publicacion si no hay errores
+                transaction.on_commit(
+                    lambda: publication.send_notification(self.request, is_edited=True)
+                )
+            data["response"] = True
         except IntegrityError:
             pass
 
         return JsonResponse(data)
 
     def form_invalid(self, form):
-        return JsonResponse({'response': False})
+        return JsonResponse({"response": False})

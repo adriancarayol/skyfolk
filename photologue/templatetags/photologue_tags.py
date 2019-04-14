@@ -4,6 +4,7 @@ from ..models import Photo
 
 register = template.Library()
 
+
 @register.tag
 def get_photo(parser, token):
     """Get a single photo from the photologue library and return the img tag to display it.
@@ -18,7 +19,7 @@ def get_photo(parser, token):
         # Split the contents of the tag, i.e. tag name + argument.
         tag_name, photo, photosize, css_class = token.split_contents()
     except ValueError:
-        msg = '%r tag requires 3 arguments' % token.contents[0]
+        msg = "%r tag requires 3 arguments" % token.contents[0]
         raise template.TemplateSyntaxError(msg)
     return PhotoNode(photo, photosize[1:-1], css_class[1:-1])
 
@@ -44,8 +45,12 @@ class PhotoNode(template.Node):
                 return None
         if not p.is_public:
             return None
-        func = getattr(p, 'get_%s_url' % (self.photosize), None)
+        func = getattr(p, "get_%s_url" % (self.photosize), None)
         if func is None:
             return 'A "%s" photo size has not been defined.' % (self.photosize)
         else:
-            return u'<img class="%s" src="%s" alt="%s" />' % (self.css_class, func(), p.title)
+            return u'<img class="%s" src="%s" alt="%s" />' % (
+                self.css_class,
+                func(),
+                p.title,
+            )

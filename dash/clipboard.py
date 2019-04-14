@@ -4,33 +4,22 @@ from django.utils.translation import ugettext_lazy as _
 
 from user_profile.models import Profile
 from .base import validate_placeholder_uid
-from .helpers import (
-    clone_plugin_data,
-    lists_overlap,
-    safe_text
-)
-from .models import (
-    DashboardEntry,
-    DashboardWorkspace
-)
+from .helpers import clone_plugin_data, lists_overlap, safe_text
+from .models import DashboardEntry, DashboardWorkspace
 from .settings import PLUGIN_CLIPBOARD_KEY
-from .utils import (
-    build_cells_matrix,
-    get_occupied_cells,
-    get_user_plugin_uids
-)
+from .utils import build_cells_matrix, get_occupied_cells, get_user_plugin_uids
 
-__title__ = 'dash.clipboard'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.clipboard"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'can_paste_from_clipboard',
-    'copy_entry_to_clipboard',
-    'cut_entry_to_clipboard',
-    'get_plugin_data_from_clipboard',
-    'paste_from_clipboard',
-    'save_plugin_data_to_clipboard',
+    "can_paste_from_clipboard",
+    "copy_entry_to_clipboard",
+    "cut_entry_to_clipboard",
+    "get_plugin_data_from_clipboard",
+    "paste_from_clipboard",
+    "save_plugin_data_to_clipboard",
 )
 
 
@@ -43,10 +32,7 @@ def make_session_key(layout_uid):
     return "{0}_{1}".format(PLUGIN_CLIPBOARD_KEY, layout_uid)
 
 
-def save_plugin_data_to_clipboard(request,
-                                  layout_uid,
-                                  plugin_uid,
-                                  plugin_data):
+def save_plugin_data_to_clipboard(request, layout_uid, plugin_uid, plugin_data):
     """Save plugin to clipboard for later pasting.
 
     :param django.http.HttpRequest request:
@@ -56,8 +42,8 @@ def save_plugin_data_to_clipboard(request,
     :return bool: True on success. False otherwise.
     """
     request.session[make_session_key(layout_uid)] = {
-        'plugin_uid': plugin_uid,
-        'plugin_data': plugin_data
+        "plugin_uid": plugin_uid,
+        "plugin_data": plugin_data,
     }
     return True
 
@@ -83,10 +69,9 @@ def clear_clipboard_data(request, layout_uid):
         request.session[session_key] = None
 
 
-def cut_entry_to_clipboard(request,
-                           dashboard_entry,
-                           delete_original_entry=True,
-                           clone_data=True):
+def cut_entry_to_clipboard(
+    request, dashboard_entry, delete_original_entry=True, clone_data=True
+):
     """Cut ``dash.models.DashboardEntry`` to clipboard.
 
     :param django.http.HttpRequest request:
@@ -117,7 +102,7 @@ def cut_entry_to_clipboard(request,
         request=request,
         layout_uid=layout_uid,
         plugin_uid=plugin_uid,
-        plugin_data=plugin_data
+        plugin_data=plugin_data,
     )
 
     if delete_original_entry:
@@ -133,21 +118,19 @@ def copy_entry_to_clipboard(request, dashboard_entry):
     :param dash.models.DashboardEntry dashboard_entry:
     :return bool: True on success. False otherwise.
     """
-    return cut_entry_to_clipboard(
-        request,
-        dashboard_entry,
-        delete_original_entry=False
-    )
+    return cut_entry_to_clipboard(request, dashboard_entry, delete_original_entry=False)
 
 
-def paste_entry_from_clipboard(request,
-                               layout,
-                               placeholder_uid,
-                               position,
-                               workspace=None,
-                               entries=[],
-                               check_only=False,
-                               clear_clipboard=True):
+def paste_entry_from_clipboard(
+    request,
+    layout,
+    placeholder_uid,
+    position,
+    workspace=None,
+    entries=[],
+    check_only=False,
+    clear_clipboard=True,
+):
     """Paste entry from clipboard
 
     Paste entry from clipboard to the given placeholder of a workspace
@@ -186,8 +169,7 @@ def paste_entry_from_clipboard(request,
     else:
         if workspace:
             try:
-                workspace_obj = DashboardWorkspace._default_manager \
-                    .get(slug=workspace)
+                workspace_obj = DashboardWorkspace._default_manager.get(slug=workspace)
             except ObjectDoesNotExist as e:
                 workspace_obj = None
         else:
@@ -198,9 +180,9 @@ def paste_entry_from_clipboard(request,
         workspace=workspace_obj,
         layout_uid=layout.uid,
         placeholder_uid=placeholder_uid,
-        plugin_uid=clipboard_plugin_data['plugin_uid'],
-        plugin_data=clipboard_plugin_data['plugin_data'],
-        position=position
+        plugin_uid=clipboard_plugin_data["plugin_uid"],
+        plugin_data=clipboard_plugin_data["plugin_data"],
+        position=position,
     )
 
     # We should now check if we have a space for pasting the plugin. For that
@@ -211,30 +193,28 @@ def paste_entry_from_clipboard(request,
     plugin = dashboard_entry.get_plugin()
 
     if plugin.uid not in user_plugin_uids:
-        return (_("You're not allowed to "
-                  "use the {0} plugin.".format(safe_text(plugin.name))), False)
-
+        return (
+            _(
+                "You're not allowed to "
+                "use the {0} plugin.".format(safe_text(plugin.name))
+            ),
+            False,
+        )
 
     # Getting occupied cells
     placeholder = layout.get_placeholder(placeholder_uid)
     occupied_cells = build_cells_matrix(
-        request.user,
-        layout,
-        placeholder,
-        workspace=workspace
+        request.user, layout, placeholder, workspace=workspace
     )
 
     # Get cells occupied by plugin widget.
     widget_occupied_cells = get_occupied_cells(
-        layout,
-        placeholder,
-        plugin.uid,
-        position,
-        check_boundaries=True
+        layout, placeholder, plugin.uid, position, check_boundaries=True
     )
 
-    if widget_occupied_cells is not False \
-            and not lists_overlap(widget_occupied_cells, occupied_cells):
+    if widget_occupied_cells is not False and not lists_overlap(
+        widget_occupied_cells, occupied_cells
+    ):
 
         try:
             if not check_only:
@@ -249,12 +229,9 @@ def paste_entry_from_clipboard(request,
             return str(err), False
 
 
-def can_paste_entry_from_clipboard(request,
-                                   layout,
-                                   placeholder_uid,
-                                   position,
-                                   workspace=None,
-                                   entries=[]):
+def can_paste_entry_from_clipboard(
+    request, layout, placeholder_uid, position, workspace=None, entries=[]
+):
     """Check if clipboard plugin can be pasted into the placeholder.
 
     For actually pasting the plugin from clipboard into the placeholder, use
@@ -282,5 +259,5 @@ def can_paste_entry_from_clipboard(request,
         position=position,
         workspace=workspace,
         entries=entries,
-        check_only=True
+        check_only=True,
     )

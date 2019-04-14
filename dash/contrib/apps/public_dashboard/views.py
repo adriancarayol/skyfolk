@@ -20,19 +20,21 @@ if versions.DJANGO_GTE_1_10:
 else:
     from django.shortcuts import render_to_response
 
-__title__ = 'dash.contrib.apps.public_dashboard.views'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('public_dashboard',)
+__title__ = "dash.contrib.apps.public_dashboard.views"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("public_dashboard",)
 
 logger = logging.getLogger(__name__)
 
 
-def public_dashboard(request,
-                     username,
-                     workspace=None,
-                     template_name='public_dashboard/public_dashboard.html'):
+def public_dashboard(
+    request,
+    username,
+    workspace=None,
+    template_name="public_dashboard/public_dashboard.html",
+):
     """Public dashboard.
 
     :param django.http.HttpRequest request:
@@ -46,8 +48,7 @@ def public_dashboard(request,
     print(workspace)
     dashboard_settings = get_dashboard_settings(username)
     if dashboard_settings:
-        layout = get_layout(layout_uid=dashboard_settings.layout_uid,
-                            as_instance=True)
+        layout = get_layout(layout_uid=dashboard_settings.layout_uid, as_instance=True)
         user = dashboard_settings.user
     else:
         raise Http404
@@ -67,52 +68,47 @@ def public_dashboard(request,
             layout_uid=layout.uid,
             workspace__slug=workspace,
             workspace__is_public=True,
-            plugin_uid__in=user_plugin_uids
+            plugin_uid__in=user_plugin_uids,
         )
     else:
         entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
 
-    dashboard_entries = DashboardEntry._default_manager \
-        .filter(entries_q) \
-        .select_related('workspace', 'user') \
-        .order_by('placeholder_uid', 'position')[:]
+    dashboard_entries = (
+        DashboardEntry._default_manager.filter(entries_q)
+        .select_related("workspace", "user")
+        .order_by("placeholder_uid", "position")[:]
+    )
 
     # logger.debug(dashboard_entries)
 
-    placeholders = layout.get_placeholder_instances(dashboard_entries,
-                                                    request=request)
+    placeholders = layout.get_placeholder_instances(dashboard_entries, request=request)
 
     layout.collect_widget_media(dashboard_entries)
 
     context = {
-        'placeholders': placeholders,
-        'placeholders_dict': iterable_to_dict(
-            placeholders,
-            key_attr_name='uid'
+        "placeholders": placeholders,
+        "placeholders_dict": iterable_to_dict(placeholders, key_attr_name="uid"),
+        "css": layout.get_css(placeholders),
+        "layout": layout,
+        "user": user,
+        "master_template": layout.get_view_template_name(
+            request, origin="dash.public_dashboard"
         ),
-        'css': layout.get_css(placeholders),
-        'layout': layout,
-        'user': user,
-        'master_template': layout.get_view_template_name(
-            request,
-            origin='dash.public_dashboard'
-        ),
-        'dashboard_settings': dashboard_settings,
-        'AUTH_LOGIN_URL_NAME': AUTH_LOGIN_URL_NAME,
-        'AUTH_LOGOUT_URL_NAME': AUTH_LOGOUT_URL_NAME,
+        "dashboard_settings": dashboard_settings,
+        "AUTH_LOGIN_URL_NAME": AUTH_LOGIN_URL_NAME,
+        "AUTH_LOGOUT_URL_NAME": AUTH_LOGOUT_URL_NAME,
     }
 
     workspaces = get_workspaces(user, layout.uid, workspace, public=True)
 
     # If workspace with slug given is not found in the list of workspaces
     # redirect to the default dashboard.
-    if workspaces['current_workspace_not_found']:
+    if workspaces["current_workspace_not_found"]:
         messages.info(
             request,
-            _('The workspace with slug "{0}" does not exist.'
-              '').format(workspace)
+            _('The workspace with slug "{0}" does not exist.' "").format(workspace),
         )
-        return redirect('dash:dash.public_dashboard', username=username)
+        return redirect("dash:dash.public_dashboard", username=username)
 
     context.update(workspaces)
 

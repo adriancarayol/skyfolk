@@ -2,46 +2,45 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 from .base import *
 
-BASE_DIR = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-ALLOWED_HOSTS += ['127.0.0.1']
-SECRET_KEY = os.environ.get('SECRET_KEY', 'NO-SECRET')
+ALLOWED_HOSTS += ["127.0.0.1"]
+SECRET_KEY = os.environ.get("SECRET_KEY", "NO-SECRET")
 
 # S3 + CDN
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-AWS_S3_CUSTOM_DOMAIN = 'd32rim3h420riw.cloudfront.net'
-AWS_ACCESS_KEY_ID = 'AKIAJYNH343VWWRAP2EA'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'skyfolk'
-AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_CUSTOM_DOMAIN = "d32rim3h420riw.cloudfront.net"
+AWS_ACCESS_KEY_ID = "AKIAJYNH343VWWRAP2EA"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "skyfolk"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_PRELOAD_METADATA = True
 # S3_USE_SIGV4 = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-MEDIAFILES_LOCATION = 'media'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+MEDIAFILES_LOCATION = "media"
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
-THUMBNAIL_DEFAULT_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+THUMBNAIL_DEFAULT_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # MEDIA_ROOT = MEDIA_URL
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_ENV_DB', 'skyfolk_db'),
-        'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'skyfolk'),
-        'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', 'skyf0lk_p4ssword@'),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'localhost'),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5432'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_ENV_DB", "skyfolk_db"),
+        "USER": os.environ.get("DB_ENV_POSTGRES_USER", "skyfolk"),
+        "PASSWORD": os.environ.get("DB_ENV_POSTGRES_PASSWORD", "skyf0lk_p4ssword@"),
+        "HOST": os.environ.get("DB_PORT_5432_TCP_ADDR", "localhost"),
+        "PORT": os.environ.get("DB_PORT_5432_TCP_PORT", "5432"),
     }
 }
 
 # ACCOUNT SETTINGS FOR PRE
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 # STATIC_URL = '/static/'
@@ -54,7 +53,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 INVITATIONS_INVITATION_ONLY = False
 
 # ELASTICSEARCH CONFIGURATION
-ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
+ELASTIC_URL = os.environ.get("ELASTICSEARCH_URL", "localhost")
 
 # HAYSTACK_CONNECTIONS = {
 #     'default': {

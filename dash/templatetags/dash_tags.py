@@ -10,15 +10,14 @@ from datetime import datetime
 from ..settings import ACTIVE_LAYOUT, DISPLAY_AUTH_LINK
 from ..utils import get_workspaces
 
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'get_dash_plugin',
-    'get_dash_workspaces',
-    'has_edit_dashboard_permissions'
-    'render_auth_link',
-    'render_plugin_view',
+    "get_dash_plugin",
+    "get_dash_workspaces",
+    "has_edit_dashboard_permissions" "render_auth_link",
+    "render_plugin_view",
 )
 
 register = Library()
@@ -42,12 +41,12 @@ class GetDashPluginNode(Node):
 
     def render(self, context):
         """Render."""
-        request = context['request']
+        request = context["request"]
         dashboard_entry = self.dashboard_entry.resolve(context, True)
 
         plugin = dashboard_entry.get_plugin(request=request)
         context[self.as_var] = plugin
-        return ''
+        return ""
 
 
 @register.tag
@@ -71,7 +70,7 @@ def get_dash_plugin(parser, token):
     bits = token.contents.split()
 
     if 4 == len(bits):
-        if 'as' != bits[-2]:
+        if "as" != bits[-2]:
             raise TemplateSyntaxError(
                 "Invalid syntax for {0}. Incorrect number of "
                 "arguments.".format(bits[0])
@@ -79,8 +78,7 @@ def get_dash_plugin(parser, token):
         as_var = bits[-1]
     else:
         raise TemplateSyntaxError(
-            "Invalid syntax for {0}. See docs for valid syntax."
-            "".format(bits[0])
+            "Invalid syntax for {0}. See docs for valid syntax." "".format(bits[0])
         )
 
     dashboard_entry = parser.compile_filter(bits[1])
@@ -98,27 +96,27 @@ class GetDashWorkspacesNode(Node):
     def render(self, context):
         """Render."""
         try:
-            request = context['request']
+            request = context["request"]
             user = request.user
         except Exception:
-            return ''
+            return ""
 
         if self.layout_uid:
             layout_uid = self.layout_uid.resolve(context, True)
 
         else:
             try:
-                layout_uid = context['layout'].uid
+                layout_uid = context["layout"].uid
             except Exception:
                 layout_uid = ACTIVE_LAYOUT
 
         workspaces = get_workspaces(user=user, layout_uid=layout_uid)
 
-        context['workspaces'] = workspaces['workspaces']
-        context['next_workspace'] = workspaces['next_workspace']
-        context['previous_workspace'] = workspaces['previous_workspace']
-        context['current_workspace'] = workspaces['current_workspace']
-        return ''
+        context["workspaces"] = workspaces["workspaces"]
+        context["next_workspace"] = workspaces["next_workspace"]
+        context["previous_workspace"] = workspaces["previous_workspace"]
+        context["current_workspace"] = workspaces["current_workspace"]
+        return ""
 
 
 @register.tag
@@ -139,8 +137,7 @@ def get_dash_workspaces(parser, token):
 
     if len(bits) not in (1, 2, 3, 4):
         raise TemplateSyntaxError(
-            "Invalid syntax for {0}. Incorrect number "
-            "of arguments.".format(bits[0])
+            "Invalid syntax for {0}. Incorrect number " "of arguments.".format(bits[0])
         )
 
     if 4 == len(bits):
@@ -166,35 +163,36 @@ def get_dash_workspaces(parser, token):
 # *****************************************************************************
 # *****************************************************************************
 
+
 def render_auth_link(context):
     """Render logout link."""
     if not DISPLAY_AUTH_LINK:
         return {}
 
-    request = context.get('request', None)
+    request = context.get("request", None)
     if request and request.user.is_authenticated:
         try:
             auth_url = settings.LOGOUT_URL
-            auth_icon_class = 'icon-signout'
-            auth_link_text = _('Log out')
+            auth_icon_class = "icon-signout"
+            auth_link_text = _("Log out")
         except Exception as e:
-            auth_url = ''
-            auth_icon_class = ''
-            auth_link_text = ''
+            auth_url = ""
+            auth_icon_class = ""
+            auth_link_text = ""
     else:
         try:
             auth_url = settings.LOGIN_URL
-            auth_icon_class = 'icon-signin'
-            auth_link_text = _('Log in')
+            auth_icon_class = "icon-signin"
+            auth_link_text = _("Log in")
         except Exception as e:
-            auth_url = ''
-            auth_icon_class = ''
-            auth_link_text = ''
+            auth_url = ""
+            auth_icon_class = ""
+            auth_link_text = ""
 
     return {
-        'auth_link': auth_url,
-        'auth_icon_class': auth_icon_class,
-        'auth_link_text': auth_link_text
+        "auth_link": auth_url,
+        "auth_icon_class": auth_icon_class,
+        "auth_link_text": auth_link_text,
     }
 
 
@@ -207,10 +205,12 @@ def render_logout_link(context):
     return render_auth_link(context)
 
 
-register.inclusion_tag('dash/snippets/render_auth_link.html',
-                       takes_context=True)(render_auth_link)
-register.inclusion_tag('dash/snippets/render_auth_link.html',
-                       takes_context=True)(render_logout_link)
+register.inclusion_tag("dash/snippets/render_auth_link.html", takes_context=True)(
+    render_auth_link
+)
+register.inclusion_tag("dash/snippets/render_auth_link.html", takes_context=True)(
+    render_logout_link
+)
 
 
 # *****************************************************************************
@@ -231,37 +231,37 @@ class HasEditDashboardPermissionsNode(Node):
     def render(self, context):
         """Render."""
         try:
-            perms = context['perms']
+            perms = context["perms"]
         except Exception as e:
             if self.as_var:
                 context[self.as_var] = False
-                return ''
+                return ""
             else:
                 return False
 
         perms_required = [
-            'dash.add_dashboardentry',
-            'dash.change_dashboardentry',
-            'dash.delete_dashboardentry',
-            'dash.add_dashboardworkspace',
-            'dash.change_dashboardworkspace',
-            'dash.delete_dashboardworkspace',
-            'dash.add_dashboardsettings',
-            'dash.change_dashboardsettings',
-            'dash.delete_dashboardsettings',
+            "dash.add_dashboardentry",
+            "dash.change_dashboardentry",
+            "dash.delete_dashboardentry",
+            "dash.add_dashboardworkspace",
+            "dash.change_dashboardworkspace",
+            "dash.delete_dashboardworkspace",
+            "dash.add_dashboardsettings",
+            "dash.change_dashboardsettings",
+            "dash.delete_dashboardsettings",
         ]
 
         for perm in perms_required:
             if perm in perms:
                 if self.as_var:
                     context[self.as_var] = True
-                    return ''
+                    return ""
                 else:
                     return True
 
         if self.as_var:
             context[self.as_var] = False
-            return ''
+            return ""
         else:
             return False
 
@@ -287,8 +287,7 @@ def has_edit_dashboard_permissions(parser, token):
 
     if len(bits) not in (1, 3):
         raise TemplateSyntaxError(
-            "Invalid syntax for {0}. Incorrect number of "
-            "arguments.".format(bits[0])
+            "Invalid syntax for {0}. Incorrect number of " "arguments.".format(bits[0])
         )
 
     if 3 == len(bits):
@@ -341,18 +340,18 @@ class GetFormFieldTypeNode(Node):
         properties = []
 
         if isinstance(field.field.widget, forms.CheckboxInput):
-            properties.append('is_checkbox')
+            properties.append("is_checkbox")
 
         if isinstance(field.field.widget, forms.CheckboxSelectMultiple):
-            properties.append('is_checkbox_multiple')
+            properties.append("is_checkbox_multiple")
 
         if isinstance(field.field.widget, forms.RadioSelect):
-            properties.append('is_radio')
+            properties.append("is_radio")
 
         res = FormFieldType(properties)
 
         context[self.as_var] = res
-        return ''
+        return ""
 
 
 @register.tag
@@ -372,18 +371,15 @@ def get_form_field_type(parser, token):
     bits = token.contents.split()
 
     if 4 == len(bits):
-        if 'as' != bits[-2]:
+        if "as" != bits[-2]:
             raise TemplateSyntaxError(
                 "Invalid syntax for {0}. Incorrect number of "
-                "arguments.".format(
-                    bits[0]
-                )
+                "arguments.".format(bits[0])
             )
         as_var = bits[-1]
     else:
         raise TemplateSyntaxError(
-            "Invalid syntax for {0}. See docs for valid "
-            "syntax.".format(bits[0])
+            "Invalid syntax for {0}. See docs for valid " "syntax.".format(bits[0])
         )
 
     field = parser.compile_filter(bits[1])
@@ -394,34 +390,38 @@ def get_form_field_type(parser, token):
 @register.simple_tag(takes_context=True)
 def render_plugin_view(context, plugin):
     try:
-        request = context['request']
+        request = context["request"]
     except KeyError:
-        return 'Error al mostrar la información del widget'
+        return "Error al mostrar la información del widget"
 
     return plugin.render(request=request)
 
 
-@register.filter(name='simplify_plugin_name')
+@register.filter(name="simplify_plugin_name")
 def simplify_plugin_name(value):
-    value = re.sub('\([0-9]x[0-9]\)', '', value)
+    value = re.sub("\([0-9]x[0-9]\)", "", value)
     return value
 
-@register.filter(name='get_plugin_uid_without_col_and_row')
+
+@register.filter(name="get_plugin_uid_without_col_and_row")
 def get_plugin_uid_without_col_and_row(value):
-    values = value.split('_')
+    values = value.split("_")
     return "".join(values[:-1])
 
-@register.filter(name='field_type')
+
+@register.filter(name="field_type")
 def field_type(field):
     return field.field.widget.__class__.__name__
 
-@register.filter(name='parse_timestamp')
+
+@register.filter(name="parse_timestamp")
 def parse_timestamp(field):
     dt = datetime.fromtimestamp(int(field))
     new_datetime = timezone.make_aware(dt, timezone.utc)
     return new_datetime
 
-@register.filter(name='parse_rfc822_datetime')
+
+@register.filter(name="parse_rfc822_datetime")
 def parse_rfc822_datetime(field):
-    formatted_datetime = datetime.strptime(field, '%a %b %d %H:%M:%S +0000 %Y')
+    formatted_datetime = datetime.strptime(field, "%a %b %d %H:%M:%S +0000 %Y")
     return formatted_datetime

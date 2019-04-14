@@ -10,22 +10,41 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dash', '0001_initial'),
+        ("dash", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PollResponse',
+            name="PollResponse",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('options', models.BooleanField(default=False)),
-                ('poll', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dash.DashboardEntry')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("options", models.BooleanField(default=False)),
+                (
+                    "poll",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="dash.DashboardEntry",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='pollresponse',
-            unique_together={('user', 'poll')},
+            name="pollresponse", unique_together={("user", "poll")}
         ),
     ]

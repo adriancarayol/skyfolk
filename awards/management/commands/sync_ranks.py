@@ -6,11 +6,17 @@ from loguru import logger
 
 
 class Command(BaseCommand):
-    help = 'Sync UserRank with DB'
+    help = "Sync UserRank with DB"
 
     def handle(self, *args, **options):
-        user_ranks = [UserRank(name=award.name, description=award.description, reached_with=award.reached_with) 
-                      for award in award_register.awards_recipes]
+        user_ranks = [
+            UserRank(
+                name=award.name,
+                description=award.description,
+                reached_with=award.reached_with,
+            )
+            for award in award_register.awards_recipes
+        ]
         try:
             UserRank.objects.bulk_create(user_ranks)
         except IntegrityError:
@@ -19,5 +25,5 @@ class Command(BaseCommand):
                     user_rank.save()
                 except IntegrityError:
                     continue
-        
-        logger.info('{} sync to DB'.format(user_ranks))
+
+        logger.info("{} sync to DB".format(user_ranks))

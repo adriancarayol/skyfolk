@@ -11,30 +11,74 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('taggit', '0002_auto_20150616_2121'),
+        ("taggit", "0002_auto_20150616_2121"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PublicationBlog',
+            name="PublicationBlog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(max_length=10000)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('edition_date', models.DateTimeField(blank=True, null=True)),
-                ('deleted', models.BooleanField(blank=True, default=False)),
-                ('event_type', models.IntegerField(choices=[(1, 'publication'), (2, 'new_relation'), (3, 'link'), (4, 'relevant'), (5, 'imagen'), (6, 'shared')], default=1)),
-                ('lft', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('rght', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('level', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply', to='about.PublicationBlog')),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(max_length=10000)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("edition_date", models.DateTimeField(blank=True, null=True)),
+                ("deleted", models.BooleanField(blank=True, default=False)),
+                (
+                    "event_type",
+                    models.IntegerField(
+                        choices=[
+                            (1, "publication"),
+                            (2, "new_relation"),
+                            (3, "link"),
+                            (4, "relevant"),
+                            (5, "imagen"),
+                            (6, "shared"),
+                        ],
+                        default=1,
+                    ),
+                ),
+                ("lft", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("rght", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("tree_id", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("level", models.PositiveIntegerField(db_index=True, editable=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reply",
+                        to="about.PublicationBlog",
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        blank=True,
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
-        ),
+            options={"abstract": False},
+        )
     ]

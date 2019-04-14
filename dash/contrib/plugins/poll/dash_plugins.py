@@ -17,13 +17,12 @@ class BasePollPlugin(BaseDashboardPlugin):
     form = PollForm
     html_classes = []
 
+
 # ***************************************************************************
 # ********** Generating and registering the plugins using factory ***********
 # ***************************************************************************
 
 
-sizes = (
-    (1, 1),
-)
+sizes = ((1, 1),)
 
-plugin_factory(BasePollPlugin, 'poll', sizes)
+plugin_factory(BasePollPlugin, "poll", sizes)

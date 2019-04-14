@@ -46,7 +46,9 @@ class RelationShipProfileManager(models.Manager):
         :return:
         """
         qs = self.get_queryset()
-        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=FOLLOWING).exists()
+        return qs.filter(
+            to_profile=to_profile, from_profile=from_profile, type=FOLLOWING
+        ).exists()
 
     def is_blocked(self, to_profile, from_profile):
         """
@@ -56,7 +58,9 @@ class RelationShipProfileManager(models.Manager):
         :return:
         """
         qs = self.get_queryset()
-        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=BLOCK).exists()
+        return qs.filter(
+            to_profile=to_profile, from_profile=from_profile, type=BLOCK
+        ).exists()
 
     def get_sky_id_from_my_following(self, from_profile) -> models.QuerySet:
         """
@@ -68,16 +72,21 @@ class RelationShipProfileManager(models.Manager):
         :param from_profile:
         :return: Queryset with all information
         """
-        last_badge = Award.objects.filter(user_id=OuterRef('to_profile__user')).order_by('-awarded_at')
+        last_badge = Award.objects.filter(
+            user_id=OuterRef("to_profile__user")
+        ).order_by("-awarded_at")
 
         return (
-            self.filter(
-                from_profile=from_profile, type=FOLLOWING
-            ).prefetch_related("to_profile__tags", "to_profile__to_like", "to_profile__relationships__to_profile")
-             .select_related('to_profile__user')
-             .annotate(followers=Count("to_profile__to_profile"))
-             .annotate(photos=Count("to_profile__user__user_photos"))
-             .annotate(videos=Count("to_profile__user__user_videos"))
-             .annotate(experience=Sum("to_profile__user__badges__badge__points"))
-             .annotate(last_award=Subquery(last_badge.values('badge__category')[:1]))
+            self.filter(from_profile=from_profile, type=FOLLOWING)
+            .prefetch_related(
+                "to_profile__tags",
+                "to_profile__to_like",
+                "to_profile__relationships__to_profile",
+            )
+            .select_related("to_profile__user")
+            .annotate(followers=Count("to_profile__to_profile"))
+            .annotate(photos=Count("to_profile__user__user_photos"))
+            .annotate(videos=Count("to_profile__user__user_videos"))
+            .annotate(experience=Sum("to_profile__user__badges__badge__points"))
+            .annotate(last_award=Subquery(last_badge.values("badge__category")[:1]))
         )

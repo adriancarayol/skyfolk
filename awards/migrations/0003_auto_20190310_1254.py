@@ -6,14 +6,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('awards', '0002_auto_20190310_1249'),
-    ]
+    dependencies = [("awards", "0002_auto_20190310_1249")]
 
     operations = [
         migrations.AlterField(
-            model_name='userrank',
-            name='users',
-            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL, verbose_name='users'),
-        ),
+            model_name="userrank",
+            name="users",
+            field=models.ManyToManyField(
+                blank=True, to=settings.AUTH_USER_MODEL, verbose_name="users"
+            ),
+        )
     ]

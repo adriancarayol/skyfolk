@@ -8,16 +8,14 @@ class Command(BaseCommand):
     """
     Commands that shows badge stats.
     """
-    help = 'Shows badge stats'
+
+    help = "Shows badge stats"
 
     def add_arguments(self, parser):
         """
         Command arguments.
         """
-        parser.add_argument('--db-read',
-                            action='store',
-                            dest='db_read',
-                            type=str)
+        parser.add_argument("--db-read", action="store", dest="db_read", type=str)
 
     def handle(self, **options):
         """

@@ -3,11 +3,11 @@ import dash.schema
 
 
 class Query(dash.schema.Query, graphene.ObjectType):
-	pass
+    pass
 
 
 class Mutation(dash.schema.Mutation, graphene.ObjectType):
-	pass
+    pass
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

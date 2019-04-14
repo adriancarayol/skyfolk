@@ -10,7 +10,7 @@ setup(
     author_email="adriancarayol@gmail.com",
     url="http://localhost:8081/repository/pypi-internal/",
     version="1",
-    install_requires=["nose",],
-    packages=["about","account", "publications"],
+    install_requires=["nose"],
+    packages=["about", "account", "publications"],
     name="Skyfolk",
 )

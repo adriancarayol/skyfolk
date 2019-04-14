@@ -12,115 +12,263 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('taggit', '0002_auto_20150616_2121'),
+        ("taggit", "0002_auto_20150616_2121"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GroupTheme',
+            name="GroupTheme",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('description', models.CharField(max_length=2048)),
-                ('title', models.CharField(max_length=256)),
-                ('image', models.ImageField(blank=True, null=True, upload_to=user_groups.models.group_themes_images)),
-                ('slug', models.SlugField(unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("description", models.CharField(max_length=2048)),
+                ("title", models.CharField(max_length=256)),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=user_groups.models.group_themes_images,
+                    ),
+                ),
+                ("slug", models.SlugField(unique=True)),
+            ],
+            options={"ordering": ("-created",)},
+        ),
+        migrations.CreateModel(
+            name="HateGroupTheme",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "by_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "theme",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="hate_theme",
+                        to="user_groups.GroupTheme",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="LikeGroup",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "from_like",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="from_likegroup",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={"get_latest_by": "created"},
+        ),
+        migrations.CreateModel(
+            name="LikeGroupTheme",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "by_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "theme",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="like_theme",
+                        to="user_groups.GroupTheme",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="RequestGroup",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.IntegerField(
+                        choices=[(1, "Following"), (2, "Follower"), (3, "Blocked")]
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "emitter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="from_group_request",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="UserGroups",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("slug", models.SlugField(max_length=256, unique=True)),
+                ("description", models.CharField(max_length=500)),
+                ("is_public", models.BooleanField(default=True)),
+                (
+                    "avatar",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=user_groups.models.group_avatar_path,
+                    ),
+                ),
+                (
+                    "back_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=user_groups.models.group_back_image_path,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="owner_group",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        blank=True,
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
+                (
+                    "users",
+                    models.ManyToManyField(
+                        related_name="user_groups", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created',),
-            },
-        ),
-        migrations.CreateModel(
-            name='HateGroupTheme',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('by_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('theme', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='hate_theme', to='user_groups.GroupTheme')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='LikeGroup',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('from_like', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_likegroup', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'get_latest_by': 'created',
-            },
-        ),
-        migrations.CreateModel(
-            name='LikeGroupTheme',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('by_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('theme', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='like_theme', to='user_groups.GroupTheme')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='RequestGroup',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.IntegerField(choices=[(1, 'Following'), (2, 'Follower'), (3, 'Blocked')])),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('emitter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_group_request', to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='UserGroups',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.SlugField(max_length=256, unique=True)),
-                ('description', models.CharField(max_length=500)),
-                ('is_public', models.BooleanField(default=True)),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=user_groups.models.group_avatar_path)),
-                ('back_image', models.ImageField(blank=True, null=True, upload_to=user_groups.models.group_back_image_path)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='owner_group', to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
-                ('users', models.ManyToManyField(related_name='user_groups', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'permissions': (('view_notification', 'View notification'), ('can_publish', 'Can publish'), ('change_description', 'Change description'), ('delete_publication', 'Delete publication'), ('delete_image', 'Delete image'), ('kick_member', 'Kick member'), ('ban_member', 'Ban member'), ('modify_notification', 'Modify notification')),
+                "permissions": (
+                    ("view_notification", "View notification"),
+                    ("can_publish", "Can publish"),
+                    ("change_description", "Change description"),
+                    ("delete_publication", "Delete publication"),
+                    ("delete_image", "Delete image"),
+                    ("kick_member", "Kick member"),
+                    ("ban_member", "Ban member"),
+                    ("modify_notification", "Modify notification"),
+                )
             },
         ),
         migrations.AddField(
-            model_name='requestgroup',
-            name='receiver',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_group_request', to='user_groups.UserGroups'),
+            model_name="requestgroup",
+            name="receiver",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="to_group_request",
+                to="user_groups.UserGroups",
+            ),
         ),
         migrations.AddField(
-            model_name='likegroup',
-            name='to_like',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_likegroup', to='user_groups.UserGroups'),
+            model_name="likegroup",
+            name="to_like",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="to_likegroup",
+                to="user_groups.UserGroups",
+            ),
         ),
         migrations.AddField(
-            model_name='grouptheme',
-            name='board_group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user_groups.UserGroups'),
+            model_name="grouptheme",
+            name="board_group",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="user_groups.UserGroups"
+            ),
         ),
         migrations.AddField(
-            model_name='grouptheme',
-            name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="grouptheme",
+            name="owner",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='requestgroup',
-            unique_together={('emitter', 'receiver', 'status')},
+            name="requestgroup", unique_together={("emitter", "receiver", "status")}
         ),
         migrations.AlterUniqueTogether(
-            name='likegrouptheme',
-            unique_together={('theme', 'by_user')},
+            name="likegrouptheme", unique_together={("theme", "by_user")}
         ),
         migrations.AlterUniqueTogether(
-            name='likegroup',
-            unique_together={('from_like', 'to_like')},
+            name="likegroup", unique_together={("from_like", "to_like")}
         ),
         migrations.AlterUniqueTogether(
-            name='hategrouptheme',
-            unique_together={('theme', 'by_user')},
+            name="hategrouptheme", unique_together={("theme", "by_user")}
         ),
     ]

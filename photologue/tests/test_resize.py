@@ -11,7 +11,7 @@ class PhotoSizeTest(unittest.TestCase):
     def test_clean_wont_allow_zero_dimension_and_crop(self):
         """Tests if ValidationError is raised by clean method if with or height
         is set to 0 and crop is set to true"""
-        s = PhotoSize(name='test', width=400, crop=True)
+        s = PhotoSize(name="test", width=400, crop=True)
         self.assertRaises(ValidationError, s.clean)
 
 
@@ -128,4 +128,4 @@ class ImageResizeTest(PhotologueBaseTest):
 class PhotoSizeCacheTest(PhotologueBaseTest):
     def test(self):
         cache = PhotoSizeCache()
-        self.assertEqual(cache.sizes['testPhotoSize'], self.s)
+        self.assertEqual(cache.sizes["testPhotoSize"], self.s)

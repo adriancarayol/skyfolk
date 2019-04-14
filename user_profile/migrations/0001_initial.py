@@ -13,109 +13,244 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('taggit', '0002_auto_20150616_2121'),
+        ("taggit", "0002_auto_20150616_2121"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('notifications', '0001_initial'),
+        ("notifications", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AuthDevices',
+            name="AuthDevices",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('browser_token', models.CharField(max_length=1024)),
-                ('user_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='device_to_profile', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("browser_token", models.CharField(max_length=1024)),
+                (
+                    "user_profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="device_to_profile",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='LikeProfile',
+            name="LikeProfile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='NotificationSettings',
+            name="NotificationSettings",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email_when_new_notification', models.BooleanField(default=True)),
-                ('email_when_recommendations', models.BooleanField(default=True)),
-                ('email_when_mp', models.BooleanField(default=True)),
-                ('followed_notifications', models.BooleanField(default=True)),
-                ('followers_notifications', models.BooleanField(default=True)),
-                ('only_confirmed_users', models.BooleanField(default=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='notification_settings', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email_when_new_notification", models.BooleanField(default=True)),
+                ("email_when_recommendations", models.BooleanField(default=True)),
+                ("email_when_mp", models.BooleanField(default=True)),
+                ("followed_notifications", models.BooleanField(default=True)),
+                ("followers_notifications", models.BooleanField(default=True)),
+                ("only_confirmed_users", models.BooleanField(default=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notification_settings",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('back_image', models.ImageField(blank=True, null=True, upload_to=user_profile.models.upload_cover_path)),
-                ('status', models.CharField(blank=True, max_length=100, null=True)),
-                ('is_first_login', models.BooleanField(default=True)),
-                ('privacity', models.CharField(choices=[('OF', 'OnlyFo'), ('OFAF', 'OnlyFAF'), ('A', 'All'), ('N', 'Nothing')], default='A', max_length=4)),
-                ('accepted_policy', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "back_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=user_profile.models.upload_cover_path,
+                    ),
+                ),
+                ("status", models.CharField(blank=True, max_length=100, null=True)),
+                ("is_first_login", models.BooleanField(default=True)),
+                (
+                    "privacity",
+                    models.CharField(
+                        choices=[
+                            ("OF", "OnlyFo"),
+                            ("OFAF", "OnlyFAF"),
+                            ("A", "All"),
+                            ("N", "Nothing"),
+                        ],
+                        default="A",
+                        max_length=4,
+                    ),
+                ),
+                ("accepted_policy", models.BooleanField(default=False)),
             ],
-            options={
-                'ordering': ['-user__date_joined'],
-            },
+            options={"ordering": ["-user__date_joined"]},
         ),
         migrations.CreateModel(
-            name='RelationShipProfile',
+            name="RelationShipProfile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.IntegerField(choices=[(1, 1), (3, 3)])),
-                ('from_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_profile', to='user_profile.Profile')),
-                ('to_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_profile', to='user_profile.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("type", models.IntegerField(choices=[(1, 1), (3, 3)])),
+                (
+                    "from_profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="from_profile",
+                        to="user_profile.Profile",
+                    ),
+                ),
+                (
+                    "to_profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="to_profile",
+                        to="user_profile.Profile",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Request',
+            name="Request",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.IntegerField(choices=[(1, 'Following'), (3, 'Blocked')])),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('emitter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_request', to=settings.AUTH_USER_MODEL)),
-                ('notification', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='request_notification', to='notifications.Notification')),
-                ('receiver', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_request', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "status",
+                    models.IntegerField(choices=[(1, "Following"), (3, "Blocked")]),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "emitter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="from_request",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "notification",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="request_notification",
+                        to="notifications.Notification",
+                    ),
+                ),
+                (
+                    "receiver",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="to_request",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='profile',
-            name='relationships',
-            field=models.ManyToManyField(related_name='profile_relationships', through='user_profile.RelationShipProfile', to='user_profile.Profile'),
+            model_name="profile",
+            name="relationships",
+            field=models.ManyToManyField(
+                related_name="profile_relationships",
+                through="user_profile.RelationShipProfile",
+                to="user_profile.Profile",
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='tags',
-            field=taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags'),
+            model_name="profile",
+            name="tags",
+            field=taggit.managers.TaggableManager(
+                blank=True,
+                help_text="A comma-separated list of tags.",
+                through="taggit.TaggedItem",
+                to="taggit.Tag",
+                verbose_name="Tags",
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="profile",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='likeprofile',
-            name='from_profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_like', to='user_profile.Profile'),
+            model_name="likeprofile",
+            name="from_profile",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="from_like",
+                to="user_profile.Profile",
+            ),
         ),
         migrations.AddField(
-            model_name='likeprofile',
-            name='to_profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_like', to='user_profile.Profile'),
+            model_name="likeprofile",
+            name="to_profile",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="to_like",
+                to="user_profile.Profile",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='request',
-            unique_together={('emitter', 'receiver', 'status')},
+            name="request", unique_together={("emitter", "receiver", "status")}
         ),
         migrations.AlterUniqueTogether(
-            name='relationshipprofile',
-            unique_together={('to_profile', 'from_profile')},
+            name="relationshipprofile", unique_together={("to_profile", "from_profile")}
         ),
         migrations.AlterUniqueTogether(
-            name='likeprofile',
-            unique_together={('to_profile', 'from_profile')},
+            name="likeprofile", unique_together={("to_profile", "from_profile")}
         ),
     ]

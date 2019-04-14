@@ -24,17 +24,17 @@ if versions.DJANGO_GTE_1_10:
 else:
     from django.urls import reverse
 
-__title__ = 'dash.models'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.models"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'DashboardEntry',
-    'DashboardEntryManager',
-    'DashboardPlugin',
-    'DashboardPluginManager',
-    'DashboardSettings',
-    'DashboardWorkspace',
+    "DashboardEntry",
+    "DashboardEntryManager",
+    "DashboardPlugin",
+    "DashboardPluginManager",
+    "DashboardSettings",
+    "DashboardWorkspace",
 )
 
 AUTH_USER_MODEL = settings.AUTH_USER_MODEL
@@ -53,22 +53,26 @@ class DashboardSettings(models.Model):
           mode).
     """
 
-    user = models.OneToOneField(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE
+    )
     layout_uid = models.CharField(_("Layout"), max_length=25)
     title = models.CharField(_("Title"), max_length=255)
     allow_different_layouts = models.BooleanField(
         _("Allow different layouts per workspace?"),
         default=True,
-        help_text=_("Allows you to use different layouts for each workspace.")
+        help_text=_("Allows you to use different layouts for each workspace."),
     )
     is_public = models.BooleanField(
         _("Is public?"),
         default=False,
-        help_text=_("Makes your dashboard to be visible to the public. "
-                    "Visibility of workspaces could be adjust separately "
-                    "for each workspace, however setting your dashboard to be "
-                    "visible to public, makes your default workspace "
-                    "visible to public too.")
+        help_text=_(
+            "Makes your dashboard to be visible to the public. "
+            "Visibility of workspaces could be adjust separately "
+            "for each workspace, however setting your dashboard to be "
+            "visible to public, makes your default workspace "
+            "visible to public too."
+        ),
     )
 
     class Meta(object):
@@ -98,21 +102,23 @@ class DashboardWorkspace(models.Model):
           shared with. If workspace is shared with specific user, then the
           user it's shared with can also clone the workspace.
     """
-    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
+
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE
+    )
     layout_uid = models.CharField(_("Layout"), max_length=25)
     name = models.CharField(_("Name"), max_length=255)
-    slug = AutoSlugField(populate_from='name', verbose_name=_("Slug"),
-                         unique=True)
+    slug = AutoSlugField(populate_from="name", verbose_name=_("Slug"), unique=True)
     position = OrderField(_("Position"), null=True, blank=True)
     is_public = models.BooleanField(
         _("Is public?"),
         default=False,
-        help_text=_("Makes your workspace to be visible to the public.")
+        help_text=_("Makes your workspace to be visible to the public."),
     )
     is_clonable = models.BooleanField(
         _("Is cloneable?"),
         default=False,
-        help_text=_("Makes your workspace to be cloneable by other users.")
+        help_text=_("Makes your workspace to be cloneable by other users."),
     )
 
     class Meta(object):
@@ -120,10 +126,8 @@ class DashboardWorkspace(models.Model):
 
         verbose_name = _("Dashboard workspace")
         verbose_name_plural = _("Dashboard workspaces")
-        unique_together = (('user', 'slug'), ('user', 'name'),)
-        permissions = (
-            ('view_workspace', 'View workspace'),
-        )
+        unique_together = (("user", "slug"), ("user", "name"))
+        permissions = (("view_workspace", "View workspace"),)
 
     def __str__(self):
         return self.name
@@ -135,9 +139,7 @@ class DashboardWorkspace(models.Model):
         :return iterable:
         """
         return DashboardEntry._default_manager.get_for_workspace(
-            user=self.user,
-            layout_uid=self.layout_uid,
-            workspace=self.slug
+            user=self.user, layout_uid=self.layout_uid, workspace=self.slug
         )
 
     def get_absolute_url(self):
@@ -145,7 +147,7 @@ class DashboardWorkspace(models.Model):
 
         :return string:
         """
-        return reverse('dash:dash.dashboard', kwargs={'workspace': self.slug})
+        return reverse("dash:dash.dashboard", kwargs={"workspace": self.slug})
 
 
 class DashboardEntryManager(models.Manager):
@@ -160,11 +162,7 @@ class DashboardEntryManager(models.Manager):
             (``dash.models.DashboardWorkspace``).
         :return iterable:
         """
-        return self.filter(
-            user=user,
-            layout_uid=layout_uid,
-            workspace__slug=workspace
-        )
+        return self.filter(user=user, layout_uid=layout_uid, workspace__slug=workspace)
 
 
 @python_2_unicode_compatible
@@ -184,26 +182,31 @@ class DashboardEntry(models.Model):
         - `plugin_data` (str): JSON formatted string with plugin data. (Point to trigger results)
         - `position` (int): Entry position.
     """
-    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE)
-    workspace = models.ForeignKey(DashboardWorkspace, null=True, blank=True,
-                                  verbose_name=_("Workspace"), on_delete=models.CASCADE)
+
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE
+    )
+    workspace = models.ForeignKey(
+        DashboardWorkspace,
+        null=True,
+        blank=True,
+        verbose_name=_("Workspace"),
+        on_delete=models.CASCADE,
+    )
     layout_uid = models.CharField(_("Layout"), max_length=25)
     placeholder_uid = models.CharField(_("Placeholder"), max_length=255)
     plugin_uid = models.CharField(_("Plugin name"), max_length=255)
-    plugin_data = models.TextField(verbose_name=_("Plugin data"), null=True,
-                                   blank=True)
-    position = models.PositiveIntegerField(_("Position"), null=True,
-                                           blank=True)
+    plugin_data = models.TextField(verbose_name=_("Plugin data"), null=True, blank=True)
+    position = models.PositiveIntegerField(_("Position"), null=True, blank=True)
 
     objects = DashboardEntryManager()
 
     class Meta(object):
         """Meta."""
+
         verbose_name = _("Dashboard entry")
         verbose_name_plural = _("Dashboard entries")
-        permissions = (
-            ('copy_entry', 'Copy Entry'),
-        )
+        permissions = (("copy_entry", "Copy Entry"),)
 
     def __str__(self):
         return "{0} plugin for user {1}".format(self.plugin_uid, self.user)
@@ -233,22 +236,20 @@ class DashboardEntry(models.Model):
             self.placeholder_uid,
             workspace=self.workspace,
             user=self.user,
-            position=self.position
+            position=self.position,
         )
 
         # So that plugin has the request object
         plugin.request = request
 
-        return plugin.process(
-            self.plugin_data,
-            fetch_related_data=fetch_related_data
-        )
+        return plugin.process(self.plugin_data, fetch_related_data=fetch_related_data)
 
     def plugin_uid_code(self):
         """Mainly used in admin."""
         return self.plugin_uid
+
     plugin_uid_code.allow_tags = True
-    plugin_uid_code.short_description = _('UID')
+    plugin_uid_code.short_description = _("UID")
 
 
 class DashboardPluginManager(models.Manager):
@@ -270,10 +271,10 @@ class DashboardPlugin(models.Model):
           groups allowed to use the dashboard plugin.
     """
 
-    plugin_uid = models.CharField(_("Plugin UID"), max_length=255,
-                                  unique=True, editable=False)
-    users = models.ManyToManyField(AUTH_USER_MODEL, verbose_name=_("User"),
-                                   blank=True)
+    plugin_uid = models.CharField(
+        _("Plugin UID"), max_length=255, unique=True, editable=False
+    )
+    users = models.ManyToManyField(AUTH_USER_MODEL, verbose_name=_("User"), blank=True)
     groups = models.ManyToManyField(Group, verbose_name=_("Group"), blank=True)
 
     objects = DashboardPluginManager()
@@ -286,21 +287,22 @@ class DashboardPlugin(models.Model):
 
     def __str__(self):
         return "{0} ({1})".format(
-            dict(get_registered_plugins()).get(self.plugin_uid, ''),
-            self.plugin_uid
+            dict(get_registered_plugins()).get(self.plugin_uid, ""), self.plugin_uid
         )
 
     def plugin_uid_code(self):
         """Mainly used in admin."""
         return self.plugin_uid
+
     plugin_uid_code.allow_tags = True
-    plugin_uid_code.short_description = _('UID')
+    plugin_uid_code.short_description = _("UID")
 
     def plugin_uid_admin(self):
         """Mainly used in admin."""
         return self.__str__()
+
     plugin_uid_admin.allow_tags = True
-    plugin_uid_admin.short_description = _('Plugin')
+    plugin_uid_admin.short_description = _("Plugin")
 
     def groups_list(self):
         """Flat groups list.
@@ -310,9 +312,10 @@ class DashboardPlugin(models.Model):
 
         :return string:
         """
-        return ', '.join([g.name for g in self.groups.all()])
+        return ", ".join([g.name for g in self.groups.all()])
+
     groups_list.allow_tags = True
-    groups_list.short_description = _('Groups')
+    groups_list.short_description = _("Groups")
 
     def users_list(self):
         """Flat users list.
@@ -322,6 +325,7 @@ class DashboardPlugin(models.Model):
 
         :return string:
         """
-        return ', '.join([u.username for u in self.users.all()])
+        return ", ".join([u.username for u in self.users.all()])
+
     users_list.allow_tags = True
-    users_list.short_description = _('Users')
+    users_list.short_description = _("Users")

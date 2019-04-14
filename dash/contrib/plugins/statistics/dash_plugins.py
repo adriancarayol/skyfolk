@@ -5,7 +5,7 @@ from ....factory import plugin_factory
 
 from .forms import StatisticsForm
 
-__all__ = ('BaseStatisticsPlugin',)
+__all__ = ("BaseStatisticsPlugin",)
 
 
 # ****************************************************************************
@@ -20,7 +20,6 @@ class BaseStatisticsPlugin(BaseDashboardPlugin):
     group = _("Perfil")
     form = StatisticsForm
 
-
     @property
     def html_class(self):
         """HTML class.
@@ -30,14 +29,12 @@ class BaseStatisticsPlugin(BaseDashboardPlugin):
         html_class = super(BaseStatisticsPlugin, self).html_class
         return html_class
 
+
 # ****************************************************************************
 # ********** Generating and registering the STATISTICS plugins using factory ********
 # ****************************************************************************
 
 
-sizes = (
-    (1, 1),
-    (2, 2)
-)
+sizes = ((1, 1), (2, 2))
 
-plugin_factory(BaseStatisticsPlugin, 'statistics', sizes)
+plugin_factory(BaseStatisticsPlugin, "statistics", sizes)

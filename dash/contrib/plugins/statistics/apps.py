@@ -4,10 +4,9 @@ try:
     class Config(AppConfig):
         """Config."""
 
-        name = 'dash.contrib.plugins.statistics'
-        label = 'dash_contrib_plugins_statistics'
+        name = "dash.contrib.plugins.statistics"
+        label = "dash_contrib_plugins_statistics"
+
 
 except ImportError:
     pass
-
-

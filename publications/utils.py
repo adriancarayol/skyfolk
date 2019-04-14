@@ -45,13 +45,13 @@ def remove_duplicates_in_list(seq):
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 
-def generate_path_video(username, ext='mp4'):
+def generate_path_video(username, ext="mp4"):
     """
     Funcion para calcular la ruta
     donde se almacenaran las imagenes
     de una publicacion
     """
-    path = os.path.join(settings.MEDIA_ROOT, 'publications/videos')
+    path = os.path.join(settings.MEDIA_ROOT, "publications/videos")
     full_path = os.path.join(path, username)
 
     filename = "%s.%s" % (uuid.uuid4(), ext)
@@ -61,7 +61,10 @@ def generate_path_video(username, ext='mp4'):
 def convert_video_to_mp4(avi_file_path, output_name):
     process = subprocess.run(
         "ffmpeg -y -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(
-            input=avi_file_path, output=output_name), shell=True).returncode
+            input=avi_file_path, output=output_name
+        ),
+        shell=True,
+    ).returncode
 
 
 def validate_video(value):
@@ -80,7 +83,7 @@ def validate_video(value):
             break
 
     if not is_valid:
-        raise ValueError('Please upload a valid video file')
+        raise ValueError("Please upload a valid video file")
 
 
 def recursive_node_to_dict(node):
@@ -89,17 +92,20 @@ def recursive_node_to_dict(node):
         de una publicacion
     """
     result = {
-        'id': node.pk,
-        'content': node.content,
-        'created': naturaltime(node.created),
-        'author__username': node.author.username
+        "id": node.pk,
+        "content": node.content,
+        "created": naturaltime(node.created),
+        "author__username": node.author.username,
     }
-    children = [recursive_node_to_dict(c) for c in node.get_descendants().filter(deleted=False, level__lte=1)[:10]]
+    children = [
+        recursive_node_to_dict(c)
+        for c in node.get_descendants().filter(deleted=False, level__lte=1)[:10]
+    ]
     if children:
-        result['children'] = children
+        result["children"] = children
     return result
 
 
 def set_link_class(attrs, new=False):
-    attrs[(None, u'class')] = u'external-link'
+    attrs[(None, u"class")] = u"external-link"
     return attrs

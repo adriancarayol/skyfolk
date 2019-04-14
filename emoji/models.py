@@ -12,11 +12,11 @@ except ImportError as exc:
 
 from . import settings
 
-__all__ = ('Emoji',)
+__all__ = ("Emoji",)
 
 UNICODE_WIDE = True
 try:
-    unichr(0x0001f48b)
+    unichr(0x0001F48B)
 except ValueError:  # pragma: no cover
     import unicodedata
 
@@ -24,9 +24,10 @@ except ValueError:  # pragma: no cover
     UNICODE_SURROGATE_MIN = 55296  # U+D800
     UNICODE_SURROGATE_MAX = 57343  # U+DFFF
 
-
     def convert_unicode_surrogates(surrogate_pair):
-        return unicodedata.normalize('NFKD', surrogate_pair)
+        return unicodedata.normalize("NFKD", surrogate_pair)
+
+
 except NameError:
     unichr = chr  # Python3 doesn't have unichr
 
@@ -59,22 +60,22 @@ class Emoji(object):
     '/static/emoji/dog.png'
 
     """
-    _static_path = 'emoji/img'
-    _image_path = os.path.join(os.path.dirname(__file__),
-                               'static', 'emoji', 'img')
+
+    _static_path = "emoji/img"
+    _image_path = os.path.join(os.path.dirname(__file__), "static", "emoji", "img")
     _instance = None
-    _pattern = re.compile(r':([a-z0-9\+\-_]+):', re.I)
+    _pattern = re.compile(r":([a-z0-9\+\-_]+):", re.I)
     _files = []
     _unicode_characters = UNICODE_ALIAS
 
     # This character acts as a modifier, if it's ever seen then remove
     # it because the modification is done when converting to an image
     # anyway.
-    _unicode_modifiers = (u'\ufe0e', u'\ufe0f')
+    _unicode_modifiers = (u"\ufe0e", u"\ufe0f")
 
     # HTML entities regexs
-    _html_entities_integer_unicode_regex = re.compile(r'&#([0-9]+);')
-    _html_entities_hex_unicode_regex = re.compile(r'&#x([0-9a-f]+);', re.I)
+    _html_entities_integer_unicode_regex = re.compile(r"&#([0-9]+);")
+    _html_entities_hex_unicode_regex = re.compile(r"&#x([0-9a-f]+);", re.I)
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -96,17 +97,13 @@ class Emoji(object):
             return self._static_url(item)
 
     def _static_url(self, name):
-        return staticfiles_storage.url(
-            '{0}/{1}.png'.format(self._static_path, name)
-        )
+        return staticfiles_storage.url("{0}/{1}.png".format(self._static_path, name))
 
     def _image_string(self, filename, alt=None):
-        title = ' '.join(filename.split('_'))
+        title = " ".join(filename.split("_"))
 
         return settings.EMOJI_IMG_TAG.format(
-            self._static_url(filename),
-            alt or title,
-            title,
+            self._static_url(filename), alt or title, title
         )
 
     @classmethod
@@ -114,8 +111,9 @@ class Emoji(object):
         """A list of all emoji names without file extension."""
         if not cls._files:
             for f in os.listdir(cls._image_path):
-                if (not f.startswith('.') and
-                        os.path.isfile(os.path.join(cls._image_path, f))):
+                if not f.startswith(".") and os.path.isfile(
+                    os.path.join(cls._image_path, f)
+                ):
                     cls._files.append(os.path.splitext(f)[0])
 
         return cls._files
@@ -163,16 +161,17 @@ class Emoji(object):
             #
             # Is there any reason to do this even if Python got wide
             # support enabled?
-            if (not UNICODE_WIDE and not surrogate_character and
-                        ord(character) >= UNICODE_SURROGATE_MIN and
-                        ord(character) <= UNICODE_SURROGATE_MAX):
+            if (
+                not UNICODE_WIDE
+                and not surrogate_character
+                and ord(character) >= UNICODE_SURROGATE_MIN
+                and ord(character) <= UNICODE_SURROGATE_MAX
+            ):
                 surrogate_character = character
                 continue
 
             if surrogate_character:
-                character = convert_unicode_surrogates(
-                    surrogate_character + character
-                )
+                character = convert_unicode_surrogates(surrogate_character + character)
                 surrogate_character = None
 
             name = e.name_for(character)
@@ -184,12 +183,12 @@ class Emoji(object):
 
             output.append(character)
 
-        return ''.join(output)
+        return "".join(output)
 
     @classmethod
     def name_for(cls, character):
         for modifier in cls._unicode_modifiers:
-            character = character.replace(modifier, '')
+            character = character.replace(modifier, "")
 
         return cls._unicode_characters.get(character, False)
 
@@ -204,16 +203,16 @@ class Emoji(object):
 
         def _hex_to_unicode(hex_code):
             if PYTHON3:
-                hex_code = '{0:0>8}'.format(hex_code)
-                as_int = struct.unpack('>i', bytes.fromhex(hex_code))[0]
-                return '{0:c}'.format(as_int)
+                hex_code = "{0:0>8}".format(hex_code)
+                as_int = struct.unpack(">i", bytes.fromhex(hex_code))[0]
+                return "{0:c}".format(as_int)
             else:
                 return hex_to_unicode(hex_code)
 
         def _replace_integer_entity(match):
             hex_val = hex(int(match.group(1)))
 
-            return _hex_to_unicode(hex_val.replace('0x', ''))
+            return _hex_to_unicode(hex_val.replace("0x", ""))
 
         def _replace_hex_entity(match):
             return _hex_to_unicode(match.group(1))
@@ -222,13 +221,13 @@ class Emoji(object):
         replacement_string = re.sub(
             cls._html_entities_integer_unicode_regex,
             _replace_integer_entity,
-            replacement_string
+            replacement_string,
         )
         # replace hex code points, &#x41;
         replacement_string = re.sub(
             cls._html_entities_hex_unicode_regex,
             _replace_hex_entity,
-            replacement_string
+            replacement_string,
         )
 
         return replacement_string

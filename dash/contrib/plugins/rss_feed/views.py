@@ -12,11 +12,7 @@ import feedparser
 
 from nine import versions
 
-from .defaults import (
-    DEFAULT_MAX_FEED_ITEMS,
-    DEFAULT_SHOW_TITLE,
-    DEFAULT_TRUNCATE_AFTER,
-)
+from .defaults import DEFAULT_MAX_FEED_ITEMS, DEFAULT_SHOW_TITLE, DEFAULT_TRUNCATE_AFTER
 from .forms import ReadRSSFeedForm
 from .helpers import max_num_template
 
@@ -25,11 +21,11 @@ if versions.DJANGO_GTE_1_10:
 else:
     from django.shortcuts import render_to_response
 
-__title__ = 'dash.contrib.plugins.rss_feed.views'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('get_feed',)
+__title__ = "dash.contrib.plugins.rss_feed.views"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("get_feed",)
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +33,14 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 @require_POST
 @login_required
-def get_feed(request,
-             layout_uid,
-             placeholder_uid,
-             plugin_uid,
-             template_name='rss_feed/get_feed.html',
-             template_name_ajax='rss_feed/get_feed_ajax.html'):
+def get_feed(
+    request,
+    layout_uid,
+    placeholder_uid,
+    plugin_uid,
+    template_name="rss_feed/get_feed.html",
+    template_name_ajax="rss_feed/get_feed_ajax.html",
+):
     """Get feed.
 
     :param django.http.HttpRequest request:
@@ -59,19 +57,16 @@ def get_feed(request,
 
     if form.is_valid():
 
-        feed_url = form.cleaned_data.get('feed_url')
-        custom_feed_title = form.cleaned_data.get('custom_feed_title', None)
-        show_feed_title = form.cleaned_data.get('show_feed_title',
-                                                DEFAULT_SHOW_TITLE)
-        max_items = form.cleaned_data.get('max_items')
-        truncate_after = form.cleaned_data.get('truncate_after',
-                                               DEFAULT_TRUNCATE_AFTER)
-        cache_for = form.cleaned_data.get('cache_for')
+        feed_url = form.cleaned_data.get("feed_url")
+        custom_feed_title = form.cleaned_data.get("custom_feed_title", None)
+        show_feed_title = form.cleaned_data.get("show_feed_title", DEFAULT_SHOW_TITLE)
+        max_items = form.cleaned_data.get("max_items")
+        truncate_after = form.cleaned_data.get("truncate_after", DEFAULT_TRUNCATE_AFTER)
+        cache_for = form.cleaned_data.get("cache_for")
 
-        key = '{0}-{1}-{2}-{3}'.format(layout_uid,
-                                       placeholder_uid,
-                                       plugin_uid,
-                                       feed_url)
+        key = "{0}-{1}-{2}-{3}".format(
+            layout_uid, placeholder_uid, plugin_uid, feed_url
+        )
         feed = cache.get(key)
 
         if not feed:
@@ -99,12 +94,11 @@ def get_feed(request,
                     logger.debug(err)
 
         context = {
-            'feed': feed,
-            'custom_feed_title': custom_feed_title,
-            'show_feed_title': show_feed_title,
-            'truncate_after': truncate_after,
-            'max_feed_items': max_num_template(max_items,
-                                               DEFAULT_MAX_FEED_ITEMS)
+            "feed": feed,
+            "custom_feed_title": custom_feed_title,
+            "show_feed_title": show_feed_title,
+            "truncate_after": truncate_after,
+            "max_feed_items": max_num_template(max_items, DEFAULT_MAX_FEED_ITEMS),
         }
 
     if request.is_ajax():

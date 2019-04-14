@@ -6,9 +6,10 @@ from django.apps import AppConfig
 
 
 class PostmanConfig(AppConfig):
-    name = 'postman'
+    name = "postman"
 
     def ready(self):
         from .models import setup
         from postman import signals
+
         setup()

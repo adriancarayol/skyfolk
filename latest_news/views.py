@@ -201,19 +201,15 @@ class News(ListView):
             extended_list = self.get_recommendation_users(offset)
 
         if len(photos) <= 0:
-            photos = Photo.objects.filter(owner_id__in=extended_list)[
-                offset:limit
-            ]
+            photos = Photo.objects.filter(owner_id__in=extended_list)[offset:limit]
 
         if len(videos) <= 0:
-            videos = Video.objects.filter(owner_id__in=extended_list)[
-                offset:limit
-            ]
+            videos = Video.objects.filter(owner_id__in=extended_list)[offset:limit]
 
         if len(publications) <= 0:
-            publications = Publication.objects.filter(
-                board_owner_id__in=extended_list
-            )[offset:limit]
+            publications = Publication.objects.filter(board_owner_id__in=extended_list)[
+                offset:limit
+            ]
 
         if len(placeholders) <= 0:
             entries_q = Q(user_id__in=extended_list) & Q(

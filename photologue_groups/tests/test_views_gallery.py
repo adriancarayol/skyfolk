@@ -4,14 +4,14 @@ from .factories import GalleryFactory
 
 
 class RequestGalleryTest(TestCase):
-    urls = 'photologue.tests.test_urls'
+    urls = "photologue.tests.test_urls"
 
     def setUp(self):
         super(RequestGalleryTest, self).setUp()
-        self.gallery = GalleryFactory(slug='test-publications_gallery')
+        self.gallery = GalleryFactory(slug="test-publications_gallery")
 
     def test_archive_gallery_url_works(self):
-        response = self.client.get('/ptests/publications_gallery/')
+        response = self.client.get("/ptests/publications_gallery/")
         self.assertEqual(response.status_code, 200)
 
     def test_archive_gallery_empty(self):
@@ -21,38 +21,41 @@ class RequestGalleryTest(TestCase):
         self.gallery.is_public = False
         self.gallery.save()
 
-        response = self.client.get('/ptests/publications_gallery/')
+        response = self.client.get("/ptests/publications_gallery/")
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(response.context['latest'].count(),
-                         0)
+        self.assertEqual(response.context["latest"].count(), 0)
 
     def test_paginated_gallery_url_works(self):
-        response = self.client.get('/ptests/gallerylist/')
+        response = self.client.get("/ptests/gallerylist/")
         self.assertEqual(response.status_code, 200)
 
     def test_gallery_works(self):
-        response = self.client.get('/ptests/publications_gallery/test-publications_gallery/')
+        response = self.client.get(
+            "/ptests/publications_gallery/test-publications_gallery/"
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_archive_year_gallery_works(self):
-        response = self.client.get('/ptests/publications_gallery/2011/')
+        response = self.client.get("/ptests/publications_gallery/2011/")
         self.assertEqual(response.status_code, 200)
 
     def test_archive_month_gallery_works(self):
-        response = self.client.get('/ptests/publications_gallery/2011/12/')
+        response = self.client.get("/ptests/publications_gallery/2011/12/")
         self.assertEqual(response.status_code, 200)
 
     def test_archive_day_gallery_works(self):
-        response = self.client.get('/ptests/publications_gallery/2011/12/23/')
+        response = self.client.get("/ptests/publications_gallery/2011/12/23/")
         self.assertEqual(response.status_code, 200)
 
     def test_detail_gallery_works(self):
-        response = self.client.get('/ptests/publications_gallery/2011/12/23/test-publications_gallery/')
+        response = self.client.get(
+            "/ptests/publications_gallery/2011/12/23/test-publications_gallery/"
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_redirect_to_list(self):
         """Trivial test - if someone requests the root url of the app
         (i.e. /ptests/'), redirect them to the publications_gallery list page."""
-        response = self.client.get('/ptests/')
-        self.assertRedirects(response, '/ptests/publications_gallery/', 301, 200)
+        response = self.client.get("/ptests/")
+        self.assertRedirects(response, "/ptests/publications_gallery/", 301, 200)

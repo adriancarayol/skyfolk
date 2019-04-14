@@ -1,4 +1,5 @@
 from django import template
+
 try:
     from django.urls import reverse
 except ImportError:
@@ -11,12 +12,7 @@ from django.utils.module_loading import import_string
 
 from avatar.conf import settings
 from avatar.models import Avatar
-from avatar.utils import (
-    cache_result,
-    get_default_avatar_url,
-    get_user_model,
-    get_user,
-)
+from avatar.utils import cache_result, get_default_avatar_url, get_user_model, get_user
 
 
 register = template.Library()
@@ -46,16 +42,16 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, css_class=None, **kwargs):
     else:
         alt = six.text_type(user)
         url = avatar_url(user, size)
-    kwargs.update({'alt': alt})
+    kwargs.update({"alt": alt})
 
     context = {
-        'user': user,
-        'url': url,
-        'size': size,
-        'kwargs': kwargs,
-        'class': css_class
+        "user": user,
+        "url": url,
+        "size": size,
+        "kwargs": kwargs,
+        "class": css_class,
     }
-    return render_to_string('avatar/avatar_tag.html', context)
+    return render_to_string("avatar/avatar_tag.html", context)
 
 
 @register.filter
@@ -75,9 +71,13 @@ def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     we will avoid many db calls.
     """
     alt = six.text_type(user)
-    url = reverse('avatar:avatar_render_primary', kwargs={'user': user, 'size': size})
-    return ("""<img src="%s" alt="%s" width="%s" height="%s" />""" %
-            (url, alt, size, size))
+    url = reverse("avatar:avatar_render_primary", kwargs={"user": user, "size": size})
+    return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
+        url,
+        alt,
+        size,
+        size,
+    )
 
 
 @cache_result()
@@ -86,7 +86,11 @@ def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size), six.text_type(avatar), size, size)
+        avatar.avatar_url(size),
+        six.text_type(avatar),
+        size,
+        size,
+    )
 
 
 @register.tag
@@ -94,8 +98,7 @@ def primary_avatar_object(parser, token):
     split = token.split_contents()
     if len(split) == 4:
         return UsersAvatarObjectNode(split[1], split[3])
-    raise template.TemplateSyntaxError('%r tag takes three arguments.' %
-                                       split[0])
+    raise template.TemplateSyntaxError("%r tag takes three arguments." % split[0])
 
 
 class UsersAvatarObjectNode(template.Node):

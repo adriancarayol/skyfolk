@@ -42,12 +42,15 @@ def send_to_stream(author_id, pub_id):
     logger.info(publication)
 
     data = {
-        'id': publication.id,
-        'content': render_to_string(template_name="channels/new_feed_publication.html", context={'item': publication})
+        "id": publication.id,
+        "content": render_to_string(
+            template_name="channels/new_feed_publication.html",
+            context={"item": publication},
+        ),
     }
 
     for follower_channel in RelationShipProfile.objects.filter(to_profile=profile):
-        async_to_sync(channel_layer.group_send)(follower_channel.from_profile.news_channel, {
-            'type': 'new_publication',
-            "message": data
-        })
+        async_to_sync(channel_layer.group_send)(
+            follower_channel.from_profile.news_channel,
+            {"type": "new_publication", "message": data},
+        )

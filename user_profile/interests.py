@@ -11,8 +11,11 @@ class ProfileInterests(APIView):
     """
     List interests of user profile
     """
-    authentication_classes = (authentication.SessionAuthentication,
-                              authentication.BasicAuthentication)
+
+    authentication_classes = (
+        authentication.SessionAuthentication,
+        authentication.BasicAuthentication,
+    )
 
     def get(self, request, username):
         try:
@@ -23,14 +26,14 @@ class ProfileInterests(APIView):
 
         privacity = profile.is_visible(request_user)
 
-        if privacity and privacity != 'all':
+        if privacity and privacity != "all":
             return HttpResponseForbidden()
 
         interests = profile.tags.names()[10:]
         return Response(interests)
 
 
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 def delete_interest(request, id):
     user = request.user
 
@@ -38,6 +41,8 @@ def delete_interest(request, id):
         tag = user.profile.tags.get(id=id)
         tag.delete()
     except Exception:
-        return Response({"message": "Hubo un error interno, por favor, prueba de nuevo."})
+        return Response(
+            {"message": "Hubo un error interno, por favor, prueba de nuevo."}
+        )
 
     return Response({"message": "¡Eliminado!"})

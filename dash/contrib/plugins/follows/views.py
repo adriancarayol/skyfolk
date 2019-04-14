@@ -13,14 +13,13 @@ from django.template.loader import render_to_string
 
 
 class RetrieveInfoForFollowsPin(APIView):
-
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        pin_id = kwargs.pop('pin_id')
-        page = request.GET.get('page', 25)
+        pin_id = kwargs.pop("pin_id")
+        page = request.GET.get("page", 25)
 
         try:
             pin = DashboardEntry._default_manager.get(id=pin_id)
@@ -35,12 +34,16 @@ class RetrieveInfoForFollowsPin(APIView):
 
         privacity = profile.is_visible(request_user)
 
-        if privacity and privacity != 'all':
+        if privacity and privacity != "all":
             return HttpResponseForbidden()
 
-        follows = RelationShipProfile.objects.filter(
-            from_profile__user=pin.user, type=FOLLOWING
-        ).select_related("to_profile", "to_profile__user").prefetch_related("to_profile__tags")
+        follows = (
+            RelationShipProfile.objects.filter(
+                from_profile__user=pin.user, type=FOLLOWING
+            )
+            .select_related("to_profile", "to_profile__user")
+            .prefetch_related("to_profile__tags")
+        )
 
         paginator = Paginator(follows, 1)
 
@@ -51,5 +54,7 @@ class RetrieveInfoForFollowsPin(APIView):
         except EmptyPage:
             following = paginator.page(paginator.num_pages)
 
-        rendered = render_to_string('follows/follows_page.html', {'friends_top12': following})
-        return Response({'content': rendered})
+        rendered = render_to_string(
+            "follows/follows_page.html", {"friends_top12": following}
+        )
+        return Response({"content": rendered})
