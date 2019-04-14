@@ -15,47 +15,56 @@ class SupportPasswordForm(forms.ModelForm):
 
     class Meta:
         model = SupportPasswordModel
-        exclude = ('user',)
+        exclude = ("user",)
 
         widgets = {
-            'description': forms.Textarea(attrs={
-                'cols': 80, 'rows': 20,
-                'class': 'materialize-textarea',
-                'placeholder': 'Describe tu problema aqui',
-            }),
-            'title': forms.TextInput(attrs={
-                'placeholder': 'Pon un titulo a tu problema',
-            }),
+            "description": forms.Textarea(
+                attrs={
+                    "cols": 80,
+                    "rows": 20,
+                    "class": "materialize-textarea",
+                    "placeholder": "Describe tu problema aqui",
+                }
+            ),
+            "title": forms.TextInput(
+                attrs={"placeholder": "Pon un titulo a tu problema"}
+            ),
         }
-        labels = {
-            'description': _('Descripcion del problema'),
-            'title': _('Titulo'),
-        }
+        labels = {"description": _("Descripcion del problema"), "title": _("Titulo")}
         error_messages = {
-            'username_or_email': {
-                'wrong_account': _('No hay ninguna cuenta asociada a ese nombre de usuario o email'),
+            "username_or_email": {
+                "wrong_account": _(
+                    "No hay ninguna cuenta asociada a ese nombre de usuario o email"
+                )
             }
         }
 
-    username_or_email = forms.CharField(max_length=128, required=True,
-                                        label=_('Nombre de usuario o email de la cuenta'),
-                                        widget=forms.TextInput(
-                                            attrs={'placeholder': _(
-                                                'Introduce el nombre de usuario o email de tu cuenta')}))
+    username_or_email = forms.CharField(
+        max_length=128,
+        required=True,
+        label=_("Nombre de usuario o email de la cuenta"),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("Introduce el nombre de usuario o email de tu cuenta")
+            }
+        ),
+    )
 
     def send_email(self, title, description, email):
         send_mail(
-            '[Skyfolk] - Ayuda y soporte.',
-            'Ha solicitado ayuda al soporte de Skyfolk con el siguiente contenido: \n Titulo: %s \n Descripcion: %s' %
-            (title, description),
-            'noreply@skyfolk.net',
+            "[Skyfolk] - Ayuda y soporte.",
+            "Ha solicitado ayuda al soporte de Skyfolk con el siguiente contenido: \n Titulo: %s \n Descripcion: %s"
+            % (title, description),
+            "noreply@skyfolk.net",
             [email],
             fail_silently=False,
         )
 
     def clean_username_or_email(self):
-        username_or_email = self.cleaned_data['username_or_email']
+        username_or_email = self.cleaned_data["username_or_email"]
 
         if not username_or_email:
-            raise forms.ValidationError(_('No hay ninguna cuenta asociada a ese nombre de usuario o email'))
+            raise forms.ValidationError(
+                _("No hay ninguna cuenta asociada a ese nombre de usuario o email")
+            )
         return username_or_email

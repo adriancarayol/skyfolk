@@ -10,7 +10,7 @@ from django.core.management import call_command
 """
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def prepare_user(client, django_user_model, monkeypatch):
     username = "user1"
     password = "bar"
@@ -20,4 +20,4 @@ def prepare_user(client, django_user_model, monkeypatch):
     django_user_model.objects.create_user(username=username2, password=password)
     client.login(username=username, password=password)
     client.login(username=username2, password=password)
-    call_command('badgify_sync', 'badges')
+    call_command("badgify_sync", "badges")

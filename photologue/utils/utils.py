@@ -15,7 +15,7 @@ def split_url(url):
 
 
 def get_url_tail(url):
-    return url.split('/')[-1]
+    return url.split("/")[-1]
 
 
 def get_extension(filename):
@@ -36,18 +36,18 @@ def retrieve_image(url):
         return BytesIO()
 
 
-def generate_path_video(ext='mp4'):
+def generate_path_video(ext="mp4"):
     """
     Funcion para calcular la ruta
     donde se almacenaran las imagenes
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    path = os.path.join(settings.MEDIA_URL, 'photologue/videos')
+    path = os.path.join(settings.MEDIA_URL, "photologue/videos")
     return os.path.join(path, filename)
 
 
-def generate_thumbnail_path_video(ext='jpg'):
+def generate_thumbnail_path_video(ext="jpg"):
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    path = os.path.join(settings.MEDIA_URL, 'videos/thumbnails')
+    path = os.path.join(settings.MEDIA_URL, "videos/thumbnails")
     return os.path.join(path, filename)

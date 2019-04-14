@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('user_profile', '0004_remove_relationshipprofile_weight'),
-    ]
+    dependencies = [("user_profile", "0004_remove_relationshipprofile_weight")]
 
     operations = [
         migrations.AddField(
-            model_name='relationshipprofile',
-            name='weight',
+            model_name="relationshipprofile",
+            name="weight",
             field=models.PositiveIntegerField(default=0),
-        ),
+        )
     ]

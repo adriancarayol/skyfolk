@@ -4,7 +4,7 @@ from photologue.management.commands import create_photosize
 
 
 class Command(BaseCommand):
-    help = ('Creates a new Photologue photo size interactively.')
+    help = "Creates a new Photologue photo size interactively."
     requires_model_validation = True
     can_import_settings = True
 

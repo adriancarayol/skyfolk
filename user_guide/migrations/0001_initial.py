@@ -9,38 +9,66 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Guide',
+            name="Guide",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('html', models.TextField()),
-                ('guide_type', models.CharField(choices=[('WINDOW', 'Window')], default='WINDOW', max_length=16)),
-                ('guide_name', models.CharField(max_length=64, unique=True)),
-                ('guide_tag', models.TextField(default='all')),
-                ('guide_importance', models.IntegerField(default=0)),
-                ('creation_time', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("html", models.TextField()),
+                (
+                    "guide_type",
+                    models.CharField(
+                        choices=[("WINDOW", "Window")], default="WINDOW", max_length=16
+                    ),
+                ),
+                ("guide_name", models.CharField(max_length=64, unique=True)),
+                ("guide_tag", models.TextField(default="all")),
+                ("guide_importance", models.IntegerField(default=0)),
+                ("creation_time", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='GuideInfo',
+            name="GuideInfo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_finished', models.BooleanField(default=False)),
-                ('finished_time', models.DateTimeField(blank=True, null=True)),
-                ('guide', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user_guide.Guide')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_finished", models.BooleanField(default=False)),
+                ("finished_time", models.DateTimeField(blank=True, null=True)),
+                (
+                    "guide",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="user_guide.Guide",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'ordering': ['-guide__guide_importance', 'guide__creation_time'],
-            },
+            options={"ordering": ["-guide__guide_importance", "guide__creation_time"]},
         ),
         migrations.AlterUniqueTogether(
-            name='guideinfo',
-            unique_together={('user', 'guide')},
+            name="guideinfo", unique_together={("user", "guide")}
         ),
     ]

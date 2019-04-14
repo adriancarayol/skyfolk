@@ -7,7 +7,7 @@ from publications.models import PublicationBase
 
 
 class PublicationBlogManager(models.Manager):
-    list_display = ['tag_list']
+    list_display = ["tag_list"]
 
     def tag_list(self, obj):
         """
@@ -20,10 +20,12 @@ class PublicationBlog(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
+
     title = models.CharField(max_length=128, default="")
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply', on_delete=models.CASCADE)
+    parent = models.ForeignKey(
+        "self", blank=True, null=True, related_name="reply", on_delete=models.CASCADE
+    )
 
     objects = PublicationBlogManager()
 
@@ -31,6 +33,5 @@ class PublicationBlog(PublicationBase):
     def short_content(self):
         return truncatechars_html(format_html(self.content), 100)
 
-    
     def parse_content(self):
         pass

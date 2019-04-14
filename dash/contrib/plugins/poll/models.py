@@ -9,11 +9,11 @@ class PollResponse(models.Model):
     options = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('user', 'poll')
+        unique_together = ("user", "poll")
 
     def save(self, *args, **kwargs):
 
-        if self.poll.plugin_uid.split('_')[0] == 'poll':
+        if self.poll.plugin_uid.split("_")[0] == "poll":
             super(PollResponse, self).save(*args, **kwargs)
         else:
             raise Exception("It has to be Poll plugin")

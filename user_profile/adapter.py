@@ -32,13 +32,13 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         # some social logins don't have an email address, e.g. facebook accounts
         # with mobile numbers only, but allauth takes care of this case so just
         # ignore it
-        if 'email' not in sociallogin.account.extra_data:
+        if "email" not in sociallogin.account.extra_data:
             return
 
         # check if given email address already exists.
         # Note: __iexact is used to ignore cases
         try:
-            email = sociallogin.account.extra_data['email'].lower()
+            email = sociallogin.account.extra_data["email"].lower()
             email_address = EmailAddress.objects.get(email__iexact=email)
 
         # if it does not, let allauth take care of this new social account
@@ -49,18 +49,23 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         user = email_address.user
         sociallogin.connect(request, user)
 
+
 class MyAccountAdapter(DefaultAccountAdapter):
     """
     Adaptador modificado para django-allauth.
     """
 
     def clean_username(self, username, **kwargs):
-        reg = re.compile('^[a-zA-Z0-9_]{1,15}$')
+        reg = re.compile("^[a-zA-Z0-9_]{1,15}$")
         if not reg.match(username):
             if len(username) > 15:
-                raise ValidationError(_('El nombre de usuario no puede exceder los 15 caracteres'))
+                raise ValidationError(
+                    _("El nombre de usuario no puede exceder los 15 caracteres")
+                )
             else:
-                raise ValidationError(_('El nombre de usuario solo puede tener letras, numeros y _'))
+                raise ValidationError(
+                    _("El nombre de usuario solo puede tener letras, numeros y _")
+                )
         username = super(MyAccountAdapter, self).clean_username(username=username)
         return username
 
@@ -80,21 +85,18 @@ class MyAccountAdapter(DefaultAccountAdapter):
         path = "/profile/{username}/"
 
         if is_first_time_login:
-            print(
-                'User {user} is login for the first time'.format(**locals())
-            )
+            print("User {user} is login for the first time".format(**locals()))
             path = "/welcome/{username}"
         else:
-            print(
-                'User {user} is NOT login for the first time'.format(**locals())
-            )
+            print("User {user} is NOT login for the first time".format(**locals()))
 
         return path.format(username=request.user.username)
 
     def is_open_for_signup(self, request):
         # For invitations
-        if hasattr(request, 'session') and request.session.get(
-                'account_verified_email'):
+        if hasattr(request, "session") and request.session.get(
+            "account_verified_email"
+        ):
             return True
         elif app_settings.INVITATION_ONLY is True:
             return False

@@ -8,51 +8,44 @@ try:
 except ImportError:
     from ....lib.tinymce.widgets import TinyMCE
 
-__title__ = 'dash.contrib.plugins.memo.forms'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = (
-    'MCE_ATTRS',
-    'MemoForm',
-    'TinyMCEMemoForm',
-)
+__title__ = "dash.contrib.plugins.memo.forms"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("MCE_ATTRS", "MemoForm", "TinyMCEMemoForm")
 
 
 class MemoForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Memo form (for ``Memo`` plugin)."""
 
-    plugin_data_fields = [
-        ("title", ""),
-        ("text", "")
-    ]
+    plugin_data_fields = [("title", ""), ("text", "")]
 
     title = forms.CharField(label=_("Title"), required=False)
-    text = forms.CharField(label=_("Text"), required=True,
-                           widget=forms.widgets.Textarea(attrs={"class": "materialize-textarea"}))
+    text = forms.CharField(
+        label=_("Text"),
+        required=True,
+        widget=forms.widgets.Textarea(attrs={"class": "materialize-textarea"}),
+    )
 
 
 # Basic TinyMCE config
 MCE_ATTRS = {
-    'plugins': 'visualchars,paste',
-    'theme': 'advanced',
-    'theme_advanced_buttons1':
-        'formatselect,|,bold,italic,underline,|,bullist,numlist',
-    'theme_advanced_buttons2': 'link,unlink,|,code',
-    'width': '300',
-    'delta_height': '150',
-    'relative_urls': 0
+    "plugins": "visualchars,paste",
+    "theme": "advanced",
+    "theme_advanced_buttons1": "formatselect,|,bold,italic,underline,|,bullist,numlist",
+    "theme_advanced_buttons2": "link,unlink,|,code",
+    "width": "300",
+    "delta_height": "150",
+    "relative_urls": 0,
 }
 
 
 class TinyMCEMemoForm(DashboardEntryMixin, DashboardPluginFormBase):
     """TinyMCE memo form (for ``TinyMCEMemo`` plugin)."""
 
-    plugin_data_fields = [
-        ("title", ""),
-        ("text", "")
-    ]
+    plugin_data_fields = [("title", ""), ("text", "")]
 
     title = forms.CharField(label=_("Title"), required=False)
-    text = forms.CharField(label=_("HTML"), required=True,
-                           widget=TinyMCE(mce_attrs=MCE_ATTRS))
+    text = forms.CharField(
+        label=_("HTML"), required=True, widget=TinyMCE(mce_attrs=MCE_ATTRS)
+    )

@@ -4,13 +4,13 @@ from ....base import BaseDashboardPluginWidget
 from ....models import DashboardEntry
 
 __all__ = (
-    'BaseServiceWidget',
-    'Service1x1Widget',
-    'Service2x2Widget',
-    'Service3x3Widget',
-    'Service4x5Widget',
-    'Service5x5Widget',
-    'Service6x6Widget',
+    "BaseServiceWidget",
+    "Service1x1Widget",
+    "Service2x2Widget",
+    "Service3x3Widget",
+    "Service4x5Widget",
+    "Service5x5Widget",
+    "Service6x6Widget",
 )
 
 
@@ -29,23 +29,24 @@ class BaseServiceWidget(BaseDashboardPluginWidget):
 
         if request:
             path = request.path
-            path = path.split('/')
+            path = path.split("/")
 
             if path and len(path) > 1:
                 from_path = path[1]
-        
+
         is_profile = False
 
-        if from_path == 'profile':
+        if from_path == "profile":
             is_profile = True
 
-        entry = DashboardEntry._default_manager \
-            .filter(user=self.plugin.user,
-                    layout_uid=self.plugin.layout_uid,
-                    position=self.plugin.position,
-                    workspace=self.plugin.workspace).first()
-        context = {'plugin': self.plugin, 'id': entry.pk, 'is_profile': is_profile}
-        return render_to_string('service/render.html', context)
+        entry = DashboardEntry._default_manager.filter(
+            user=self.plugin.user,
+            layout_uid=self.plugin.layout_uid,
+            position=self.plugin.position,
+            workspace=self.plugin.workspace,
+        ).first()
+        context = {"plugin": self.plugin, "id": entry.pk, "is_profile": is_profile}
+        return render_to_string("service/render.html", context)
 
 
 # ***********************************************************************
@@ -56,7 +57,7 @@ class BaseServiceWidget(BaseDashboardPluginWidget):
 class Service1x1Widget(BaseServiceWidget):
     """Service 1x1 plugin widget."""
 
-    plugin_uid = 'service_1x1'
+    plugin_uid = "service_1x1"
     cols = 1
     rows = 1
 
@@ -64,7 +65,7 @@ class Service1x1Widget(BaseServiceWidget):
 class Service2x2Widget(BaseServiceWidget):
     """Service 2x2 plugin widget."""
 
-    plugin_uid = 'service_2x2'
+    plugin_uid = "service_2x2"
     cols = 2
     rows = 2
 
@@ -72,7 +73,7 @@ class Service2x2Widget(BaseServiceWidget):
 class Service3x3Widget(BaseServiceWidget):
     """Service 3x3 plugin widget."""
 
-    plugin_uid = 'service_3x3'
+    plugin_uid = "service_3x3"
     cols = 3
     rows = 3
 
@@ -80,7 +81,7 @@ class Service3x3Widget(BaseServiceWidget):
 class Service4x5Widget(BaseServiceWidget):
     """Service 4x5 plugin widget."""
 
-    plugin_uid = 'service_4x5'
+    plugin_uid = "service_4x5"
     cols = 4
     rows = 5
 
@@ -88,7 +89,7 @@ class Service4x5Widget(BaseServiceWidget):
 class Service5x5Widget(BaseServiceWidget):
     """Service 5x5 plugin widget."""
 
-    plugin_uid = 'service_5x5'
+    plugin_uid = "service_5x5"
     cols = 5
     rows = 5
 
@@ -96,6 +97,6 @@ class Service5x5Widget(BaseServiceWidget):
 class Service6x6Widget(BaseServiceWidget):
     """Service 6x6 plugin widget."""
 
-    plugin_uid = 'service_6x6'
+    plugin_uid = "service_6x6"
     cols = 6
     rows = 6

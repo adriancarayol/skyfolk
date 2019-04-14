@@ -10,7 +10,7 @@ from user_profile.models import Profile
 def user_can_view_profile_info(function):
     @wraps(function)
     def inner(request, *args, **kwargs):
-        username = kwargs.get('username', None)
+        username = kwargs.get("username", None)
         user = request.user
 
         try:
@@ -21,8 +21,10 @@ def user_can_view_profile_info(function):
 
         privacity = m.is_visible(n)
 
-        if privacity and privacity != 'all':
-            return redirect(reverse('user_profile:profile', kwargs={'username': username}))
+        if privacity and privacity != "all":
+            return redirect(
+                reverse("user_profile:profile", kwargs={"username": username})
+            )
         return function(request, *args, **kwargs)
 
     return inner

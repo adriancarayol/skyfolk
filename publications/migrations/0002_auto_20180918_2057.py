@@ -11,45 +11,73 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('publications_groups', '0001_initial'),
-        ('taggit', '0002_auto_20150616_2121'),
-        ('publications', '0001_initial'),
+        ("publications_groups", "0001_initial"),
+        ("taggit", "0002_auto_20150616_2121"),
+        ("publications", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='publication',
-            name='shared_group_publication',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='publications_groups.PublicationGroup'),
+            model_name="publication",
+            name="shared_group_publication",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="publications_groups.PublicationGroup",
+            ),
         ),
         migrations.AddField(
-            model_name='publication',
-            name='shared_publication',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='publications.Publication'),
+            model_name="publication",
+            name="shared_publication",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="publications.Publication",
+            ),
         ),
         migrations.AddField(
-            model_name='publication',
-            name='tags',
-            field=taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags'),
+            model_name="publication",
+            name="tags",
+            field=taggit.managers.TaggableManager(
+                blank=True,
+                help_text="A comma-separated list of tags.",
+                through="taggit.TaggedItem",
+                to="taggit.Tag",
+                verbose_name="Tags",
+            ),
         ),
         migrations.AddField(
-            model_name='publication',
-            name='user_give_me_hate',
-            field=models.ManyToManyField(blank=True, related_name='hates_me', to=settings.AUTH_USER_MODEL),
+            model_name="publication",
+            name="user_give_me_hate",
+            field=models.ManyToManyField(
+                blank=True, related_name="hates_me", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='publication',
-            name='user_give_me_like',
-            field=models.ManyToManyField(blank=True, related_name='likes_me', to=settings.AUTH_USER_MODEL),
+            model_name="publication",
+            name="user_give_me_like",
+            field=models.ManyToManyField(
+                blank=True, related_name="likes_me", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='extracontent',
-            name='publication',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='extra_content', to='publications.Publication'),
+            model_name="extracontent",
+            name="publication",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="extra_content",
+                to="publications.Publication",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='publication',
-            unique_together={('shared_publication', 'author'), ('shared_group_publication', 'author'), ('board_owner', 'id')},
+            name="publication",
+            unique_together={
+                ("shared_publication", "author"),
+                ("shared_group_publication", "author"),
+                ("board_owner", "id"),
+            },
         ),
     ]

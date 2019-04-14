@@ -3,16 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
-__all__ = ('PollForm',)
+__all__ = ("PollForm",)
 
 
 class PollForm(DashboardEntryMixin, DashboardPluginFormBase):
     """Poll form for ``PollPlugin`` plugin."""
 
-    plugin_data_fields = [
-        ("title", ""),
-        ("description", ""),
-    ]
+    plugin_data_fields = [("title", ""), ("description", "")]
 
     title = forms.CharField(label=_("Title"), required=True, max_length=100)
     description = forms.CharField(label=_("Description"), required=True, max_length=200)

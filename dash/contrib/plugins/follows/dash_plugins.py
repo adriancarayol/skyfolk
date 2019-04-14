@@ -5,7 +5,7 @@ from ....factory import plugin_factory
 
 from .forms import FollowsForm
 
-__all__ = ('BaseFollowsPlugin',)
+__all__ = ("BaseFollowsPlugin",)
 
 
 # ****************************************************************************
@@ -20,7 +20,6 @@ class BaseFollowsPlugin(BaseDashboardPlugin):
     group = _("Perfil")
     form = FollowsForm
 
-
     @property
     def html_class(self):
         """HTML class.
@@ -30,14 +29,12 @@ class BaseFollowsPlugin(BaseDashboardPlugin):
         html_class = super(BaseFollowsPlugin, self).html_class
         return html_class
 
+
 # ****************************************************************************
 # ********** Generating and registering the FOLLOWS plugins using factory ********
 # ****************************************************************************
 
 
-sizes = (
-    (1, 1),
-    (2, 2)
-)
+sizes = ((1, 1), (2, 2))
 
-plugin_factory(BaseFollowsPlugin, 'follows', sizes)
+plugin_factory(BaseFollowsPlugin, "follows", sizes)

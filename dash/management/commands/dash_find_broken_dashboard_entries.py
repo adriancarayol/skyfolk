@@ -5,11 +5,11 @@ from django.core.management.base import BaseCommand
 from ...base import get_registered_layout_uids, get_registered_plugin_uids
 from ...models import DashboardEntry
 
-__title__ = 'dash.management.commands.dash_find_broken_dashboard_entries'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('Command',)
+__title__ = "dash.management.commands.dash_find_broken_dashboard_entries"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("Command",)
 
 
 class Command(BaseCommand):
@@ -20,10 +20,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        dashboard_entries = DashboardEntry._default_manager \
-            .all() \
-            .only('id', 'plugin_uid', 'layout_uid') \
-            .values_list('id', 'plugin_uid', 'layout_uid')
+        dashboard_entries = (
+            DashboardEntry._default_manager.all()
+            .only("id", "plugin_uid", "layout_uid")
+            .values_list("id", "plugin_uid", "layout_uid")
+        )
 
         broken_plugin_entries = []
         broken_layout_entries = []

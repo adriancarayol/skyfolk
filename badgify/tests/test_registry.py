@@ -5,10 +5,7 @@ from ..exceptions import BadgeNotFound
 from ..recipe import BaseRecipe
 from ..registry import BadgifyRegistry as Registry
 
-from .recipes import (
-    Recipe1,
-    Recipe2,
-    BadRecipe)
+from .recipes import Recipe1, Recipe2, BadRecipe
 
 
 class RegistryTestCase(TestCase):
@@ -27,8 +24,8 @@ class RegistryTestCase(TestCase):
         registry.register(Recipe1)
         registry.register(Recipe2)
         self.assertTrue(isinstance(registry.registered, list))
-        self.assertIn('recipe1', registry.registered)
-        self.assertIn('recipe2', registry.registered)
+        self.assertIn("recipe1", registry.registered)
+        self.assertIn("recipe2", registry.registered)
 
     def test_register(self):
         registry = Registry()
@@ -59,9 +56,9 @@ class RegistryTestCase(TestCase):
     def test_get_recipe_instance(self):
         registry = Registry()
         registry.register(Recipe1)
-        instance = registry.get_recipe_instance('recipe1')
+        instance = registry.get_recipe_instance("recipe1")
         self.assertTrue(isinstance(instance, BaseRecipe))
-        self.assertRaises(BadgeNotFound, registry.get_recipe_instance, 'unknown')
+        self.assertRaises(BadgeNotFound, registry.get_recipe_instance, "unknown")
 
     def test_get_recipe_instances(self):
         registry = Registry()
@@ -74,28 +71,30 @@ class RegistryTestCase(TestCase):
         # By passing badges arg
         registry = Registry()
         registry.register([Recipe1, Recipe2])
-        instances = registry.get_recipe_instances(badges=['recipe1', 'oops'])
+        instances = registry.get_recipe_instances(badges=["recipe1", "oops"])
         self.assertEqual(len(instances), 1)
-        instances = registry.get_recipe_instances(badges=['recipe1', 'recipe2'])
+        instances = registry.get_recipe_instances(badges=["recipe1", "recipe2"])
         self.assertEqual(len(instances), 2)
         # By passing excluded arg
         registry = Registry()
         registry.register([Recipe1, Recipe2])
-        instances = registry.get_recipe_instances(excluded=['recipe2'])
+        instances = registry.get_recipe_instances(excluded=["recipe2"])
         self.assertEqual(len(instances), 1)
         self.assertTrue(isinstance(instances[0], Recipe1))
 
     def test_get_recipe_instances_for_badges(self):
         registry = Registry()
         registry.register([Recipe1, Recipe2])
-        valid, invalid = registry.get_recipe_instances_for_badges(badges=['recipe1', 'recipe2', 'oops'])
+        valid, invalid = registry.get_recipe_instances_for_badges(
+            badges=["recipe1", "recipe2", "oops"]
+        )
         self.assertEqual(len(valid), 2)
         self.assertEqual(len(invalid), 1)
-        self.assertIn('oops', invalid)
+        self.assertIn("oops", invalid)
         # Test by passing a string instead of a list
         registry = Registry()
         registry.register(Recipe1)
-        valid, invalid = registry.get_recipe_instances_for_badges(badges='recipe1')
+        valid, invalid = registry.get_recipe_instances_for_badges(badges="recipe1")
         self.assertEqual(len(valid), 1)
         self.assertEqual(len(invalid), 0)
 
@@ -103,4 +102,6 @@ class RegistryTestCase(TestCase):
         registry = Registry()
         instance = registry.get_recipe_instance_from_class(Recipe1)
         self.assertTrue(isinstance(instance, Recipe1))
-        self.assertRaises(AssertionError, registry.get_recipe_instance_from_class, BadRecipe)
+        self.assertRaises(
+            AssertionError, registry.get_recipe_instance_from_class, BadRecipe
+        )

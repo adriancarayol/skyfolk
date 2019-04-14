@@ -12,9 +12,9 @@ from .compat import get_user_model
 from .models import Badge, Award
 from .utils import chunks
 
-logger = logging.getLogger('badgify')
+logger = logging.getLogger("badgify")
 
-PRE_DELETE_UID = 'badgify.award.pre_delete.decrement_badge_users_count'
+PRE_DELETE_UID = "badgify.award.pre_delete.decrement_badge_users_count"
 
 
 class BaseRecipe(object):
@@ -45,7 +45,7 @@ class BaseRecipe(object):
 
     @property
     def image(self):
-        raise NotImplementedError('Image must be implemented')
+        raise NotImplementedError("Image must be implemented")
 
     @property
     def user_ids(self):
@@ -69,7 +69,7 @@ class BaseRecipe(object):
         """
         try:
             obj = Badge.objects.using(self.db_read).get(slug=self.slug)
-            logger.debug('✓ Badge %s: fetched from db (%s)', obj.slug, self.db_read)
+            logger.debug("✓ Badge %s: fetched from db (%s)", obj.slug, self.db_read)
         except Badge.DoesNotExist:
             obj = None
         return obj
@@ -82,10 +82,17 @@ class BaseRecipe(object):
         """
         badge, created = self.badge, False
         if badge:
-            logger.debug('✓ Badge %s: already created', badge.slug)
+            logger.debug("✓ Badge %s: already created", badge.slug)
             if update:
                 to_update = {}
-                for field in ('name', 'slug', 'description', 'image', 'points', 'category'):
+                for field in (
+                    "name",
+                    "slug",
+                    "description",
+                    "image",
+                    "points",
+                    "category",
+                ):
                     attr = getattr(self, field)
                     badge_attr = getattr(badge, field)
                     if attr != badge_attr:
@@ -93,15 +100,15 @@ class BaseRecipe(object):
                         logger.debug('✓ Badge %s: updated "%s" field', self.slug, field)
                 Badge.objects.filter(id=badge.id).update(**to_update)
         else:
-            kwargs = {'name': self.name, 'image': self.image}
-            optional_fields = ['slug', 'description']
+            kwargs = {"name": self.name, "image": self.image}
+            optional_fields = ["slug", "description"]
             for field in optional_fields:
                 value = getattr(self, field)
                 if value is not None:
                     kwargs[field] = value
             badge = Badge.objects.create(**kwargs)
             created = True
-            logger.debug('✓ Badge %s: created', badge.slug)
+            logger.debug("✓ Badge %s: created", badge.slug)
         return (badge, created)
 
     def can_perform_awarding(self):
@@ -112,14 +119,15 @@ class BaseRecipe(object):
         """
         if not self.user_ids:
             logger.debug(
-                '✘ Badge %s: no users to check (empty user_ids property)',
-                self.slug)
+                "✘ Badge %s: no users to check (empty user_ids property)", self.slug
+            )
             return False
 
         if not self.badge:
             logger.debug(
-                '✘ Badge %s: does not exist in the database (run badgify_sync badges)',
-                self.slug)
+                "✘ Badge %s: does not exist in the database (run badgify_sync badges)",
+                self.slug,
+            )
             return False
 
         return True
@@ -128,14 +136,15 @@ class BaseRecipe(object):
         """
         Denormalizes ``Badge.users.count()`` into ``Bagdes.users_count`` field.
         """
-        logger.debug('→ Badge %s: syncing users count...', self.slug)
+        logger.debug("→ Badge %s: syncing users count...", self.slug)
 
         badge, updated = self.badge, False
 
         if not badge:
             logger.debug(
-                '✘ Badge %s: does not exist in the database (run badgify_sync badges)',
-                self.slug)
+                "✘ Badge %s: does not exist in the database (run badgify_sync badges)",
+                self.slug,
+            )
             return (self.slug, updated)
 
         old_value, new_value = badge.users_count, badge.users.count()
@@ -147,14 +156,16 @@ class BaseRecipe(object):
             updated = True
 
         if updated:
-            logger.debug('✓ Badge %s: updated users count (from %d to %d)',
-                         self.slug,
-                         old_value,
-                         new_value)
+            logger.debug(
+                "✓ Badge %s: updated users count (from %d to %d)",
+                self.slug,
+                old_value,
+                new_value,
+            )
         else:
-            logger.debug('✓ Badge %s: users count up-to-date (%d)',
-                         self.slug,
-                         new_value)
+            logger.debug(
+                "✓ Badge %s: users count up-to-date (%d)", self.slug, new_value
+            )
 
         return (badge, updated)
 
@@ -165,7 +176,9 @@ class BaseRecipe(object):
 
         db_read = db_read or self.db_read
 
-        already_awarded_ids = self.badge.users.using(db_read).values_list('id', flat=True)
+        already_awarded_ids = self.badge.users.using(db_read).values_list(
+            "id", flat=True
+        )
         already_awarded_ids_count = len(already_awarded_ids)
 
         if show_log:
@@ -173,7 +186,8 @@ class BaseRecipe(object):
                 "→ Badge %s: %d users already awarded (fetched from db '%s')",
                 self.slug,
                 already_awarded_ids_count,
-                db_read)
+                db_read,
+            )
 
         return already_awarded_ids
 
@@ -197,9 +211,8 @@ class BaseRecipe(object):
         unawarded_ids_count = len(unawarded_ids)
 
         logger.debug(
-            '→ Badge %s: %d users need to be awarded',
-            self.slug,
-            unawarded_ids_count)
+            "→ Badge %s: %d users need to be awarded", self.slug, unawarded_ids_count
+        )
 
         return (unawarded_ids, unawarded_ids_count)
 
@@ -209,20 +222,20 @@ class BaseRecipe(object):
         """
         db_read = db_read or self.db_read
 
-        already_awarded_ids = self.get_already_awarded_user_ids(db_read=db_read, show_log=False)
+        already_awarded_ids = self.get_already_awarded_user_ids(
+            db_read=db_read, show_log=False
+        )
         current_ids = self.get_current_user_ids(db_read=db_read)
         obsolete_ids = list(set(already_awarded_ids) - set(current_ids))
         obsolete_ids_count = len(obsolete_ids)
 
         logger.debug(
-            '→ Badge %s: %d users need to be unawarded',
-            self.slug,
-            obsolete_ids_count)
+            "→ Badge %s: %d users need to be unawarded", self.slug, obsolete_ids_count
+        )
 
         return (obsolete_ids, obsolete_ids_count)
 
-    def create_awards(self, db_read=None, batch_size=None,
-                      post_save_signal=True):
+    def create_awards(self, db_read=None, batch_size=None, post_save_signal=True):
         """
         Create awards.
         """
@@ -234,7 +247,9 @@ class BaseRecipe(object):
         db_read = db_read or self.db_read
         batch_size = batch_size or self.batch_size
 
-        unawarded_ids, unawarded_ids_count = self.get_unawarded_user_ids(db_read=db_read)
+        unawarded_ids, unawarded_ids_count = self.get_unawarded_user_ids(
+            db_read=db_read
+        )
         obsolete_ids, obsolete_ids_count = self.get_obsolete_user_ids(db_read=db_read)
 
         if obsolete_ids:
@@ -244,24 +259,32 @@ class BaseRecipe(object):
                 signals.pre_delete.disconnect(sender=Award, dispatch_uid=PRE_DELETE_UID)
                 Award.objects.filter(user__in=user_ids).delete()
 
-                logger.debug("→ Badge %s (db_read: %s): unawarded %s",
-                             self.slug,
-                             db_read,
-                             ' '.join(['%s' % user for user in obsolete_users]))
+                logger.debug(
+                    "→ Badge %s (db_read: %s): unawarded %s",
+                    self.slug,
+                    db_read,
+                    " ".join(["%s" % user for user in obsolete_users]),
+                )
 
         if unawarded_ids:
             for user_ids in chunks(unawarded_ids, batch_size):
                 unwarded_users = User.objects.using(db_read).in_bulk(user_ids).values()
-                objects = [Award(user_id=user_id, badge=self.badge) for user_id in user_ids]
+                objects = [
+                    Award(user_id=user_id, badge=self.badge) for user_id in user_ids
+                ]
 
-                bulk_create_awards(objects=objects,
-                                   batch_size=batch_size,
-                                   post_save_signal=post_save_signal)
+                bulk_create_awards(
+                    objects=objects,
+                    batch_size=batch_size,
+                    post_save_signal=post_save_signal,
+                )
 
-                logger.debug("→ Badge %s (db_read: %s): awarded %s",
-                             self.slug,
-                             db_read,
-                             ' '.join(['%s' % user for user in unwarded_users]))
+                logger.debug(
+                    "→ Badge %s (db_read: %s): awarded %s",
+                    self.slug,
+                    db_read,
+                    " ".join(["%s" % user for user in unwarded_users]),
+                )
 
 
 def bulk_create_awards(objects, batch_size=500, post_save_signal=True):
@@ -278,4 +301,4 @@ def bulk_create_awards(objects, batch_size=500, post_save_signal=True):
             for obj in objects:
                 signals.post_save.send(sender=obj.__class__, instance=obj, created=True)
     except IntegrityError:
-        logger.error('✘ Badge %s: IntegrityError for %d awards', badge.slug, count)
+        logger.error("✘ Badge %s: IntegrityError for %d awards", badge.slug, count)

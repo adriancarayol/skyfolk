@@ -11,57 +11,62 @@ REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
 REQUEST_BLOCKED = 3
 REQUEST_STATUSES = (
-    (REQUEST_FOLLOWING, 'Following'),
-    (REQUEST_FOLLOWER, 'Follower'),
-    (REQUEST_BLOCKED, 'Blocked'),
+    (REQUEST_FOLLOWING, "Following"),
+    (REQUEST_FOLLOWER, "Follower"),
+    (REQUEST_BLOCKED, "Blocked"),
 )
 
 
 def upload_small_group_image(instance, filename):
-    return '%s/small_group_image/%s' % (instance.name, filename)
+    return "%s/small_group_image/%s" % (instance.name, filename)
 
 
 def upload_large_group_image(instance, filename):
-    return '%s/large_group_image/%s' % (instance.name, filename)
+    return "%s/large_group_image/%s" % (instance.name, filename)
 
 
 def group_avatar_path(instance, filename):
-    return 'group_{0}_avatar/{1}'.format(instance.id, filename)
+    return "group_{0}_avatar/{1}".format(instance.id, filename)
 
 
 def group_back_image_path(instance, filename):
-    return 'group_{0}_back_image/{1}'.format(instance.id, filename)
+    return "group_{0}_back_image/{1}".format(instance.id, filename)
 
 
 def group_themes_images(instance, filename):
-    return 'group_{0}/themes/{1}'.format(instance.board_group, filename)
+    return "group_{0}/themes/{1}".format(instance.board_group, filename)
 
 
 class UserGroups(models.Model):
     """
         Proxy para grupos.
     """
+
     name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name="user_groups")
-    owner = models.ForeignKey(User, related_name='owner_group', on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User, related_name="owner_group", on_delete=models.CASCADE
+    )
     slug = models.SlugField(max_length=256, unique=True)
     description = models.CharField(max_length=500)
     is_public = models.BooleanField(default=True)
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
-    back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
+    back_image = models.ImageField(
+        upload_to=group_back_image_path, null=True, blank=True
+    )
     created = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager(blank=True)
 
     class Meta:
         permissions = (
-            ('view_notification', 'View notification'),
-            ('can_publish', 'Can publish'),
-            ('change_description', 'Change description'),
-            ('delete_publication', 'Delete publication'),
-            ('delete_image', 'Delete image'),
-            ('kick_member', 'Kick member'),
-            ('ban_member', 'Ban member'),
-            ('modify_notification', 'Modify notification'),
+            ("view_notification", "View notification"),
+            ("can_publish", "Can publish"),
+            ("change_description", "Change description"),
+            ("delete_publication", "Delete publication"),
+            ("delete_image", "Delete image"),
+            ("kick_member", "Kick member"),
+            ("ban_member", "Ban member"),
+            ("modify_notification", "Modify notification"),
         )
 
     def save(self, *args, **kwargs):
@@ -87,7 +92,7 @@ class GroupTheme(models.Model):
     slug = models.SlugField(unique=True)
 
     class Meta:
-        ordering = ('-created', )
+        ordering = ("-created",)
 
     def save(self, *args, **kwargs):
         self.slug = orig = slugify(str(self.owner_id) + self.title)
@@ -98,8 +103,8 @@ class GroupTheme(models.Model):
                     break
                 except IntegrityError:
                     if x > 50:
-                        raise Exception('Cant save group: {}'.format(self.title))
-            self.slug = '%s-%d' % (orig, x)
+                        raise Exception("Cant save group: {}".format(self.title))
+            self.slug = "%s-%d" % (orig, x)
 
     @property
     def theme_channel(self):
@@ -107,20 +112,24 @@ class GroupTheme(models.Model):
 
 
 class LikeGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme, related_name='like_theme', on_delete=models.CASCADE)
+    theme = models.ForeignKey(
+        GroupTheme, related_name="like_theme", on_delete=models.CASCADE
+    )
     by_user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        unique_together = ('theme', 'by_user')
+        unique_together = ("theme", "by_user")
 
 
 class HateGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme, related_name='hate_theme', on_delete=models.CASCADE)
+    theme = models.ForeignKey(
+        GroupTheme, related_name="hate_theme", on_delete=models.CASCADE
+    )
     by_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('theme', 'by_user')
+        unique_together = ("theme", "by_user")
 
 
 class LikeGroupQuerySet(models.QuerySet):
@@ -152,17 +161,22 @@ class LikeGroup(models.Model):
     """
 
     class Meta:
-        unique_together = ('from_like', 'to_like')
+        unique_together = ("from_like", "to_like")
 
-    from_like = models.ForeignKey(User, related_name='from_likegroup', on_delete=models.CASCADE)
-    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup', on_delete=models.CASCADE)
+    from_like = models.ForeignKey(
+        User, related_name="from_likegroup", on_delete=models.CASCADE
+    )
+    to_like = models.ForeignKey(
+        UserGroups, related_name="to_likegroup", on_delete=models.CASCADE
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     objects = LikeGroupManager()
 
     def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
-                                                                self.created)
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(
+            self.from_like.username, self.to_like.name, self.created
+        )
 
 
 class RequestGroupManager(models.Manager):
@@ -172,8 +186,9 @@ class RequestGroupManager(models.Manager):
         :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
         :return Devuelve la petición de seguimiento de un perfil:
         """
-        return self.get(emitter_id=from_profile,
-                        receiver_id=to_group, status=REQUEST_FOLLOWING)
+        return self.get(
+            emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING
+        )
 
     def add_follow_request(self, from_profile, to_group):
         """
@@ -181,9 +196,9 @@ class RequestGroupManager(models.Manager):
         :param profile => Perfil que quiero seguir:
         :param notify => Notificacion generada:
         """
-        obj, created = self.get_or_create(emitter_id=from_profile,
-                                          receiver_id=to_group,
-                                          status=REQUEST_FOLLOWING)
+        obj, created = self.get_or_create(
+            emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING
+        )
         # Si existe la peticion de amistad, actualizamos la notificacion
         obj.save()
         return obj
@@ -194,7 +209,9 @@ class RequestGroupManager(models.Manager):
         :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
         try:
-            request = self.get(emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING)
+            request = self.get(
+                emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING
+            )
             request.delete()
             return True
         except ObjectDoesNotExist:
@@ -210,11 +227,16 @@ class RequestGroup(models.Model):
             <<created>>: Fecha en la que se creó la petición
             <<notification>>: Notificación asociada a la petición
     """
-    emitter = models.ForeignKey(User, related_name='from_group_request', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(UserGroups, related_name='to_group_request', on_delete=models.CASCADE)
+
+    emitter = models.ForeignKey(
+        User, related_name="from_group_request", on_delete=models.CASCADE
+    )
+    receiver = models.ForeignKey(
+        UserGroups, related_name="to_group_request", on_delete=models.CASCADE
+    )
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
     objects = RequestGroupManager()
 
     class Meta:
-        unique_together = ('emitter', 'receiver', 'status')
+        unique_together = ("emitter", "receiver", "status")

@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
+
 django.urls
 from django.forms.utils import flatatt
 from django.utils.html import escape
@@ -53,80 +54,80 @@ class TinyMCE(forms.Textarea):
             mce_attrs = {}
         self.mce_attrs = mce_attrs
         if content_language is None:
-            content_language = mce_attrs.get('language', None)
+            content_language = mce_attrs.get("language", None)
         self.content_language = content_language
 
     def render(self, name, value, attrs=None):
         """Render."""
         if value is None:
-            value = ''
+            value = ""
 
         value = smart_unicode(value)
         final_attrs = self.build_attrs(attrs)
-        final_attrs['name'] = name
+        final_attrs["name"] = name
 
-        assert 'id' in final_attrs, "TinyMCE widget attributes must " \
-                                    "contain 'id'"
+        assert "id" in final_attrs, "TinyMCE widget attributes must " "contain 'id'"
 
         mce_config = tinymce_settings.DEFAULT_CONFIG.copy()
         mce_config.update(get_language_config(self.content_language))
 
         if tinymce_settings.USE_FILEBROWSER:
-            mce_config['file_browser_callback'] = "djangoFileBrowser"
+            mce_config["file_browser_callback"] = "djangoFileBrowser"
 
         mce_config.update(self.mce_attrs)
 
-        if 'mode' not in mce_config:
-            mce_config['mode'] = 'exact'
+        if "mode" not in mce_config:
+            mce_config["mode"] = "exact"
 
-        if mce_config['mode'] == 'exact':
-            mce_config['elements'] = final_attrs['id']
+        if mce_config["mode"] == "exact":
+            mce_config["elements"] = final_attrs["id"]
 
-        mce_config['strict_loading_mode'] = 1
+        mce_config["strict_loading_mode"] = 1
 
         # Fix for js functions
         js_functions = {}
-        for k in ('paste_preprocess', 'paste_postprocess'):
+        for k in ("paste_preprocess", "paste_postprocess"):
             if k in mce_config:
                 js_functions[k] = mce_config[k]
                 del mce_config[k]
 
         mce_json = json.dumps(mce_config)
 
-        pos = final_attrs['id'].find('__prefix__')
+        pos = final_attrs["id"].find("__prefix__")
         if pos != -1:
-            mce_json = mce_json.replace('"%s"' % final_attrs['id'], 'elements')
+            mce_json = mce_json.replace('"%s"' % final_attrs["id"], "elements")
 
         for k in js_functions:
-            index = mce_json.rfind('}')
-            mce_json = mce_json[:index] + \
-                ', ' + \
-                k + \
-                ':' + \
-                js_functions[k].strip() + \
-                mce_json[index:]
+            index = mce_json.rfind("}")
+            mce_json = (
+                mce_json[:index]
+                + ", "
+                + k
+                + ":"
+                + js_functions[k].strip()
+                + mce_json[index:]
+            )
 
-        html = [
-            '<textarea%s>%s</textarea>' % (flatatt(final_attrs), escape(value))
-        ]
+        html = ["<textarea%s>%s</textarea>" % (flatatt(final_attrs), escape(value))]
 
         if tinymce_settings.USE_COMPRESSOR:
             compressor_config = {
-                'plugins': mce_config.get('plugins', ''),
-                'themes': mce_config.get('theme', 'advanced'),
-                'languages': mce_config.get('language', ''),
-                'diskcache': True,
-                'debug': False,
+                "plugins": mce_config.get("plugins", ""),
+                "themes": mce_config.get("theme", "advanced"),
+                "languages": mce_config.get("language", ""),
+                "diskcache": True,
+                "debug": False,
             }
 
             compressor_json = json.dumps(compressor_config)
             html.append(
                 '<script type="text/javascript">tinyMCE_GZ.init(%s)'
-                '</script>' % compressor_json
+                "</script>" % compressor_json
             )
 
         if pos != -1:
-            html.append('''<script type="text/javascript">
+            html.append(
+                """<script type="text/javascript">
 setTimeout(function () {
     var id = '%s';
 
@@ -146,23 +147,26 @@ setTimeout(function () {
         }
     }
 }, 0);
-</script>''' % (final_attrs['id'], final_attrs['id'][0:pos], mce_json))
+</script>"""
+                % (final_attrs["id"], final_attrs["id"][0:pos], mce_json)
+            )
 
         else:
-            html.append('<script type="text/javascript">tinyMCE.init(%s)'
-                        '</script>' % mce_json)
+            html.append(
+                '<script type="text/javascript">tinyMCE.init(%s)' "</script>" % mce_json
+            )
 
-        return mark_safe('\n'.join(html))
+        return mark_safe("\n".join(html))
 
     def _media(self):
         """Media."""
         if tinymce_settings.USE_COMPRESSOR:
-            js = [reverse('tinymce-compressor')]
+            js = [reverse("tinymce-compressor")]
         else:
             js = [tinymce_settings.JS_URL]
 
         if tinymce_settings.USE_FILEBROWSER:
-            js.append(reverse('tinymce-filebrowser'))
+            js.append(reverse("tinymce-filebrowser"))
         return forms.Media(js=js)
 
     media = property(_media)
@@ -183,7 +187,7 @@ def get_language_config(content_language=None):
         content_language = language
 
     config = {}
-    config['language'] = language
+    config["language"] = language
 
     lang_names = OrderedDict()
     for lang, name in settings.LANGUAGES:
@@ -196,19 +200,19 @@ def get_language_config(content_language=None):
 
     for lang, names in lang_names.items():
         if lang == content_language:
-            default = '+'
+            default = "+"
         else:
-            default = ''
-        sp_langs.append('%s%s=%s' % (default, ' / '.join(names), lang))
+            default = ""
+        sp_langs.append("%s%s=%s" % (default, " / ".join(names), lang))
 
-    config['spellchecker_languages'] = ','.join(sp_langs)
+    config["spellchecker_languages"] = ",".join(sp_langs)
 
     if content_language in settings.LANGUAGES_BIDI:
-        config['directionality'] = 'rtl'
+        config["directionality"] = "rtl"
     else:
-        config['directionality'] = 'ltr'
+        config["directionality"] = "ltr"
 
     if tinymce_settings.USE_SPELLCHECKER:
-        config['spellchecker_rpc_url'] = reverse('tinymce.views.spell_check')
+        config["spellchecker_rpc_url"] = reverse("tinymce.views.spell_check")
 
     return config

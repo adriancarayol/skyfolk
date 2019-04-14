@@ -12,5 +12,12 @@ class SkyfolkCardIdentifier:
 
     def __repr__(self):
         return "<SkyfolkCardIdentifier id={} profile={} videos={} photos={} tags={} followers={} likes={} exp={}>".format(
-            self.id, self.profile, self.videos, self.photos, self.tags, self.followers, self.likes, self.exp
+            self.id,
+            self.profile,
+            self.videos,
+            self.photos,
+            self.tags,
+            self.followers,
+            self.likes,
+            self.exp,
         )

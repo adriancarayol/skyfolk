@@ -10,11 +10,7 @@ from transliterate.contrib.apps.translipsum import TranslipsumGenerator
 from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
-from .defaults import (
-    DEFAULT_MAX_CHARS,
-    LANGUAGE_CHOICES,
-    LANGUAGE_CHOICES_KEYS,
-)
+from .defaults import DEFAULT_MAX_CHARS, LANGUAGE_CHOICES, LANGUAGE_CHOICES_KEYS
 
 if PY2:
     from lipsum import Generator
@@ -22,11 +18,11 @@ else:
     from transliterate.contrib.apps.translipsum.utils import Generator
 
 
-__title__ = 'dash.contrib.plugins.dummy.forms'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('DummyForm', 'DummyShortcutsForm')
+__title__ = "dash.contrib.plugins.dummy.forms"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("DummyForm", "DummyShortcutsForm")
 
 logger = logging.getLogger(__name__)
 
@@ -39,26 +35,30 @@ class DummyForm(DashboardEntryMixin, DashboardPluginFormBase):
         ("generate_lipsum", False),
         ("lipsum_language", ""),
         ("lipsum_max_chars", DEFAULT_MAX_CHARS),
-        ("text", "")
+        ("text", ""),
     ]
-    show_title = forms.BooleanField(label=_("Show title?"),
-                                    required=False,
-                                    initial=False,
-                                    widget=BooleanRadioSelect)
-    generate_lipsum = forms.BooleanField(label=_("Generate lorem ipsum?"),
-                                         required=False,
-                                         initial=False,
-                                         widget=BooleanRadioSelect)
-    lipsum_language = forms.ChoiceField(label=_("Language"),
-                                        required=False,
-                                        choices=LANGUAGE_CHOICES)
-    lipsum_max_chars = forms.IntegerField(label=_("Max number of chars for "
-                                                  "generated text"),
-                                          required=True,
-                                          initial=DEFAULT_MAX_CHARS)
-    text = forms.CharField(label=_("Generated lorem ipsum text"),
-                           required=False,
-                           widget=forms.widgets.HiddenInput)
+    show_title = forms.BooleanField(
+        label=_("Show title?"), required=False, initial=False, widget=BooleanRadioSelect
+    )
+    generate_lipsum = forms.BooleanField(
+        label=_("Generate lorem ipsum?"),
+        required=False,
+        initial=False,
+        widget=BooleanRadioSelect,
+    )
+    lipsum_language = forms.ChoiceField(
+        label=_("Language"), required=False, choices=LANGUAGE_CHOICES
+    )
+    lipsum_max_chars = forms.IntegerField(
+        label=_("Max number of chars for " "generated text"),
+        required=True,
+        initial=DEFAULT_MAX_CHARS,
+    )
+    text = forms.CharField(
+        label=_("Generated lorem ipsum text"),
+        required=False,
+        widget=forms.widgets.HiddenInput,
+    )
 
     def save_plugin_data(self, request=None):
         """Save plugin data.
@@ -68,21 +68,18 @@ class DummyForm(DashboardEntryMixin, DashboardPluginFormBase):
         ``generate_lipsum`` field is set to True, we silently generate the
         text and save it into the plugin data.
         """
-        if self.cleaned_data.get('generate_lipsum', None):
-            lipsum_language = self.cleaned_data.get('lipsum_language', None)
+        if self.cleaned_data.get("generate_lipsum", None):
+            lipsum_language = self.cleaned_data.get("lipsum_language", None)
             try:
                 if lipsum_language in LANGUAGE_CHOICES_KEYS:
-                    if lipsum_language == 'en':
+                    if lipsum_language == "en":
                         gen = Generator()
                     else:
-                        gen = TranslipsumGenerator(
-                            language_code=lipsum_language
-                        )
+                        gen = TranslipsumGenerator(language_code=lipsum_language)
                     text = gen.generate_paragraph()
                     truncator = Truncator(text)
-                    self.cleaned_data['text'] = truncator.chars(
-                        self.cleaned_data.get('lipsum_max_chars',
-                                              DEFAULT_MAX_CHARS)
+                    self.cleaned_data["text"] = truncator.chars(
+                        self.cleaned_data.get("lipsum_max_chars", DEFAULT_MAX_CHARS)
                     )
             except Exception as err:
                 logger.error(err)

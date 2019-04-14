@@ -9,54 +9,123 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Award',
+            name="Award",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('awarded_at', models.DateTimeField(auto_now_add=True, verbose_name='awarded at')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "awarded_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="awarded at"),
+                ),
             ],
             options={
-                'verbose_name': 'award',
-                'verbose_name_plural': 'awards',
-                'abstract': False,
+                "verbose_name": "award",
+                "verbose_name_plural": "awards",
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Badge',
+            name="Badge",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='The badge name', max_length=255, verbose_name='name')),
-                ('slug', models.SlugField(blank=True, help_text='The badge slug (auto-generated if empty)', max_length=255, unique=True, verbose_name='slug')),
-                ('description', models.TextField(blank=True, help_text='The badge description', verbose_name='description')),
-                ('image', models.ImageField(blank=True, help_text='Please, upload an image for this badge', null=True, upload_to='badges', verbose_name='Image')),
-                ('points', models.PositiveIntegerField(default=0)),
-                ('category', models.CharField(default='', max_length=255)),
-                ('users_count', models.IntegerField(default=0, editable=False, verbose_name='users count')),
-                ('users', models.ManyToManyField(help_text='Users that earned this badge', through='badgify.Award', to=settings.AUTH_USER_MODEL, verbose_name='users')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="The badge name", max_length=255, verbose_name="name"
+                    ),
+                ),
+                (
+                    "slug",
+                    models.SlugField(
+                        blank=True,
+                        help_text="The badge slug (auto-generated if empty)",
+                        max_length=255,
+                        unique=True,
+                        verbose_name="slug",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="The badge description",
+                        verbose_name="description",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Please, upload an image for this badge",
+                        null=True,
+                        upload_to="badges",
+                        verbose_name="Image",
+                    ),
+                ),
+                ("points", models.PositiveIntegerField(default=0)),
+                ("category", models.CharField(default="", max_length=255)),
+                (
+                    "users_count",
+                    models.IntegerField(
+                        default=0, editable=False, verbose_name="users count"
+                    ),
+                ),
+                (
+                    "users",
+                    models.ManyToManyField(
+                        help_text="Users that earned this badge",
+                        through="badgify.Award",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="users",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'badge',
-                'verbose_name_plural': 'badges',
-                'abstract': False,
+                "verbose_name": "badge",
+                "verbose_name_plural": "badges",
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='award',
-            name='badge',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='awards', to='badgify.Badge', verbose_name='badge'),
+            model_name="award",
+            name="badge",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="awards",
+                to="badgify.Badge",
+                verbose_name="badge",
+            ),
         ),
         migrations.AddField(
-            model_name='award',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='badges', to=settings.AUTH_USER_MODEL, verbose_name='user'),
+            model_name="award",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="badges",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="user",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='award',
-            unique_together={('user', 'badge')},
+            name="award", unique_together={("user", "badge")}
         ),
     ]

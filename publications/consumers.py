@@ -12,13 +12,16 @@ def get_profile(user_id):
     profile = Profile.objects.get(user_id=user_id)
     return profile
 
+
 @database_sync_to_async
 def get_board_owner(pub_id):
-    return Publication.objects.values_list('board_owner__id', flat=True).get(id=pub_id)
+    return Publication.objects.values_list("board_owner__id", flat=True).get(id=pub_id)
+
 
 @database_sync_to_async
 def is_visible(from_profile, to_profile):
     return from_profile.is_visible(to_profile)
+
 
 class PublicationConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -32,7 +35,7 @@ class PublicationConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         user = self.scope["user"]
-        pubid = self.scope['url_route']['kwargs']['pubid']
+        pubid = self.scope["url_route"]["kwargs"]["pubid"]
 
         if user.is_anonymous:
             await self.close()
@@ -44,15 +47,17 @@ class PublicationConsumer(AsyncJsonWebsocketConsumer):
 
                 visibility = await is_visible(board_owner, n)
 
-                if visibility and visibility != 'all':
+                if visibility and visibility != "all":
                     raise PermissionDenied(
-                        '{} no tiene permisos para conectarse a esta channel: {}'.fornmat(user, pubid))
+                        "{} no tiene permisos para conectarse a esta channel: {}".fornmat(
+                            user, pubid
+                        )
+                    )
 
                 self.publication_channel = get_channel_name(pubid)
 
                 await self.channel_layer.group_add(
-                    self.publication_channel,
-                    self.channel_name,
+                    self.publication_channel, self.channel_name
                 )
                 await self.accept()
             except (Publication.DoesNotExist, Profile.DoesNotExist) as e:
@@ -61,9 +66,11 @@ class PublicationConsumer(AsyncJsonWebsocketConsumer):
                 await self.close()
 
     async def new_publication(self, event):
-        message = event['message']
+        message = event["message"]
         # Send message to WebSocket
         await self.send_json(message)
 
     async def disconnect(self, code):
-        await self.channel_layer.group_discard(self.publication_channel, self.channel_name)
+        await self.channel_layer.group_discard(
+            self.publication_channel, self.channel_name
+        )

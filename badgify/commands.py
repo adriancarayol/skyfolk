@@ -11,14 +11,14 @@ from . import settings
 from .models import Badge, Award
 from .utils import log_queries
 
-logger = logging.getLogger('badgify')
+logger = logging.getLogger("badgify")
 
 
 def sync_badges(**kwargs):
     """
     Iterates over registered recipes and creates missing badges.
     """
-    update = kwargs.get('update', False)
+    update = kwargs.get("update", False)
     created_badges = []
     instances = registry.get_recipe_instances()
 
@@ -37,8 +37,8 @@ def sync_counts(**kwargs):
     Iterates over registered recipes and denormalizes ``Badge.users.count()``
     into ``Badge.users_count`` field.
     """
-    badges = kwargs.get('badges')
-    excluded = kwargs.get('exclude_badges')
+    badges = kwargs.get("badges")
+    excluded = kwargs.get("exclude_badges")
 
     instances = registry.get_recipe_instances(badges=badges, excluded=excluded)
     updated_badges, unchanged_badges = [], []
@@ -59,11 +59,11 @@ def sync_awards(**kwargs):
     """
     Iterates over registered recipes and possibly creates awards.
     """
-    badges = kwargs.get('badges')
-    excluded = kwargs.get('exclude_badges')
-    disable_signals = kwargs.get('disable_signals')
-    batch_size = kwargs.get('batch_size', None)
-    db_read = kwargs.get('db_read', None)
+    badges = kwargs.get("badges")
+    excluded = kwargs.get("exclude_badges")
+    disable_signals = kwargs.get("disable_signals")
+    batch_size = kwargs.get("batch_size", None)
+    db_read = kwargs.get("db_read", None)
 
     award_post_save = True
 
@@ -76,9 +76,8 @@ def sync_awards(**kwargs):
     for instance in instances:
         reset_queries()
         instance.create_awards(
-            batch_size=batch_size,
-            db_read=db_read,
-            post_save_signal=award_post_save)
+            batch_size=batch_size, db_read=db_read, post_save_signal=award_post_save
+        )
         log_queries(instance)
 
 
@@ -86,34 +85,39 @@ def show_stats(**kwargs):
     """
     Shows badges stats.
     """
-    db_read = kwargs.get('db_read', DEFAULT_DB_ALIAS)
+    db_read = kwargs.get("db_read", DEFAULT_DB_ALIAS)
 
-    badges = (Badge.objects.using(db_read)
-                           .all()
-                           .annotate(u_count=Count('users'))
-                           .order_by('u_count'))
+    badges = (
+        Badge.objects.using(db_read)
+        .all()
+        .annotate(u_count=Count("users"))
+        .order_by("u_count")
+    )
 
     for badge in badges:
-        logger.info('{:<20} {:>10} users awarded | users_count: {})'.format(
-            badge.name,
-            badge.u_count,
-            badge.users_count))
+        logger.info(
+            "{:<20} {:>10} users awarded | users_count: {})".format(
+                badge.name, badge.u_count, badge.users_count
+            )
+        )
 
 
 def reset_awards(**kwargs):
     """
     Resets badges stats.
     """
-    filter_badges = kwargs.get('badges', None)
-    exclude_badges = kwargs.get('exclude_badges', None)
+    filter_badges = kwargs.get("badges", None)
+    exclude_badges = kwargs.get("exclude_badges", None)
 
     for option in [filter_badges, exclude_badges]:
         if option:
             if not isinstance(option, (list, tuple)):
                 option = [option]
 
-    signals.pre_delete.disconnect(sender=Award,
-                                  dispatch_uid='badgify.award.pre_delete.decrement_badge_users_count')
+    signals.pre_delete.disconnect(
+        sender=Award,
+        dispatch_uid="badgify.award.pre_delete.decrement_badge_users_count",
+    )
 
     award_qs = Award.objects.all()
     badge_qs = Badge.objects.all()
@@ -128,8 +132,8 @@ def reset_awards(**kwargs):
 
     awards_count = award_qs.count()
     award_qs.delete()
-    logger.info('✓ Deleted %d awards', awards_count)
+    logger.info("✓ Deleted %d awards", awards_count)
 
     badges_count = badge_qs.count()
     badge_qs.update(users_count=0)
-    logger.info('✓ Reseted Badge.users_count field of %d badge(s)', badges_count)
+    logger.info("✓ Reseted Badge.users_count field of %d badge(s)", badges_count)

@@ -1,3 +1,3 @@
-default_app_config = 'dash.contrib.plugins.twitch.apps.Config'
+default_app_config = "dash.contrib.plugins.twitch.apps.Config"
 
-UID = 'twitch'
+UID = "twitch"

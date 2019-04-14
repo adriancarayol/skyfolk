@@ -4,19 +4,19 @@ from django.utils.encoding import force_text
 
 from six import PY3
 
-__title__ = 'dash.helpers'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
+__title__ = "dash.helpers"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
 __all__ = (
-    'clean_plugin_data',
-    'clone_plugin_data',
-    'iterable_to_dict',
-    'lists_overlap',
-    'safe_text',
-    'slugify_workspace',
-    'uniquify_sequence',
-    'update_plugin_data',
+    "clean_plugin_data",
+    "clone_plugin_data",
+    "iterable_to_dict",
+    "lists_overlap",
+    "safe_text",
+    "slugify_workspace",
+    "uniquify_sequence",
+    "update_plugin_data",
 )
 
 
@@ -31,9 +31,9 @@ def safe_text(text):
     :return str:
     """
     if PY3:
-        return force_text(text, encoding='utf-8')
+        return force_text(text, encoding="utf-8")
     else:
-        return force_text(text, encoding='utf-8').encode('utf-8')
+        return force_text(text, encoding="utf-8").encode("utf-8")
 
 
 def lists_overlap(sub, main):

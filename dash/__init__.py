@@ -1,1 +1,1 @@
-default_app_config = 'dash.apps.DashConfiguration'
+default_app_config = "dash.apps.DashConfiguration"

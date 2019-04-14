@@ -4,14 +4,11 @@ from six import with_metaclass
 
 from .base import plugin_registry, plugin_widget_registry
 
-__title__ = 'dash.factory'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = (
-    'plugin_factory',
-    'plugin_widget_factory'
-)
+__title__ = "dash.factory"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("plugin_factory", "plugin_widget_factory")
 
 logger = logging.getLogger(__name__)
 
@@ -51,16 +48,14 @@ def plugin_factory(base_class, plugin_uid_prefix, sizes=[]):
     for cols, rows in sizes:
 
         plugin_uid = "{plugin_uid_prefix}_{cols}x{rows}".format(
-            plugin_uid_prefix=plugin_uid_prefix,
-            cols=cols,
-            rows=rows
+            plugin_uid_prefix=plugin_uid_prefix, cols=cols, rows=rows
         )
 
         class PluginMeta(type):
             """Dynamically created plugin plugin meta class."""
 
             def __new__(cls, name, bases, props):
-                props['uid'] = plugin_uid
+                props["uid"] = plugin_uid
                 return type.__new__(cls, name, bases, props)
 
         class Plugin(with_metaclass(PluginMeta, base_class)):
@@ -69,11 +64,9 @@ def plugin_factory(base_class, plugin_uid_prefix, sizes=[]):
         plugin_registry.register(Plugin)
 
 
-def plugin_widget_factory(base_class,
-                          layout_uid,
-                          placeholder_uid,
-                          plugin_uid_prefix,
-                          sizes=[]):
+def plugin_widget_factory(
+    base_class, layout_uid, placeholder_uid, plugin_uid_prefix, sizes=[]
+):
     """Plugin widget factory.
 
     :param dash.base.BaseDashboardWidget base_class: Subclass of.
@@ -117,9 +110,7 @@ def plugin_widget_factory(base_class,
     """
     for cols, rows in sizes:
         plugin_uid = "{plugin_uid_prefix}_{cols}x{rows}".format(
-            plugin_uid_prefix=plugin_uid_prefix,
-            cols=cols,
-            rows=rows
+            plugin_uid_prefix=plugin_uid_prefix, cols=cols, rows=rows
         )
 
         # class_name = "{plugin_uid_prefix}{cols}x{rows}{layout_uid}" \
@@ -135,11 +126,11 @@ def plugin_widget_factory(base_class,
             """Dynamically created plugin widget meta class."""
 
             def __new__(cls, name, bases, props):
-                props['layout_uid'] = layout_uid
-                props['placeholder_uid'] = placeholder_uid
-                props['plugin_uid'] = plugin_uid
-                props['cols'] = cols
-                props['rows'] = rows
+                props["layout_uid"] = layout_uid
+                props["placeholder_uid"] = placeholder_uid
+                props["plugin_uid"] = plugin_uid
+                props["cols"] = cols
+                props["rows"] = rows
                 return type.__new__(cls, name, bases, props)
 
         class Widget(with_metaclass(WidgetMeta, base_class)):

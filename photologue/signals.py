@@ -13,4 +13,6 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     total_count = photo_count + video_count
 
     if total_count >= 1:
-        Award.objects.get_or_create(user=instance.owner, badge=Badge.objects.get(slug='first-upload-media'))
+        Award.objects.get_or_create(
+            user=instance.owner, badge=Badge.objects.get(slug="first-upload-media")
+        )

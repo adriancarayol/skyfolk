@@ -11,45 +11,72 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('themes', '0001_initial'),
-        ('user_groups', '0001_initial'),
-        ('taggit', '0002_auto_20150616_2121'),
+        ("themes", "0001_initial"),
+        ("user_groups", "0001_initial"),
+        ("taggit", "0002_auto_20150616_2121"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='publicationtheme',
-            name='board_theme',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='publication_board_theme', to='user_groups.GroupTheme'),
+            model_name="publicationtheme",
+            name="board_theme",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="publication_board_theme",
+                to="user_groups.GroupTheme",
+            ),
         ),
         migrations.AddField(
-            model_name='publicationtheme',
-            name='parent',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reply_theme', to='themes.PublicationTheme'),
+            model_name="publicationtheme",
+            name="parent",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reply_theme",
+                to="themes.PublicationTheme",
+            ),
         ),
         migrations.AddField(
-            model_name='publicationtheme',
-            name='tags',
-            field=taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags'),
+            model_name="publicationtheme",
+            name="tags",
+            field=taggit.managers.TaggableManager(
+                blank=True,
+                help_text="A comma-separated list of tags.",
+                through="taggit.TaggedItem",
+                to="taggit.Tag",
+                verbose_name="Tags",
+            ),
         ),
         migrations.AddField(
-            model_name='publicationtheme',
-            name='user_give_me_hate',
-            field=models.ManyToManyField(blank=True, related_name='hates_theme_publication', to=settings.AUTH_USER_MODEL),
+            model_name="publicationtheme",
+            name="user_give_me_hate",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="hates_theme_publication",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='publicationtheme',
-            name='user_give_me_like',
-            field=models.ManyToManyField(blank=True, related_name='likes_theme_publication', to=settings.AUTH_USER_MODEL),
+            model_name="publicationtheme",
+            name="user_give_me_like",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="likes_theme_publication",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='extrathemecontent',
-            name='publication',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='theme_extra_content', to='themes.PublicationTheme'),
+            model_name="extrathemecontent",
+            name="publication",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="theme_extra_content",
+                to="themes.PublicationTheme",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='publicationtheme',
-            unique_together={('board_theme', 'id')},
+            name="publicationtheme", unique_together={("board_theme", "id")}
         ),
     ]

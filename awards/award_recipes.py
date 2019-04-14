@@ -15,6 +15,7 @@ class BaseAwardRecipe(object):
     description = None
     reached_with = 0
 
+
 class BronzeUserRank(BaseAwardRecipe):
     name = "Bronce"
     description = "Recién llegado"
@@ -38,4 +39,7 @@ class PlatinumUserRank(BaseAwardRecipe):
     description = "Subiendo como la espuma"
     reached_with = 85
 
-award_register.register(BaseAwardRecipe, BronzeUserRank, SilverUserRank, GoldUserRank, PlatinumUserRank)
+
+award_register.register(
+    BaseAwardRecipe, BronzeUserRank, SilverUserRank, GoldUserRank, PlatinumUserRank
+)

@@ -2,11 +2,11 @@ from django.core.management.base import BaseCommand
 
 from ...utils import update_plugin_data_for_entries
 
-__title__ = 'dash.management.commands.dash_update_plugin_data'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('Command',)
+__title__ = "dash.management.commands.dash_update_plugin_data"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("Command",)
 
 
 class Command(BaseCommand):

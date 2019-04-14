@@ -24,9 +24,11 @@ from . import settings
 logger = logging.getLogger(__name__)
 
 
-CLASS_PATH_ERROR = 'django-badgify is unable to interpret settings value for %s. '\
-                   '%s should be in the form of a tupple: '\
-                   '(\'path.to.models.Class\', \'app_label\').'
+CLASS_PATH_ERROR = (
+    "django-badgify is unable to interpret settings value for %s. "
+    "%s should be in the form of a tupple: "
+    "('path.to.models.Class', 'app_label')."
+)
 
 
 def load_class(class_path, setting_name=None):
@@ -42,20 +44,24 @@ def load_class(class_path, setting_name=None):
             class_path, app_label = class_path
         except:
             if setting_name:
-                raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (
-                    setting_name, setting_name))
+                raise exceptions.ImproperlyConfigured(
+                    CLASS_PATH_ERROR % (setting_name, setting_name)
+                )
             else:
-                raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (
-                    'this setting', 'It'))
+                raise exceptions.ImproperlyConfigured(
+                    CLASS_PATH_ERROR % ("this setting", "It")
+                )
 
     try:
-        class_module, class_name = class_path.rsplit('.', 1)
+        class_module, class_name = class_path.rsplit(".", 1)
     except ValueError:
         if setting_name:
-            txt = '%s isn\'t a valid module. Check your %s setting' % (
-                class_path, setting_name)
+            txt = "%s isn't a valid module. Check your %s setting" % (
+                class_path,
+                setting_name,
+            )
         else:
-            txt = '%s isn\'t a valid module.' % class_path
+            txt = "%s isn't a valid module." % class_path
         raise exceptions.ImproperlyConfigured(txt)
 
     try:
@@ -63,7 +69,10 @@ def load_class(class_path, setting_name=None):
     except ImportError as e:
         if setting_name:
             txt = 'Error importing backend %s: "%s". Check your %s setting' % (
-                class_module, e, setting_name)
+                class_module,
+                e,
+                setting_name,
+            )
         else:
             txt = 'Error importing backend %s: "%s".' % (class_module, e)
         raise exceptions.ImproperlyConfigured(txt)
@@ -72,12 +81,15 @@ def load_class(class_path, setting_name=None):
         clazz = getattr(mod, class_name)
     except AttributeError:
         if setting_name:
-            txt = ('Backend module "%s" does not define a "%s" class. Check'
-                   ' your %s setting' % (class_module, class_name,
-                                         setting_name))
+            txt = (
+                'Backend module "%s" does not define a "%s" class. Check'
+                " your %s setting" % (class_module, class_name, setting_name)
+            )
         else:
             txt = 'Backend module "%s" does not define a "%s" class.' % (
-                class_module, class_name)
+                class_module,
+                class_name,
+            )
         raise exceptions.ImproperlyConfigured(txt)
     return clazz
 
@@ -90,26 +102,28 @@ def get_model_string(model_name):
 
     Borrowed from: https://github.com/thoas/django-discussions/blob/master/discussions/utils.py
     """
-    setting_name = 'BADGIFY_%s_MODEL' % model_name.upper().replace('_', '')
+    setting_name = "BADGIFY_%s_MODEL" % model_name.upper().replace("_", "")
     class_path = getattr(settings, setting_name, None)
     if not class_path:
-        return 'badgify.%s' % model_name
+        return "badgify.%s" % model_name
     elif isinstance(class_path, basestring):
-        parts = class_path.split('.')
+        parts = class_path.split(".")
         try:
-            index = parts.index('models') - 1
+            index = parts.index("models") - 1
         except ValueError:
-            raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (
-                setting_name, setting_name))
+            raise exceptions.ImproperlyConfigured(
+                CLASS_PATH_ERROR % (setting_name, setting_name)
+            )
         app_label, model_name = parts[index], parts[-1]
     else:
         try:
             class_path, app_label = class_path
-            model_name = class_path.split('.')[-1]
+            model_name = class_path.split(".")[-1]
         except:
-            raise exceptions.ImproperlyConfigured(CLASS_PATH_ERROR % (
-                setting_name, setting_name))
-    return '%s.%s' % (app_label, model_name)
+            raise exceptions.ImproperlyConfigured(
+                CLASS_PATH_ERROR % (setting_name, setting_name)
+            )
+    return "%s.%s" % (app_label, model_name)
 
 
 def chunks(l, n):
@@ -117,7 +131,7 @@ def chunks(l, n):
     Yields successive n-sized chunks from l.
     """
     for i in _range(0, len(l), n):
-        yield l[i:i + n]
+        yield l[i : i + n]
 
 
 def log_queries(recipe):
@@ -125,24 +139,22 @@ def log_queries(recipe):
     Logs recipe instance SQL queries (actually, only time).
     """
     logger.debug(
-        '⚐ Badge %s: SQL queries time %.2f second(s)',
+        "⚐ Badge %s: SQL queries time %.2f second(s)",
         recipe.slug,
-        sum([float(q['time']) for q in connection.queries]))
+        sum([float(q["time"]) for q in connection.queries]),
+    )
 
 
 def sanitize_command_options(options):
     """
     Sanitizes command options.
     """
-    multiples = [
-        'badges',
-        'exclude_badges',
-    ]
+    multiples = ["badges", "exclude_badges"]
 
     for option in multiples:
         if options.get(option):
             value = options[option]
             if value:
-                options[option] = [v for v in value.split(' ') if v]
+                options[option] = [v for v in value.split(" ") if v]
 
     return options

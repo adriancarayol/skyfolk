@@ -4,8 +4,9 @@ try:
     class Config(AppConfig):
         """Config."""
 
-        name = 'dash.contrib.plugins.twitch'
-        label = 'dash_contrib_plugins_twitch'
+        name = "dash.contrib.plugins.twitch"
+        label = "dash_contrib_plugins_twitch"
+
 
 except ImportError:
     pass

@@ -8,7 +8,7 @@ from .factories import GalleryFactory, PhotoFactory
 
 
 class SitesTest(TestCase):
-    urls = 'photologue.tests.test_urls'
+    urls = "photologue.tests.test_urls"
 
     def setUp(self):
         """
@@ -18,16 +18,20 @@ class SitesTest(TestCase):
         super(SitesTest, self).setUp()
 
         self.site1, created1 = Site.objects.get_or_create(
-            domain="example.com", name="example.com")
+            domain="example.com", name="example.com"
+        )
         self.site2, created2 = Site.objects.get_or_create(
-            domain="example.org", name="example.org")
+            domain="example.org", name="example.org"
+        )
 
         with self.settings(PHOTOLOGUE_MULTISITE=True):
             # Be explicit about linking Galleries/Photos to Sites."""
-            self.gallery1 = GalleryFactory(slug='test-publications_gallery', sites=[self.site1])
-            self.gallery2 = GalleryFactory(slug='not-on-site-publications_gallery')
-            self.photo1 = PhotoFactory(slug='test-photo', sites=[self.site1])
-            self.photo2 = PhotoFactory(slug='not-on-site-photo')
+            self.gallery1 = GalleryFactory(
+                slug="test-publications_gallery", sites=[self.site1]
+            )
+            self.gallery2 = GalleryFactory(slug="not-on-site-publications_gallery")
+            self.photo1 = PhotoFactory(slug="test-photo", sites=[self.site1])
+            self.photo2 = PhotoFactory(slug="not-on-site-photo")
             self.gallery1.photos.add(self.photo1, self.photo2)
 
         # I'd like to use factory_boy's mute_signal decorator but that
@@ -70,60 +74,76 @@ class SitesTest(TestCase):
         photo.delete()
 
     def test_gallery_list(self):
-        response = self.client.get('/ptests/gallerylist/')
-        self.assertEqual(list(response.context['object_list']), [self.gallery1])
+        response = self.client.get("/ptests/gallerylist/")
+        self.assertEqual(list(response.context["object_list"]), [self.gallery1])
 
     def test_gallery_detail(self):
-        response = self.client.get('/ptests/publications_gallery/test-publications_gallery/')
-        self.assertEqual(response.context['object'], self.gallery1)
+        response = self.client.get(
+            "/ptests/publications_gallery/test-publications_gallery/"
+        )
+        self.assertEqual(response.context["object"], self.gallery1)
 
-        response = self.client.get('/ptests/publications_gallery/not-on-site-publications_gallery/')
+        response = self.client.get(
+            "/ptests/publications_gallery/not-on-site-publications_gallery/"
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_photo_list(self):
-        response = self.client.get('/ptests/photolist/')
-        self.assertEqual(list(response.context['object_list']), [self.photo1])
+        response = self.client.get("/ptests/photolist/")
+        self.assertEqual(list(response.context["object_list"]), [self.photo1])
 
     def test_photo_detail(self):
-        response = self.client.get('/ptests/photo/test-photo/')
-        self.assertEqual(response.context['object'], self.photo1)
+        response = self.client.get("/ptests/photo/test-photo/")
+        self.assertEqual(response.context["object"], self.photo1)
 
-        response = self.client.get('/ptests/photo/not-on-site-photo/')
+        response = self.client.get("/ptests/photo/not-on-site-photo/")
         self.assertEqual(response.status_code, 404)
 
     def test_photo_archive(self):
-        response = self.client.get('/ptests/photo/')
-        self.assertEqual(list(response.context['object_list']), [self.photo1])
+        response = self.client.get("/ptests/photo/")
+        self.assertEqual(list(response.context["object_list"]), [self.photo1])
 
     def test_photos_in_gallery(self):
         """
         Only those photos are supposed to be shown in a publications_gallery that are
         also associated with the current site.
         """
-        response = self.client.get('/ptests/publications_gallery/test-publications_gallery/')
-        self.assertEqual(list(response.context['object'].public()), [self.photo1])
+        response = self.client.get(
+            "/ptests/publications_gallery/test-publications_gallery/"
+        )
+        self.assertEqual(list(response.context["object"].public()), [self.photo1])
 
-    @unittest.skipUnless('django.contrib.sitemaps' in settings.INSTALLED_APPS,
-                         'Sitemaps not installed in this project, nothing to test.')
+    @unittest.skipUnless(
+        "django.contrib.sitemaps" in settings.INSTALLED_APPS,
+        "Sitemaps not installed in this project, nothing to test.",
+    )
     def test_sitemap(self):
         """A sitemap should only show objects associated with the current site."""
-        response = self.client.get('/sitemap.xml')
+        response = self.client.get("/sitemap.xml")
 
         # Check photos.
-        self.assertContains(response,
-                            '<url><loc>http://example.com/ptests/photo/test-photo/</loc>'
-                            '<lastmod>2011-12-23</lastmod></url>')
-        self.assertNotContains(response,
-                               '<url><loc>http://example.com/ptests/photo/not-on-site-photo/</loc>'
-                               '<lastmod>2011-12-23</lastmod></url>')
+        self.assertContains(
+            response,
+            "<url><loc>http://example.com/ptests/photo/test-photo/</loc>"
+            "<lastmod>2011-12-23</lastmod></url>",
+        )
+        self.assertNotContains(
+            response,
+            "<url><loc>http://example.com/ptests/photo/not-on-site-photo/</loc>"
+            "<lastmod>2011-12-23</lastmod></url>",
+        )
 
         # Check galleries.
-        self.assertContains(response,
-                            '<url><loc>http://example.com/ptests/publications_gallery/test-publications_gallery/</loc>'
-                            '<lastmod>2011-12-23</lastmod></url>')
-        self.assertNotContains(response,
-                               '<url><loc>http://example.com/ptests/publications_gallery/not-on-site-publications_gallery/</loc>'
-                               '<lastmod>2011-12-23</lastmod></url>')
+        self.assertContains(
+            response,
+            "<url><loc>http://example.com/ptests/publications_gallery/test-publications_gallery/</loc>"
+            "<lastmod>2011-12-23</lastmod></url>",
+        )
+        self.assertNotContains(
+            response,
+            "<url><loc>http://example.com/ptests/publications_gallery/not-on-site-publications_gallery/</loc>"
+            "<lastmod>2011-12-23</lastmod></url>",
+        )
 
     def test_orphaned_photos(self):
         self.assertEqual(list(self.gallery1.orphaned_photos()), [self.photo2])
@@ -132,8 +152,12 @@ class SitesTest(TestCase):
         self.assertEqual(list(self.gallery1.orphaned_photos()), [self.photo2])
 
         self.gallery1.sites.clear()
-        self.assertEqual(list(self.gallery1.orphaned_photos()), [self.photo1, self.photo2])
+        self.assertEqual(
+            list(self.gallery1.orphaned_photos()), [self.photo1, self.photo2]
+        )
 
         self.photo1.sites.clear()
         self.photo2.sites.clear()
-        self.assertEqual(list(self.gallery1.orphaned_photos()), [self.photo1, self.photo2])
+        self.assertEqual(
+            list(self.gallery1.orphaned_photos()), [self.photo1, self.photo2]
+        )

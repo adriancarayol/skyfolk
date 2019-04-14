@@ -1,1 +1,1 @@
-default_app_config = 'awards.apps.AwardsConfiguration'
+default_app_config = "awards.apps.AwardsConfiguration"

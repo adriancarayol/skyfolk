@@ -13,5 +13,5 @@ class OppositeBooleanField(BooleanField):
 def get_form_errors(form):
     list_errors = []
     for field, errors in form.errors.items():
-        list_errors.append(', '.join(errors))
+        list_errors.append(", ".join(errors))
     return list_errors

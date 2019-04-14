@@ -12,28 +12,31 @@ class NotImplementedRecipe(BaseRecipe):
 
 
 class Recipe1(BaseRecipe):
-    name = 'Recipe 1'
-    slug = 'recipe1'
-    description = 'Recipe 1 description'
+    name = "Recipe 1"
+    slug = "recipe1"
+    description = "Recipe 1 description"
 
     @property
     def image(self):
-        return 'image'
+        return "image"
 
     @property
     def user_ids(self):
-        return (get_user_model().objects.filter(love_python=True)
-                                .values_list('id', flat=True))
+        return (
+            get_user_model()
+            .objects.filter(love_python=True)
+            .values_list("id", flat=True)
+        )
 
 
 class Recipe2(BaseRecipe):
-    name = 'Recipe 2'
-    slug = 'recipe2'
-    description = 'Recipe 2 description'
+    name = "Recipe 2"
+    slug = "recipe2"
+    description = "Recipe 2 description"
 
     @property
     def image(self):
-        return 'image'
+        return "image"
 
     @property
     def user_ids(self):

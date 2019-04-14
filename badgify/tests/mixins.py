@@ -19,30 +19,24 @@ class UserFixturesMixin(object):
     """
 
     def create_users(self):
-        self.user1 = User.objects.create_user(
-            'johndoe',
-            'john@example.com',
-            'secret')
-        self.user2 = User.objects.create_user(
-            'mikedavis',
-            'mike@example.com',
-            'secret')
-        self.user3 = User.objects.create_user(
-            'banana',
-            'banana@example.com',
-            'secret')
+        self.user1 = User.objects.create_user("johndoe", "john@example.com", "secret")
+        self.user2 = User.objects.create_user("mikedavis", "mike@example.com", "secret")
+        self.user3 = User.objects.create_user("banana", "banana@example.com", "secret")
 
     def get_dummy_users(self, count=20):
         rn = RandomNicknames()
         users, usernames = [], []
         for name in rn.random_nicks(count=count):
-            name = '%s #%d' % (name, randrange(99))
+            name = "%s #%d" % (name, randrange(99))
             username = slugify(name)
             usernames.append(username)
-            users.append(User(
-                username=username,
-                email='%s@example.com' % username,
-                password='secret'))
+            users.append(
+                User(
+                    username=username,
+                    email="%s@example.com" % username,
+                    password="secret",
+                )
+            )
         return (users, usernames)
 
 
@@ -55,7 +49,7 @@ class BadgeFixturesMixin(object):
         rn = RandomNicknames()
         badges, slugs = [], []
         for name in rn.random_nicks(count=count):
-            name = '%s #%d' % (name, randrange(99))
+            name = "%s #%d" % (name, randrange(99))
             slug = slugify(name)
             slugs.append(slug)
             badges.append(Badge(name=name, slug=slug, description=name))
@@ -73,12 +67,13 @@ class RecipeFixturesMixin(object):
         for name in rn.random_nicks(count=count):
             slug = slugify(name)
             slugs.append(slug)
-            name = name.encode('ascii', 'ignore')
+            name = name.encode("ascii", "ignore")
             attrs = dict(
                 name=name,
                 slug=slug,
                 description=name,
                 image=name,
-                user_queryset=User.objects.none())
+                user_queryset=User.objects.none(),
+            )
             recipes.append(type(name, (BaseRecipe,), attrs))
         return (recipes, slugs)

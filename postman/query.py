@@ -27,7 +27,7 @@ class Proxy(object):
             return f
 
     def __setattr__(self, name, value):
-        if name != '_target':
+        if name != "_target":
             setattr(self._target, name, value)
         else:
             object.__setattr__(self, name, value)
@@ -56,29 +56,40 @@ class CompilerProxy(Proxy, SQLCompiler):
             from_clause = self.query.alias_map[alias]
             alias = from_clause.table_alias
             clause_sql, _ = self.compile(from_clause)  # clause_sql, clause_params
-            clause = ' '.join(['FROM', clause_sql])
+            clause = " ".join(["FROM", clause_sql])
             from django.db.models.sql.constants import INNER as inner_join
         else:
             # Django 1.4, 1.5: name, alias, join_type, lhs, lhs_col, col, nullable
             # Django 1.6, 1.7: name, alias, join_type, lhs, join_cols, _, join_field
             name, alias, _, _, _, _, _ = self.query.alias_map[alias]
-            alias_str = '' if alias == name else ' {0}'.format(alias)
-            clause = 'FROM {0}{1}'.format(qn(name), alias_str)
+            alias_str = "" if alias == name else " {0}".format(alias)
+            clause = "FROM {0}{1}".format(qn(name), alias_str)
             inner_join = self.query.INNER
         index = sql.index(clause) + len(clause)
         extra_table, extra_params = self.union(self.query.pm_get_extra())
         opts = self.query.get_meta()
-        qn2_pk_col = qn2(opts.pk.column)  # usually 'id' but not in case of model inheritance
+        qn2_pk_col = qn2(
+            opts.pk.column
+        )  # usually 'id' but not in case of model inheritance
         new_sql = [
             sql[:index],
-            ' {0} ({1}) {2} ON ({3}.{4} = {2}.{5})'.format(
-                inner_join, extra_table, self.query.pm_alias_prefix, qn(alias), qn2_pk_col, qn2_pk_col),
+            " {0} ({1}) {2} ON ({3}.{4} = {2}.{5})".format(
+                inner_join,
+                extra_table,
+                self.query.pm_alias_prefix,
+                qn(alias),
+                qn2_pk_col,
+                qn2_pk_col,
+            ),
         ]
         if index < len(sql):
             new_sql.append(sql[index:])
-        new_sql = ''.join(new_sql)
-        heading_param_count = sql[:index].count('%s')
-        return new_sql, params[:heading_param_count] + extra_params + params[heading_param_count:]
+        new_sql = "".join(new_sql)
+        heading_param_count = sql[:index].count("%s")
+        return (
+            new_sql,
+            params[:heading_param_count] + extra_params + params[heading_param_count:],
+        )
 
     def union(self, querysets):
         """
@@ -97,7 +108,7 @@ class CompilerProxy(Proxy, SQLCompiler):
                 sql, params = qs.query.sql_with_params()
                 result_sql.append(sql)
                 result_params.extend(params)
-            return ' UNION '.join(result_sql), tuple(result_params)
+            return " UNION ".join(result_sql), tuple(result_params)
         else:
             qs = querysets[0].union(*querysets[1:])
             return qs.query.sql_with_params()
@@ -107,7 +118,8 @@ class PostmanQuery(Query):
     """
     A custom SQL query.
     """
-    pm_alias_prefix = 'PM'
+
+    pm_alias_prefix = "PM"
 
     # @Override
     def __init__(self, *args, **kwargs):

@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('user_groups', '0001_initial'),
-    ]
+    dependencies = [("user_groups", "0001_initial")]
 
-    operations = [
-        migrations.AlterModelOptions(
-            name='likegroup',
-            options={},
-        ),
-    ]
+    operations = [migrations.AlterModelOptions(name="likegroup", options={})]

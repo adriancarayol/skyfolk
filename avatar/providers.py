@@ -8,11 +8,7 @@ except ImportError:
 
 
 from avatar.conf import settings
-from avatar.utils import (
-    force_bytes,
-    get_default_avatar_url,
-    get_primary_avatar,
-)
+from avatar.utils import force_bytes, get_default_avatar_url, get_primary_avatar
 
 from django.utils.module_loading import import_string
 
@@ -21,7 +17,7 @@ from django.utils.module_loading import import_string
 # ``AVATAR_FACEBOOK_GET_ID``.
 get_facebook_id = None
 
-if 'avatar.providers.FacebookAvatarProvider' in settings.AVATAR_PROVIDERS:
+if "avatar.providers.FacebookAvatarProvider" in settings.AVATAR_PROVIDERS:
     if callable(settings.AVATAR_FACEBOOK_GET_ID):
         get_facebook_id = settings.AVATAR_FACEBOOK_GET_ID
     else:
@@ -57,13 +53,17 @@ class GravatarAvatarProvider(object):
 
     @classmethod
     def get_avatar_url(self, user, size):
-        params = {'s': str(size)}
+        params = {"s": str(size)}
         if settings.AVATAR_GRAVATAR_DEFAULT:
-            params['d'] = settings.AVATAR_GRAVATAR_DEFAULT
+            params["d"] = settings.AVATAR_GRAVATAR_DEFAULT
         if settings.AVATAR_GRAVATAR_FORCEDEFAULT:
-            params['f'] = 'y'
-        path = "%s/?%s" % (hashlib.md5(force_bytes(getattr(user,
-            settings.AVATAR_GRAVATAR_FIELD))).hexdigest(), urlencode(params))
+            params["f"] = "y"
+        path = "%s/?%s" % (
+            hashlib.md5(
+                force_bytes(getattr(user, settings.AVATAR_GRAVATAR_FIELD))
+            ).hexdigest(),
+            urlencode(params),
+        )
 
         return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
 
@@ -77,8 +77,5 @@ class FacebookAvatarProvider(object):
     def get_avatar_url(self, user, size):
         fb_id = get_facebook_id(user)
         if fb_id:
-            url = 'https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}'
-            return url.format(
-                fb_id=fb_id,
-                size=size
-            )
+            url = "https://graph.facebook.com/{fb_id}/picture?type=square&width={size}&height={size}"
+            return url.format(fb_id=fb_id, size=size)

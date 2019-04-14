@@ -10,6 +10,7 @@ class SupportPasswordModel(models.Model):
     Por ejemplo, el usuario tiene problemas para restablecer
     su password.
     """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=128, blank=False, null=False)
     description = models.TextField(max_length=2048, blank=False, null=False)

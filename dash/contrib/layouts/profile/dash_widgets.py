@@ -1,10 +1,6 @@
-from ....contrib.plugins.url.dash_widgets import (
-    URL1x1Widget,
-)
+from ....contrib.plugins.url.dash_widgets import URL1x1Widget
 
-__all__ = (
-    'URL1x1ProfileMainWidget',
-)
+__all__ = ("URL1x1ProfileMainWidget",)
 
 # *********************************************************
 # *********************************************************
@@ -16,5 +12,5 @@ __all__ = (
 class URL1x1ProfileMainWidget(URL1x1Widget):
     """URL plugin widget for Profile layout (placeholder `main`)."""
 
-    layout_uid = 'profile'
-    placeholder_uid = 'main'
+    layout_uid = "profile"
+    placeholder_uid = "main"

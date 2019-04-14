@@ -10,19 +10,21 @@ class PhotoSizeNameTest(PhotologueBaseTest):
 
         photosize = PhotoSizeFactory()
         photosize.name = None
-        with self.assertRaisesMessage(ValidationError, 'This field cannot be null.'):
+        with self.assertRaisesMessage(ValidationError, "This field cannot be null."):
             photosize.full_clean()
 
-        photosize = PhotoSizeFactory(name='')
-        with self.assertRaisesMessage(ValidationError, 'This field cannot be blank.'):
+        photosize = PhotoSizeFactory(name="")
+        with self.assertRaisesMessage(ValidationError, "This field cannot be blank."):
             photosize.full_clean()
 
-        for name in ('a space', 'UPPERCASE', 'bad?chars'):
+        for name in ("a space", "UPPERCASE", "bad?chars"):
             photosize = PhotoSizeFactory(name=name)
-            with self.assertRaisesMessage(ValidationError,
-                                          'Use only plain lowercase letters (ASCII), numbers and underscores.'):
+            with self.assertRaisesMessage(
+                ValidationError,
+                "Use only plain lowercase letters (ASCII), numbers and underscores.",
+            ):
                 photosize.full_clean()
 
-        for name in ('label', '2_words'):
+        for name in ("label", "2_words"):
             photosize = PhotoSizeFactory(name=name)
             photosize.full_clean()

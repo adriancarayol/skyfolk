@@ -18,14 +18,14 @@ from loguru import logger
 
 
 class LoadDynamicallyFormGivenService(APIView):
-    renderer_classes = (TemplateHTMLRenderer, )
+    renderer_classes = (TemplateHTMLRenderer,)
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        service_id = kwargs.pop('service_id')
+        service_id = kwargs.pop("service_id")
 
         try:
             service = UserService.objects.get(user=request.user, id=service_id)
@@ -35,19 +35,18 @@ class LoadDynamicallyFormGivenService(APIView):
         service_name = service.service.name.lower()
         template_name = "service/form_rendered.html"
         form = ServiceFormFactory.factory(service_name)()
-        return Response({'form': form}, template_name=template_name)
+        return Response({"form": form}, template_name=template_name)
 
 
 class RetrieveInfoForServicePin(APIView):
-
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        pin_id = kwargs.pop('pin_id')
-        page = request.GET.get('page', 1)
-        
+        pin_id = kwargs.pop("pin_id")
+        page = request.GET.get("page", 1)
+
         try:
             pin = DashboardEntry._default_manager.get(id=pin_id)
         except DashboardEntry.DoesNotExist:
@@ -61,27 +60,29 @@ class RetrieveInfoForServicePin(APIView):
 
         privacity = profile.is_visible(request_user)
 
-        if privacity and privacity != 'all':
+        if privacity and privacity != "all":
             return HttpResponseForbidden()
 
         service_info = json.loads(pin.plugin_data)
 
         if "service" not in service_info:
-            return Response({'content': ''})
+            return Response({"content": ""})
 
         try:
             user_service = UserService.objects.get(id=service_info["service"])
         except UserService.DoesNotExist:
-            return Response({'content': ''})
+            return Response({"content": ""})
 
         service_name = user_service.service.name.lower()
-        template_name = 'service/{}/service_result.html'.format(service_name)
+        template_name = "service/{}/service_result.html".format(service_name)
 
         try:
-            response = requests.get('http://go_skyfolk:1800/service/{}/{}'.format(service_name, pin_id))
+            response = requests.get(
+                "http://go_skyfolk:1800/service/{}/{}".format(service_name, pin_id)
+            )
         except RequestException as e:
             logger.error(e)
-            return Response({'content': ''})
+            return Response({"content": ""})
 
         if response.status_code == 200:
             try:
@@ -91,7 +92,7 @@ class RetrieveInfoForServicePin(APIView):
                     response_json = [response_json]
 
                 paginator = Paginator(response_json, 5)
-                
+
                 try:
                     results = paginator.page(page)
                 except PageNotAnInteger:
@@ -99,9 +100,9 @@ class RetrieveInfoForServicePin(APIView):
                 except EmptyPage:
                     results = paginator.page(paginator.num_pages)
 
-                rendered = render_to_string(template_name, {'results': results})
-                return Response({'content': rendered})
+                rendered = render_to_string(template_name, {"results": results})
+                return Response({"content": rendered})
             except Exception as e:
                 print(e)
 
-        return Response({'content': ''})
+        return Response({"content": ""})

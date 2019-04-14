@@ -6,11 +6,7 @@ from django.urls import reverse
 
 from publications.models import Publication
 from user_profile.constants import FOLLOWING, BLOCK
-from user_profile.models import (
-    RelationShipProfile,
-    LikeProfile,
-    Profile,
-)
+from user_profile.models import RelationShipProfile, LikeProfile, Profile
 
 
 class RelationShipTestClass(TestCase):

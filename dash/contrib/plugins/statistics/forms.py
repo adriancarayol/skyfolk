@@ -3,18 +3,14 @@ from django.utils.translation import ugettext_lazy as _
 from dash.mixins import DashboardEntryMixin
 from ....base import DashboardPluginFormBase
 
-__title__ = 'dash.contrib.plugins.follows.forms'
-__all__ = (
-    'StatisticsForm',
-)
+__title__ = "dash.contrib.plugins.follows.forms"
+__all__ = ("StatisticsForm",)
 
 
 class StatisticsForm(DashboardEntryMixin, DashboardPluginFormBase):
     """StatisticsForm for ``BaseStatisticsPlugin`` plugin."""
 
-    plugin_data_fields = [
-        ("title", ""),
-    ]
+    plugin_data_fields = [("title", "")]
 
     title = forms.CharField(label=_("Title"), required=True)
 

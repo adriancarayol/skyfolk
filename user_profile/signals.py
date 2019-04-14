@@ -12,12 +12,7 @@ from dash.models import DashboardSettings
 from notifications.signals import notify
 from user_guide.models import Guide, GuideInfo
 from user_profile.constants import FOLLOWING
-from .models import (
-    Profile,
-    RelationShipProfile,
-    NotificationSettings,
-    LikeProfile,
-)
+from .models import Profile, RelationShipProfile, NotificationSettings, LikeProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

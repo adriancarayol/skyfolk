@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('external_services', '0003_auto_20181014_1322'),
-    ]
+    dependencies = [("external_services", "0003_auto_20181014_1322")]
 
     operations = [
         migrations.AddField(
-            model_name='userservice',
-            name='refresh_token',
-            field=models.CharField(default='', max_length=255),
-        ),
+            model_name="userservice",
+            name="refresh_token",
+            field=models.CharField(default="", max_length=255),
+        )
     ]

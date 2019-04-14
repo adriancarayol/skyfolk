@@ -22,13 +22,6 @@ class BaseServicePlugin(BaseDashboardPlugin):
 # ********** Generating and registering the plugins using factory ************
 # ****************************************************************************
 
-sizes = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6)
-)
+sizes = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6))
 
-plugin_factory(BaseServicePlugin, 'service', sizes)
+plugin_factory(BaseServicePlugin, "service", sizes)

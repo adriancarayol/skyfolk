@@ -3,8 +3,8 @@ from django.apps import AppConfig
 
 
 class BadgifyConfig(AppConfig):
-    name = 'badgify'
-    verbose_name = 'Badgify'
+    name = "badgify"
+    verbose_name = "Badgify"
 
     def ready(self):
         super(BadgifyConfig, self).ready()

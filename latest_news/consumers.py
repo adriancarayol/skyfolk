@@ -2,11 +2,12 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from user_profile.models import Profile
 
+
 @database_sync_to_async
 def get_profile(user_id):
     profile = Profile.objects.get(user_id=user_id)
     return profile
-    
+
 
 class MyFeedConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -25,15 +26,14 @@ class MyFeedConsumer(AsyncJsonWebsocketConsumer):
                 self.news_channels = profile.news_channel
 
                 await self.channel_layer.group_add(
-                    self.news_channels,
-                    self.channel_name,
+                    self.news_channels, self.channel_name
                 )
                 await self.accept()
             except Profile.DoesNotExist:
                 await self.close()
 
     async def new_publication(self, event):
-        message = event['message']
+        message = event["message"]
         # Send message to WebSocket
         await self.send_json(message)
 

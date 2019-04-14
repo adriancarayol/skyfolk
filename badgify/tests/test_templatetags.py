@@ -22,42 +22,48 @@ class BadgesTagTestCase(TestCase, BadgeFixturesMixin, UserFixturesMixin):
             self.badges.append(badge)
         self.users = self.create_users()
         self.badge = self.badges[0]
-        self.user = User.objects.get(username='johndoe')
+        self.user = User.objects.get(username="johndoe")
         self.award = Award.objects.create(badge=self.badge, user=self.user)
 
     def test_no_args(self):
         badges = badges_tag()
         self.assertEqual(len(badges), 20)
-        template = Template('''
+        template = Template(
+            """
             {% load badgify_tags %}
             {% badgify_badges as badges %}
             {% for badge in badges %}{{ badge.name }} {{ badge.slug }}{% endfor %}
-        ''')
+        """
+        )
         rendered = template.render(Context({}))
         for badge in self.badges:
             self.assertIn(badge.name, rendered)
             self.assertIn(badge.slug, rendered)
 
     def test_with_username(self):
-        badges = badges_tag(**{'username': 'johndoe'})
+        badges = badges_tag(**{"username": "johndoe"})
         self.assertEqual(len(badges), 1)
-        template = Template('''
+        template = Template(
+            """
             {% load badgify_tags %}
             {% badgify_badges username="johndoe" as badges %}
             {% for badge in badges %}{{ badge.name }} {{ badge.slug }}{% endfor %}
-        ''')
+        """
+        )
         rendered = template.render(Context({}))
         self.assertIn(self.badge.name, rendered)
         self.assertIn(self.badge.slug, rendered)
 
     def test_with_user(self):
-        badges = badges_tag(**{'user': self.user})
+        badges = badges_tag(**{"user": self.user})
         self.assertEqual(len(badges), 1)
-        template = Template('''
+        template = Template(
+            """
             {% load badgify_tags %}
             {% badgify_badges user=user as badges %}
             {% for badge in badges %}{{ badge.name }} {{ badge.slug }}{% endfor %}
-        ''')
-        rendered = template.render(Context({'user': self.user}))
+        """
+        )
+        rendered = template.render(Context({"user": self.user}))
         self.assertIn(self.badge.name, rendered)
         self.assertIn(self.badge.slug, rendered)

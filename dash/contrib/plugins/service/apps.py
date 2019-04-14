@@ -4,8 +4,9 @@ try:
     class Config(AppConfig):
         """Config."""
 
-        name = 'dash.contrib.plugins.service'
-        label = 'dash_contrib_plugins_service'
+        name = "dash.contrib.plugins.service"
+        label = "dash_contrib_plugins_service"
+
 
 except ImportError:
     pass

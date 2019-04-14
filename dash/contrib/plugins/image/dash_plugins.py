@@ -6,11 +6,11 @@ from .models import DashImageModel
 from .forms import ImageForm
 from .helpers import delete_file, clone_file
 
-__title__ = 'dash.contrib.plugins.image.dash_plugins'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('BaseImagePlugin',)
+__title__ = "dash.contrib.plugins.image.dash_plugins"
+__author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
+__copyright__ = "2013-2017 Artur Barseghyan"
+__license__ = "GPL 2.0/LGPL 2.1"
+__all__ = ("BaseImagePlugin",)
 
 
 # ****************************************************************************
@@ -24,7 +24,7 @@ class BaseImagePlugin(BaseDashboardPlugin):
     name = _("Image")
     group = _("Image")
     form = ImageForm
-    html_classes = ['pictonic']
+    html_classes = ["pictonic"]
 
     def delete_plugin_data(self):
         """Deletes uploaded file."""
@@ -39,7 +39,7 @@ class BaseImagePlugin(BaseDashboardPlugin):
         """
         im = DashImageModel.objects.get(id=self.data.image)
         cloned_image = clone_file(im.image, relative_path=False)
-        return self.get_cloned_plugin_data(update={'image': cloned_image})
+        return self.get_cloned_plugin_data(update={"image": cloned_image})
 
 
 # ****************************************************************************
@@ -60,7 +60,7 @@ sizes = (
     (4, 4),
     (4, 5),
     (5, 4),
-    (5, 5)
+    (5, 5),
 )
 
-plugin_factory(BaseImagePlugin, 'image', sizes)
+plugin_factory(BaseImagePlugin, "image", sizes)

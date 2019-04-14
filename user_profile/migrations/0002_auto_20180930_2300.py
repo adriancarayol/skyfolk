@@ -8,12 +8,11 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('user_profile', '0001_initial'),
+        ("user_profile", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='authdevices',
-            unique_together={('user_profile', 'browser_token')},
-        ),
+            name="authdevices", unique_together={("user_profile", "browser_token")}
+        )
     ]

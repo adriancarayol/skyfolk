@@ -29,7 +29,7 @@ def _get_site():
     return Site.objects.get_current() if Site._meta.installed else None
 
 
-def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
+def pm_broadcast(sender, recipients, subject, body="", skip_notification=False):
     """
     Broadcast a message to multiple Users.
     For an easier cleanup, all these messages are directly marked as archived
@@ -40,9 +40,15 @@ def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
     Optional argument:
         ``skip_notification``: if the normal notification event is not wished
     """
-    message = Message(subject=subject, body=body, sender=sender,
-        sender_archived=True, sender_deleted_at=now(),
-        moderation_status=STATUS_ACCEPTED, moderation_date=now())
+    message = Message(
+        subject=subject,
+        body=body,
+        sender=sender,
+        sender_archived=True,
+        sender_deleted_at=now(),
+        moderation_status=STATUS_ACCEPTED,
+        moderation_date=now(),
+    )
     if not isinstance(recipients, (tuple, list)):
         recipients = (recipients,)
     for recipient in recipients:
@@ -53,8 +59,16 @@ def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
             message.notify_users(STATUS_PENDING, _get_site())
 
 
-def pm_write(sender, recipient, subject, body='', skip_notification=False,
-        auto_archive=False, auto_delete=False, auto_moderators=None):
+def pm_write(
+    sender,
+    recipient,
+    subject,
+    body="",
+    skip_notification=False,
+    auto_archive=False,
+    auto_delete=False,
+    auto_moderators=None,
+):
     """
     Write a message to a User.
     Contrary to pm_broadcast(), the message is archived and/or deleted on

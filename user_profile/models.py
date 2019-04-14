@@ -12,7 +12,13 @@ from taggit.managers import TaggableManager
 
 from badgify.models import Award, Badge
 from photologue.models import Photo, Video
-from user_profile.constants import REQUEST_FOLLOWING, REQUEST_STATUSES, FOLLOWING, BLOCK, RELATIONSHIP_STATUSES
+from user_profile.constants import (
+    REQUEST_FOLLOWING,
+    REQUEST_STATUSES,
+    FOLLOWING,
+    BLOCK,
+    RELATIONSHIP_STATUSES,
+)
 from user_profile.managers import ProfileManager, RelationShipProfileManager
 
 logging.basicConfig(level=logging.INFO)
@@ -20,39 +26,48 @@ logger = logging.getLogger(__name__)
 
 
 def upload_cover_path(instance, filename):
-    return '%s/cover_image/%s' % (instance.user.username, filename)
+    return "%s/cover_image/%s" % (instance.user.username, filename)
 
 
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
     """
-    to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True, on_delete=models.CASCADE)
-    from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True, on_delete=models.CASCADE)
+
+    to_profile = models.ForeignKey(
+        "Profile", related_name="to_profile", db_index=True, on_delete=models.CASCADE
+    )
+    from_profile = models.ForeignKey(
+        "Profile", related_name="from_profile", db_index=True, on_delete=models.CASCADE
+    )
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
     weight = models.PositiveIntegerField(default=0)
     objects = RelationShipProfileManager()
 
     class Meta:
-        unique_together = ('to_profile', 'from_profile')
+        unique_together = ("to_profile", "from_profile")
 
     def save(self, *args, **kwargs):
         if self.to_profile == self.from_profile:
-            raise Exception('to_profile != from_profile')
+            raise Exception("to_profile != from_profile")
         super().save(*args, **kwargs)
 
 
 class LikeProfile(models.Model):
-    to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True, on_delete=models.CASCADE)
-    from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True, on_delete=models.CASCADE)
+    to_profile = models.ForeignKey(
+        "Profile", related_name="to_like", db_index=True, on_delete=models.CASCADE
+    )
+    from_profile = models.ForeignKey(
+        "Profile", related_name="from_like", db_index=True, on_delete=models.CASCADE
+    )
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        unique_together = ('to_profile', 'from_profile')
+        unique_together = ("to_profile", "from_profile")
 
     def save(self, *args, **kwargs):
         if self.to_profile == self.from_profile:
-            raise Exception('to_profile != from_profile')
+            raise Exception("to_profile != from_profile")
         super().save(*args, **kwargs)
 
 
@@ -61,41 +76,48 @@ class Profile(models.Model):
     Modelo para guardar
     informacion extra del usuario
     """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     back_image = models.ImageField(blank=True, null=True, upload_to=upload_cover_path)
     status = models.CharField(blank=True, null=True, max_length=100)
     is_first_login = models.BooleanField(default=True)
-    ONLYFOLLOWERS = 'OF'
-    ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
-    ALL = 'A'
-    NOTHING = 'N'
+    ONLYFOLLOWERS = "OF"
+    ONLYFOLLOWERSANDFOLLOWS = "OFAF"
+    ALL = "A"
+    NOTHING = "N"
     OPTIONS_PRIVACITY = (
-        (ONLYFOLLOWERS, 'OnlyFo'),
-        (ONLYFOLLOWERSANDFOLLOWS, 'OnlyFAF'),
-        (ALL, 'All'),
-        (NOTHING, 'Nothing'),
+        (ONLYFOLLOWERS, "OnlyFo"),
+        (ONLYFOLLOWERSANDFOLLOWS, "OnlyFAF"),
+        (ALL, "All"),
+        (NOTHING, "Nothing"),
     )
-    privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
-    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
-                                           related_name="profile_relationships")
+    privacity = models.CharField(choices=OPTIONS_PRIVACITY, default="A", max_length=4)
+    relationships = models.ManyToManyField(
+        "self",
+        through=RelationShipProfile,
+        symmetrical=False,
+        related_name="profile_relationships",
+    )
     accepted_policy = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)
-    reindex_related = ('user',)
+    reindex_related = ("user",)
     objects = ProfileManager()
 
     class Meta:
-        ordering = ['-user__date_joined']
+        ordering = ["-user__date_joined"]
 
     def __str__(self):
         return "%s profile" % self.user.username
 
     def last_seen(self):
-        return cache.get('seen_%s' % self.user.username)
+        return cache.get("seen_%s" % self.user.username)
 
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+            if now > self.last_seen() + datetime.timedelta(
+                seconds=settings.USER_ONLINE_TIMEOUT
+            ):
                 return False
             else:
                 return True
@@ -133,10 +155,13 @@ class Profile(models.Model):
         :param size => tamaño de la imagen:
         :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
         """
-        default = 'http://pre.skyfolk.net/static/img/nuevo.png'
+        default = "http://pre.skyfolk.net/static/img/nuevo.png"
         return "https://www.gravatar.com/avatar/%s?%s" % (
-            hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
-            urlencode({'d': default, 's': str(size).encode('utf-8')}))
+            hashlib.md5(
+                str(User.objects.get(id=self.user_id).email).encode("utf-8")
+            ).hexdigest(),
+            urlencode({"d": default, "s": str(size).encode("utf-8")}),
+        )
 
     def check_if_first_time_login(self):
         """
@@ -147,10 +172,12 @@ class Profile(models.Model):
 
         if is_first_time_login:
             try:
-                with transaction.atomic(using='default'):
+                with transaction.atomic(using="default"):
                     self.is_first_login = False
-                    Award.objects.get_or_create(user=self.user, badge=Badge.objects.get(slug='new-account'))
-                    self.save(update_fields=['is_first_login'])
+                    Award.objects.get_or_create(
+                        user=self.user, badge=Badge.objects.get(slug="new-account")
+                    )
+                    self.save(update_fields=["is_first_login"])
             except Exception as e:
                 logger.info(e)
 
@@ -161,14 +188,19 @@ class Profile(models.Model):
         """
         Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
         """
-        return Photo.objects.filter(owner=self.user_id, is_public=True).count() + Video.objects.filter(
-            owner=self.user_id, is_public=True).count()
+        return (
+            Photo.objects.filter(owner=self.user_id, is_public=True).count()
+            + Video.objects.filter(owner=self.user_id, is_public=True).count()
+        )
 
     def get_total_num_multimedia(self):
         """
         Devuelve el numero de contenido multimedia de un perfil.
         """
-        return Photo.objects.filter(owner=self.user_id).count() + Video.objects.filter(owner=self.user_id).count()
+        return (
+            Photo.objects.filter(owner=self.user_id).count()
+            + Video.objects.filter(owner=self.user_id).count()
+        )
 
     def is_visible(self, user_profile):
         """
@@ -187,13 +219,16 @@ class Profile(models.Model):
             return "nothing"
 
         # Si el perfil me bloquea
-        if RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self, type=BLOCK).exists():
+        if RelationShipProfile.objects.filter(
+            to_profile=user_profile, from_profile=self, type=BLOCK
+        ).exists():
             return "block"
 
         # Recuperamos la relacion de "seguidor"
         try:
-            relation_follower = RelationShipProfile.objects.filter(to_profile=self, from_profile=user_profile,
-                                                                   type=FOLLOWING)
+            relation_follower = RelationShipProfile.objects.filter(
+                to_profile=self, from_profile=user_profile, type=FOLLOWING
+            )
         except Exception:
             relation_follower = None
 
@@ -203,14 +238,16 @@ class Profile(models.Model):
 
         # Recuperamos la relacion de "seguir"
         try:
-            relation_follow = RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self,
-                                                                 type=FOLLOWING)
+            relation_follow = RelationShipProfile.objects.filter(
+                to_profile=user_profile, from_profile=self, type=FOLLOWING
+            )
         except Exception:
             relation_follow = None
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.privacity == Profile.ONLYFOLLOWERSANDFOLLOWS and not \
-                (relation_follower or relation_follow):
+        if self.privacity == Profile.ONLYFOLLOWERSANDFOLLOWS and not (
+            relation_follower or relation_follow
+        ):
             return "both"
 
         # Si el nivel de privacidad es TODOS
@@ -219,6 +256,7 @@ class Profile(models.Model):
 
         return None
 
+
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):
         """
@@ -226,8 +264,9 @@ class RequestManager(models.Manager):
         :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
         :return Devuelve la petición de seguimiento de un perfil:
         """
-        return self.get(emitter_id=from_profile,
-                        receiver_id=to_profile, status=REQUEST_FOLLOWING)
+        return self.get(
+            emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING
+        )
 
     def add_follow_request(self, from_profile, to_profile, notify):
         """
@@ -235,9 +274,9 @@ class RequestManager(models.Manager):
         :param profile => Perfil que quiero seguir:
         :param notify => Notificacion generada:
         """
-        obj, created = self.get_or_create(emitter_id=from_profile,
-                                          receiver_id=to_profile,
-                                          status=REQUEST_FOLLOWING)
+        obj, created = self.get_or_create(
+            emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING
+        )
         # Si existe la peticion de amistad, actualizamos la notificacion
         obj.notification = notify
         obj.save()
@@ -248,7 +287,9 @@ class RequestManager(models.Manager):
         Elimina la petición de seguimiento hacia un perfil
         :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
-        request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
+        request = Request.objects.get(
+            emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING
+        )
         request.notification.delete()  # Eliminamos la notificacion
         request.delete()
 
@@ -262,15 +303,25 @@ class Request(models.Model):
             <<created>>: Fecha en la que se creó la petición
             <<notification>>: Notificación asociada a la petición
     """
-    emitter = models.ForeignKey(User, related_name='from_request', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='to_request', on_delete=models.CASCADE)
+
+    emitter = models.ForeignKey(
+        User, related_name="from_request", on_delete=models.CASCADE
+    )
+    receiver = models.ForeignKey(
+        User, related_name="to_request", on_delete=models.CASCADE
+    )
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey('notifications.Notification', related_name='request_notification', null=True, on_delete=models.CASCADE)
+    notification = models.ForeignKey(
+        "notifications.Notification",
+        related_name="request_notification",
+        null=True,
+        on_delete=models.CASCADE,
+    )
     objects = RequestManager()
 
     class Meta:
-        unique_together = ('emitter', 'receiver', 'status')
+        unique_together = ("emitter", "receiver", "status")
 
 
 class AuthDevicesQuerySet(models.QuerySet):
@@ -324,22 +375,28 @@ class AuthDevices(models.Model):
     """
         Establece una relacion entre el usuario y los navegadores/dispositivos que usa.
     """
-    user_profile = models.ForeignKey(User, related_name='device_to_profile', on_delete=models.CASCADE)
+
+    user_profile = models.ForeignKey(
+        User, related_name="device_to_profile", on_delete=models.CASCADE
+    )
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
-    
+
     class Meta:
-        unique_together = (('user_profile', 'browser_token'))
+        unique_together = ("user_profile", "browser_token")
 
 
 class NotificationSettings(models.Model):
     """
     Permite al usuario establecer que tipo de notificaciones quiere recibir
     """
+
     email_when_new_notification = models.BooleanField(default=True)
     email_when_recommendations = models.BooleanField(default=True)
     email_when_mp = models.BooleanField(default=True)
     followed_notifications = models.BooleanField(default=True)
     followers_notifications = models.BooleanField(default=True)
     only_confirmed_users = models.BooleanField(default=True)
-    user = models.OneToOneField(User, related_name='notification_settings', on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, related_name="notification_settings", on_delete=models.CASCADE
+    )

@@ -17,7 +17,7 @@ def notify_via_email(actor, recipients, msg, template, context):
             m = recipient.profile
 
             if RelationShipProfile.objects.filter(
-                    from_profile=n, to_profile=m, type=BLOCK
+                from_profile=n, to_profile=m, type=BLOCK
             ) or RelationShipProfile.objects.filter(
                 from_profile=m, to_profile=n, type=BLOCK
             ):
@@ -29,12 +29,14 @@ def notify_via_email(actor, recipients, msg, template, context):
 
             if not recipient.notification_settings.followed_notifications:
                 if RelationShipProfile.objects.filter(
-                        from_profile=m, to_profile=n, type=FOLLOWING):
+                    from_profile=m, to_profile=n, type=FOLLOWING
+                ):
                     continue
 
             if not recipient.notification_settings.followers_notifications:
                 if RelationShipProfile.objects.filter(
-                        from_profile=n, to_profile=m, type=FOLLOWING):
+                    from_profile=n, to_profile=m, type=FOLLOWING
+                ):
                     continue
 
             results.append(recipient.email)
