@@ -28,14 +28,14 @@
                                             {% if node.parent %}
                                                <br><br>
                                             <div class="row z-depth-1-half">
-                                                        <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|emoji_replace|truncatewords_html:10|safe }}</a>
+                                                        <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|emoji_replace|truncatewords_html:10|safe|linebreaks }}</a>
                                                 </div>
                                             {% endif %}
                                         </h2>
                                         <p class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}{% if node.edition_date %}<i> - Editado ({{ node.edition_date|naturaltime }})</i>{% endif %}</p>
                                         <div class="row publication-content">
                                             <div class="parrafo comment">
-                                                <div class="wrp-comment">{{ node.content|safe|emoji_replace }}</div>
+                                                <div class="wrp-comment">{{ node.content|safe|emoji_replace|linebreaks }}</div>
                                             </div>
                                             <div class="show-more" id="show-comment-{{ node.pk }}">
                                                 <a href="#">+ Mostrar más</a>
@@ -121,7 +121,7 @@
                                                           placeholder="Escribe el contenido del nuevo mensaje"
                                                           id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                           name="content" rows="10" required="required"
-                                                          style="height: 11px;">{{ node.content|inner_text_between_html_tags }}</textarea>
+                                                          style="height: 11px;">{{ node.content|inner_text_between_html_tags|linebreaks }}</textarea>
                                                 <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                             </div>
                                             <div class="row">
