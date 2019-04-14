@@ -134,7 +134,9 @@ class PublicationBase(MPTTModel):
         Parseamos el contenido en busca de
         tags html no permitidos y los eliminamos
         """
-        self.content = self.content.replace("\n", "").replace("\r", "")
+        self.content = re.sub(r'\n+', '\n', self.content)
+        self.content = re.sub(r'\r+', '\r', self.content)
+        self.content = ''.join(self.content.strip())
         """
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)

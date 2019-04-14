@@ -27,14 +27,14 @@
                                 <div class="divider"></div>
                                             <div class="row z-depth-1-half">
                                                 {% avatar pub.parent.author 40 %}
-                                                <a href="/publication/{{ pub.parent.id }}">@{{ pub.parent.author }}: {{ pub.parent.content|safe|emoji_replace|truncatewords_html:10|safe }}</a>
+                                                <a href="/publication/{{ pub.parent.id }}">@{{ pub.parent.author }}: {{ pub.parent.content|safe|emoji_replace|truncatewords_html:10|safe|linebreaks }}</a>
                                             </div>
                             {% endif %}
                         </h2>
                         <div class="row">
                             <div class="parrafo comment">
                                 <p class="blue-text text-darken-2 pub-created">{{ pub.created|naturaltime }}{% if node.edition_date %}<i> - Editado ({{ node.edition_date|naturaltime }})</i>{% endif %}</p>
-                                <div class="wrp-comment">{{ pub.content|safe|emoji_replace }}</div>
+                                <div class="wrp-comment">{{ pub.content|safe|emoji_replace|linebreaks }}</div>
                             </div>
                             <div class="show-more" id="show-comment-{{ pub.pk }}">
                                 <a href="#">+ Mostrar más</a>
@@ -140,7 +140,7 @@
                                                       placeholder="Escribe el contenido del nuevo mensaje"
                                                       id="id_caption-{{ pub.pk }}" cols="40" maxlength="500"
                                                       name="content" rows="10" required="required"
-                                                      style="height: 11px;">{{ pub.content|inner_text_between_html_tags }}</textarea>
+                                                      style="height: 11px;">{{ pub.content|inner_text_between_html_tags|linebreaks }}</textarea>
                                             <label for="id_caption-{{ pub.pk }}">Editar comentario</label>
                                         </div>
                                         <div class="row">

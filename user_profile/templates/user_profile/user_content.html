@@ -58,7 +58,7 @@
                                     <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                                 </div>
                                 <div class="row" style="word-wrap: break-word;">
-                                    <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                                    <p>{{ item.content|truncatechars_html:"150"|safe|linebreaks }}</p>
                                     {% with item.shared_publication as shared_publication %}
                                             {% include "account/shared_publication.html" %}
                                         {% endwith %}

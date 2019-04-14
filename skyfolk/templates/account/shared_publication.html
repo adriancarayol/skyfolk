@@ -32,7 +32,7 @@
     <br/>
     <div class="row">
         <div class="col s12">
-            <p>{{ shared_publication.content|safe|emoji_replace }}</p>
+            <p>{{ shared_publication.content|safe|emoji_replace|linebreaks }}</p>
         </div>
         <div class="col s12">
             {% with shared_publication.images.all as images %}

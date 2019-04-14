@@ -33,7 +33,7 @@
                 </p>
               </div>
               <div class="divider"></div>
-              <p class="flow-text">{{ object.content|safe|emoji_replace }}</p>
+              <p class="flow-text">{{ object.content|safe|emoji_replace|linebreaks }}</p>
               <span class="card-title">
                   {% for tag in object.tags.all %}
                   <span class="chip">

@@ -13,7 +13,7 @@
               </div>
               <div class="divider"></div>
               <br>
-              <p class="flow-text">{{ pub.content|safe|emoji_replace|truncatechars_html:120 }}</p>
+              <p class="flow-text">{{ pub.content|safe|emoji_replace|truncatechars_html:120|safe|linebreaks }}</p>
               <span class="card-title">
                   {% for tag in pub.tags.all %}
                   <span class="chip">
