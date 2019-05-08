@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 
 from user_profile import interests as interests_views
-from user_profile import views as user_profile_views
+from user_profile.views import base as user_profile_views
 
 app_name = "user_profile"
 
@@ -34,11 +34,6 @@ urlpatterns = [
         r"^user-search/(?P<option>[\w]*)/$",
         user_profile_views.SearchView.as_view(),
         name="category-search",
-    ),
-    url(
-        r"^user-search-advanced/$",
-        user_profile_views.advanced_view,
-        name="advanced_view",
     ),
     # URL CONFIG PROFILE USER
     url(r"^config/profile/$", user_profile_views.config_profile, name="config_profile"),
