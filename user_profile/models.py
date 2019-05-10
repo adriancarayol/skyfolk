@@ -116,7 +116,7 @@ class Profile(models.Model):
         if self.last_seen():
             now = datetime.datetime.now()
             if now > self.last_seen() + datetime.timedelta(
-                seconds=settings.USER_ONLINE_TIMEOUT
+                    seconds=settings.USER_ONLINE_TIMEOUT
             ):
                 return False
             else:
@@ -163,6 +163,10 @@ class Profile(models.Model):
             urlencode({"d": default, "s": str(size).encode("utf-8")}),
         )
 
+    @property
+    def is_public(self):
+        return self.privacity == Profile.ALL
+
     def check_if_first_time_login(self):
         """
         Funcion para comprobar si un usuario se ha logueado
@@ -189,8 +193,8 @@ class Profile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
         """
         return (
-            Photo.objects.filter(owner=self.user_id, is_public=True).count()
-            + Video.objects.filter(owner=self.user_id, is_public=True).count()
+                Photo.objects.filter(owner=self.user_id, is_public=True).count()
+                + Video.objects.filter(owner=self.user_id, is_public=True).count()
         )
 
     def get_total_num_multimedia(self):
@@ -198,8 +202,8 @@ class Profile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return (
-            Photo.objects.filter(owner=self.user_id).count()
-            + Video.objects.filter(owner=self.user_id).count()
+                Photo.objects.filter(owner=self.user_id).count()
+                + Video.objects.filter(owner=self.user_id).count()
         )
 
     def is_visible(self, user_profile):
@@ -220,7 +224,7 @@ class Profile(models.Model):
 
         # Si el perfil me bloquea
         if RelationShipProfile.objects.filter(
-            to_profile=user_profile, from_profile=self, type=BLOCK
+                to_profile=user_profile, from_profile=self, type=BLOCK
         ).exists():
             return "block"
 
@@ -246,7 +250,7 @@ class Profile(models.Model):
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
         if self.privacity == Profile.ONLYFOLLOWERSANDFOLLOWS and not (
-            relation_follower or relation_follow
+                relation_follower or relation_follow
         ):
             return "both"
 

@@ -69,6 +69,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                             </li>
                         </ul>
                     </div>
+            {% if user.is_authenticated %}
                     <div class="col s12 center">
                             <ul class="profile-controls">
                                     {% if user.username == user_profile.username %}
@@ -104,6 +105,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                 {% endif %}
                             </ul>
                     </div>
+            {% endif %}
                     <p id="profileId" hidden>{{ user_profile.id }}</p>
             </div>
         <div class="col s12 m12 l10 offset-l1 trofeos">
