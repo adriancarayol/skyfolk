@@ -166,9 +166,11 @@
             });
     </script>
     <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+    {% if user.is_authenticated %}
     <script type="text/javascript" src="{% static "js/socket_group.js" %}"></script>
     <script>
         UTILS.init([{{ group_profile.id }}]);
         UTILS.conn_socket();
     </script>
+    {% endif %}
 {% endblock %}

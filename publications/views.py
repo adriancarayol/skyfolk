@@ -218,8 +218,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 have_video = False
                 if any(
-                    word in "gif video"
-                    for word in set([item for sublist in exts for item in sublist])
+                        word in "gif video"
+                        for word in set([item for sublist in exts for item in sublist])
                 ):
                     have_video = True
 
@@ -260,7 +260,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     return self.form_valid(
                         form=form,
                         msg=u"Estamos procesando tus videos, te avisamos "
-                        u"cuando la publicación esté lista.",
+                            u"cuando la publicación esté lista.",
                     )
 
             except Exception as e:
@@ -309,8 +309,8 @@ def publication_detail(request, publication_id):
             Publication.objects.filter(
                 shared_publication__id=OuterRef("pk"), deleted=False
             )
-            .order_by()
-            .values("shared_publication__id")
+                .order_by()
+                .values("shared_publication__id")
         )
 
         total_shared_publications = shared_publications.annotate(c=Count("*")).values(
@@ -323,7 +323,7 @@ def publication_detail(request, publication_id):
 
         publication = (
             request_pub.get_descendants(include_self=True)
-            .annotate(
+                .annotate(
                 likes=Count("user_give_me_like"),
                 hates=Count("user_give_me_hate"),
                 have_like=Count(
@@ -339,8 +339,8 @@ def publication_detail(request, publication_id):
                     )
                 ),
             )
-            .filter(deleted=False)
-            .prefetch_related(
+                .filter(deleted=False)
+                .prefetch_related(
                 "extra_content",
                 "images",
                 "videos",
@@ -354,20 +354,20 @@ def publication_detail(request, publication_id):
                 "shared_group_publication__videos",
                 "shared_group_publication__extra_content",
             )
-            .select_related(
+                .select_related(
                 "author",
                 "board_owner",
                 "shared_publication",
                 "parent",
                 "shared_group_publication",
             )
-            .annotate(
+                .annotate(
                 total_shared=Subquery(
                     total_shared_publications, output_field=IntegerField()
                 )
             )
-            .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
-            .order_by("created")
+                .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+                .order_by("created")
         )
 
     except Exception as e:
@@ -413,8 +413,8 @@ def delete_publication(request):
         try:
             publication = (
                 Publication.objects.prefetch_related("extra_content")
-                .select_related("shared_publication")
-                .get(id=publication_id)
+                    .select_related("shared_publication")
+                    .get(id=publication_id)
             )
         except ObjectDoesNotExist:
             return HttpResponse(json.dumps(data), content_type="application/json")
@@ -493,12 +493,12 @@ def add_like(request):
         in_hate = False
 
         if publication.user_give_me_like.filter(
-            pk=user.pk
+                pk=user.pk
         ).exists():  # Usuario en lista de likes
             in_like = True
 
         if publication.user_give_me_hate.filter(
-            pk=user.pk
+                pk=user.pk
         ).exists():  # Usuario en lista de hate
             in_hate = True
 
@@ -605,12 +605,12 @@ def add_hate(request):
         in_hate = False
 
         if publication.user_give_me_like.filter(
-            pk=user.pk
+                pk=user.pk
         ).exists():  # Usuario en lista de likes
             in_like = True
 
         if publication.user_give_me_hate.filter(
-            pk=user.pk
+                pk=user.pk
         ).exists():  # Usuario en lista de hate
             in_hate = True
 
@@ -718,7 +718,6 @@ def edit_publication(request):
     return JsonResponse({"data": "No puedes acceder a esta URL."})
 
 
-@login_required(login_url="/")
 def load_more_comments(request):
     """
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
@@ -729,6 +728,8 @@ def load_more_comments(request):
         pub_id = request.GET.get("pubid", None)  # publicacion padre
         page = request.GET.get("page", 1)  # Ultima publicacion add
 
+        logger.info('Loading comments for publication: {}, page: {}'.format(pub_id, page))
+
         try:
             publication = Publication.objects.select_related("board_owner").get(
                 id=pub_id
@@ -738,6 +739,51 @@ def load_more_comments(request):
 
         try:
             board_owner = Profile.objects.get(user_id=publication.board_owner_id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        if not user.is_authenticated and board_owner.privacity != Profile.ALL:
+            return HttpResponseForbidden()
+
+        shared_publications = (
+            Publication.objects.filter(
+                shared_publication__id=OuterRef("pk"), deleted=False
+            )
+                .order_by()
+                .values("shared_publication__id")
+        )
+
+        total_shared_publications = shared_publications.annotate(c=Count("*")).values(
+            "c"
+        )
+        publications = publication.get_descendants().filter(deleted=False).order_by("created")
+        publications = publications.annotate(likes=Count("user_give_me_like"),
+                                             hates=Count("user_give_me_hate"))
+        publications = publications.prefetch_related("extra_content", "images", "videos", "tags").select_related("author", "board_owner", "parent").annotate(
+                total_shared=Subquery(
+                    total_shared_publications, output_field=IntegerField()
+                )
+            )
+
+        if not user.is_authenticated:
+            paginator = Paginator(publications, 10)
+
+            try:
+                publications = paginator.page(page)
+            except PageNotAnInteger:
+                publications = paginator.page(1)
+            except EmptyPage:
+                publications = paginator.page(paginator.num_pages)
+
+            context = {
+                "pub_id": pub_id,
+                "publications": publications,
+                "user_profile": publication.board_owner,
+            }
+
+            return render(request, "account/ajax_load_replies.html", context=context)
+
+        try:
             m = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             raise Http404
@@ -751,23 +797,7 @@ def load_more_comments(request):
             to_profile=user.profile, type=BLOCK
         ).values("from_profile_id")
 
-        publications = (
-            publication.get_descendants()
-            .filter(~Q(author__profile__in=users_not_blocked_me) & Q(deleted=False))
-            .order_by("created")
-        )
-
-        shared_publications = (
-            Publication.objects.filter(
-                shared_publication__id=OuterRef("pk"), deleted=False
-            )
-            .order_by()
-            .values("shared_publication__id")
-        )
-
-        total_shared_publications = shared_publications.annotate(c=Count("*")).values(
-            "c"
-        )
+        publications = publications.filter(~Q(author__profile__in=users_not_blocked_me))
 
         shared_for_me = shared_publications.annotate(
             have_shared=Count(Case(When(author_id=user.id, then=Value(1))))
@@ -775,8 +805,6 @@ def load_more_comments(request):
 
         publications = (
             publications.annotate(
-                likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
                 have_like=Count(
                     Case(
                         When(user_give_me_like=user, then=Value(1)),
@@ -789,15 +817,7 @@ def load_more_comments(request):
                         output_field=IntegerField(),
                     )
                 ),
-            )
-            .prefetch_related("extra_content", "images", "videos", "tags")
-            .select_related("author", "board_owner", "parent")
-            .annotate(
-                total_shared=Subquery(
-                    total_shared_publications, output_field=IntegerField()
-                )
-            )
-            .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+            ).annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
         )
 
         paginator = Paginator(publications, 10)
@@ -814,6 +834,7 @@ def load_more_comments(request):
             "publications": publications,
             "user_profile": publication.board_owner,
         }
+
         return render(request, "account/ajax_load_replies.html", context=context)
 
     return HttpResponseForbidden()
@@ -1011,9 +1032,9 @@ def publication_filter_by_like(request):
 
         root_nodes = cache_tree_children(
             Publication.objects.annotate(likes=Count("user_give_me_like"))
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)
-            .order_by("-likes")
-            .select_related("author")[:5]
+                .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)
+                .order_by("-likes")
+                .select_related("author")[:5]
         )
 
         dicts = []
@@ -1075,9 +1096,9 @@ def publication_filter_by_relevance(request):
 
         root_nodes = cache_tree_children(
             Publication.objects.annotate(likes=Count("user_give_me_like"))
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)
-            .order_by("-likes", "-created")
-            .select_related("author")[:5]
+                .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)
+                .order_by("-likes", "-created")
+                .select_related("author")[:5]
         )
 
         dicts = []

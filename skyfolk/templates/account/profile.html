@@ -266,11 +266,13 @@ Template para el perfil de cada usuario
                     $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
                 </script>
             {% endif %}
+            {% if user.is_authenticated %}
             <script src="{% static "js/socket.js" %}"></script>
             <script>
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();
             </script>
+            {% endif %}
             {% comment "Add follow to tab %}
 Add follow to profile tab
 {% endcomment %}

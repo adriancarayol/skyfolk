@@ -16,7 +16,7 @@ from loguru import logger
 
 
 # TODO: Make generic
-def load_anonymous_profile_publications(request, page, profile):
+def load_anonymous_profile_publications(page, profile):
     shared_publications = (
         Publication.objects.filter(shared_publication__id=OuterRef("pk"), deleted=False)
             .order_by()
@@ -57,6 +57,21 @@ def load_anonymous_profile_publications(request, page, profile):
             )
         )
     )
+    publications = []
+
+    try:
+        paginator = Paginator(pubs, 25)
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+    except Exception as e:
+        logger.info(e)
+
+    return publications
 
 
 def load_profile_publications(request, page, profile):
@@ -132,6 +147,8 @@ def load_profile_publications(request, page, profile):
             .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
     )
 
+    publications = []
+
     try:
         paginator = Paginator(pubs, 25)
         try:
@@ -142,13 +159,12 @@ def load_profile_publications(request, page, profile):
             publications = paginator.page(paginator.num_pages)
 
     except Exception as e:
-        publications = []
         logger.info(e)
 
     return publications
 
 
-def profile_view_ajax(request, user_profile, node_profile=None):
+def profile_view_ajax(request, user_profile):
     """
     Vista AJAX para paginacion
     de la vista profile
@@ -162,7 +178,10 @@ def profile_view_ajax(request, user_profile, node_profile=None):
     if qs == "publications":
         page = request.GET.get("page", 1)
         template = "account/profile_comments.html"
-        publications = load_profile_publications(request, page, user_profile)
+        if request.user.is_authenticated:
+            publications = load_profile_publications(request, page, user_profile)
+        else:
+            publications = load_anonymous_profile_publications(page, user_profile)
         context = {"user_profile": user_profile, "publications": publications}
     else:
         raise ValueError("No existe el querystring %s" % qs[:25])

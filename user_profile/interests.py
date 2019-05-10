@@ -12,14 +12,22 @@ class ProfileInterests(APIView):
     List interests of user profile
     """
 
-    authentication_classes = (
-        authentication.SessionAuthentication,
-        authentication.BasicAuthentication,
-    )
-
     def get(self, request, username):
+        user = request.user
+
         try:
             profile = Profile.objects.get(user__username=username)
+        except Profile.DoesNotExist:
+            raise Http404()
+
+        if not user.is_authenticated and profile.privacity == Profile.ALL:
+            interests = profile.tags.names()[10:]
+            return Response(interests)
+
+        elif not user.is_authenticated:
+            return Response([])
+
+        try:
             request_user = Profile.objects.get(user=request.user)
         except Profile.DoesNotExist:
             raise Http404()

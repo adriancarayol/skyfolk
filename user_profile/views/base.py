@@ -17,16 +17,10 @@ from allauth.exceptions import ImmediateHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction, IntegrityError
 from django.db.models import (
-    Case,
-    When,
-    Value,
-    IntegerField,
-    OuterRef,
-    Subquery,
     Count,
     Q,
     Sum,
@@ -49,19 +43,11 @@ from taggit.models import TaggedItem
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from awards.models import UserRank
 from badgify.models import Award
-from dash.base import get_layout
-from dash.helpers import iterable_to_dict
-from dash.models import DashboardEntry
-from dash.utils import (
-    get_user_plugins,
-    get_workspaces,
-    get_public_dashboard_url,
-    get_dashboard_settings,
-)
+
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo, Video
-from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
+
 from publications.models import Publication
 from user_groups.models import LikeGroup
 from user_groups.models import UserGroups
@@ -107,8 +93,7 @@ def profile_view(request, username):
     if user.is_authenticated:
         return AuthenticatedUserProfileView.as_view()(request, username=username)
     elif user_profile.profile.is_public:
-        # return AnonymousUserProfileView.as_view()(request, username=username)
-        return HttpResponseRedirect(reverse('account_login'))
+        return AnonymousUserProfileView.as_view()(request, username=username)
     else:
         return HttpResponseRedirect(reverse('account_login'))
 

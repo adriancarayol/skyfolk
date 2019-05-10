@@ -1,5 +1,5 @@
 {% load group_utils app_filters %}
-
+{% if user.is_authenticated %}
 <div class="options_comentarios">
         <ul class="opciones">
             {% if user.id == node.author.id or user.id == user_profile.id %}
@@ -36,3 +36,4 @@
                 </li>
             {% endif %}
     </ul>
+{% endif %}

@@ -61,6 +61,7 @@
     </div>
     <div class="container" id="my-feed">
         <div class="wrapper-news">
+        {% if user.is_authenticated %}
             <div class="row">
                 {% comment "Usuarios con mayor afinidad" %}
             Lista de los 6 usuarios con mayor afinidad.
@@ -101,6 +102,7 @@
             </div>
             <div class="divider"></div>
             <br>
+        {% endif %}
             <div class="row">
                 <div id="stream-publications" class="grid">
                     {% for item in publications %}

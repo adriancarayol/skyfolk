@@ -1,6 +1,5 @@
 from itertools import chain, zip_longest
 
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.views.generic import ListView
@@ -12,12 +11,12 @@ from user_profile.constants import BLOCK
 from dash.base import get_layout
 
 
-class News(ListView):
+class BaseNews(ListView):
     template_name = "account/base_news.html"
     context_object_name = "publications"
 
     def __init__(self, *args, **kwargs):
-        super(News, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.pagination = None
         self.layout = get_layout(layout_uid="profile", as_instance=True)
 
@@ -25,10 +24,85 @@ class News(ListView):
         """
         Devuelve los 6 perfiles favoritos del usuario
         """
+        raise NotImplementedError
+
+    def get_recommendation_users(self):
+        raise NotImplementedError
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+
+class AnonymousUserNews(BaseNews):
+    def get_affinity_users(self):
+        return ()
+
+    def get_recommendation_users(self, offset=0, limit=25):
+        return ()
+
+    def get_queryset(self):
+        current_page = int(self.request.GET.get("page", "1"))  # page or 1
+        limit = 50 * current_page
+        offset = limit - 50
+        publications = Publication.objects.filter(
+            Q(board_owner__profile__privacity="A")
+            & Q(author__profile__privacity="A")
+        )[offset:limit]
+        photos = Photo.objects.filter(
+            Q(owner__profile__privacity="A") & Q(is_public=True)
+        ).order_by("-date_added")[offset:limit]
+        videos = Video.objects.filter(
+            Q(owner__profile__privacity="A") & Q(is_public=True)
+        ).order_by("-date_added")[offset:limit]
+        entries_q = Q(user__profile__privacity="A") & Q(
+            layout_uid="profile", workspace=None
+        )
+
+        dashboard_entries = (
+            DashboardEntry._default_manager.filter(entries_q)
+                .select_related("workspace", "user")
+                .order_by("placeholder_uid", "position")[offset:limit]
+        )
+
+        placeholders = self.layout.get_placeholder_instances(
+            dashboard_entries, request=self.request
+        )
+
+        self.layout.collect_widget_media(dashboard_entries)
+
+        result_list = list(
+            chain.from_iterable(
+                [
+                    filter(None, zipped)
+                    for zipped in zip_longest(
+                    publications, photos, videos, placeholders
+                )
+                ]
+            )
+        )
+
+        return result_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["component"] = "recommendations.js"
+        context["js"] = self.layout.get_media_js()
+        return context
+
+
+class AuthUserNews(BaseNews):
+
+    def get_affinity_users(self):
+        """
+        Devuelve los 6 perfiles favoritos del usuario
+        """
         return (
             RelationShipProfile.objects.filter(from_profile=self.request.user.profile)
-            .order_by("-weight")[:10]
-            .select_related("to_profile__user")
+                .order_by("-weight")[:10]
+                .select_related("to_profile__user")
         )
 
     def get_recommendation_users(self, offset=0, limit=25):
@@ -41,9 +115,9 @@ class News(ListView):
                 & ~Q(privacity="N")
                 & Q(user__is_active=True)
             )
-            .annotate(similarity=Count("tags"))
-            .order_by("-similarity")
-            .values_list("user_id", flat=True)[offset:limit]
+                .annotate(similarity=Count("tags"))
+                .order_by("-similarity")
+                .values_list("user_id", flat=True)[offset:limit]
         )
 
     def get_queryset(self):
@@ -76,25 +150,25 @@ class News(ListView):
             publications = (
                 Publication.objects.filter(
                     (
-                        (
-                            Q(board_owner__profile__in=following)
-                            | Q(board_owner_id__in=pk_list)
-                        )
-                        & (
-                            ~Q(author__profile__in=users_not_blocked_me)
-                            & ~Q(board_owner__profile__in=users_not_blocked_me)
-                            & ~Q(board_owner__profile__privacity="N")
-                            & ~Q(author__profile__privacity="N")
-                            & ~Q(author_id=self.request.user.id)
-                        )
+                            (
+                                    Q(board_owner__profile__in=following)
+                                    | Q(board_owner_id__in=pk_list)
+                            )
+                            & (
+                                    ~Q(author__profile__in=users_not_blocked_me)
+                                    & ~Q(board_owner__profile__in=users_not_blocked_me)
+                                    & ~Q(board_owner__profile__privacity="N")
+                                    & ~Q(author__profile__privacity="N")
+                                    & ~Q(author_id=self.request.user.id)
+                            )
                     )
                     & Q(deleted=False)
                     & Q(parent=None)
                 )
-                .select_related(
+                    .select_related(
                     "author", "shared_publication", "parent", "shared_group_publication"
                 )
-                .prefetch_related(
+                    .prefetch_related(
                     "extra_content",
                     "images",
                     "videos",
@@ -107,7 +181,7 @@ class News(ListView):
                     "shared_group_publication__extra_content",
                     "shared_publication__author",
                 )
-                .distinct()[offset:limit]
+                    .distinct()[offset:limit]
             )
         except ObjectDoesNotExist:
             publications = Publication.objects.filter(
@@ -120,15 +194,15 @@ class News(ListView):
             photos = (
                 Photo.objects.filter(
                     (
-                        (Q(owner__profile__in=following) | Q(owner_id__in=pk_list))
-                        & ~Q(owner__profile__in=users_not_blocked_me)
+                            (Q(owner__profile__in=following) | Q(owner_id__in=pk_list))
+                            & ~Q(owner__profile__in=users_not_blocked_me)
                     )
                     & Q(is_public=True)
                 )
-                .select_related("owner")
-                .prefetch_related("tags")
-                .order_by("-date_added")
-                .distinct()[offset:limit]
+                    .select_related("owner")
+                    .prefetch_related("tags")
+                    .order_by("-date_added")
+                    .distinct()[offset:limit]
             )
         except Photo.DoesNotExist:
             photos = Photo.objects.filter(
@@ -140,15 +214,15 @@ class News(ListView):
             videos = (
                 Video.objects.filter(
                     (
-                        (Q(owner__profile__in=following) | Q(owner_id__in=pk_list))
-                        & ~Q(owner__profile__in=users_not_blocked_me)
+                            (Q(owner__profile__in=following) | Q(owner_id__in=pk_list))
+                            & ~Q(owner__profile__in=users_not_blocked_me)
                     )
                     & Q(is_public=True)
                 )
-                .select_related("owner")
-                .prefetch_related("tags")
-                .order_by("-date_added")
-                .distinct()[offset:limit]
+                    .select_related("owner")
+                    .prefetch_related("tags")
+                    .order_by("-date_added")
+                    .distinct()[offset:limit]
             )
         except Video.DoesNotExist:
             videos = Video.objects.filter(
@@ -159,15 +233,15 @@ class News(ListView):
 
         try:
             entries_q = (
-                (Q(user_id__in=pk_list) | Q(user__profile__in=following))
-                & Q(layout_uid="profile", workspace=None)
-                & ~Q(user__profile__in=users_not_blocked_me)
+                    (Q(user_id__in=pk_list) | Q(user__profile__in=following))
+                    & Q(layout_uid="profile", workspace=None)
+                    & ~Q(user__profile__in=users_not_blocked_me)
             )
 
             dashboard_entries = (
                 DashboardEntry._default_manager.filter(entries_q)
-                .select_related("workspace", "user")
-                .order_by("placeholder_uid", "position")[offset:limit]
+                    .select_related("workspace", "user")
+                    .order_by("placeholder_uid", "position")[offset:limit]
             )
 
             placeholders = self.layout.get_placeholder_instances(
@@ -180,8 +254,8 @@ class News(ListView):
 
             dashboard_entries = (
                 DashboardEntry._default_manager.filter(entries_q)
-                .select_related("workspace", "user")
-                .order_by("placeholder_uid", "position")[offset:limit]
+                    .select_related("workspace", "user")
+                    .order_by("placeholder_uid", "position")[offset:limit]
             )
 
             placeholders = self.layout.get_placeholder_instances(
@@ -193,10 +267,10 @@ class News(ListView):
         extended_list = []
 
         if (
-            len(photos) <= 0
-            or len(publications) <= 0
-            or len(videos) <= 0
-            or len(placeholders) <= 0
+                len(photos) <= 0
+                or len(publications) <= 0
+                or len(videos) <= 0
+                or len(placeholders) <= 0
         ):
             extended_list = self.get_recommendation_users(offset)
 
@@ -208,8 +282,8 @@ class News(ListView):
 
         if len(publications) <= 0:
             publications = Publication.objects.filter(board_owner_id__in=extended_list)[
-                offset:limit
-            ]
+                           offset:limit
+                           ]
 
         if len(placeholders) <= 0:
             entries_q = Q(user_id__in=extended_list) & Q(
@@ -217,8 +291,8 @@ class News(ListView):
             )
             dashboard_entries = (
                 DashboardEntry._default_manager.filter(entries_q)
-                .select_related("workspace", "user")
-                .order_by("placeholder_uid", "position")[offset:limit]
+                    .select_related("workspace", "user")
+                    .order_by("placeholder_uid", "position")[offset:limit]
             )
 
             placeholders = self.layout.get_placeholder_instances(
@@ -230,8 +304,8 @@ class News(ListView):
                 [
                     filter(None, zipped)
                     for zipped in zip_longest(
-                        publications, photos, videos, placeholders
-                    )
+                    publications, photos, videos, placeholders
+                )
                 ]
             )
         )
@@ -242,10 +316,10 @@ class News(ListView):
         total_placeholders = len(placeholders)
 
         if (
-            total_pubs >= 50
-            or total_photos >= 50
-            or total_videos >= 50
-            or total_placeholders >= 50
+                total_pubs >= 50
+                or total_photos >= 50
+                or total_videos >= 50
+                or total_placeholders >= 50
         ):
             self.pagination = current_page + 1
         else:
@@ -254,7 +328,7 @@ class News(ListView):
         return result_list
 
     def get_context_data(self, **kwargs):
-        context = super(News, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         page = self.request.GET.get("page", None)
         if not page:
             mix = self.get_affinity_users()
@@ -266,4 +340,9 @@ class News(ListView):
         return context
 
 
-news_and_updates = login_required(News.as_view())
+def news_and_updates(request):
+    user = request.user
+    if user.is_authenticated:
+        return AuthUserNews.as_view()(request)
+
+    return AnonymousUserNews.as_view()(request)

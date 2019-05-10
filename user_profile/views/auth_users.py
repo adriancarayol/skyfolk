@@ -23,7 +23,7 @@ class AuthenticatedUserProfileView(View, LoginRequiredMixin, AjaxResponseMixin):
             User.objects.select_related("profile"), username__iexact=username
         )
         return profile_view_ajax(
-            request, user_profile, node_profile=user_profile.profile
+            request, user_profile
         )
 
     def get(self, request, *args, **kwargs):
