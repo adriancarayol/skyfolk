@@ -39,32 +39,9 @@ class LoadDynamicallyFormGivenService(APIView):
 
 
 class RetrieveInfoForServicePin(APIView):
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        pin_id = kwargs.pop("pin_id")
-        page = request.GET.get("page", 1)
-
-        try:
-            pin = DashboardEntry._default_manager.get(id=pin_id)
-        except DashboardEntry.DoesNotExist:
-            raise Http404
-
-        try:
-            profile = Profile.objects.get(user_id=pin.user.id)
-            request_user = Profile.objects.get(user_id=request.user.id)
-        except Profile.DoesNotExist:
-            raise Http404
-
-        privacity = profile.is_visible(request_user)
-
-        if privacity and privacity != "all":
-            return HttpResponseForbidden()
-
-        service_info = json.loads(pin.plugin_data)
-
+    @staticmethod
+    def _get_service_information(service_info, page, pin_id):
         if "service" not in service_info:
             return Response({"content": ""})
 
@@ -106,3 +83,42 @@ class RetrieveInfoForServicePin(APIView):
                 print(e)
 
         return Response({"content": ""})
+
+    def get(self, request, *args, **kwargs):
+        pin_id = kwargs.pop("pin_id")
+        page = request.GET.get("page", 1)
+
+        try:
+            pin = DashboardEntry._default_manager.get(id=pin_id)
+        except DashboardEntry.DoesNotExist:
+            raise Http404
+
+        try:
+            profile = Profile.objects.get(user_id=pin.user.id)
+
+        except Profile.DoesNotExist:
+            raise Http404
+
+        # Anonymous and profile not's public
+        if not request.user.is_authenticated and profile.privacity != Profile.ALL:
+            return HttpResponseForbidden()
+
+        service_info = json.loads(pin.plugin_data)
+
+        # Anonymous and profile is public
+        if not request.user.is_authenticated and profile.privacity == Profile.ALL:
+            return self._get_service_information(service_info, page, pin_id)
+
+        # User authenticated
+        try:
+            request_user = Profile.objects.get(user_id=request.user.id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        privacity = profile.is_visible(request_user)
+
+        if privacity and privacity != "all":
+            return HttpResponseForbidden()
+
+        return self._get_service_information(service_info, page, pin_id)
+

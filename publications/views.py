@@ -291,11 +291,15 @@ def publication_detail(request, publication_id):
 
     try:
         author = Profile.objects.get(user_id=request_pub.author_id)
-        m = Profile.objects.get(user_id=user.id)
     except Profile.DoesNotExist:
         return redirect(
             "user_profile:profile", username=request_pub.board_owner.username
         )
+
+    try:
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
+        raise Http404
 
     privacity = author.is_visible(m)
 
