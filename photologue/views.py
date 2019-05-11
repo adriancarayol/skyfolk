@@ -179,6 +179,16 @@ class PhotoListView(AjaxListView):
         user = self.request.user
         try:
             user_profile = Profile.objects.get(user__username=self.username)
+        except Profile.DoesNotExist:
+            return False
+
+        if not user.is_authenticated and user_profile.privacity == Profile.ALL:
+            return True
+
+        if not user.is_authenticated:
+            return False
+
+        try:
             m = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             return False
@@ -190,7 +200,7 @@ class PhotoListView(AjaxListView):
         return True
 
 
-photo_list = login_required(PhotoListView.as_view())
+photo_list = PhotoListView.as_view()
 
 
 def upload_photo(request):
@@ -496,14 +506,16 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get("page", 1)
 
-        users_not_blocked_me = RelationShipProfile.objects.filter(
-            to_profile=user.profile, type=BLOCK
-        ).values("from_profile_id")
-
-        paginator = Paginator(
-            PublicationPhoto.objects.annotate(
+        publications = PublicationPhoto.objects.annotate(
                 likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
+                hates=Count("user_give_me_hate"))
+
+        if user.is_authenticated:
+            initial_photo = {"author": user.pk, "board_photo": self.photo}
+            users_not_blocked_me = RelationShipProfile.objects.filter(
+                to_profile=user.profile, type=BLOCK
+            ).values("from_profile_id")
+            publications = publications.annotate(
                 have_like=Count(
                     Case(
                         When(user_give_me_like=user, then=Value(1)),
@@ -517,7 +529,11 @@ class PhotoDetailView(DetailView):
                     )
                 ),
             )
-            .filter(
+        else:
+            initial_photo = {"board_photo": self.photo}
+            users_not_blocked_me = RelationShipProfile.objects.none().values("from_profile_id")
+
+        paginator = Paginator(publications.filter(
                 ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False),
@@ -539,8 +555,6 @@ class PhotoDetailView(DetailView):
         if self.request.is_ajax():
             self.template_name = "photologue/publications_entries.html"
             return context
-
-        initial_photo = {"author": user.pk, "board_photo": self.photo}
 
         context["form"] = EditFormPhoto(instance=self.photo)
         context["publication_photo"] = PublicationPhotoForm(initial=initial_photo)
@@ -581,6 +595,7 @@ class PhotoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
+
         if not self.photo.is_public and user.id != self.photo.owner.id:
             return False
         elif user.id == self.photo.owner.id:
@@ -588,6 +603,16 @@ class PhotoDetailView(DetailView):
 
         try:
             user_profile = Profile.objects.get(user__username=self.username)
+        except Profile.DoesNotExist:
+            return False
+
+        if not user.is_authenticated and user_profile.privacity == Profile.ALL:
+            return True
+
+        if not user.is_authenticated:
+            return False
+
+        try:
             n = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             return False
@@ -635,14 +660,16 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get("page", 1)
 
-        users_not_blocked_me = RelationShipProfile.objects.filter(
-            to_profile=user.profile, type=BLOCK
-        ).values("from_profile_id")
-
-        paginator = Paginator(
-            PublicationVideo.objects.annotate(
+        publications = PublicationVideo.objects.annotate(
                 likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
+                hates=Count("user_give_me_hate"))
+
+        if user.is_authenticated:
+            initial_video = {"author": user.pk, "board_video": self.object}
+            users_not_blocked_me = RelationShipProfile.objects.filter(
+                to_profile=user.profile, type=BLOCK
+            ).values("from_profile_id")
+            publications = publications.annotate(
                 have_like=Count(
                     Case(
                         When(user_give_me_like=user, then=Value(1)),
@@ -656,7 +683,12 @@ class VideoDetailView(DetailView):
                     )
                 ),
             )
-            .filter(
+        else:
+            initial_video = {"board_video": self.object}
+            users_not_blocked_me = RelationShipProfile.objects.none().values('from_profile_id')
+
+        paginator = Paginator(
+            publications.filter(
                 ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False),
@@ -679,7 +711,6 @@ class VideoDetailView(DetailView):
             self.template_name = "photologue/videos/publications_entries.html"
             return context
 
-        initial_video = {"author": user.pk, "board_video": self.object}
         context["form"] = EditFormVideo(instance=self.object)
         context["publication_video"] = PublicationVideoForm(initial=initial_video)
         context["publication_shared"] = SharedPublicationForm()
@@ -719,6 +750,7 @@ class VideoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
+
         if not self.object.is_public and user.id != self.object.owner.id:
             return False
         elif user.id == self.object.owner.id:
@@ -726,6 +758,16 @@ class VideoDetailView(DetailView):
 
         try:
             user_profile = Profile.objects.get(user__username=self.username)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        if not user.is_authenticated and user_profile.privacity == Profile.ALL:
+            return True
+
+        if not user.is_authenticated:
+            return False
+
+        try:
             n = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             raise Http404
@@ -734,6 +776,7 @@ class VideoDetailView(DetailView):
 
         if visibility and visibility != "all":
             return False
+
         return True
 
 

@@ -274,9 +274,11 @@ Template para las busquedas
         {% elif s == 'accounts' %}
             <div class="grid row">
                 {% for item in object_list %}
+                    <div class="grid-item infinite-item">
                     {% with item.profile as user_profile %}
                         {% include "search/skyfolk-card-search-item.html" %}
                     {% endwith %}
+                    </div>
                 {% endfor %}
             </div>
         {% elif s == "groups" %}

@@ -128,6 +128,7 @@
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
                                 </div>
                             {% endif %}
+                        {% if user.is_authenticated %}
                             <div class="row form-wrapper">
                                 <form id="message-photo-form" action="" method="post">
                                     {{ publication_video }}
@@ -146,6 +147,7 @@
                                         Enviar<i class="material-icons right">send</i></button>
                                 </form>
                             </div>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
