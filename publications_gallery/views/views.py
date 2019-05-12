@@ -9,11 +9,12 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.db.models import Count, When, Value, Case, IntegerField
 from django.db.models import Q
-from django.http import Http404, JsonResponse, HttpResponseForbidden
+from django.http import Http404, JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
+from django.urls import reverse
+from django.views import View
 from django.views.generic import CreateView
 
-from emoji.models import Emoji
 from photologue.models import Photo
 from publications.exceptions import (
     MaxFilesReached,
@@ -72,7 +73,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 parent = publication.parent
                 if parent:
                     if RelationShipProfile.objects.is_blocked(
-                        to_profile=emitter, from_profile=parent.author.profile
+                            to_profile=emitter, from_profile=parent.author.profile
                     ):
                         form.add_error(
                             "board_photo", "El autor de la publicación te ha bloqueado."
@@ -111,8 +112,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 have_video = False
                 if any(
-                    word in "gif video"
-                    for word in set([item for sublist in exts for item in sublist])
+                        word in "gif video"
+                        for word in set([item for sublist in exts for item in sublist])
                 ):
                     have_video = True
 
@@ -143,7 +144,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                     return self.form_valid(
                         form=form,
                         msg=u"Estamos procesando tus videos, te avisamos "
-                        u"cuando la publicación esté lista.",
+                            u"cuando la publicación esté lista.",
                     )
             except Exception as e:
                 form.add_error("content", str(e))
@@ -155,89 +156,94 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url="/")
 
 
-def publication_detail(request, publication_id):
-    """
-    Muestra el thread de una conversacion
-    """
-    user = request.user
-    page = request.GET.get("page", 1)
-    try:
-        request_pub = PublicationPhoto.objects.select_related("board_photo").get(
-            id=publication_id, deleted=False
-        )
-        if (
-            not request_pub.board_photo.is_public
-            and user.id != request_pub.board_photo.owner.id
-        ):
-            return redirect(
-                "photologue:photo-list", username=request_pub.board_photo.owner.username
+class PublicationDetail(View):
+    @staticmethod
+    def _get_publication_and_descendants(request, photo, publications, publication_id, page):
+        paginator = Paginator(publications, 10)
+
+        try:
+            publication = paginator.page(page)
+        except PageNotAnInteger:
+            publication = paginator.page(1)
+        except EmptyPage:
+            publication = paginator.page(paginator.num_pages)
+
+        context = {
+            "publication": publication,
+            "publication_id": publication_id,
+            "photo": photo,
+            "publication_shared": SharedPublicationForm(),
+        }
+
+        return render(request, "photologue/publication_detail.html", context)
+
+    def get(self, request, publication_id):
+        user = request.user
+        page = request.GET.get("page", 1)
+
+        try:
+            request_pub = PublicationPhoto.objects.select_related("board_photo").get(
+                id=publication_id, deleted=False
             )
-    except ObjectDoesNotExist:
-        raise Http404
+            if (
+                    not request_pub.board_photo.is_public
+                    and user.id != request_pub.board_photo.owner.id
+            ):
+                return redirect(
+                    "photologue:photo-list", username=request_pub.board_photo.owner.username
+                )
+        except ObjectDoesNotExist:
+            raise Http404
 
-    try:
-        author = Profile.objects.get(user_id=request_pub.author_id)
-        m = Profile.objects.get(user_id=user.id)
-    except Profile.DoesNotExist:
-        return redirect(
-            "photologue:photo-list", username=request_pub.board_photo.owner.username
-        )
+        try:
+            author = Profile.objects.get(user_id=request_pub.author_id)
+        except Profile.DoesNotExist:
+            raise Http404
 
-    privacity = author.is_visible(m)
+        if not user.is_authenticated and author.privacity != Profile.ALL:
+            return HttpResponseRedirect(reverse('account_login'))
 
-    if privacity and privacity != "all":
-        return redirect(
-            "user_profile:profile", username=request_pub.board_photo.owner.username
-        )
-
-    try:
-        publication = (
-            request_pub.get_descendants(include_self=True)
-            .annotate(
+        publication = request_pub.get_descendants(include_self=True).annotate(
                 likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
-                have_like=Count(
-                    Case(
-                        When(user_give_me_like=user, then=Value(1)),
-                        output_field=IntegerField(),
-                    )
-                ),
-                have_hate=Count(
-                    Case(
-                        When(user_give_me_hate=user, then=Value(1)),
-                        output_field=IntegerField(),
-                    )
-                ),
-            )
-            .filter(deleted=False)
-            .prefetch_related(
+                hates=Count("user_give_me_hate")
+            ).filter(deleted=False).prefetch_related(
                 "publication_photo_extra_content", "images", "videos", "tags"
+            ).select_related("author", "board_photo", "parent").order_by("created")
+
+        if not user.is_authenticated and author.privacity == Profile.ALL:
+            return self._get_publication_and_descendants(request, request_pub.board_photo, publication, publication_id,
+                                                         page)
+
+        try:
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        privacity = author.is_visible(m)
+
+        if privacity and privacity != "all":
+            return redirect(
+                "user_profile:profile", username=request_pub.board_photo.owner.username
             )
-            .select_related("author", "board_photo", "parent")
-            .order_by("created")
-        )
-    except Exception as e:
-        raise Exception(
-            "No se pudo cargar los descendientes de: {}".format(request_pub)
-        )
 
-    paginator = Paginator(publication, 10)
+        publication = publication.annotate(have_like=Count(
+            Case(
+                When(user_give_me_like=user, then=Value(1)),
+                output_field=IntegerField(),
+            )
+        ),
+            have_hate=Count(
+                Case(
+                    When(user_give_me_hate=user, then=Value(1)),
+                    output_field=IntegerField(),
+                )
+            ))
 
-    try:
-        publication = paginator.page(page)
-    except PageNotAnInteger:
-        publication = paginator.page(1)
-    except EmptyPage:
-        publication = paginator.page(paginator.num_pages)
+        return self._get_publication_and_descendants(request, request_pub.board_photo, publication, publication_id,
+                                                     page)
 
-    context = {
-        "publication": publication,
-        "publication_id": publication_id,
-        "photo": request_pub.board_photo,
-        "publication_shared": SharedPublicationForm(),
-    }
 
-    return render(request, "photologue/publication_detail.html", context)
+publication_detail = PublicationDetail.as_view()
 
 
 @login_required(login_url="/")
@@ -268,8 +274,8 @@ def delete_publication(request):
 
         # Borramos publicacion
         if (
-            user.id == publication.author.id
-            or user.id == publication.board_photo.owner_id
+                user.id == publication.author.id
+                or user.id == publication.board_photo.owner_id
         ):
             publication.deleted = True
             publication.save(update_fields=["deleted"])
@@ -553,18 +559,37 @@ def edit_publication(request):
     return JsonResponse({"data": "No puedes acceder a esta URL."})
 
 
-@login_required(login_url="/")
 def load_more_descendants(request):
     """
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
     o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))
     """
+    def get_descendants(publication_id, publication_list, board_photo):
+        pgr = Paginator(publication_list, 10)
+
+        try:
+            publication_list = pgr.page(page)
+        except PageNotAnInteger:
+            publication_list = pgr.page(1)
+        except EmptyPage:
+            publication_list = pgr.page(pgr.num_pages)
+
+        ctx = {
+            "pub_id": publication_id,
+            "publications": publication_list,
+            "object": board_photo,
+        }
+
+        return render(
+            request, "photologue/videos/ajax_load_replies.html", context=ctx
+        )
+
     if request.is_ajax():
         user = request.user
         pub_id = request.GET.get("pubid", None)  # publicacion padre
         page = request.GET.get("page", 1)  # Ultima publicacion add
 
-        print("PAGE: {}, PUB_ID: {}".format(page, pub_id))
+
         try:
             publication = PublicationPhoto.objects.get(id=pub_id)
         except PublicationPhoto.DoesNotExist:
@@ -572,6 +597,22 @@ def load_more_descendants(request):
 
         try:
             board_owner = Profile.objects.get(user_id=publication.board_photo.owner_id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        if not user.is_authenticated and board_owner.privacity != Profile.ALL:
+            return HttpResponseForbidden()
+
+        pubs = publication.get_descendants().filter(deleted=False).order_by("created").annotate(
+                likes=Count("user_give_me_like"),
+                hates=Count("user_give_me_hate")).prefetch_related(
+            "publication_photo_extra_content", "images", "videos", "parent__author"
+        ).select_related("author", "board_photo", "parent")
+
+        if not user.is_authenticated and board_owner.privacity == Profile.ALL:
+            return get_descendants(pub_id, pubs, publication.board_photo)
+
+        try:
             m = Profile.objects.get(user_id=user.id)
         except Profile.DoesNotExist:
             raise Http404
@@ -585,16 +626,10 @@ def load_more_descendants(request):
             to_profile=user.profile, type=BLOCK
         ).values("from_profile_id")
 
-        pubs = (
-            publication.get_descendants()
-            .filter(~Q(author__profile__in=users_not_blocked_me) & Q(deleted=False))
-            .order_by("created")
-        )
+        pubs = pubs.filter(~Q(author__profile__in=users_not_blocked_me))
 
         pubs = (
             pubs.annotate(
-                likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
                 have_like=Count(
                     Case(
                         When(user_give_me_like=user, then=Value(1)),
@@ -608,25 +643,7 @@ def load_more_descendants(request):
                     )
                 ),
             )
-            .prefetch_related(
-                "publication_photo_extra_content", "images", "videos", "parent__author"
-            )
-            .select_related("author", "board_photo", "parent")
         )
 
-        paginator = Paginator(pubs, 10)
-
-        try:
-            publications = paginator.page(page)
-        except PageNotAnInteger:
-            publications = paginator.page(1)
-        except EmptyPage:
-            publications = paginator.page(paginator.num_pages)
-
-        context = {
-            "pub_id": pub_id,
-            "publications": publications,
-            "photo": publication.board_photo,
-        }
-        return render(request, "photologue/ajax_load_replies.html", context=context)
+        return get_descendants(pub_id, pubs, publication.board_photo)
     return HttpResponseForbidden()

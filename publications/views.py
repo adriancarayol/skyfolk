@@ -26,9 +26,10 @@ from django.db.models import (
     OuterRef,
     Subquery,
 )
-from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -274,41 +275,47 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 publication_new_view = login_required(PublicationNewView.as_view(), login_url="/")
 
 
-@login_required(login_url="/")
-def publication_detail(request, publication_id):
-    """
-    Muestra el thread de una conversacion
-    """
-    user = request.user
-    page = request.GET.get("page", 1)
+class PublicationDetail(View):
+    @staticmethod
+    def _get_publication_and_descendants(request, publications, publication_id, page):
+        paginator = Paginator(publications, 10)
 
-    try:
-        request_pub = Publication.objects.select_related("author").get(
-            id=publication_id, deleted=False
-        )
-    except ObjectDoesNotExist:
-        raise Http404
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
 
-    try:
-        author = Profile.objects.get(user_id=request_pub.author_id)
-    except Profile.DoesNotExist:
-        return redirect(
-            "user_profile:profile", username=request_pub.board_owner.username
-        )
+        context = {
+            "publication_id": publication_id,
+            "publication": publications,
+            "publication_shared": SharedPublicationForm(),
+        }
 
-    try:
-        m = Profile.objects.get(user_id=user.id)
-    except Profile.DoesNotExist:
-        raise Http404
+        return render(request, "account/publication_detail.html", context)
 
-    privacity = author.is_visible(m)
+    def get(self, request, publication_id):
+        user = request.user
+        page = request.GET.get("page", 1)
 
-    if privacity and privacity != "all":
-        return redirect(
-            "user_profile:profile", username=request_pub.board_owner.username
-        )
+        try:
+            request_pub = Publication.objects.select_related("author").get(
+                id=publication_id, deleted=False
+            )
+        except ObjectDoesNotExist:
+            raise Http404
 
-    try:
+        try:
+            author = Profile.objects.get(user_id=request_pub.author_id)
+        except Profile.DoesNotExist:
+            return redirect(
+                "user_profile:profile", username=request_pub.board_owner.username
+            )
+
+        if not user.is_authenticated and author.privacity != Profile.ALL:
+            return HttpResponseRedirect(reverse('account_login'))
+
         shared_publications = (
             Publication.objects.filter(
                 shared_publication__id=OuterRef("pk"), deleted=False
@@ -321,30 +328,11 @@ def publication_detail(request, publication_id):
             "c"
         )
 
-        shared_for_me = shared_publications.annotate(
-            have_shared=Count(Case(When(author_id=user.id, then=Value(1))))
-        ).values("have_shared")
-
         publication = (
-            request_pub.get_descendants(include_self=True)
-                .annotate(
+            request_pub.get_descendants(include_self=True).annotate(
                 likes=Count("user_give_me_like"),
-                hates=Count("user_give_me_hate"),
-                have_like=Count(
-                    Case(
-                        When(user_give_me_like=user, then=Value(1)),
-                        output_field=IntegerField(),
-                    )
-                ),
-                have_hate=Count(
-                    Case(
-                        When(user_give_me_hate=user, then=Value(1)),
-                        output_field=IntegerField(),
-                    )
-                ),
-            )
-                .filter(deleted=False)
-                .prefetch_related(
+                hates=Count("user_give_me_hate")
+            ).filter(deleted=False).prefetch_related(
                 "extra_content",
                 "images",
                 "videos",
@@ -357,45 +345,55 @@ def publication_detail(request, publication_id):
                 "shared_group_publication__author",
                 "shared_group_publication__videos",
                 "shared_group_publication__extra_content",
-            )
-                .select_related(
+            ).select_related(
                 "author",
                 "board_owner",
                 "shared_publication",
                 "parent",
                 "shared_group_publication",
-            )
-                .annotate(
+            ).annotate(
                 total_shared=Subquery(
                     total_shared_publications, output_field=IntegerField()
                 )
+            ).order_by("created")
+        )
+
+        if not user.is_authenticated and author.privacity == Profile.ALL:
+            return self._get_publication_and_descendants(request, publication, publication_id, page)
+
+        try:
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            raise Http404
+
+        privacity = author.is_visible(m)
+
+        if privacity and privacity != "all":
+            return redirect(
+                "user_profile:profile", username=request_pub.board_owner.username
             )
-                .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
-                .order_by("created")
-        )
 
-    except Exception as e:
-        logger.info(e)
-        raise Exception(
-            "Error al cargar descendientes para la publicacion: {}".format(request_pub)
-        )
+        shared_for_me = shared_publications.annotate(
+            have_shared=Count(Case(When(author_id=user.id, then=Value(1))))
+        ).values("have_shared")
 
-    paginator = Paginator(publication, 10)
+        publication = publication.annotate(have_like=Count(
+            Case(
+                When(user_give_me_like=user, then=Value(1)),
+                output_field=IntegerField(),
+            )
+        ),
+            have_hate=Count(
+                Case(
+                    When(user_give_me_hate=user, then=Value(1)),
+                    output_field=IntegerField(),
+                )
+            )).annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
 
-    try:
-        publication = paginator.page(page)
-    except PageNotAnInteger:
-        publication = paginator.page(1)
-    except EmptyPage:
-        publication = paginator.page(paginator.num_pages)
+        return self._get_publication_and_descendants(request, publication, publication_id, page)
 
-    context = {
-        "publication_id": publication_id,
-        "publication": publication,
-        "publication_shared": SharedPublicationForm(),
-    }
 
-    return render(request, "account/publication_detail.html", context)
+publication_detail = PublicationDetail.as_view()
 
 
 @login_required(login_url="/")
@@ -763,11 +761,12 @@ def load_more_comments(request):
         publications = publication.get_descendants().filter(deleted=False).order_by("created")
         publications = publications.annotate(likes=Count("user_give_me_like"),
                                              hates=Count("user_give_me_hate"))
-        publications = publications.prefetch_related("extra_content", "images", "videos", "tags").select_related("author", "board_owner", "parent").annotate(
-                total_shared=Subquery(
-                    total_shared_publications, output_field=IntegerField()
-                )
+        publications = publications.prefetch_related("extra_content", "images", "videos", "tags").select_related(
+            "author", "board_owner", "parent").annotate(
+            total_shared=Subquery(
+                total_shared_publications, output_field=IntegerField()
             )
+        )
 
         if not user.is_authenticated:
             paginator = Paginator(publications, 10)
