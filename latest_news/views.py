@@ -50,7 +50,8 @@ class AnonymousUserNews(BaseNews):
         publications = Publication.objects.filter(
             Q(board_owner__profile__privacity="A")
             & Q(author__profile__privacity="A")
-        )[offset:limit]
+        ).annotate(likes=Count('user_give_me_like')).order_by('-likes', '-created')[offset:limit]
+
         photos = Photo.objects.filter(
             Q(owner__profile__privacity="A") & Q(is_public=True)
         ).order_by("-date_added")[offset:limit]

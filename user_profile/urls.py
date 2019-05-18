@@ -13,7 +13,7 @@ urlpatterns = [
         name="profile",
     ),
     url(
-        r"^salad/$",
+        r"^bookmark/$",
         user_profile_views.UserLikeContent.as_view(),
         name="salad_user_content",
     ),

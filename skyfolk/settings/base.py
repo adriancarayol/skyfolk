@@ -129,7 +129,7 @@ AUTHENTICATION_BACKENDS = (
 ANONYMOUS_USER_NAME = None
 
 # auth and allauth settings
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/accounts/login/"
 # SOCIALACCOUNT_QUERY_EMAIL = True
 # SOCIALACCOUNT_PROVIDERS = {
 #    'facebook': {
@@ -142,7 +142,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = "user_profile.adapter.MyAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "user_profile.adapter.MySocialAccountAdapter"
 ACCOUNT_FORMS = {"login": "user_profile.forms.CustomLoginForm"}
-ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/salad/"
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
