@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 
 from ..models import Photo
 
@@ -54,3 +55,8 @@ class PhotoNode(template.Node):
                 func(),
                 p.title,
             )
+
+
+@register.filter
+def absolute_media_uri(media, request):
+    return request.build_absolute_uri(media)

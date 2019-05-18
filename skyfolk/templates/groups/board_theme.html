@@ -14,9 +14,7 @@
         <div class="col offset-l1 l10 s12 theme" data-id="{{ object.id }}" id="theme-{{ object.id }}">
             <div class="card horizontal">
                 <div class="card-image">
-                    <img class="lazyload" data-src="
-
-                            {% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
+                    <img class="lazyload" data-src="{% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.jpg" %}{% endif %}"
                          style="width: 120px; height: 120px;">
                 </div>
                 <div class="card-stacked">
@@ -45,7 +43,7 @@
                                         </span>
                             {% endif %}
                         </p>
-                        <ul id='dropdown-{{ object.pk }}' class='dropdown-content'>
+                        <ul id="dropdown-{{ object.pk }}" class='dropdown-content'>
                             <li data-id="{{ object.pk }}"
                                 class="right tooltipped edit-theme-btn"
                                 data-position="bottom"
