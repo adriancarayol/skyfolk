@@ -3,7 +3,7 @@
 {% if widget_cells %}
 <div class="row center">
     <a href="{% if workspace %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace %}{% else %}{% url 'dash:dash.plugin_widgets' placeholder_uid=placeholder.uid %}{% endif %}"
-       class="add-plugin waves-effect waves-light btn blue" title="Añadir nuevo pin">
+       class="add-plugin waves-effect waves-light btn blue hide" title="Añadir nuevo pin">
         Añadir nuevo pin
     </a>
 </div>
@@ -22,12 +22,6 @@
                title="Editar pin">
                 <span class="material-icons">edit</span>
             </a>
-            {% comment %}
-            <a href="{% url 'dash:dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
-               title="Copiar pin">
-                <span class="material-icons">content_copy</span>
-            </a>
-            {% endcomment %}
         </div>
         <div class="plugin-content-wrapper">
             {% render_plugin_view plugin %}

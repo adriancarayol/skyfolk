@@ -30,7 +30,7 @@ application = ProtocolTypeRouter(
             URLRouter(
                 [
                     path("profile/<username>/stream/", BlogConsumer),
-                    path("inicio/news/", MyFeedConsumer),
+                    path("salad/news/", MyFeedConsumer),
                     re_path(r"^.*/notification/$", NotificationConsumer),
                     re_path(
                         r"^publication/(?P<pubid>\d+)/stream/$", PublicationConsumer

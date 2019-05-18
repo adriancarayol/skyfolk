@@ -5,16 +5,20 @@
 {% load humanize %}
 {% load static %}
 
+{% url "photologue:pl-photo" username=object.owner.username slug=object.slug as photo_url %}
 
 {% block title %}{{ object.title }} por: {{ object.owner }}{% endblock %}
 
 {% block include_files %}
+        <meta property="og:title" content="{{ object.title }}">
+        <meta property="og:description" content="{% if object.caption %}{{ object.caption }}{% else %}{{ object.title }}{% endif %}">
+        <meta property="og:image" content="{{ object.image.url|absolute_media_uri:request }}">
+        <meta property="og:url" content="{{ photo_url|absolute_media_uri:request }}">
 
         <link rel="stylesheet" href="{% static "css/gallery.css" %}">
         <link rel="stylesheet" href="{% static "css/photo_detail.css" %}">
         <link rel="stylesheet" href="{% static "css/comentarios.css" %}">
         <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
-
 {% endblock %}
 
 {% block content %}

@@ -5,15 +5,27 @@
 {% load humanize %}
 {% load mptt_tags %}
 {% load embed_video_tags %}
+{% load photologue_tags %}
 {% load group_utils %}
 {% load static %}
 {% load emoji_tags %}
+
+{% url "publications:publication_detail" publication.0.id as root_publication_url %}
+
+
 {% block extra-css %}
-
-        <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
-        <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
-
+    <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
 {% endblock %}
+
+{% block include_files %}
+    {% static "img/logo.png" as static_logo %}
+    <meta property="og:title" content="By @{{ publication.0.author.username }}">
+    <meta property="og:description" content="{{ publication.0.content|inner_text_between_html_tags|truncatechars:"60" }}">
+    <meta property="og:image" content="{{ static_logo|absolute_media_uri:request }}">
+    <meta property="og:url" content="{{ root_publication_url|absolute_media_uri:request }}">
+{% endblock %}
+
 {% block title %}Publicacion #{{ publication_id }}{% endblock %}
 {% block content %}
     <style>
@@ -24,6 +36,7 @@
         }
     </style>
     <div class="container" id="publication-thread">
+
         {% comment %}
             Formulario para citar un comentario
         {% endcomment %}
@@ -172,9 +185,9 @@
                                                     <i class="material-icons prefix">create</i>
                                                     <textarea class="materialize-textarea"
                                                               placeholder="Escribe el contenido del nuevo mensaje"
-                                                              id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                                                              id="id_caption-{{ node.pk }}" cols="40"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 11px;">{{ node.content|inner_text_between_html_tags|linebreaks }}</textarea>
+                                                              style="height: 11px;">{{ node.content|inner_text_between_html_tags }}</textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">

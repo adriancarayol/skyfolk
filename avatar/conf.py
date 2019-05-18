@@ -16,7 +16,7 @@ class AvatarConf(AppConf):
     DEFAULT_URL = os.path.join(settings.STATIC_URL, "img/nuevo.png")
     MAX_AVATARS_PER_USER = 3
     MAX_SIZE = 1024 * 1024
-    THUMB_FORMAT = "GIF"
+    THUMB_FORMAT = "JPEG"
     THUMB_QUALITY = 85
     HASH_FILENAMES = True
     HASH_USERDIRNAMES = True
