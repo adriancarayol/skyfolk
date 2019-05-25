@@ -112,8 +112,7 @@ func (youtube *YouTubeResult) SetYouTubeResults(data map[string]interface{}, id 
 		return
 	}
 
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=%s",
-		accountToSearch)
+	url := "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true"
 
 	youtubeResult := YouTubeResult{}
 	getJson(url, &youtubeResult, userService.AuthToken)
