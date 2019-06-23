@@ -74,6 +74,8 @@ def add(
         if upload_avatar_form.is_valid():
             avatar = Avatar(user=request.user, primary=True)
             image_file = request.FILES["avatar"]
+            print(image_file.name)
+            print(image_file)
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))

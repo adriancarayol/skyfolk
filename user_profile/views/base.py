@@ -17,16 +17,10 @@ from allauth.exceptions import ImmediateHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction, IntegrityError
 from django.db.models import (
-    Case,
-    When,
-    Value,
-    IntegerField,
-    OuterRef,
-    Subquery,
     Count,
     Q,
     Sum,
@@ -35,7 +29,7 @@ from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
@@ -49,26 +43,18 @@ from taggit.models import TaggedItem
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from awards.models import UserRank
 from badgify.models import Award
-from dash.base import get_layout
-from dash.helpers import iterable_to_dict
-from dash.models import DashboardEntry
-from dash.utils import (
-    get_user_plugins,
-    get_workspaces,
-    get_public_dashboard_url,
-    get_dashboard_settings,
-)
+
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo, Video
-from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
+
 from publications.models import Publication
 from user_groups.models import LikeGroup
 from user_groups.models import UserGroups
 from user_profile.constants import FOLLOWING, BLOCK
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.factories.card_user import FactorySkyfolkCardIdentifier
-from user_profile.forms import AdvancedSearchForm, EmailForm, UsernameForm
+from user_profile.forms import EmailForm, UsernameForm
 from user_profile.forms import (
     ProfileForm,
     UserForm,
@@ -86,160 +72,12 @@ from user_profile.models import (
 )
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from utils.lists import union_without_duplicates
-from .utils import crop_image, make_pagination_html
+from user_profile.utils import crop_image, make_pagination_html
+from user_profile.views.anonymous_users import AnonymousUserProfileView
+from user_profile.views.auth_users import AuthenticatedUserProfileView
 
 
-def load_profile_publications(request, page, profile):
-    """
-    Devuelve los comentarios de un perfil
-    """
-    user = request.user
-
-    shared_publications = (
-        Publication.objects.filter(shared_publication__id=OuterRef("pk"), deleted=False)
-        .order_by()
-        .values("shared_publication__id")
-    )
-
-    total_shared_publications = shared_publications.annotate(c=Count("*")).values("c")
-
-    shared_for_me = shared_publications.annotate(
-        have_shared=Count(Case(When(author_id=user.id, then=Value(1))))
-    ).values("have_shared")
-
-    users_not_blocked_me = RelationShipProfile.objects.filter(
-        to_profile=user.profile, type=BLOCK
-    ).values("from_profile_id")
-
-    pubs = (
-        Publication.objects.filter(
-            ~Q(author__profile__in=users_not_blocked_me)
-            & Q(board_owner_id=profile.id)
-            & Q(level__lte=0)
-            & Q(deleted=False)
-        )
-        .prefetch_related(
-            "extra_content",
-            "images",
-            "videos",
-            "shared_publication__images",
-            "tags",
-            "shared_publication__author",
-            "shared_group_publication__images",
-            "shared_group_publication__author",
-            "shared_group_publication__videos",
-            "shared_group_publication__extra_content",
-            "shared_publication__videos",
-            "shared_publication__extra_content",
-        )
-        .select_related(
-            "author",
-            "board_owner",
-            "shared_publication",
-            "parent",
-            "shared_group_publication",
-        )
-        .annotate(likes=Count("user_give_me_like"), hates=Count("user_give_me_hate"))
-        .annotate(
-            have_like=Count(
-                Case(
-                    When(user_give_me_like__id=user.id, then=Value(1)),
-                    output_field=IntegerField(),
-                )
-            ),
-            have_hate=Count(
-                Case(
-                    When(user_give_me_hate__id=user.id, then=Value(1)),
-                    output_field=IntegerField(),
-                )
-            ),
-        )
-        .annotate(
-            total_shared=Subquery(
-                total_shared_publications, output_field=IntegerField()
-            )
-        )
-        .annotate(have_shared=Subquery(shared_for_me, output_field=IntegerField()))
-    )
-
-    try:
-        paginator = Paginator(pubs, 25)
-        try:
-            publications = paginator.page(page)
-        except PageNotAnInteger:
-            publications = paginator.page(1)
-        except EmptyPage:
-            publications = paginator.page(paginator.num_pages)
-
-    except Exception as e:
-        publications = []
-        logger.info(e)
-
-    return publications
-
-
-def profile_view_ajax(request, user_profile, node_profile=None):
-    """
-    Vista AJAX para paginacion
-    de la vista profile
-    """
-    qs = request.GET.get("qs", None)
-
-    if not qs:
-        raise ViewDoesNotExist("Parametro QS no encontrado")
-
-    if qs == "publications":
-        page = request.GET.get("page", 1)
-        template = "account/profile_comments.html"
-        publications = load_profile_publications(request, page, user_profile)
-        context = {"user_profile": user_profile, "publications": publications}
-    else:
-        raise ValueError("No existe el querystring %s" % qs[:25])
-
-    return render(request, template_name=template, context=context)
-
-
-def fill_profile_dashboard(request, user, username, context):
-    dashboard_settings = get_dashboard_settings(username)
-
-    if dashboard_settings:
-        layout = get_layout(layout_uid=dashboard_settings.layout_uid, as_instance=True)
-    else:
-        raise Http404
-
-    registered_plugins = get_user_plugins(user)
-    user_plugin_uids = [uid for uid, repr in registered_plugins]
-    logger.debug(user_plugin_uids)
-
-    entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
-
-    dashboard_entries = (
-        DashboardEntry._default_manager.filter(entries_q)
-        .select_related("workspace", "user")
-        .order_by("placeholder_uid", "position")[:]
-    )
-
-    placeholders = layout.get_placeholder_instances(dashboard_entries, request=request)
-
-    layout.collect_widget_media(dashboard_entries)
-
-    context["js"] = layout.get_media_js()
-    context["layout"] = layout
-    context["dashboard_settings"] = dashboard_settings
-    context["placeholders"] = placeholders
-    context["placeholders_dict"] = iterable_to_dict(placeholders, key_attr_name="uid")
-
-    workspaces = get_workspaces(user, layout.uid, None, public=True)
-
-    context.update(workspaces)
-
-    context.update(
-        {"public_dashboard_url": get_public_dashboard_url(dashboard_settings)}
-    )
-
-
-@login_required(login_url="/")
-def profile_view(request, username, template="account/profile.html"):
+def profile_view(request, username):
     """
     Vista principal del perfil de usuario.
     :param username:
@@ -247,217 +85,17 @@ def profile_view(request, username, template="account/profile.html"):
     :param request:
     """
     user = request.user
+
     user_profile = get_object_or_404(
         User.objects.select_related("profile"), username__iexact=username
     )
 
-    try:
-        m = Profile.objects.get(user_id=user.id)
-    except Profile.DoesNotExist:
-        raise Http404
-
-    context = {}
-    # Privacidad del usuario
-    privacity = user_profile.profile.is_visible(m)
-
-    # Si es una peticion AJAX (cargar skyline, seguidos...)
-    if request.is_ajax():
-        if privacity and privacity != "all":
-            pass
-        else:
-            return profile_view_ajax(
-                request, user_profile, node_profile=user_profile.profile
-            )
-
-    context["user_profile"] = user_profile
-    context["privacity"] = privacity
-
-    # Recuperamos si el perfil es gustado.
-
-    if user.username != username:
-        try:
-            liked = LikeProfile.objects.filter(
-                to_profile__user__username=username, from_profile__user=user
-            ).exists()
-        except Exception:
-            liked = False
+    if user.is_authenticated:
+        return AuthenticatedUserProfileView.as_view()(request, username=username)
+    elif user_profile.profile.is_public:
+        return AnonymousUserProfileView.as_view()(request, username=username)
     else:
-        liked = False
-
-    # Recuperamos el numero total de likes
-    total_likes = 0
-    try:
-        total_likes = LikeProfile.objects.filter(
-            to_profile__user__username=username
-        ).count()
-    except Exception as e:
-        logger.info(e)
-
-    # Comprobamos si el perfil esta bloqueado
-    isBlocked = False
-    if user.username != username:
-        try:
-            isBlocked = RelationShipProfile.objects.filter(
-                from_profile=m, to_profile=user_profile.profile, type=BLOCK
-            ).exists()
-        except Exception as e:
-            pass
-
-    # Comprobamos si el perfil es seguidor
-    isFollower = False
-    if user.username != username:
-        try:
-            isFollower = RelationShipProfile.objects.filter(
-                from_profile=user_profile.profile, to_profile=m, type=FOLLOWING
-            ).exists()
-        except Exception:
-            pass
-    # Comprobamos si el perfil es seguido
-    isFollow = False
-    if user.username != username:
-        try:
-            isFollow = RelationShipProfile.objects.filter(
-                from_profile=m, to_profile=user_profile.profile, type=FOLLOWING
-            ).exists()
-        except Exception:
-            pass
-    # Comprobamos si existe una peticion de seguimiento
-    try:
-        friend_request = Request.objects.get_follow_request(
-            from_profile=user.id, to_profile=user_profile.id
-        )
-    except ObjectDoesNotExist:
-        friend_request = None
-
-    # Cuando no tenemos permisos suficientes para ver nada del perfil
-    if privacity == "nothing":
-        context["isBlocked"] = isBlocked
-        context["liked"] = liked
-        context["isFollower"] = isFollower
-        context["isFriend"] = isFollow
-        context["existFollowRequest"] = True if friend_request else False
-        template = "account/privacity/private_profile.html"
-        return render(request, template, context)
-    elif RelationShipProfile.objects.filter(
-        from_profile=user_profile.profile, to_profile=m, type=BLOCK
-    ):
-        template = "account/privacity/block_profile.html"
-        context["isBlocked"] = isBlocked
-        context["liked"] = liked
-        return render(request, template, context)
-
-    # Recuperamos el numero de seguidores
-    try:
-        num_followers = RelationShipProfile.objects.get_total_followers(
-            user_profile.profile.id
-        )
-    except Exception as e:
-        num_followers = 0
-
-    # Recuperamos el numero de contenido multimedia que tiene el perfil
-    try:
-        if user.username == username:
-            multimedia_count = user_profile.profile.get_total_num_multimedia()
-        else:
-            multimedia_count = user_profile.profile.get_num_multimedia()
-    except ObjectDoesNotExist:
-        multimedia_count = 0
-
-    context["liked"] = liked
-    context["n_likes"] = total_likes
-    context["followers"] = num_followers
-    context["isBlocked"] = isBlocked
-    context["isFollower"] = isFollower
-    context["isFriend"] = isFollow
-    context["multimedia_count"] = multimedia_count
-    context["existFollowRequest"] = True if friend_request else False
-
-    context["profile_interests"] = user_profile.profile.tags.names()[:10]
-    context["profile_interests_total"] = user_profile.profile.tags.all().count()
-
-    if privacity == "followers" or privacity == "both":
-        template = "account/privacity/need_confirmation_profile.html"
-        return render(request, template, context)
-
-    context["publicationForm"] = PublicationForm()
-    context["publication_edit"] = PublicationEdit()
-    context["publication_shared"] = SharedPublicationForm()
-
-    # Cargamos las publicaciones del perfil
-    publications = load_profile_publications(request, 1, user_profile)
-
-    # Contenido de las tres tabs
-    context["publications"] = publications
-    context["component"] = "publications.js"
-    context["friend_page"] = 1
-
-    fill_profile_dashboard(request, user_profile, username, context)
-
-    return render(request, template, context)
-
-
-# TODO: End advanced search view.
-@login_required(login_url="/")
-def advanced_view(request):
-    """
-    Búsqueda avanzada
-    """
-    user = request.user
-    template_name = "account/search-avanzed.html"
-    searchForm = SearchForm(request.POST)
-
-    http_method = request.method
-
-    if http_method == "GET":
-        form = AdvancedSearchForm()
-
-    elif http_method == "POST":
-        form = AdvancedSearchForm(request.POST)
-
-        if form.is_valid():
-            clean_all_words = form.cleaned_data["all_words"]
-            clean_exactly = form.cleaned_data["word_or_exactly_word"]
-            clean_some = form.cleaned_data["some_words"]
-            clean_none = form.cleaned_data["none_words"]
-            clean_hashtag = form.cleaned_data["hashtags"]
-            clean_regex = form.cleaned_data["regex_string"]
-
-        if clean_all_words:
-            import operator
-            from functools import reduce
-
-            word_list = [x.strip() for x in clean_all_words.split(",")]
-            result_all_words = Publication.objects.filter(
-                reduce(operator.and_, (Q(content__icontains=x) for x in word_list))
-            )
-            print(result_all_words)
-
-        if clean_exactly:
-            result_exactly = Publication.objects.filter(
-                Q(content__iexact=clean_exactly)
-                | Q(content__iexact=("\n".join(clean_exactly)))
-            )
-            print(result_exactly)
-
-        if clean_some:
-            result_some = Publication.objects.filter(content__icontains=clean_some)
-            print(result_some)
-
-        if clean_none:
-            result_none = Publication.objects.filter(~Q(content__icontains=clean_none))
-            print(result_none)
-
-        if clean_hashtag:
-            clean_hashtag = [x.strip() for x in clean_hashtag.split(",")]
-            print(clean_hashtag)
-            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
-            print(result_hashtag)
-
-        if clean_regex:
-            result_regex = Publication.objects.filter(content__iregex=clean_regex)
-            print(result_regex)
-
-    return render(request, template_name, {"form": form})
+        return HttpResponseRedirect(reverse('account_login'))
 
 
 @login_required(login_url="/")

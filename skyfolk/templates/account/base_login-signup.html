@@ -123,9 +123,12 @@
             <img src="{% static "dist/img/logo.png" %}">
         </div>
     </div>
+    <div class="col s12 center">
+        <a href="{% url "latest_news:user-feed" %}" class="btn waves-effect waves-light btn white blue-text text-lighten-2">¡Explora Skyfolk!</a>
+    </div>
 </div>
+
 <main>
-    <div class="corner-ribbon top-right sticky blue">Beta!</div>
     {% block content %}{% endblock %}
 </main>
 
@@ -134,13 +137,13 @@
         {% cookielaw_banner %}
         <div class="row center">
             <div class="col l3 s12">
-                <a class="blue-text text-darken-1" href="{% url "information:privacy" %}">Política de privacidad</a>
+                <a class="blue-text text-darken-1" href="{% url "information:privacy" %}"><b>Política de privacidad</b></a>
             </div>
             <div class="col l3 s12">
-                <a class="blue-text text-darken-1" href="/blog">Blog</a>
+                <a class="blue-text text-darken-1" href="/blog"><b>Blog</b></a>
             </div>
             <div class="col l3 s12">
-                <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}">Contacto</a>
+                <a class="blue-text text-darken-1" href="{% url "feedback:feedback_contact" %}"><b>Contacto</b></a>
             </div>
             <div class="col l3 s12">
                 <b class="blue-text text-darken">© 2019 Skyfolk</b>

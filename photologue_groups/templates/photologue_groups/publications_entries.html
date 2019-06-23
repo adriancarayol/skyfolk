@@ -116,9 +116,9 @@
                         <i class="material-icons prefix">create</i>
                         <textarea class="materialize-textarea"
                         placeholder="Escribe el contenido del nuevo mensaje"
-                        id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                        id="id_caption-{{ node.pk }}" cols="40"
                         name="content" rows="10" required="required"
-                        style="height: 10.9969px;">{{ node.content|inner_text_between_html_tags|linebreaks }}</textarea>
+                        style="height: 10.9969px;">{{ node.content|inner_text_between_html_tags }}</textarea>
                         <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                     </div>
                     <div class="row">

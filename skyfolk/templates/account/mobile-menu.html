@@ -1,5 +1,11 @@
 <div class="hide-on-large-only fixed-action-btn" style="bottom: 45px; right: 24px;">
+    {% if user.is_authenticated %}
     <a id="publish3" class="btn-floating btn-large blue darken-1">
         <i class="large material-icons">create</i>
     </a>
+    {% else %}
+        <a class="btn-floating btn-large blue darken-1" href="{% url "account_login" %}">
+            <i class="large material-icons">chevron_right</i>
+        </a>
+    {% endif %}
 </div>

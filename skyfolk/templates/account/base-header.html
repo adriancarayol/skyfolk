@@ -8,20 +8,30 @@ Base para el head de la pagina (menu horizontal con busqueda etc...)
     <nav>
         <div class="nav-wrapper white z-depth-1">
             <a title="Inicio" href="{% url "latest_news:user-feed" %}" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
-            <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i
-                    class="material-icons">menu</i></a>
-            {% include "account/menu-horizontal.html" %}
-            <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
-                    id="live_notify_badge"><b>{{ total_notifications }}</b></span></a>
-            <div class="right field hide-on-med-and-down" id="searchform">
-                <form class="autocomplete-me" method='get' action="{% url 'user_profile:general-search' %}">
-                    {{ searchForm }}
-                </form>
-            </div>
+            {% if user.is_authenticated %}
+                <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i
+                        class="material-icons">menu</i></a>
+                {% include "account/menu-horizontal.html" %}
+
+                <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i
+                        class="material-icons">notifications</i><span
+                        id="live_notify_badge"><b>{{ total_notifications }}</b></span></a>
+                <div class="right field hide-on-med-and-down" id="searchform">
+                    <form class="autocomplete-me" method='get' action="{% url 'user_profile:general-search' %}">
+                        {{ searchForm }}
+                    </form>
+                </div>
+            {% endif %}
+            {% if not user.is_authenticated %}
+                <a class="black-text hide-on-med-and-down right" style="margin-right: 10px"
+                   href="{% url "account_login" %}"><b>¿Tienes cuenta? Inicia sesión</b></a>
+            {% endif %}
         </div>
     </nav>
-    {% include "account/menu-vertical.html" %}
-    {% include "account/notification-right-menu.html" %}
+    {% if user.is_authenticated %}
+        {% include "account/menu-vertical.html" %}
+        {% include "account/notification-right-menu.html" %}
+    {% endif %}
 </div>
 <li id="loader"></li>
 

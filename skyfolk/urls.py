@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
 from django_js_reverse.views import urls_js
-from user_profile.views import signup
+from user_profile.views.base import signup
 from allauth.account import views as allauth_views
 from graphene_django.views import GraphQLView
 
@@ -16,11 +16,11 @@ admin.autodiscover()
 # router.register(r'api/users', views.UserViewSet)
 # router.register(r'api/groups', views.GroupViewSet)
 
-handler404 = "user_profile.views.page_not_found"
-handler500 = "user_profile.views.server_error"
-handler403 = "user_profile.views.permission_denied"
-handler400 = "user_profile.views.bad_request"
-CSRF_FAILURE_VIEW = "user_profile.views.csrf_failure"
+handler404 = "user_profile.views.base.page_not_found"
+handler500 = "user_profile.views.base.server_error"
+handler403 = "user_profile.views.base.permission_denied"
+handler400 = "user_profile.views.base.bad_request"
+CSRF_FAILURE_VIEW = "user_profile.views.base.csrf_failure"
 
 urlpatterns = [
     re_path(r"^$", allauth_views.login),

@@ -35,4 +35,5 @@ def user_in_shared_list(pub, user_pk):
 def inner_text_between_html_tags(content):
     soup = BeautifulSoup(content)
     text = soup.get_text()
+
     return text

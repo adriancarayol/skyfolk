@@ -105,15 +105,12 @@ func (youtube *YouTubeResult) SetYouTubeResults(data map[string]interface{}, id 
 	externalServiceDAO := psql.ExternalServicesImplPsql{}
 	userService, err := externalServiceDAO.GetById(userServiceId)
 
-	accountToSearch := widget_data["account_to_search"].(string)
-
 	if err != nil {
 		log.Println("Cannot retrieve user service with id: " + userServiceId)
 		return
 	}
 
-	url := fmt.Sprintf("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=%s",
-		accountToSearch)
+	url := "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true"
 
 	youtubeResult := YouTubeResult{}
 	getJson(url, &youtubeResult, userService.AuthToken)

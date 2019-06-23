@@ -4,4 +4,11 @@
 User-agent: *
 Disallow: /
 Allow: /blog
-Allow: /help
+Allow: /accounts/login
+Allow: /accounts/signup
+Allow: /salad
+Allow: /feedback/contact
+Allow: /multimedia/*
+Allow: /photo/publication/*
+Allow: /video/publication/*
+Allow: /publication/*

@@ -6,7 +6,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from user_profile.models import RelationShipProfile, LikeProfile
-from user_profile.views import remove_relationship
+from user_profile.views.base import remove_relationship
 
 
 class FollowUserTest(TestCase):

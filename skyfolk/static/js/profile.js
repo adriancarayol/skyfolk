@@ -8,9 +8,9 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_amigos = $('#tab-amigos');
     var wrapper_shared_pub = $('#share-publication-wrapper');
-    var add_pin = $('.add-plugin');
+    // var add_pin = $('.add-plugin');
 
-    $(add_pin).hide();
+    // $(add_pin).hide();
 
     /* Show more - Show less */
     $(tab_comentarios).find('.wrapper').each(function () {
@@ -114,7 +114,7 @@ $(document).ready(function () {
 
         $('html, body').toggleClass('body-inConf');
         $('.ventana-pin').fadeToggle();
-        $(add_pin).toggle();
+        $('.add-plugin').toggleClass('hide');
     });
 
     /* Abrir respuesta a comentario */

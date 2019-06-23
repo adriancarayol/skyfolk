@@ -4,9 +4,17 @@
 {% load i18n %}
 {% load humanize %}
 {% load static %}
+
+{% url "photologue:pl-video" username=object.owner.username slug=object.slug as photo_video %}
+
 {% block title %}{{ object.name }} por: {{ object.owner }}{% endblock %}
 
 {% block include_files %}
+    <meta property="og:title" content="{{ object.title }}">
+    <meta property="og:description" content="{% if object.caption %}{{ object.caption }}{% else %}{{ object.title }}{% endif %}">
+    <meta property="og:image" content="{{ object.thumbnail.url|absolute_media_uri:request }}">
+    <meta property="og:url" content="{{ photo_video|absolute_media_uri:request }}">
+
     <link rel="stylesheet" href="{% static "css/gallery.css" %}">
     <link rel="stylesheet" href="{% static "css/photo_detail.css" %}">
     <link rel="stylesheet" href="{% static "css/comentarios.css" %}">
@@ -102,10 +110,7 @@
                             {% endif %}
                             {% if next %}
                                 <a href="{{ next.get_absolute_url }}">
-                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="
-
-
-                                            {% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
+                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="{% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                         </div>
@@ -128,6 +133,7 @@
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
                                 </div>
                             {% endif %}
+                        {% if user.is_authenticated %}
                             <div class="row form-wrapper">
                                 <form id="message-photo-form" action="" method="post">
                                     {{ publication_video }}
@@ -146,6 +152,7 @@
                                         Enviar<i class="material-icons right">send</i></button>
                                 </form>
                             </div>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
@@ -155,6 +162,7 @@
 
         <script src="{% static "js/photo_gallery.js" %}" type="text/javascript"></script>
         <script src="{% static "js/video_detail.js" %}" type="text/javascript"></script>
+    {% if user.is_authenticated %}
         <script src="{% static "js/socket_photo.js" %}"></script>
         <script src="{% static "js/reconnecting-websocket.min.js" %}"></script>
 
@@ -162,4 +170,5 @@
         UTILS.init([{{ user.pk }}]);
         UTILS.conn_socket();
     </script>
+    {% endif %}
 {% endblock %}

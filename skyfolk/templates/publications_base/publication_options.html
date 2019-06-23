@@ -1,5 +1,5 @@
 {% load group_utils app_filters %}
-
+{% if user.is_authenticated %}
 <div class="options_comentarios">
         <ul class="opciones">
             {% if user.id == node.author.id or user.id == user_profile.id %}
@@ -36,3 +36,12 @@
                 </li>
             {% endif %}
     </ul>
+    {% else %}
+    <div class="options_comentarios">
+        <ul class="opciones">
+            <li id="check-{{ node.pk }}" class="zoom-pub" title="Ver conversación completa">
+                <i class="material-icons md-18">open_in_new</i>
+            </li>
+        </ul>
+    </div>
+{% endif %}

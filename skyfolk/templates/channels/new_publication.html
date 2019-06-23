@@ -5,7 +5,7 @@
 {% load embed_video_tags %}
 {% load emoji_tags %}
 {% load static %}
-<div class="row {% if node.level == 0 %}infinite-item wrapper{% endif %}" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
+<div class="row {% if node.level == 0 %}infinite-item{% endif %}wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
         <div class="box">
             <div class="row">
                 <div class="articulo col s12">
@@ -115,9 +115,9 @@ class="author-controls">
                     <i class="material-icons prefix">create</i>
                     <textarea class="materialize-textarea"
                     placeholder="Escribe el contenido del nuevo mensaje"
-                    id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                    id="id_caption-{{ node.pk }}" cols="40"
                     name="content" rows="10" required="required"
-                    style="height: 11px;">{{ node.content|inner_text_between_html_tags|linebreaks }}</textarea>
+                    style="height: 11px;">{{ node.content|inner_text_between_html_tags }}</textarea>
                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                 </div>
                 <div class="row">
