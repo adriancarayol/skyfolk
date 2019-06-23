@@ -35,3 +35,4 @@ kibana/
 tmp/
 config/config
 .pytest_cache
+deployment/charts/*

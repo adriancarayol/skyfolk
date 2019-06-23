@@ -1,22 +1,17 @@
 version: '3'
 
 services:
-  # custom nginx
-  # TODO: Move to config map when kompose support
   nginx:
     build:
       context: .
       dockerfile: docker/skyfolk-nginx.Dockerfile
-    image: gcr.io/skyfolk-211121/skyfolk-nginx:latest
+    #image: skyfolk-nginx:1.0.0
     deploy:
       replicas: 1
     container_name: ng01
     restart: always
     ports:
         - "80:80"
-    volumes:
-        - static-content:/var/www/skyfolk.net/run/static/static/
-        - static-content-media:/var/www/skyfolk.net/run/static/media/
     depends_on:
         - web
         - webworker
@@ -24,6 +19,9 @@ services:
         - skyfolknetwork
     extra_hosts:
         - "cluster:172.17.0.1"
+    labels: 
+      kompose.service.type: nodeport
+
 
   # redis
   redis:
@@ -59,14 +57,11 @@ services:
     build:
       context: .
       dockerfile: docker/web.Dockerfile
-    image: gcr.io/skyfolk-211121/web:latest
+    image: skyfolk-web:1.0.0
     deploy:
       replicas: 1
     hostname: web
     command: ./deployment/master/script/run_web.sh
-    volumes:
-      - static-content:/var/www/skyfolk.net/run/static/static/
-      - static-content-media:/var/www/skyfolk.net/run/static/media/
     expose:
         - "8000"
     networks:
@@ -79,12 +74,9 @@ services:
 
   # daphne worker
   webworker:
-    image: gcr.io/skyfolk-211121/web:latest
+    image: skyfolk-web:1.0.0
     deploy:
       replicas: 1
-    volumes:
-      - static-content:/var/www/skyfolk.net/run/static/static/
-      - static-content-media:/var/www/skyfolk.net/run/static/media/
     command: ./deployment/master/script/run_worker.sh
     env_file:
       - env/web.env
@@ -100,13 +92,10 @@ services:
   celery_worker:
     env_file:
       - env/web.env
-    image: gcr.io/skyfolk-211121/web:latest
+    image: skyfolk-web:1.0.0
     deploy:
       replicas: 1
     command: ./deployment/master/script/run_celery.sh
-    volumes:
-      - static-content:/var/www/skyfolk.net/run/static/static/
-      - static-content-media:/var/www/skyfolk.net/run/static/media/
     networks:
       - skyfolknetwork
     depends_on:
@@ -119,13 +108,10 @@ services:
   celery_beat:
     env_file:
       - env/web.env
-    image: gcr.io/skyfolk-211121/web:latest
+    image: skyfolk-web:1.0.0
     deploy:
       replicas: 1
     command: ./deployment/master/script/run_beat.sh
-    volumes:
-      - static-content:/var/www/skyfolk.net/run/static/static/
-      - static-content-media:/var/www/skyfolk.net/run/static/media/
     networks:
       - skyfolknetwork
     depends_on:
@@ -134,9 +120,6 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-volumes:
-  static-content:
-  static-content-media:
 networks:
   skyfolknetwork:
     driver: bridge

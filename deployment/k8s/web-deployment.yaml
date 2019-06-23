@@ -2,16 +2,15 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f deployment/master/docker-compose.yml -o deployment/master/k8s/
-    kompose.version: 1.16.0 (0c01309)
+    kompose.cmd: kompose convert -f deployment/master/docker-compose.yml -o deployment/master/k8s
+    kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: web
   name: web
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -52,35 +51,10 @@ spec:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
               name: web-env-web-env
-        - name: ELASTICSEARCH_URL
-          valueFrom:
-            configMapKeyRef:
-              key: ELASTICSEARCH_URL
-              name: web-env-web-env
         - name: EMAIL_HOST
           valueFrom:
             configMapKeyRef:
               key: EMAIL_HOST
-              name: web-env-web-env
-        - name: NEO4J_BOLT_URL
-          valueFrom:
-            configMapKeyRef:
-              key: NEO4J_BOLT_URL
-              name: web-env-web-env
-        - name: NEO4J_HOST
-          valueFrom:
-            configMapKeyRef:
-              key: NEO4J_HOST
-              name: web-env-web-env
-        - name: NEO4J_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              key: NEO4J_PASSWORD
-              name: web-env-web-env
-        - name: NEO4J_USER
-          valueFrom:
-            configMapKeyRef:
-              key: NEO4J_USER
               name: web-env-web-env
         - name: RABBIT_PORT_5672_TCP
           valueFrom:
@@ -97,21 +71,9 @@ spec:
             configMapKeyRef:
               key: SECRET_KEY
               name: web-env-web-env
-        image: gcr.io/skyfolk-211121/web:latest
+        image: skyfolk-web:1.0.0
         name: web
         resources: {}
-        volumeMounts:
-        - mountPath: /var/www/skyfolk.net/run/static/static/
-          name: static-content
-        - mountPath: /var/www/skyfolk.net/run/static/media/
-          name: static-content-media
       hostname: web
       restartPolicy: Always
-      volumes:
-      - name: static-content
-        persistentVolumeClaim:
-          claimName: static-content
-      - name: static-content-media
-        persistentVolumeClaim:
-          claimName: static-content-media
 status: {}
