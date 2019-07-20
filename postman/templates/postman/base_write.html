@@ -90,14 +90,15 @@
                     this.input.value = before + text + ", ";
                 }
             });
-            input.addEventListener("awesomplete-selectcomplete", (ev) => console.log(ev.text));
+
             input.addEventListener('keyup', (e) => {
                 var code = (e.keyCode || e.which);
                 if (code === 37 || code === 38 || code === 39 || code === 40 || code === 27 || code === 13) {
                     return;
                 } else {
                     var n = input.value.split(",");
-                    const murl = '/search/autocomplete/?q=' + n[n.length - 1];
+                    var toSearch = n[n.length - 1].trim();
+                    const murl = '/search/autocomplete/?q=' + toSearch;
                     fetch(murl).then(r => r.json()).then(d => {
                         awesomplete.list = d.results.map(user =>
                             (
