@@ -56,33 +56,33 @@ services:
       - skyfolknetwork
 
   # elasticsearch
-  elasticsearch:
-    image: elasticsearch:2.4.6
-    container_name: elasticsearch
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./run/esdata/:/usr/share/elasticsearch/data/
-    restart: on-failure
-    environment:
-      - http.host=0.0.0.0
-      - transport.host=127.0.0.1
-      - xpack.security.enabled=false
-    networks:
-      - skyfolknetwork
+  # elasticsearch:
+  #   image: elasticsearch:2.4.6
+  #   container_name: elasticsearch
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - ./run/esdata/:/usr/share/elasticsearch/data/
+  #   restart: on-failure
+  #   environment:
+  #     - http.host=0.0.0.0
+  #     - transport.host=127.0.0.1
+  #     - xpack.security.enabled=false
+  #   networks:
+  #     - skyfolknetwork
 
-  # kibana
-  kibana:
-    image: kibana:4.6.0
-    ports:
-      - "5601:5601"
-    restart: on-failure
-    volumes:
-      - ./run/kibana/config/:/usr/share/kibana/config
-    depends_on:
-      - elasticsearch
-    networks:
-      - skyfolknetwork
+  # # kibana
+  # kibana:
+  #   image: kibana:4.6.0
+  #   ports:
+  #     - "5601:5601"
+  #   restart: on-failure
+  #   volumes:
+  #     - ./run/kibana/config/:/usr/share/kibana/config
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - skyfolknetwork
 
   # rabbitmq nodo 1
   rabbit:

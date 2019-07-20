@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine
+FROM golang:alpine
 EXPOSE 1800
 
 RUN apk update && apk upgrade && \
