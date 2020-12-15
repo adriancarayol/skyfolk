@@ -1,6 +1,7 @@
 # SKYFOLK - PROJECT
 
 ## Getting Started
+Django monolith we started some time ago, to build a fully functional social networ, is full of bad practices, but there are many interesting things.
 
 ### Pre-requisitos
 Necesitamos tener el siguiente software instalado en el ordenador:
